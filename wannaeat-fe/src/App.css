@@ -1,0 +1,12 @@
+@font-face {
+  font-family: "Paperlogy-8ExtraBold";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2")
+    format("woff2");
+  font-weight: 800;
+  font-style: normal;
+}
+
+/* 해당 폰트를 사용하고 싶은 요소에 적용 */
+body {
+  font-family: "Paperlogy-8ExtraBold", sans-serif;
+}

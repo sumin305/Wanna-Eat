@@ -3,20 +3,10 @@ import PropTypes from 'prop-types';
 
 const ButtonStyled = styled.button`
   display: flex;
+
   align-items: center;
   justify-content: center;
-  width: ${(props) => {
-    if (props.size === 'long') return '15.1rem';
-    if (props.size === 'short') return '5.75rem';
-    if (props.size === 'medium') return '11rem';
-    return '11rem';
-  }};
-  height: ${(props) => {
-    if (props.size === 'long') return '2.13rem';
-    if (props.size === 'short') return '2.5rem';
-    if (props.size === 'medium') return '2.5rem';
-    return '2.5rem';
-  }};
+
   background-color: ${(props) => {
     if (props.disabled) return '#D4D4D4';
     if (props.outlined) return 'transparent';
@@ -29,23 +19,37 @@ const ButtonStyled = styled.button`
     return props.color || 'white';
   }};
 
-  border: ${(props) => {
-    if (props.outlined) return '2px solid #FF6528';
-    return 'none';
-  }};
   font-family: 'Paperlogy-8ExtraBold';
-  border-radius: 5px;
   font-weight: 700;
   letter-spacing: 0.05313rem;
-  user-select: none;
-
-  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
-
   font-size: ${(props) => {
     if (props.size === 'long') return '1.0625rem';
     if (props.size === 'short') return '1.0625rem';
     return '1.0625rem';
   }};
+
+  border: ${(props) => {
+    if (props.outlined) return '2px solid #FF6528';
+    return 'none';
+  }};
+  border-radius: 5px;
+
+  width: ${(props) => {
+    if (props.size === 'long') return '15.1rem';
+    if (props.size === 'short') return '5.75rem';
+    if (props.size === 'medium') return '11rem';
+    return '11rem';
+  }};
+  height: ${(props) => {
+    if (props.size === 'long') return '2.13rem';
+    if (props.size === 'short') return '2.5rem';
+    if (props.size === 'medium') return '2.5rem';
+    return '2.5rem';
+  }};
+
+  user-select: none;
+
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
 
   transition:
     background-color 0.2s ease,

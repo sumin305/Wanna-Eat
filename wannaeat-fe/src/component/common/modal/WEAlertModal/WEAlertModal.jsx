@@ -2,7 +2,6 @@
 /* eslint-disable react/prop-types */
 /** @jsxImportSource @emotion/react */
 
-import { React } from 'react';
 import { css } from '@emotion/react';
 import { theme } from '../../../../style/common/theme';
 import {modalStyle, titleStyle, buttonContainerStyle, buttonStyle} from './WEAlertModal'

@@ -1,5 +1,5 @@
 import { React } from 'react';
-import WEAlertModal from './WEAlertModal/WEAlertModal';
+import WEAlertModal from './WEAlertModal/WEAlertModal.jsx';
 import WEBlackOutLayout from './WEBlackOutLayout';
 import visibleStore from './visibleStore.js';
 

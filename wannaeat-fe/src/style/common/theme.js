@@ -1,4 +1,8 @@
 export const theme = {
+  zIndex: {
+    modal: 1011,
+    blackLayout: 1010
+  },
   colors: {
     primary: "#FF6528",
     seconary: "#FFAC76",

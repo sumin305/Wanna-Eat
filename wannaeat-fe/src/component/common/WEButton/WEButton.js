@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import PropTypes from 'prop-types';
 
 const ButtonStyled = styled.button`
   display: flex;
@@ -19,9 +18,7 @@ const ButtonStyled = styled.button`
     return props.color || 'white';
   }};
 
-  font-family: 'Paperlogy-8ExtraBold';
   font-weight: 700;
-  letter-spacing: 0.05313rem;
   font-size: ${(props) => {
     if (props.size === 'long') return '1.0625rem';
     if (props.size === 'short') return '1.0625rem';
@@ -63,46 +60,4 @@ const ButtonStyled = styled.button`
   }
 `;
 
-const Button = ({
-  children,
-  size = 'medium',
-  backgroundColor,
-  color,
-  activeColor,
-  outlined = false,
-  disabled = false,
-  onClick,
-}) => {
-  return (
-    <ButtonStyled
-      size={size}
-      backgroundColor={backgroundColor}
-      color={color}
-      activeColor={activeColor}
-      outlined={outlined}
-      disabled={disabled}
-      onClick={onClick}
-    >
-      {children}
-    </ButtonStyled>
-  );
-};
-
-Button.propTypes = {
-  children: PropTypes.node.isRequired,
-  size: PropTypes.oneOf(['long', 'short', 'medium']),
-  backgroundColor: PropTypes.string,
-  color: PropTypes.string,
-  activeColor: PropTypes.string,
-  outlined: PropTypes.bool,
-  disabled: PropTypes.bool,
-  onClick: PropTypes.func,
-};
-
-Button.defaultProps = {
-  size: 'medium',
-  outlined: false,
-  disabled: false,
-};
-
-export default Button;
+export default ButtonStyled;

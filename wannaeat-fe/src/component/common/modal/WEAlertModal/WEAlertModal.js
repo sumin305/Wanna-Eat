@@ -5,7 +5,7 @@
 import { React } from 'react';
 import { css } from '@emotion/react';
 import { theme } from '../../../../style/common/theme';
-import {modalStyle, titleStyle, buttonContainerStyle, buttonStyle} from './WEModalStyle'
+import {modalStyle, titleStyle, buttonContainerStyle, buttonStyle} from './WEAlertModal'
 
 // 대리우스의 버튼 컴포넌트로 변경 예정
 const Button = ({ text, onClick, textColor, backgroundColor}) => (

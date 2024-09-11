@@ -6,8 +6,8 @@ const ModalStyled = styled.div`
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 2fr 0.5fr;
   position: fixed;
   background-color: white;
-  border-radius: 0.3em;
-  padding: 0.5em;
+  border-radius: 0.3rem;
+  padding: 0.5rem;
   width: 70%;
   height: 20%;
   overflow-y: auto;
@@ -18,10 +18,11 @@ const ModalStyled = styled.div`
 `
 
 const TitleStyled = styled.div`
-  font-size: 0.8em;
+  font-size: 0.813rem;
   margin-top: 10px;
   text-align: center;
   grid-row: 3;
+  font-weight: 700;
 `
 
 const ButtonContainerStyled = styled.div`

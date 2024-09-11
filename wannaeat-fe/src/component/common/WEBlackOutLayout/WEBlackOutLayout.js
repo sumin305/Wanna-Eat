@@ -1,8 +1,7 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from '@emotion/styled'
 import { theme } from '../../../style/common/theme';
 
-const blackOutStyle = css`
+const BlackOutLayoutStyled = styled.div`
   position: fixed;
   left: 50%;
   top: 50%;
@@ -13,8 +12,4 @@ const blackOutStyle = css`
   height: 100%;
 `;
 
-const WEBlackOutLayout = ( {close} ) => {
-  return <div css={blackOutStyle} onClick={close}></div>;
-};
-
-export default WEBlackOutLayout;
+export default BlackOutLayoutStyled;

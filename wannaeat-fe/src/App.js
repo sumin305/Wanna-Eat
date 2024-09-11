@@ -1,5 +1,4 @@
 import React from 'react';
-import { theme } from './style/common/theme';
 import { Global, css } from '@emotion/react';
 import TopPage from './component/common/modal/TopPage'
 const globalStyles = css`

@@ -2,10 +2,9 @@ import styled from '@emotion/styled';
 
 const ButtonStyled = styled.button`
   display: flex;
-
   align-items: center;
   justify-content: center;
-
+  margin: 0 auto;
   background-color: ${(props) => {
     if (props.disabled) return '#D4D4D4';
     if (props.outlined) return 'transparent';
@@ -21,7 +20,7 @@ const ButtonStyled = styled.button`
   font-weight: 700;
   font-size: ${(props) => {
     if (props.size === 'long') return '1.0625rem';
-    if (props.size === 'short') return '1.0625rem';
+    if (props.size === 'short') return '0.813rem';
     return '1.0625rem';
   }};
 
@@ -37,11 +36,8 @@ const ButtonStyled = styled.button`
     if (props.size === 'medium') return '11rem';
     return '11rem';
   }};
-  height: ${(props) => {
-    if (props.size === 'long') return '2.13rem';
-    if (props.size === 'short') return '2.5rem';
-    if (props.size === 'medium') return '2.5rem';
-    return '2.5rem';
+  height: ${() => {
+    return '2.13rem';
   }};
 
   user-select: none;

@@ -1,6 +1,6 @@
 import { React } from 'react';
 import WEAlertModal from './WEAlertModal/WEAlertModal.jsx';
-import WEBlackOutLayout from './WEBlackOutLayout';
+import WEBlackOutLayout from '../WEBlackOutLayout/WEBlackOutLayout.jsx';
 import visibleStore from './visibleStore.js';
 
 const TopPage = () => {

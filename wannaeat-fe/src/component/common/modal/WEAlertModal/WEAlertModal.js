@@ -1,7 +1,8 @@
 import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import { theme } from '../../../../style/common/theme';
 
-const modalStyle = css`
+const ModalStyled = styled.div`
   display: grid;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 2fr 0.5fr;
   position: fixed;
@@ -15,31 +16,19 @@ const modalStyle = css`
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: ${theme.zIndex.modal};
-`;
+`
 
-const titleStyle = () => css`
+const TitleStyled = styled.div`
   font-size: 0.8em;
   margin-top: 10px;
   text-align: center;
   grid-row: 3;
-`;
+`
 
-const buttonContainerStyle = css`
+const ButtonContainerStyled = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-row: 6;
-`;
+`
 
-const buttonStyle = (textColor, backgroundColor) => css`
-  background-color: ${backgroundColor};
-  color: ${textColor};
-  font-size: 0.8em;
-  border-radius: 0.3em;
-  border: none;
-  margin: 0 auto;
-  width: 80%;
-  height: 110%;
-  text-align: center;
-`;
-
-export {modalStyle, titleStyle, buttonContainerStyle, buttonStyle};
+export {ModalStyled, TitleStyled, ButtonContainerStyled};

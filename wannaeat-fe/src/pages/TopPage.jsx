@@ -1,7 +1,7 @@
 import { React } from 'react';
-import WEAlertModal from './WEAlertModal/WEAlertModal.jsx';
-import WEBlackOutLayout from '../WEBlackOutLayout/WEBlackOutLayout.jsx';
-import visibleStore from './visibleStore.js';
+import WEAlertModal from '../component/common/modal/WEAlertModal/WEAlertModal.jsx';
+import WEBlackOutLayout from '../layout/common/WEBlackOutLayout/WEBlackOutLayout.jsx';
+import visibleStore from '../stores/modal/visibleStore.js';
 
 const TopPage = () => {
   const {isVisible, open, close}= visibleStore();

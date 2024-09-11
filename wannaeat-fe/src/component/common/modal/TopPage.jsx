@@ -1,6 +1,6 @@
 import { React, useState } from 'react';
 import WEAlertModal from './WEAlertModal/WEAlertModal';
-import WEBlackOutStyle from './WEBlackOutStyle';
+import WEBlackOutLayout from './WEBlackOutLayout';
 import visibleStore from './visibleStore';
 
 const TopPage = () => {
@@ -13,7 +13,7 @@ const TopPage = () => {
       </div>
       <div>
         {isVisible && (
-          <WEBlackOutStyle close={close}></WEBlackOutStyle>
+          <WEBlackOutLayout close={close}></WEBlackOutLayout>
         )}
         {isVisible && (
           <WEAlertModal

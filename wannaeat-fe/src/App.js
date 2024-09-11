@@ -1,7 +1,7 @@
 import React from 'react';
 import { theme } from './style/common/theme';
 import { Global, css } from '@emotion/react';
-
+import { TopPage } from './component/common/modal/TopPage'
 const globalStyles = css`
   @font-face {
     font-family: 'Paperlogy-5Regular';
@@ -22,7 +22,7 @@ function App() {
   return (
     <div>
       <Global styles={globalStyles} />
-      <p style={{ color: theme.colors.primary }}>안녕하세요</p>
+      <TopPage></TopPage>
     </div>
   );
 }

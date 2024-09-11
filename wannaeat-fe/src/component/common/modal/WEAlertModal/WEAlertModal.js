@@ -22,7 +22,7 @@ const TitleStyled = styled.div`
   margin-top: 10px;
   text-align: center;
   grid-row: 3;
-  font-weight: 700;
+  font-weight: 500;
 `
 
 const ButtonContainerStyled = styled.div`

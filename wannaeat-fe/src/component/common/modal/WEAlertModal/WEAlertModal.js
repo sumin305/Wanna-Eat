@@ -1,29 +1,45 @@
-/* eslint-disable react/no-unknown-property */
-/* eslint-disable react/prop-types */
-/** @jsxImportSource @emotion/react */
-
-import { React } from 'react';
 import { css } from '@emotion/react';
 import { theme } from '../../../../style/common/theme';
-import {modalStyle, titleStyle, buttonContainerStyle, buttonStyle} from './WEAlertModal'
 
-// 대리우스의 버튼 컴포넌트로 변경 예정
-const Button = ({ text, onClick, textColor, backgroundColor}) => (
-  <button css={buttonStyle(textColor, backgroundColor)}
-  onClick={onClick}>
-    {text}
-  </button>
-)
-const WEAlertModal = ({ alertText, cancelText, confirmText, close }) => {
-  return (
-    <div css={modalStyle}>
-      <div css={titleStyle}>{alertText}</div>
-      <div css={buttonContainerStyle}>
-        <Button text={cancelText} onClick={close} textColor={'black'} backgroundColor={'E6EAEE'}/>
-        <Button text={confirmText} onClick={close} textColor={'white'} backgroundColor={theme.colors.primary}/>
-      </div>
-    </div>
-  );
-};
+const modalStyle = css`
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 2fr 0.5fr;
+  position: fixed;
+  background-color: white;
+  border-radius: 0.3em;
+  padding: 0.5em;
+  width: 70%;
+  height: 20%;
+  overflow-y: auto;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: ${theme.zIndex.modal};
+`;
 
-export default WEAlertModal;
+const titleStyle = () => css`
+  font-size: 0.8em;
+  margin-top: 10px;
+  text-align: center;
+  grid-row: 3;
+`;
+
+const buttonContainerStyle = css`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-row: 6;
+`;
+
+const buttonStyle = (textColor, backgroundColor) => css`
+  background-color: ${backgroundColor};
+  color: ${textColor};
+  font-size: 0.8em;
+  border-radius: 0.3em;
+  border: none;
+  margin: 0 auto;
+  width: 80%;
+  height: 110%;
+  text-align: center;
+`;
+
+export {modalStyle, titleStyle, buttonContainerStyle, buttonStyle};

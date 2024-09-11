@@ -17,11 +17,22 @@ const ButtonStyled = styled.button`
     if (props.size === 'medium') return '2.5rem';
     return '2.5rem';
   }};
-  background-color: ${(props) =>
-    props.disabled ? '#D4D4D4' : props.backgroundColor || '#FF6528'};
+  background-color: ${(props) => {
+    if (props.disabled) return '#D4D4D4';
+    if (props.outlined) return 'transparent';
+    return props.backgroundColor || '#FF6528';
+  }};
 
-  color: ${(props) => props.color || 'white'};
-  border: none;
+  color: ${(props) => {
+    if (props.disabled) return 'white';
+    if (props.outlined) return '#FF6528';
+    return props.color || 'white';
+  }};
+
+  border: ${(props) => {
+    if (props.outlined) return '2px solid #FF6528';
+    return 'none';
+  }};
   font-family: 'Paperlogy-8ExtraBold';
   border-radius: 5px;
   font-weight: 700;
@@ -54,6 +65,7 @@ const Button = ({
   backgroundColor,
   color,
   activeColor,
+  outlined = false,
   disabled = false,
   onClick,
 }) => {
@@ -63,6 +75,7 @@ const Button = ({
       backgroundColor={backgroundColor}
       color={color}
       activeColor={activeColor}
+      outlined={outlined}
       disabled={disabled}
       onClick={onClick}
     >
@@ -77,13 +90,14 @@ Button.propTypes = {
   backgroundColor: PropTypes.string,
   color: PropTypes.string,
   activeColor: PropTypes.string,
+  outlined: PropTypes.bool,
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
 };
 
-// 기본값 설정
 Button.defaultProps = {
   size: 'medium',
+  outlined: false,
   disabled: false,
 };
 

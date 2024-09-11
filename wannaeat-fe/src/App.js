@@ -1,7 +1,6 @@
 import React from 'react';
 import { theme } from './style/common/theme';
 import { Global, css } from '@emotion/react';
-import WEButton from './component/WEButton.jsx';
 
 const globalStyles = css`
   @font-face {
@@ -22,20 +21,6 @@ function App() {
     <div>
       <Global styles={globalStyles} />
       <p style={{ color: theme.colors.primary }}>안녕하세요</p>
-      <WEButton size="short">Short</WEButton>
-      <WEButton size="medium">Short</WEButton>
-      <WEButton size="long">Short</WEButton>
-      <WEButton disabled size="long">
-        disabled
-      </WEButton>
-      <WEButton
-        backgroundColor={'gray'}
-        activeColor={'white'}
-        color={'black'}
-        size="long"
-      >
-        URCOLOR
-      </WEButton>
     </div>
   );
 }

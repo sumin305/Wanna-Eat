@@ -20,7 +20,7 @@ const TopPage = () => {
             alertText='삭제하시겠습니까?'
             cancelText='취소'
             confirmText='확인'
-            open={open} close={close}
+            close={close}
           ></WEAlertModal>
         )}
       </div>

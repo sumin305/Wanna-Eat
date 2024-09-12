@@ -1,6 +1,7 @@
 import React from 'react';
 import { Global, css } from '@emotion/react';
-import TopPage from './pages/TopPage';
+// import TopPage from './pages/TopPage';
+import TestPage from './pages/TestPage';
 const globalStyles = css`
   @font-face {
     font-family: 'Paperlogy-5Regular';
@@ -21,7 +22,8 @@ function App() {
   return (
     <div>
       <Global styles={globalStyles} />
-      <TopPage></TopPage>
+      {/* <TopPage></TopPage> */}
+      <TestPage></TestPage>
     </div>
   );
 }

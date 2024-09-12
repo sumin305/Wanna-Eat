@@ -6,7 +6,7 @@ const ModalStyled = styled.div`
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 2fr 0.5fr;
   position: fixed;
   background-color: white;
-  border-radius: 0.3rem;
+  border-radius: ${theme.borderRadius.default};
   padding: 0.5rem;
   width: 70%;
   height: 20%;
@@ -18,11 +18,10 @@ const ModalStyled = styled.div`
 `;
 
 const TitleStyled = styled.div`
-  font-size: 0.813rem;
+  font-size: ${theme.fontSize.px13}rem;
   margin-top: 10px;
   text-align: center;
   grid-row: 3;
-  font-weight: 500;
 `;
 
 const ButtonContainerStyled = styled.div`

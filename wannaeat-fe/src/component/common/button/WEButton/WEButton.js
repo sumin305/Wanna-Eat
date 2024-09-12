@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import theme from '../../../../style/common/theme';
 
 const ButtonStyled = styled.button`
   display: flex;
@@ -32,7 +33,7 @@ const ButtonStyled = styled.button`
     if (props.outlined) return '2px solid #FF6528';
     return 'none';
   }};
-  border-radius: 5px;
+  border-radius: ${theme.borderRadius.default};
 
   width: ${(props) => {
     if (props.size === 'long') return '15.1rem';

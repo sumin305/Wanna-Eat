@@ -1,4 +1,4 @@
-package com.waterdragon.wannaeat.global.healthcheck;
+package com.waterdragon.wannaeat.check;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

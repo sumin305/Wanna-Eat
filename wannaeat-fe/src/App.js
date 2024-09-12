@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { Global, css } from '@emotion/react';
+import WETabbar from './layout/common/WETabbar/WETabbar';
 import TopPage from './pages/TopPage';
 const globalStyles = css`
   @font-face {
@@ -21,6 +23,7 @@ function App() {
   return (
     <div>
       <Global styles={globalStyles} />
+      <WETabbar />
       <TopPage></TopPage>
     </div>
   );

@@ -5,7 +5,7 @@ const ButtonStyled = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
+
   background-color: ${(props) => {
     if (props.disabled) return '#D4D4D4';
     if (props.outlined) return 'transparent';
@@ -19,14 +19,23 @@ const ButtonStyled = styled.button`
   }};
 
   font-weight: ${(props) => {
-    if (props.size === 'short') return 500;
+    if (props.size === 'modal') return 500;
     return 700;
   }};
 
   font-size: ${(props) => {
-    if (props.size === 'long') return '1.0625rem';
-    if (props.size === 'short') return '0.813rem';
-    return '1.0625rem';
+    if (props.fontSize) return props.fontSize;
+
+    const sizeMap = {
+      long: theme.fontSize.px17,
+      venti: theme.fontSize.px17,
+      medium: theme.fontSize.px17,
+      modal: theme.fontSize.px13,
+      short: theme.fontSize.px17,
+      menu: theme.fontSize.px13,
+    };
+
+    return sizeMap[props.size] || theme.fontSize.px17;
   }};
 
   border: ${(props) => {
@@ -36,13 +45,33 @@ const ButtonStyled = styled.button`
   border-radius: ${theme.borderRadius.default};
 
   width: ${(props) => {
-    if (props.size === 'long') return '15.1rem';
-    if (props.size === 'short') return '5.75rem';
-    if (props.size === 'medium') return '11rem';
-    return '11rem';
+    if (props.width) return props.width;
+
+    const sizeMap = {
+      long: '16.1875rem',
+      venti: '11rem',
+      medium: '7.5625rem',
+      modal: '6.00088rem',
+      short: '4.75rem',
+      menu: '4.125rem',
+    };
+
+    return sizeMap[props.size] || '16.1875rem';
   }};
-  height: ${() => {
-    return '2.13rem';
+
+  height: ${(props) => {
+    if (props.height) return props.height;
+
+    const sizeMap = {
+      long: '2.5rem',
+      venti: '2.5rem',
+      medium: '2.5rem',
+      modal: '2rem',
+      short: '2.5rem',
+      menu: '1.8125rem',
+    };
+
+    return sizeMap[props.size] || '2.5rem';
   }};
 
   user-select: none;

@@ -2,7 +2,9 @@ import ButtonStyled from './WEButton.js';
 
 const Button = ({
   children,
-  size = 'medium',
+  size,
+  width,
+  height,
   backgroundColor,
   color,
   activeColor,
@@ -13,6 +15,8 @@ const Button = ({
   return (
     <ButtonStyled
       size={size}
+      width={width}
+      height={height}
       backgroundColor={backgroundColor}
       color={color}
       activeColor={activeColor}
@@ -26,7 +30,7 @@ const Button = ({
 };
 
 Button.defaultProps = {
-  size: 'medium',
+  size: 'long',
   outlined: false,
   disabled: false,
 };

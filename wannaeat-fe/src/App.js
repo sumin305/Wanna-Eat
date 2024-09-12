@@ -1,6 +1,7 @@
 import React from 'react';
 import { Global, css } from '@emotion/react';
 import TopPage from './pages/TopPage';
+
 const globalStyles = css`
   @font-face {
     font-family: 'Paperlogy-5Regular';

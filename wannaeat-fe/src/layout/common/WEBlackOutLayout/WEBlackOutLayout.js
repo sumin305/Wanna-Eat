@@ -1,5 +1,5 @@
-import styled from '@emotion/styled'
-import { theme } from '../../style/common/theme';
+import styled from '@emotion/styled';
+import theme from '../../../style/common/theme';
 
 const BlackOutLayoutStyled = styled.div`
   position: fixed;

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { theme } from '../../../../style/common/theme';
+import theme from '../../../../style/common/theme';
 
 const ModalStyled = styled.div`
   display: grid;
@@ -15,7 +15,7 @@ const ModalStyled = styled.div`
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: ${theme.zIndex.modal};
-`
+`;
 
 const TitleStyled = styled.div`
   font-size: 0.813rem;
@@ -23,12 +23,12 @@ const TitleStyled = styled.div`
   text-align: center;
   grid-row: 3;
   font-weight: 500;
-`
+`;
 
 const ButtonContainerStyled = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-row: 6;
-`
+`;
 
-export {ModalStyled, TitleStyled, ButtonContainerStyled};
+export { ModalStyled, TitleStyled, ButtonContainerStyled };

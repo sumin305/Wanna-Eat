@@ -21,8 +21,8 @@ const ButtonStyled = styled.button`
   font-weight: ${(props) => {
     if (props.size === 'short') return 500;
     return 700;
-  }}
-  
+  }};
+
   font-size: ${(props) => {
     if (props.size === 'long') return '1.0625rem';
     if (props.size === 'short') return '0.813rem';

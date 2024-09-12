@@ -6,6 +6,7 @@ const Button = ({
   width,
   height,
   backgroundColor,
+  fontSize,
   color,
   activeColor,
   outlined = false,
@@ -18,6 +19,7 @@ const Button = ({
       width={width}
       height={height}
       backgroundColor={backgroundColor}
+      fontSize={fontSize}
       color={color}
       activeColor={activeColor}
       outlined={outlined}

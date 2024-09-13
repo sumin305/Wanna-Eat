@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 
 import { Global, css } from '@emotion/react';
 import WETabbar from './layout/common/WETabbar/WETabbar';
@@ -22,11 +23,11 @@ const globalStyles = css`
 
 function App() {
   return (
-    <div>
+    <BrowserRouter>
       <Global styles={globalStyles} />
       <WETabbar />
       <TopPage></TopPage>
-    </div>
+    </BrowserRouter>
   );
 }
 

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 const tabbarStore = create((set) => ({
   activeId: 0,
-  handleTabClick: (index) => {
+  handleClickTab: (index) => {
     set(() => ({ activeId: index }));
   },
 }));

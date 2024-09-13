@@ -19,12 +19,12 @@ const tabs = [
 ];
 
 const WETabbar = () => {
-  const { activeId, handleTabClick } = tabbarStore();
+  const { activeId, handleClickTab } = tabbarStore();
 
   return (
     <TabbarContainer>
       {tabs.map((tab) => (
-        <TabWrapper key={tab.id} onClick={() => handleTabClick(tab.id)}>
+        <TabWrapper key={tab.id} onClick={() => handleClickTab(tab.id)}>
           <TabImg
             src={activeId === tab.id ? tab.onIcon : tab.offIcon}
             alt={`${tab.label} 아이콘`}

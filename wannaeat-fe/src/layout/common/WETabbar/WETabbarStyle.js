@@ -33,8 +33,8 @@ const TabImg = styled.img`
 `;
 
 const TabText = styled.p`
-  color: ${({ activeTab }) =>
-    activeTab ? theme.color.primary : theme.color.disabled};
+  color: ${({ activeId }) =>
+    activeId ? theme.color.primary : theme.color.disabled};
   text-align: center;
   font-size: ${theme.fontSize.px10};
   font-weight: ${theme.fontWeight.bold};

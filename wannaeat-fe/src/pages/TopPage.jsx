@@ -1,11 +1,8 @@
 import { React } from 'react';
 import styled from '@emotion/styled/macro';
 import WEAlertModal from '../component/common/modal/WEAlertModal/WEAlertModal.jsx';
-import WEBlackOutLayout from '../layout/common/WEBlackOutLayout/WEBlackOutLayout.jsx';
-import visibleStore from '../stores/modal/visibleStore.js';
 import WESheetModal from '../component/common/modal/WESheetModal/WESheetModal.jsx';
-const TopPage = () => {
-  const { isVisible, open, close } = visibleStore();
+const TopPage = ({isModalVisible, open}) => {
 
   const TopPageContainer = styled.div`
   position: fixed;
@@ -28,9 +25,6 @@ const TopPage = () => {
         <button onClick={open}>모달 띄우기</button>
       </div>
       <div>
-        {isVisible && (
-          <WEBlackOutLayout close={close}></WEBlackOutLayout>
-        )}
 
         {/* WEAlertModal 테스트 */}
         {/* {isVisible && (
@@ -44,7 +38,7 @@ const TopPage = () => {
 
         {/* WESheetModal 테스트 */}
         {
-          isVisible && (
+          isModalVisible && (
             <WESheetModal title='식당 필터링'></WESheetModal>
           )
         }

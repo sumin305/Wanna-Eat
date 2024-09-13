@@ -1,8 +1,11 @@
 import styled from '@emotion/styled/macro';
 import WETabbar from './layout/common/WETabbar/WETabbar';
 import TopPage from './pages/TopPage';
-
+import visibleStore from './stores/modal/visibleStore';
+import WEBlackOutLayout from './layout/common/WEBlackOutLayout/WEBlackOutLayout.jsx';
+import WEModal from './component/common/modal/WEModal.jsx';
 const Main = () => {
+    const { isModalVisible, modalType, open, close } = visibleStore();
 
     const AppContainer = styled.div`
         @media (min-width: 480px) {
@@ -22,8 +25,14 @@ const Main = () => {
 
     return (
         <div>
+            {isModalVisible && (
+                <WEBlackOutLayout close={close}></WEBlackOutLayout>
+            )}
+            {isModalVisible && (
+                <WEModal close={close} modalType={'default'} />
+            )}
             <AppContainer>
-                <TopPage />
+                <TopPage isModalVisible={isModalVisible} open={open} />
                 <WETabbar />
             </AppContainer>
         </div>

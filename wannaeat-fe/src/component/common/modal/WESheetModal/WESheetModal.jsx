@@ -1,7 +1,7 @@
 import Button from "../../button/WEButton/WEButton";
 import { SheetModalTitleWrapper, SheetModalStyled, SheetModalTitleStyled, HrStyled, SheetModalSelectTitleStyled, SheetModalSelectWrapper } from "./WESheetModal";
 
-const WESheetModal = () => {
+const WESheetModal = ({close}) => {
     return (
         <SheetModalStyled>
             <SheetModalTitleWrapper>
@@ -59,7 +59,7 @@ const WESheetModal = () => {
                     </div>
                 </SheetModalSelectWrapper>
             </div>
-            <Button size='long'>필터링</Button>            
+            <Button size='long' onClick={close}>필터링</Button>            
 
         </SheetModalStyled>
     )

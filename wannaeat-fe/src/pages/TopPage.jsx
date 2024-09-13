@@ -4,7 +4,7 @@ import WEBlackOutLayout from '../layout/common/WEBlackOutLayout/WEBlackOutLayout
 import visibleStore from '../stores/modal/visibleStore.js';
 import WESheetModal from '../component/common/modal/WESheetModal/WESheetModal.jsx';
 const TopPage = () => {
-  const {isVisible, open, close}= visibleStore();
+  const { isVisible, open, close } = visibleStore();
 
   return (
     <div>
@@ -19,9 +19,9 @@ const TopPage = () => {
         {/* WEAlertModal 테스트 */}
         {/* {isVisible && (
           <WEAlertModal
-            alertText='삭제하시겠습니까?'
-            cancelText='취소'
-            confirmText='확인'
+            alertText="삭제하시겠습니까?"
+            cancelText="취소"
+            confirmText="확인"
             close={close}
           ></WEAlertModal>
         )} */}
@@ -38,4 +38,3 @@ const TopPage = () => {
 };
 
 export default TopPage;
-

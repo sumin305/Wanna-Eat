@@ -41,6 +41,7 @@ const ErrorMessageDivStyled = styled.div`
   svg {
     width: 0.88542rem;
     height: 0.88542rem;
+    margin-right: 0.19rem;
   }
 `;
 

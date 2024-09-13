@@ -1,4 +1,4 @@
-package com.waterdragon.wannaeat.global.common.response;
+package com.waterdragon.wannaeat.global.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

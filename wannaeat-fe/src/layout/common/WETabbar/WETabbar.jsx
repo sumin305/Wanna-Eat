@@ -8,22 +8,43 @@ import AdminOff from '../../../assets/icons/admin-off.svg';
 import AdminOn from '../../../assets/icons/admin-on.svg';
 import StatisticsOff from '../../../assets/icons/statistics-off.svg';
 import StatisticsOn from '../../../assets/icons/statistics-on.svg';
+import MyinfoOff from '../../../assets/icons/myinfo-off.svg';
+import MyinfoOn from '../../../assets/icons/myinfo-on.svg';
 
 import tabbarStore from '../../../stores/tabbar/tabbarStore';
 
-const tabs = [
+const managerTabs = [
   { id: 0, label: '홈', offIcon: HomeOff, onIcon: HomeOn },
   { id: 1, label: '예약현황', offIcon: ReservationOff, onIcon: ReservationOn },
   { id: 2, label: '매장관리', offIcon: AdminOff, onIcon: AdminOn },
   { id: 3, label: '통계', offIcon: StatisticsOff, onIcon: StatisticsOn },
 ];
 
-const WETabbar = () => {
-  const { activeId, handleClickTab } = tabbarStore();
+const customerTabs = [
+  { id: 0, label: '홈', offIcon: HomeOff, onIcon: HomeOn },
+  { id: 1, label: '예약하기', offIcon: AdminOff, onIcon: AdminOn },
+  { id: 2, label: '예약현황', offIcon: ReservationOff, onIcon: ReservationOn },
+  { id: 3, label: '내정보', offIcon: MyinfoOff, onIcon: MyinfoOn },
+];
 
-  return (
+const WETabbar = () => {
+  const { isManager, activeId, handleClickTab } = tabbarStore();
+
+  return isManager ? (
     <TabbarContainer>
-      {tabs.map((tab) => (
+      {managerTabs.map((tab) => (
+        <TabWrapper key={tab.id} onClick={() => handleClickTab(tab.id)}>
+          <TabImg
+            src={activeId === tab.id ? tab.onIcon : tab.offIcon}
+            alt={`${tab.label} 아이콘`}
+          />
+          <TabText activeId={activeId === tab.id}>{tab.label}</TabText>
+        </TabWrapper>
+      ))}
+    </TabbarContainer>
+  ) : (
+    <TabbarContainer>
+      {customerTabs.map((tab) => (
         <TabWrapper key={tab.id} onClick={() => handleClickTab(tab.id)}>
           <TabImg
             src={activeId === tab.id ? tab.onIcon : tab.offIcon}

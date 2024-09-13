@@ -39,8 +39,8 @@ const ErrorMessageDivStyled = styled.div`
   margin-top: 0.313rem;
 
   svg {
-    width: 1000px;
-    height: 1000px;
+    width: 0.88542rem;
+    height: 0.88542rem;
   }
 `;
 

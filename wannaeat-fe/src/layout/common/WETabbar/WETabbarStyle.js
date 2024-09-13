@@ -10,9 +10,15 @@ const TabbarContainer = styled.div`
   height: 3.125rem;
   box-shadow: 1px 0px 4px 0px ${theme.color.disabled};
   -webkit-tap-highlight-color: transparent;
-
+  background-color: white;
+  z-index: 800;
   p {
     margin: 0;
+  }
+
+  @media (min-width: 480px) {
+    width: 480px; /* 480px 이상일 경우 */
+    justify-content: center;
   }
 `;
 

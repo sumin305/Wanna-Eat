@@ -1,4 +1,5 @@
 import { React } from 'react';
+import styled from '@emotion/styled/macro';
 import WEAlertModal from '../component/common/modal/WEAlertModal/WEAlertModal.jsx';
 import WEBlackOutLayout from '../layout/common/WEBlackOutLayout/WEBlackOutLayout.jsx';
 import visibleStore from '../stores/modal/visibleStore.js';
@@ -6,8 +7,23 @@ import WESheetModal from '../component/common/modal/WESheetModal/WESheetModal.js
 const TopPage = () => {
   const { isVisible, open, close } = visibleStore();
 
+  const TopPageContainer = styled.div`
+  position: fixed;
+  background-color: pink;
+  @media (min-width: 480px) {
+    width: 480px; /* 480px 이상일 경우 */
+    justify-content: center;
+    position: fixed;
+    > * {
+        width: 480px; /* 480px 이상일 경우 */
+        justify-content: center;
+
+    }
+  }
+  `;
+  
   return (
-    <div>
+    <TopPageContainer>
       <div>
         <button onClick={open}>모달 띄우기</button>
       </div>
@@ -33,7 +49,7 @@ const TopPage = () => {
           )
         }
       </div>
-    </div>
+    </TopPageContainer>
   );
 };
 

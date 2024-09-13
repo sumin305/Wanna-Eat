@@ -14,6 +14,7 @@ const globalStyles = css`
     font-family: 'Paperlogy-5Regular', sans-serif;
     letter-spacing: 1px;
     font-weight: 500;
+    margin: 0;
   }
 `;
 

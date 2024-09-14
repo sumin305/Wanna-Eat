@@ -1,6 +1,6 @@
 const theme = {
   borderRadius: {
-    default: '0.3125rem',
+    default: '0.5rem',
   },
 
   color: {
@@ -41,8 +41,8 @@ const theme = {
   },
 
   zIndex: {
-    modal: 1001,
-    overlay: 1002,
+    modal: 1000,
+    blackLayout: 900,
   },
 };
 

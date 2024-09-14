@@ -3,8 +3,14 @@ import TopPageStyled from './TopPage.js';
 import useModalStore from '../../stores/modal/useModalStore.js';
 import WEDropdown from '../../component/common/dropdown/WEDropdown.jsx'
 const TopPage = () => {
-  const { open, setModalType, setTitle, setAlertText, setCancelText, setConfirmText } =
-    useModalStore();
+  const {
+    open,
+    setModalType,
+    setTitle,
+    setAlertText,
+    setCancelText,
+    setConfirmText,
+  } = useModalStore();
 
   const handleAlertModalButtonClick = () => {
     setModalType('alert');
@@ -16,15 +22,15 @@ const TopPage = () => {
 
   const handleSheetModalButtonClick = () => {
     setModalType('sheet');
-    setTitle('식당 필터링')
+    setTitle('식당 필터링');
     open();
   };
 
   const handleSettingModalButtonClick = () => {
     setModalType('setting');
-    setTitle('매장 크기와 층 수를 선택해 주세요')
+    setTitle('매장 크기와 층 수를 선택해 주세요');
     open();
-  }
+  };
 
   return (
     <TopPageStyled>

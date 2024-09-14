@@ -4,6 +4,8 @@ import TopPage from './pages/TopPage/TopPage.jsx';
 import useModalStore from './stores/modal/useModalStore.js';
 import WEBlackOutLayout from './layout/common/WEBlackOutLayout/WEBlackOutLayout.jsx';
 import WEModal from './component/common/modal/WEModal.jsx';
+import AppRoutes from './routes.js';
+
 const Main = () => {
   const { isModalVisible } = useModalStore();
 
@@ -26,6 +28,7 @@ const Main = () => {
       {isModalVisible && <WEBlackOutLayout></WEBlackOutLayout>}
       {isModalVisible && <WEModal />}
       <AppContainer>
+        <AppRoutes />
         <TopPage />
         <WETabbar />
       </AppContainer>

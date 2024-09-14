@@ -1,4 +1,6 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+
 import { Global, css } from '@emotion/react';
 import Main from './Main';
 
@@ -22,10 +24,10 @@ const globalStyles = css`
 
 function App() {
   return (
-    <div>
+    <BrowserRouter>
       <Global styles={globalStyles} />
       <Main />
-    </div>
+    </BrowserRouter>
   );
 }
 

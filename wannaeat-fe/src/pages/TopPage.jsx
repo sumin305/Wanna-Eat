@@ -1,7 +1,5 @@
 import { React } from 'react';
 import styled from '@emotion/styled/macro';
-import WEAlertModal from '../component/common/modal/WEAlertModal/WEAlertModal.jsx';
-import WESheetModal from '../component/common/modal/WESheetModal/WESheetModal.jsx';
 import useModalStore from '../stores/modal/useModalStore.js';
 const TopPage = () => {
 

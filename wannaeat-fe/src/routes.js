@@ -1,8 +1,19 @@
 import { Route, Routes } from 'react-router-dom';
 import commonStore from './stores/common/commonStore';
 
+// 사업자 관련 페이지
 import ManagerMainPage from './pages/manager/main/MainPage';
+import AdminPage from './pages/manager/reservation/AdminPage';
+import MenuViewPage from './pages/manager/restaurant/MenuViewPage';
+import StatisticsPage from './pages/manager/statistics/StatisticsPage';
+
+// 손님 관련 페이지
 import CustomerMainPage from './pages/customer/main/MainPage';
+import MapRestaurantPage from './pages/customer/map/MapStorePage';
+import ListPage from './pages/customer/reservation/history/ListPage';
+import MyInfoPage from './pages/customer/user/MyInfoPage';
+
+// 비회원 관련 페이지
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';
 
 const AppRoutes = () => {
@@ -10,10 +21,16 @@ const AppRoutes = () => {
   return isManager ? (
     <Routes>
       <Route path="/" element={<ManagerMainPage />} />
+      <Route path="/admin" element={<AdminPage />} />
+      <Route path="/menuview" element={<MenuViewPage />} />
+      <Route path="/statistics" element={<StatisticsPage />} />
     </Routes>
   ) : (
     <Routes>
       <Route path="/" element={<CustomerMainPage />} />
+      <Route path="/map" element={<MapRestaurantPage />} />
+      <Route path="/reservationlist" element={<ListPage />} />
+      <Route path="/myinfo" element={<MyInfoPage />} />
     </Routes>
   );
 };

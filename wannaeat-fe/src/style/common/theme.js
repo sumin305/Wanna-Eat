@@ -32,8 +32,8 @@ const theme = {
   },
 
   width: {
-    button: '16.188rem',
-    textfield: '15.313rem',
+    button: '93%',
+    textfield: '90%',
   },
 
   height: {

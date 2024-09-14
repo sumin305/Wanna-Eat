@@ -2,8 +2,9 @@ import { create } from 'zustand';
 
 const useTabbarStore = create((set) => ({
   activeId: 0,
-  handleClickTab: (index) => {
-    set(() => ({ activeId: index }));
+  activePath: '/',
+  handleClickTab: (index, path) => {
+    set(() => ({ activeId: index, activePath: path }));
   },
 }));
 

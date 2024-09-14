@@ -2,8 +2,10 @@ import { React } from 'react';
 import styled from '@emotion/styled/macro';
 import WEAlertModal from '../component/common/modal/WEAlertModal/WEAlertModal.jsx';
 import WESheetModal from '../component/common/modal/WESheetModal/WESheetModal.jsx';
-const TopPage = ({isModalVisible, open, setModalType}) => {
+import useModalStore from '../stores/modal/useModalStore.js';
+const TopPage = () => {
 
+  const {open, setModalType, setAlertText, setCancelText, setConfirmText} = useModalStore();
   const TopPageContainer = styled.div`
   position: fixed;
   background-color: pink;
@@ -19,34 +21,24 @@ const TopPage = ({isModalVisible, open, setModalType}) => {
   }
   `;
   
-  const handleModalButtonClick = () => {
+  const handleAlertModalButtonClick = () => {
     setModalType('alert');
+    setAlertText('정말로 취소하시겠습니까?');
+    setCancelText('아뇨');
+    setConfirmText('넹');
+    open();
+  }
+
+  const handleSheetModalButtonClick = () => {
+    setModalType('sheet');
     open();
   }
 
   return (
     <TopPageContainer>
       <div>
-        <button onClick={handleModalButtonClick}>모달 띄우기</button>
-      </div>
-      <div>
-
-        {/* WEAlertModal 테스트 */}
-        {/* {isVisible && (
-          <WEAlertModal
-            alertText="삭제하시겠습니까?"
-            cancelText="취소"
-            confirmText="확인"
-            close={close}
-          ></WEAlertModal>
-        )} */}
-
-        {/* WESheetModal 테스트 */}
-        {
-          isModalVisible && (
-            <WESheetModal title='식당 필터링'></WESheetModal>
-          )
-        }
+        <button onClick={handleAlertModalButtonClick}>alert 모달 띄우기</button>
+        <button onClick={handleSheetModalButtonClick}>sheet 모달 띄우기</button>
       </div>
     </TopPageContainer>
   );

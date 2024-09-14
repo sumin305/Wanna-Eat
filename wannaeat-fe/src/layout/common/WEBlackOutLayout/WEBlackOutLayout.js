@@ -10,6 +10,11 @@ const BlackOutLayoutStyled = styled.div`
   background-color: rgba(0, 0, 0, 0.65);
   width: 100%;
   height: 100%;
+
+  @media (min-width: 480px) {
+    width: 480px;
+    justify-content: center;
+  }
 `;
 
 export default BlackOutLayoutStyled;

@@ -3,16 +3,21 @@ import theme from '../../../style/common/theme';
 
 const TabbarContainer = styled.div`
   display: flex;
-  position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 3.125rem;
   box-shadow: 1px 0px 4px 0px ${theme.color.disabled};
   -webkit-tap-highlight-color: transparent;
-
+  background-color: white;
+  z-index: 800;
   p {
     margin: 0;
+  }
+
+  @media (min-width: 480px) {
+    width: 480px;
+    justify-content: center;
   }
 `;
 

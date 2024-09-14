@@ -49,10 +49,10 @@ const ButtonStyled = styled.button`
     if (props.width) return props.width;
 
     const sizeMap = {
-      long: '16.1875rem',
+      long: '93%',
       venti: '11rem',
       medium: '7.5625rem',
-      modal: '6.00088rem',
+      modal: '5.25rem',
       short: '4.75rem',
       menu: '4.125rem',
     };
@@ -89,6 +89,8 @@ const ButtonStyled = styled.button`
     cursor: pointer;
     transform: scale(0.98);
   }
+
+  margin: 0 auto;
 `;
 
 export default ButtonStyled;

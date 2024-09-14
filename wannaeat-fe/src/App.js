@@ -1,10 +1,8 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import AppRoutes from './routes';
 
 import { Global, css } from '@emotion/react';
-import WETabbar from './layout/common/WETabbar/WETabbar';
-import TopPage from './pages/TopPage';
+import Main from './Main';
 
 const globalStyles = css`
   @font-face {
@@ -19,6 +17,7 @@ const globalStyles = css`
     font-family: 'Paperlogy-5Regular', sans-serif;
     letter-spacing: 1px;
     font-weight: 500;
+    margin: 0;
   }
 `;
 
@@ -26,9 +25,7 @@ function App() {
   return (
     <BrowserRouter>
       <Global styles={globalStyles} />
-      <WETabbar />
-      <AppRoutes />
-      <TopPage></TopPage>
+      <Main />
     </BrowserRouter>
   );
 }

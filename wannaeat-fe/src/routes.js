@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import commonStore from './stores/common/commonStore';
+import useCommonStore from './stores/common/useCommonStore';
 
 // 사업자 관련 페이지
 import ManagerMainPage from './pages/manager/main/MainPage';
@@ -17,7 +17,7 @@ import MyInfoPage from './pages/customer/user/MyInfoPage';
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';
 
 const AppRoutes = () => {
-  const { isManager } = commonStore();
+  const { isManager } = useCommonStore();
   return isManager ? (
     <Routes>
       <Route path="/" element={<ManagerMainPage />} />

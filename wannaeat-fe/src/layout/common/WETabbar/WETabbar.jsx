@@ -11,8 +11,8 @@ import StatisticsOn from '../../../assets/icons/statistics-on.svg';
 import MyinfoOff from '../../../assets/icons/myinfo-off.svg';
 import MyinfoOn from '../../../assets/icons/myinfo-on.svg';
 
-import commonStore from '../../../stores/common/commonStore';
-import tabbarStore from '../../../stores/tabbar/tabbarStore';
+import useCommonStore from '../../../stores/common/useCommonStore';
+import useTabbarStore from '../../../stores/tabbar/useTabbarStore';
 
 const tabs = {
   manager: [
@@ -41,8 +41,8 @@ const tabs = {
 };
 
 const WETabbar = () => {
-  const { isManager } = commonStore();
-  const { activeId, handleClickTab } = tabbarStore();
+  const { isManager } = useCommonStore();
+  const { activeId, handleClickTab } = useTabbarStore();
   const currentTabs = isManager ? tabs.manager : tabs.customer;
 
   return (

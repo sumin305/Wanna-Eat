@@ -18,6 +18,7 @@ const globalStyles = css`
     letter-spacing: 1px;
     font-weight: 500;
     margin: 0;
+    padding: 0;
   }
 `;
 

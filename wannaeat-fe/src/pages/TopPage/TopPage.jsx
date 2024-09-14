@@ -1,7 +1,7 @@
 import { React } from 'react';
 import TopPageStyled from './TopPage.js';
 import useModalStore from '../../stores/modal/useModalStore.js';
-
+import WEDropdown from '../../component/common/dropdown/WEDropdown.jsx'
 const TopPage = () => {
   const {
     open,
@@ -35,11 +35,11 @@ const TopPage = () => {
   return (
     <TopPageStyled>
       <div>
-        <button onClick={handleAlertModalButtonClick}>alert 모달 띄우기</button>
+        {/* <button onClick={handleAlertModalButtonClick}>alert 모달 띄우기</button>
         <button onClick={handleSheetModalButtonClick}>sheet 모달 띄우기</button>
-        <button onClick={handleSettingModalButtonClick}>
-          setting 모달 띄우기
-        </button>
+        <button onClick={handleSettingModalButtonClick}>setting 모달 띄우기</button> */}
+        <WEDropdown />
+
       </div>
     </TopPageStyled>
   );

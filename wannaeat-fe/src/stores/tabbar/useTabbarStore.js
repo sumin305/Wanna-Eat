@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-const tabbarStore = create((set) => ({
+const useTabbarStore = create((set) => ({
   isManager: true,
   activeId: 0,
   handleClickTab: (index) => {
@@ -8,4 +8,4 @@ const tabbarStore = create((set) => ({
   },
 }));
 
-export default tabbarStore;
+export default useTabbarStore;

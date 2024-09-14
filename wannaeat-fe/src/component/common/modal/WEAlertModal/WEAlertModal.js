@@ -15,6 +15,11 @@ const ModalStyled = styled.div`
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: ${theme.zIndex.modal};
+
+  @media (min-width: 480px) {
+    width: 336px;
+    justify-content: center;
+  }
 `;
 
 const TitleStyled = styled.div`

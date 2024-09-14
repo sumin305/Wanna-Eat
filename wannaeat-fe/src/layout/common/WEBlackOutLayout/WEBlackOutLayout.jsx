@@ -1,9 +1,8 @@
 import useModalStore from '../../../stores/modal/useModalStore';
-import BlackOutLayoutStyled from './WEBlackOutLayout'
-
+import BlackOutLayoutStyled from './WEBlackOutLayout';
 
 const WEBlackOutLayout = () => {
-  const {close} = useModalStore();
+  const { close } = useModalStore();
   return <BlackOutLayoutStyled onClick={close}></BlackOutLayoutStyled>;
 };
 

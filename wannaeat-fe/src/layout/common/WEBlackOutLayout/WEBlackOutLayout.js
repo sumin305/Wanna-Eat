@@ -12,7 +12,7 @@ const BlackOutLayoutStyled = styled.div`
   height: 100%;
 
   @media (min-width: 480px) {
-    width: 480px; /* 480px 이상일 경우 */
+    width: 480px;
     justify-content: center;
   }
 `;

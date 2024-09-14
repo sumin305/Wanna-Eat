@@ -1,5 +1,9 @@
-import {ModalStyled, TitleStyled, ButtonContainerStyled} from './WEAlertModal'
-import WEButton from '../../button/WEButton/WEButton'
+import {
+  ModalStyled,
+  TitleStyled,
+  ButtonContainerStyled,
+} from './WEAlertModal';
+import WEButton from '../../button/WEButton/WEButton';
 import theme from '../../../../style/common/theme';
 import useModalStore from '../../../../stores/modal/useModalStore';
 const WEAlertModal = () => {
@@ -8,8 +12,17 @@ const WEAlertModal = () => {
     <ModalStyled>
       <TitleStyled>{alertText}</TitleStyled>
       <ButtonContainerStyled>
-        <WEButton size="short" onClick={close} backgroundColor={theme.color.gray} color={'black'}>{cancelText}</WEButton>
-        <WEButton size="short" onClick={close}>{confirmText}</WEButton>
+        <WEButton
+          size="short"
+          onClick={close}
+          backgroundColor={theme.color.gray}
+          color={'black'}
+        >
+          {cancelText}
+        </WEButton>
+        <WEButton size="short" onClick={close}>
+          {confirmText}
+        </WEButton>
       </ButtonContainerStyled>
     </ModalStyled>
   );

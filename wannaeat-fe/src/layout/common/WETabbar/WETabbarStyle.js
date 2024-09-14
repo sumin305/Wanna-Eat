@@ -3,7 +3,6 @@ import theme from '../../../style/common/theme';
 
 const TabbarContainer = styled.div`
   display: flex;
-  position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
@@ -17,7 +16,7 @@ const TabbarContainer = styled.div`
   }
 
   @media (min-width: 480px) {
-    width: 480px; /* 480px 이상일 경우 */
+    width: 480px;
     justify-content: center;
   }
 `;

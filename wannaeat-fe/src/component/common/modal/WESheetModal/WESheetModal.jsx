@@ -1,38 +1,39 @@
 /** @jsxImportSource @emotion/react */
 import Button from '../../button/WEButton/WEButton';
 import { css } from '@emotion/react';
+import SheetModalContainer from './WESheetModal.js';
+import {  HrStyled,
+  ModalTitleWrapper,
+  ModalTitleStyled,
+  ModalSelectTitleStyled,
+  ModalSelectWrapper
+} from '../../../../component/common/modal/WEModal.js'
+import useModalStore from '../../../../stores/modal/useModalStore';
 
-import {
-  SheetModalTitleWrapper,
-  SheetModalContainer,
-  SheetModalTitleStyled,
-  HrStyled,
-  SheetModalSelectTitleStyled,
-  SheetModalSelectWrapper,
-} from './WESheetModal';
+const WESheetModal = () => {
 
-const WESheetModal = ({ close }) => {
+  const {close, title} = useModalStore();
   return (
     <SheetModalContainer>
-      <SheetModalTitleWrapper>
-        <SheetModalTitleStyled>식당 필터링</SheetModalTitleStyled>
+      <ModalTitleWrapper>
+        <ModalTitleStyled>{title}</ModalTitleStyled>
         <HrStyled></HrStyled>
-      </SheetModalTitleWrapper>
+      </ModalTitleWrapper>
       <div>
-        <SheetModalSelectWrapper>
-          <SheetModalSelectTitleStyled>인원수</SheetModalSelectTitleStyled>
+        <ModalSelectWrapper>
+          <ModalSelectTitleStyled>인원수</ModalSelectTitleStyled>
           <div>
             <input style={{ width: '150px' }} type="number" />명
           </div>
-        </SheetModalSelectWrapper>
-        <SheetModalSelectWrapper>
-          <SheetModalSelectTitleStyled>방문 날짜</SheetModalSelectTitleStyled>
+        </ModalSelectWrapper>
+        <ModalSelectWrapper>
+          <ModalSelectTitleStyled>방문 날짜</ModalSelectTitleStyled>
           <div>
             <input type="date" />
           </div>
-        </SheetModalSelectWrapper>
-        <SheetModalSelectWrapper>
-          <SheetModalSelectTitleStyled>방문 시간</SheetModalSelectTitleStyled>
+        </ModalSelectWrapper>
+        <ModalSelectWrapper>
+          <ModalSelectTitleStyled>방문 시간</ModalSelectTitleStyled>
 
           <div>
             <select>
@@ -48,9 +49,9 @@ const WESheetModal = ({ close }) => {
               <option>2시간</option>
             </select>
           </div>
-        </SheetModalSelectWrapper>
-        <SheetModalSelectWrapper>
-          <SheetModalSelectTitleStyled>카테고리</SheetModalSelectTitleStyled>
+        </ModalSelectWrapper>
+        <ModalSelectWrapper>
+          <ModalSelectTitleStyled>카테고리</ModalSelectTitleStyled>
           <div>
             <select>
               <option>보쌈</option>
@@ -59,7 +60,7 @@ const WESheetModal = ({ close }) => {
               <option>돈까스</option>
             </select>
           </div>
-        </SheetModalSelectWrapper>
+        </ModalSelectWrapper>
       </div>
       <Button size="long" onClick={close}>
         필터링

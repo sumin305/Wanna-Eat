@@ -4,7 +4,7 @@ import useCommonStore from './stores/common/useCommonStore';
 // 사업자 관련 페이지
 import ManagerMainPage from './pages/manager/main/MainPage';
 import AdminPage from './pages/manager/reservation/AdminPage';
-import MenuViewPage from './pages/manager/restaurant/MenuViewPage';
+import RestaurantViewPage from './pages/manager/restaurant/RestaurantViewPage';
 import StatisticsPage from './pages/manager/statistics/StatisticsPage';
 
 // 손님 관련 페이지
@@ -22,7 +22,7 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<ManagerMainPage />} />
       <Route path="/admin" element={<AdminPage />} />
-      <Route path="/menuview" element={<MenuViewPage />} />
+      <Route path="/restaurantview" element={<RestaurantViewPage />} />
       <Route path="/statistics" element={<StatisticsPage />} />
     </Routes>
   ) : (

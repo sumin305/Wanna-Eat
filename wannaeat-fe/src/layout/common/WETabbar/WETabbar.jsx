@@ -30,7 +30,7 @@ const tabs = {
       label: '매장관리',
       offIcon: AdminOff,
       onIcon: AdminOn,
-      path: '/menuview',
+      path: '/restaurantview',
     },
     {
       id: 3,

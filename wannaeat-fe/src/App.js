@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import AppRoutes from './routes';
 
 import { Global, css } from '@emotion/react';
 import WETabbar from './layout/common/WETabbar/WETabbar';
@@ -26,6 +27,7 @@ function App() {
     <BrowserRouter>
       <Global styles={globalStyles} />
       <WETabbar />
+      <AppRoutes />
       <TopPage></TopPage>
     </BrowserRouter>
   );

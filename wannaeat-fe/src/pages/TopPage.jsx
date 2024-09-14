@@ -2,7 +2,7 @@ import { React } from 'react';
 import styled from '@emotion/styled/macro';
 import WEAlertModal from '../component/common/modal/WEAlertModal/WEAlertModal.jsx';
 import WESheetModal from '../component/common/modal/WESheetModal/WESheetModal.jsx';
-const TopPage = ({isModalVisible, open}) => {
+const TopPage = ({isModalVisible, open, setModalType}) => {
 
   const TopPageContainer = styled.div`
   position: fixed;
@@ -19,10 +19,15 @@ const TopPage = ({isModalVisible, open}) => {
   }
   `;
   
+  const handleModalButtonClick = () => {
+    setModalType('alert');
+    open();
+  }
+
   return (
     <TopPageContainer>
       <div>
-        <button onClick={open}>모달 띄우기</button>
+        <button onClick={handleModalButtonClick}>모달 띄우기</button>
       </div>
       <div>
 

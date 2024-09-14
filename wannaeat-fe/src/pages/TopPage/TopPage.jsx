@@ -7,9 +7,9 @@ const TopPage = () => {
 
   const handleAlertModalButtonClick = () => {
     setModalType('alert');
-    setAlertText('정말로 취소하시겠습니까?');
-    setCancelText('아뇨');
-    setConfirmText('넹');
+    setAlertText('삭제하시겠습니까?');
+    setCancelText('취소');
+    setConfirmText('확인');
     open();
   };
 

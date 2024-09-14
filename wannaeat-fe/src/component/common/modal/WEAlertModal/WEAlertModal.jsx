@@ -13,14 +13,14 @@ const WEAlertModal = () => {
       <TitleStyled>{alertText}</TitleStyled>
       <ButtonContainerStyled>
         <WEButton
-          size="short"
+          size="modal"
           onClick={close}
           backgroundColor={theme.color.gray}
           color={'black'}
         >
           {cancelText}
         </WEButton>
-        <WEButton size="short" onClick={close}>
+        <WEButton size="modal" onClick={close}>
           {confirmText}
         </WEButton>
       </ButtonContainerStyled>

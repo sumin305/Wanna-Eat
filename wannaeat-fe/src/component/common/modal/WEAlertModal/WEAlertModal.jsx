@@ -1,7 +1,9 @@
 import {ModalStyled, TitleStyled, ButtonContainerStyled} from './WEAlertModal'
 import WEButton from '../../button/WEButton/WEButton'
 import theme from '../../../../style/common/theme';
-const WEAlertModal = ({ alertText, cancelText, confirmText, close }) => {
+import useModalStore from '../../../../stores/modal/useModalStore';
+const WEAlertModal = () => {
+  const { alertText, cancelText, confirmText, close } = useModalStore();
   return (
     <ModalStyled>
       <TitleStyled>{alertText}</TitleStyled>

@@ -1,11 +1,13 @@
+import useModalStore from "../../../stores/modal/useModalStore.js"
 import WEAlertModal from "./WEAlertModal/WEAlertModal.jsx"
 import WESheetModal from "./WESheetModal/WESheetModal.jsx"
 
-const WEModal = ({modalType, alertText, cancelText, confirmText, close}) => {
+const WEModal = () => {
+    const {modalType} = useModalStore();
     return (
         <div>
-            {modalType == 'alert' ? <WEAlertModal alertText={alertText} cancelText={cancelText} confirmText={confirmText} close={close}/> : <WEAlertModal/>}
-            {modalType == 'sheet' ? <WESheetModal close={close}/> : <WEAlertModal/>}
+            {modalType === 'alert' ? <WEAlertModal/> : <></>}
+            {modalType === 'sheet' ? <WESheetModal/> : <></>}
 
         </div>
     )

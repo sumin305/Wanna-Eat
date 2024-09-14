@@ -26,13 +26,13 @@ const Main = () => {
     return (
         <div>
             {isModalVisible && (
-                <WEBlackOutLayout close={close}></WEBlackOutLayout>
+                <WEBlackOutLayout></WEBlackOutLayout>
             )}
             {isModalVisible && (
-                <WEModal close={close} modalType={'default'} />
+                <WEModal/>
             )}
             <AppContainer>
-                <TopPage isModalVisible={isModalVisible} open={open} setModalType={setModalType}/>
+                <TopPage />
                 <WETabbar />
             </AppContainer>
         </div>

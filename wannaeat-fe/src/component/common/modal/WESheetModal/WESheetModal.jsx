@@ -1,7 +1,10 @@
+/** @jsxImportSource @emotion/react */
 import Button from '../../button/WEButton/WEButton';
+import { css } from '@emotion/react';
+
 import {
   SheetModalTitleWrapper,
-  SheetModalStyled,
+  SheetModalContainer,
   SheetModalTitleStyled,
   HrStyled,
   SheetModalSelectTitleStyled,
@@ -10,7 +13,7 @@ import {
 
 const WESheetModal = ({ close }) => {
   return (
-    <SheetModalStyled>
+    <SheetModalContainer>
       <SheetModalTitleWrapper>
         <SheetModalTitleStyled>식당 필터링</SheetModalTitleStyled>
         <HrStyled></HrStyled>
@@ -61,7 +64,7 @@ const WESheetModal = ({ close }) => {
       <Button size="long" onClick={close}>
         필터링
       </Button>
-    </SheetModalStyled>
+    </SheetModalContainer>
   );
 };
 

@@ -1,9 +1,16 @@
 import { useMemo, useEffect } from "react";
 import useDropdownStore from "../../../stores/dropdown/useDropdownStore";
-import { DropdownContainer, DropdownLabelStyled, DropdownSelectOptions, DropdownSelectOption} from './WEDropdown';
+import {   DropdownContainer, DropdownLabelStyled,
+    IconStyled,
+    DropdownSelectOptions,
+    DropdownSelectOption,
+  } from './WEDropdown';
 import theme from "../../../style/common/theme";
+import ArrowUp from '../../../assets/icons/arrow-up.svg'
+import ArrowDown from '../../../assets/icons/arrow-down.svg'
+
 const WEDropdown = () =>  {
-    const {setIsShowOption, setItems, setSelectedId, isShowOption, items, selectedId} = useDropdownStore();
+    const {width, height, setIsShowOption, setItems, setSelectedId, isShowOption, items, selectedId} = useDropdownStore();
     const handleLabelClick = e => {
         setIsShowOption(!isShowOption)
     }
@@ -13,23 +20,25 @@ const WEDropdown = () =>  {
     }, [])
 
     const handleOptionClick = (index) => {
-        console.log(index)
         setIsShowOption(false)
         setSelectedId(index)
     }
 
     const defaultLabelText = '메뉴를 입력하세요'
      return (
-        <DropdownContainer width={'93%'} onClick={handleLabelClick}>
-        <DropdownLabelStyled height={'20px'} >
+        <DropdownContainer width={width} onClick={handleLabelClick}>
+        <DropdownLabelStyled height={height} >
+            <div>
             {
                 selectedId == -1 ? `${defaultLabelText}` : `${items[selectedId]}`
             }
+            </div>
+            <IconStyled src={isShowOption ? ArrowUp : ArrowDown}/>
         </DropdownLabelStyled>
         <DropdownSelectOptions isShowOption={isShowOption}>
             {
                 items.map((item, index) => {
-                    return (<DropdownSelectOption height={'20px'} key={index} onClick={() => handleOptionClick(index)}>{item}</DropdownSelectOption>)
+                    return (<DropdownSelectOption height={height} key={index} onClick={() => handleOptionClick(index)}>{item}</DropdownSelectOption>)
                 })
             }
         </DropdownSelectOptions>

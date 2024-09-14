@@ -1,10 +1,11 @@
 import useModalStore from '../../../stores/modal/useModalStore.js';
 import WEAlertModal from './WEAlertModal/WEAlertModal.jsx';
 import WESheetModal from './WESheetModal/WESheetModal.jsx';
+import WESettingModal from './WESettingModal/WESettingModal.jsx';
 import styled from '@emotion/styled/macro';
-import theme from '../../../style/common/theme.js';
+import theme from '../../../style/common/theme.js'
 const WEModal = () => {
-  const { modalType } = useModalStore();
+  const { modalType } = useModalStore()
 
   const ModalStyled = styled.div`
     position: relative;
@@ -16,6 +17,7 @@ const WEModal = () => {
     <ModalStyled>
       {modalType === 'alert' ? <WEAlertModal /> : <></>}
       {modalType === 'sheet' ? <WESheetModal /> : <></>}
+      {modalType === 'setting' ? <WESettingModal/> : <></>}
     </ModalStyled>
   );
 };

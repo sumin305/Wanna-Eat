@@ -1,6 +1,5 @@
 import styled from '@emotion/styled/macro';
 import WETabbar from './layout/common/WETabbar/WETabbar.jsx';
-import TopPage from './pages/TopPage/TopPage.jsx';
 import useModalStore from './stores/modal/useModalStore.js';
 import WEBlackOutLayout from './layout/common/WEBlackOutLayout/WEBlackOutLayout.jsx';
 import WEModal from './component/common/modal/WEModal.jsx';
@@ -29,7 +28,6 @@ const Main = () => {
       {isModalVisible && <WEModal />}
       <AppContainer>
         <AppRoutes />
-        <TopPage />
         <WETabbar />
       </AppContainer>
     </div>

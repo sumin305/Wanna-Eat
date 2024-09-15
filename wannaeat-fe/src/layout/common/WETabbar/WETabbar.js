@@ -9,7 +9,7 @@ const TabbarContainer = styled.div`
   height: 3.125rem;
   box-shadow: 1px 0px 4px 0px ${theme.color.disabled};
   -webkit-tap-highlight-color: transparent;
-  background-color: white;
+  background-color: ${theme.color.white};
   z-index: 800;
   p {
     margin: 0;

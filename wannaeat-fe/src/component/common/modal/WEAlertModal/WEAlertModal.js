@@ -5,7 +5,7 @@ const ModalStyled = styled.div`
   display: grid;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 2fr 0.5fr;
   position: fixed;
-  background-color: white;
+  background-color: ${theme.color.white};
   border-radius: ${theme.borderRadius.default};
   padding: 0.5rem;
   width: 70%;

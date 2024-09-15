@@ -7,7 +7,7 @@ const HeaderContainer = styled.div`
   align-items: center;
   width: 100%;
   height: 2.25rem;
-  background-color: white;
+  background-color: ${theme.color.white};
   position: fixed;
   top: 0;
   left: 0;

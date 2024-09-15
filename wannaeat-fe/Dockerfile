@@ -1,24 +1,21 @@
-# Node.js 20 버전 사용
+# 베이스 이미지
 FROM node:20
 
 # 작업 디렉토리 설정
 WORKDIR /app
 
-# package.json과 package-lock.json을 작업 디렉토리에 복사
+# 의존성 파일 복사
 COPY package.json ./
-COPY yarn.lock ./
+COPY package-lock.json ./
 
 # 의존성 설치
-RUN yarn install
+RUN npm install
 
-# 애플리케이션 소스 코드 복사
+# 애플리케이션 코드 복사
 COPY . .
 
 # 애플리케이션 빌드
-RUN yarn build
+RUN npm run build
 
-# 컨테이너가 사용하는 포트 설정
-EXPOSE 3000
-
-# 애플리케이션 시작 명령
-CMD ["yarn", "start"]
+# 애플리케이션 실행
+CMD ["npm", "start"]

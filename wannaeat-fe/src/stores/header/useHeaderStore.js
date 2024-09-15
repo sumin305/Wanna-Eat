@@ -13,7 +13,7 @@ const useHeaderStore = create((set) => ({
   isShowLogo: false, // 로고는 기본적으로 없음
   icons: [AlarmOff, AlarmOn, AlarmStack, ZzimOff, ZzimOn],
   activeIcons: [],
-  isShowIcon: true, // 아이콘은 기본으로 없음
+  isShowIcon: true, // 아이콘은 기본으로 있음
   setThemeColor: (color) => set({ themeColor: color }),
   setPageName: (text) => set({ pageName: text }),
   setIsShowLogo: (isShowLogo) => set({ isShowLogo: isShowLogo }),

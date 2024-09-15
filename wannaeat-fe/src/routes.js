@@ -22,7 +22,7 @@ const AppRoutes = () => {
 
   const RouterContainer = styled.div`
     background-color: pink;
-    height: 100%;
+    height: 93%;
     width: 100%;
     @media (min-width: 480px) {
       width: 480px;

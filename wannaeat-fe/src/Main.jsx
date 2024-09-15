@@ -14,6 +14,8 @@ const Main = () => {
     justify-content: center; /* 수직 가운데 정렬 */
     align-items: center; /* 수평 가운데 정렬 */
     height: 100vh; /* 뷰포트 전체 높이를 채움 */
+    padding-top: 7%; /* 헤더 높이만큼 여백 추가 */
+    box-sizing: border-box; /* 패딩이 height에 포함되도록 설정 */
 
     @media (min-width: 480px) {
       > * {

@@ -1,8 +1,8 @@
 import styled from '@emotion/styled/macro';
 import theme from '../../../../style/common/theme';
 
-const SettingModalContainer = styled.div`
-  background: white;
+const WESettingModalContainer = styled.div`
+  background-color: ${theme.color.white};
   position: fixed;
   top: 25%;
   height: 40%;

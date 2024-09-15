@@ -10,6 +10,7 @@ const theme = {
     accent: '#FFF1AA',
     warning: '#FF444F',
     gray: '#E6EAEE',
+    white: '#FFFFFF',
     statisticsPink: '#FF81C5',
     statisticsBlue: '#5A6ACF',
     statisticsSkyBlue: '#8593ED',

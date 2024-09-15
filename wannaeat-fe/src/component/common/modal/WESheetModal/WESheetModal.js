@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import theme from '../../../../style/common/theme';
 
 const SheetModalContainer = styled.div`
-  background-color: white;
+  background-color: ${theme.color.white};
   position: fixed;
   bottom: 0;
   width: 100%;

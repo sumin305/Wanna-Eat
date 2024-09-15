@@ -19,7 +19,6 @@ const WEHeader = ({ text, icon }) => {
     pageName,
     setPageName,
     isShowLogo,
-    icons,
     activeIcons,
     setActiveIcons,
     isShowIcon,

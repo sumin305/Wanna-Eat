@@ -1,5 +1,5 @@
 import styled from '@emotion/styled/macro';
-import WETabbar from './layout/common/WETabbar/WETabbar';
+import WETabbar from './layout/common/WETabbar/WETabbar.jsx';
 import TopPage from './pages/TopPage/TopPage.jsx';
 import useModalStore from './stores/common/modal/useModalStore.js';
 import WEBlackOutLayout from './layout/common/WEBlackOutLayout/WEBlackOutLayout.jsx';

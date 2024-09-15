@@ -1,4 +1,4 @@
-import { TabbarContainer, TabWrapper, TabImg, TabText } from './WETabbarStyle';
+import { TabbarContainer, TabWrapper, TabImg, TabText } from './WETabbar.js';
 import { useNavigate } from 'react-router-dom';
 
 import HomeOff from '../../../assets/icons/home-off.svg';

@@ -5,10 +5,10 @@ const HeaderContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 2.25rem;
-  background-color: ${theme.color.white};
   position: fixed;
+  width: 100%;
+  height: 7%;
+  background-color: ${theme.color.white};
   top: 0;
   left: 0;
   z-index: 1000;
@@ -19,6 +19,7 @@ const HeaderWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 90%;
+  height: 100%;
 `;
 
 const HeaderImg = styled.img`
@@ -34,8 +35,8 @@ const HeaderTitle = styled.h1`
 `;
 
 const IconImg = styled.img`
-  width: 1rem;
-  height: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
 `;
 
 export { HeaderContainer, HeaderWrapper, HeaderImg, HeaderTitle, IconImg };

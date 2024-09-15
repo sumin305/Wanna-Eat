@@ -7,7 +7,7 @@ const MainPage = () => {
   return (
     <>
       <WEHeader text="메인페이지" icon={[icons[0]]} />
-      <div>사장님 메인페이지</div>;
+      <div>사장님 메인페이지</div>
     </>
   );
 };

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled/macro';
 import WETabbar from './layout/common/WETabbar/WETabbar.jsx';
-import useModalStore from './stores/modal/useModalStore.js';
+import useModalStore from './stores/common/modal/useModalStore.js';
 import WEBlackOutLayout from './layout/common/WEBlackOutLayout/WEBlackOutLayout.jsx';
 import WEModal from './component/common/modal/WEModal.jsx';
 import AppRoutes from './route/routes.js';

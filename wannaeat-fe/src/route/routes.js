@@ -13,7 +13,7 @@ import CustomerMainPage from '../pages/customer/main/MainPage';
 import MapRestaurantPage from '../pages/customer/map/MapStorePage';
 import ListPage from '../pages/customer/reservation/history/ListPage';
 import MyInfoPage from '../pages/customer/user/MyInfoPage';
-import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage';
+import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage/TimeSelectPage.jsx';
 
 // 비회원 관련 페이지
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';

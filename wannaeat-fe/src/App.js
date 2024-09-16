@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
 import { Global, css } from '@emotion/react';
-import Main from './Main';
+// import Main from './Main';
+import TestPage from './pages/TestPage.jsx';
 
 const globalStyles = css`
   @font-face {
@@ -39,7 +40,8 @@ function App() {
   return (
     <BrowserRouter>
       <Global styles={globalStyles} />
-      <Main />
+      {/* <Main /> */}
+      <TestPage />
     </BrowserRouter>
   );
 }

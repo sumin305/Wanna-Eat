@@ -5,7 +5,7 @@ const ButtonStyled = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
+
   background-color: ${(props) => {
     if (props.disabled) return '#D4D4D4';
     if (props.outlined) return 'transparent';
@@ -19,30 +19,60 @@ const ButtonStyled = styled.button`
   }};
 
   font-weight: ${(props) => {
-    if (props.size === 'short') return 500;
+    if (props.size === 'modal') return 500;
     return 700;
   }};
 
   font-size: ${(props) => {
-    if (props.size === 'long') return '1.0625rem';
-    if (props.size === 'short') return '0.813rem';
-    return '1.0625rem';
+    if (props.fontSize) return props.fontSize;
+
+    const sizeMap = {
+      long: theme.fontSize.px17,
+      venti: theme.fontSize.px17,
+      medium: theme.fontSize.px17,
+      modal: theme.fontSize.px13,
+      short: theme.fontSize.px17,
+      menu: theme.fontSize.px13,
+    };
+
+    return sizeMap[props.size] || theme.fontSize.px17;
   }};
 
   border: ${(props) => {
+    if (props.disabled && props.outlined) return '2px solid #D4D4D4';
     if (props.outlined) return '2px solid #FF6528';
     return 'none';
   }};
   border-radius: ${theme.borderRadius.default};
 
   width: ${(props) => {
-    if (props.size === 'long') return '15.1rem';
-    if (props.size === 'short') return '5.75rem';
-    if (props.size === 'medium') return '11rem';
-    return '11rem';
+    if (props.width) return props.width;
+
+    const sizeMap = {
+      long: '93%',
+      venti: '63%',
+      medium: '43.4%',
+      modal: '34.4%',
+      short: '27.2%',
+      menu: '23.7%',
+    };
+
+    return sizeMap[props.size] || '93%';
   }};
-  height: ${() => {
-    return '2.13rem';
+
+  height: ${(props) => {
+    if (props.height) return props.height;
+
+    const sizeMap = {
+      long: '6.8%',
+      venti: '6.8%',
+      medium: '6.8%',
+      modal: '5.5%',
+      short: '6.8%',
+      menu: '5%',
+    };
+
+    return sizeMap[props.size] || '6.8%';
   }};
 
   user-select: none;
@@ -59,6 +89,8 @@ const ButtonStyled = styled.button`
     cursor: pointer;
     transform: scale(0.98);
   }
+
+  margin: 0 auto;
 `;
 
 export default ButtonStyled;

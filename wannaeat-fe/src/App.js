@@ -1,7 +1,10 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+
 import { Global, css } from '@emotion/react';
-// import TopPage from './pages/TopPage';
 import TestPage from './pages/TestPage';
+// import Main from './Main';
+
 const globalStyles = css`
   @font-face {
     font-family: 'Paperlogy-5Regular';
@@ -15,16 +18,18 @@ const globalStyles = css`
     font-family: 'Paperlogy-5Regular', sans-serif;
     letter-spacing: 1px;
     font-weight: 500;
+    margin: 0;
+    padding: 0;
   }
 `;
 
 function App() {
   return (
-    <div>
+    <BrowserRouter>
       <Global styles={globalStyles} />
-      {/* <TopPage></TopPage> */}
       <TestPage></TestPage>
-    </div>
+      {/* <Main /> */}
+    </BrowserRouter>
   );
 }
 

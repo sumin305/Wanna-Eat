@@ -1,6 +1,6 @@
 const theme = {
   borderRadius: {
-    default: '0.3125rem',
+    default: '0.5rem',
   },
 
   color: {
@@ -32,8 +32,8 @@ const theme = {
   },
 
   width: {
-    button: '16.188rem',
-    textfield: '15.313rem',
+    button: '93%',
+    textfield: '90%',
   },
 
   height: {
@@ -41,8 +41,8 @@ const theme = {
   },
 
   zIndex: {
-    modal: 1001,
-    overlay: 1002,
+    modal: 1000,
+    blackLayout: 900,
   },
 };
 

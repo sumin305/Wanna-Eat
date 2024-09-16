@@ -1,35 +1,34 @@
 import { ReactComponent as WarningIcon } from '../../../../assets/warning.svg';
 import components from './WETextfield.js';
-import useTextfieldStore from '../../../../stores/common/textfield/useTextfieldStore';
+import useTextfieldStore from '../../../../stores/textfield/useTextfieldStore.js';
 
 const { TextfieldStyled, ErrorMessageStyled, ErrorMessageDivStyled } =
   components;
 
-const Textfield = ({
-  type = 'text',
-  error = false,
-  errorMessage = '',
-  ...props
-}) => {
-  const { error, setError, clearError } = useTextfieldStore();
+const Textfield = ({ type = 'text', fieldName, ...props }) => {
+  const { errors, errorMessages, clearError } = useTextfieldStore();
 
   const handleFocus = () => {
-    if (error) clearError();
+    clearError(fieldName);
   };
+
+  const isError = errors[fieldName];
+  const errorMessage = errorMessages[fieldName];
 
   return (
     <div>
       <TextfieldStyled
         type={type}
-        error={error}
+        error={isError}
         onFocus={handleFocus}
-        errorMessage={errorMessage}
         {...props}
       />
-      {error && (
+      {isError && (
         <ErrorMessageDivStyled>
           {<WarningIcon />}
-          {<ErrorMessageStyled>{errorMessage}</ErrorMessageStyled>}
+          <ErrorMessageStyled>
+            {errorMessage || '오류가 발생하였습니다.'}
+          </ErrorMessageStyled>
         </ErrorMessageDivStyled>
       )}
     </div>

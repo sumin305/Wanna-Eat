@@ -3,20 +3,42 @@ import theme from '../../../../style/common/theme';
 
 const StepContainer = styled.div`
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
-  width: 300px;
-  height: 50px;
+  width: 100%;
+  height: 3.125rem;
+  margin: 0 auto;
+  @media (min-width: 480px) {
+    width: 25rem;
+  }
 `;
 
 const StepLine = styled.div`
   position: fixed;
   display: flex;
-  z-index: ${theme.zIndex.stepLine};
+  z-index: 2;
   background-color: ${theme.color.disabled};
-  height: 2px;
-  width: 220px;
-  margin-bottom: 10px;
+  width: 80%;
+  margin: 0 auto;
+
+  margin-bottom: 0.625rem;
+  height: 0.125rem;
+
+  @media (min-width: 480px) {
+    width: 300px;
+  }
+`;
+
+const StepItemContainer = styled.div`
+  display: flex;
+  width: 100%;
+  z-index: 2;
+  justify-content: space-between;
+  margin: 0 4%;
+
+  @media (min-width: 480px) {
+    width: 350px;
+  }
 `;
 
 const StepItem = styled.div`
@@ -26,8 +48,8 @@ const StepItem = styled.div`
 `;
 
 const StepCircle = styled.div`
-  width: 15px;
-  height: 15px;
+  width: ${theme.fontSize.px15};
+  height: ${theme.fontSize.px15};
   border-radius: 50%;
 
   background-color: ${(props) => {
@@ -36,11 +58,11 @@ const StepCircle = styled.div`
       : `${theme.color.disabled}`;
   }};
 
-  margin: 3px 0;
+  margin: 0.188rem 0;
 `;
 
 const TextStyled = styled.div`
-  font-size: 8px;
+  font-size: ${theme.fontSize.px8};
   color: ${(props) => {
     return props.isActive
       ? `${theme.color.primary}`
@@ -48,8 +70,11 @@ const TextStyled = styled.div`
   }};
 `;
 
-//   p.active {
-//     color: #f5a623; /* 활성화된 텍스트 색상 */
-//   }
-
-export { StepContainer, StepItem, StepCircle, StepLine, TextStyled };
+export {
+  StepContainer,
+  StepItemContainer,
+  StepItem,
+  StepCircle,
+  StepLine,
+  TextStyled,
+};

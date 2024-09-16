@@ -1,4 +1,4 @@
-import {StepContainer, StepItem, StepCircle, StepLine, TextStyled} from './WEStep'
+import {StepContainer, StepItemContainer, StepItem, StepCircle, StepLine, TextStyled} from './WEStep'
 
 const WEStep = ({index}) => {
     const stepList = [
@@ -10,6 +10,7 @@ const WEStep = ({index}) => {
     return (
         <StepContainer>
           <StepLine/>
+          <StepItemContainer>
           {
           stepList.map((title, idx) => (
             <StepItem key={idx}>
@@ -18,6 +19,7 @@ const WEStep = ({index}) => {
           </StepItem>
           ))
           }
+          </StepItemContainer>
         </StepContainer>
       );
     };

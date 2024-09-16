@@ -13,6 +13,7 @@ import CustomerMainPage from '../pages/customer/main/MainPage';
 import MapRestaurantPage from '../pages/customer/map/MapStorePage';
 import ListPage from '../pages/customer/reservation/history/ListPage';
 import MyInfoPage from '../pages/customer/user/MyInfoPage';
+import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage';
 
 // 비회원 관련 페이지
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';
@@ -32,7 +33,8 @@ const AppRoutes = () => {
     <Layout>
       <Routes>
         <Route path="/" element={<CustomerMainPage />} />
-        <Route path="/map" element={<MapRestaurantPage />} />
+        <Route path="/reservation" element={<MapRestaurantPage />} />
+        <Route path="/reservation/time-select" element={<TimeSelectPage />} />
         <Route path="/reservationlist" element={<ListPage />} />
         <Route path="/myinfo" element={<MyInfoPage />} />
       </Routes>

@@ -1,4 +1,5 @@
 import WEHeader from '../../../layout/common/WEHeader/WEHeader.jsx';
+import WEExtraHeader from '../../../layout/common/WEHeader/WEExtraHeader.jsx';
 import useHeaderStore from '../../../stores/header/useHeaderStore.js';
 
 const MainPage = () => {
@@ -13,6 +14,9 @@ const MainPage = () => {
         isShowLogo={true}
         isShowBackIcon={false}
       />
+
+      <WEExtraHeader isExtraCarrot={true} text="등록증 스캔" />
+
       <div>사장님 메인페이지</div>
     </>
   );

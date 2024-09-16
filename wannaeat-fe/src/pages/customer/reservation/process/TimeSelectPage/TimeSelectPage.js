@@ -1,5 +1,8 @@
-import styled from '@emotion/styled/macro';
+import styled from '@emotion/styled';
+import Calendar from 'react-calendar';
+
 const TimeSelectPageContainer = styled.div`
+  display: grid;
   width: 100%;
 `;
 const ButtonWrapper = styled.div`
@@ -8,5 +11,97 @@ const ButtonWrapper = styled.div`
   justify-content: space-evenly;
   margin: 0 1rem;
 `;
+const CalendarWrapper = styled.div`
+  margin: 20px 0;
+  text-align: -webkit-center;
+`;
 
-export { TimeSelectPageContainer, ButtonWrapper };
+const CalendarStyled = styled(Calendar)`
+  .react-calendar {
+    width: 90%;
+    max-width: 100%;
+    background-color: #fff;
+    color: #222;
+    border-radius: 8px;
+    line-height: 1.125em;
+  }
+  .react-calendar__navigation button {
+    color: #ff6528;
+    min-width: 30px;
+    background: none;
+    font-size: 16px;
+    margin-top: 8px;
+    border: none;
+    height: 50px;
+  }
+  .react-calendar__navigation button:enabled:hover,
+  .react-calendar__navigation button:enabled:focus {
+    background-color: #f8f8fa;
+    border: none;
+  }
+  .react-calendar__navigation button[disabled] {
+    background-color: #f0f0f0;
+    border: none;
+  }
+  abbr[title] {
+    text-decoration: none;
+    border: none;
+  }
+
+  .react-calendar > * {
+    border: 0.1px solid black;
+  }
+  .react-calendar__tile {
+    border: none;
+    background: white;
+    height: 40px;
+    width: 40px;
+    font-weight: bold;
+  }
+  .react-calendar__tile:enabled:hover,
+  .react-calendar__tile:enabled:focus {
+    background: #ff6528;
+    color: white;
+    border-radius: 6px;
+    border: none;
+    font-weight: bold;
+  }
+  .react-calendar__tile--now {
+    background: #fff1aa;
+    border-radius: 6px;
+    font-weight: bold;
+    color: black;
+    border: none;
+  }
+  .react-calendar__tile--now:enabled:hover,
+  .react-calendar__tile--now:enabled:focus {
+    background: #ff6528;
+    color: white;
+    border-radius: 6px;
+    border: none;
+  }
+  .react-calendar__tile--hasActive:enabled:hover,
+  .react-calendar__tile--hasActive:enabled:focus {
+    background: #ff6528;
+    border: none;
+  }
+  .react-calendar__tile--active {
+    background: #fff1aa;
+    border-radius: 6px;
+    font-weight: bold;
+    color: black;
+    border: none;
+  }
+  .react-calendar__tile--active:enabled:hover,
+  .react-calendar__tile--active:enabled:focus {
+    background: #ff6528;
+    color: white;
+    border: none;
+  }
+`;
+export {
+  TimeSelectPageContainer,
+  ButtonWrapper,
+  CalendarWrapper,
+  CalendarStyled,
+};

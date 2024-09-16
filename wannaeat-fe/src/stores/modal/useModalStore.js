@@ -7,6 +7,7 @@ const useModalStore = create((set) => ({
   alertText: '취소하시겠습니까?',
   cancelText: '취소',
   confirmText: '확인',
+  children: <div></div>,
   open: () => set({ isModalVisible: true }),
   close: () => set({ isModalVisible: false }),
   setTitle: (text) => set({ title: text }),
@@ -14,6 +15,7 @@ const useModalStore = create((set) => ({
   setAlertText: (text) => set({ alertText: text }),
   setCancelText: (text) => set({ cancelText: text }),
   setConfirmText: (text) => set({ confirmText: text }),
+  setChildren: (children) => set({ children: children }),
 }));
 
 export default useModalStore;

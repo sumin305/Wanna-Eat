@@ -6,7 +6,12 @@ const MainPage = () => {
 
   return (
     <>
-      <WEHeader text="메인페이지" icon={[icons[0]]} />
+      <WEHeader
+        text="메인페이지"
+        icon={[icons[0]]}
+        isShowLogo={false}
+        isShowBackIcon={true}
+      />
       <div>사장님 메인페이지</div>
     </>
   );

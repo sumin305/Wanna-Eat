@@ -7,18 +7,16 @@ import ZzimOn from '../../assets/icons/zzim-on.svg';
 
 const useHeaderStore = create((set) => ({
   themeColor: 'theme.color.primary', // 기본값은 주황색
-  height: '4rem',
-  pageName: '',
-  isShowBackIcon: true, // 뒤로가기는 기본적으로 있음
-  isShowLogo: false, // 로고는 기본적으로 없음
-  icons: [AlarmOff, AlarmOn, AlarmStack, ZzimOff, ZzimOn],
+  pageName: '', // 중간에 들어가는 페이지 이름
+  isShowBackIcon: false, // 뒤로가기 버튼 유무
+  isShowLogo: false, // 로고 유무
+  icons: [AlarmOff, AlarmOn, AlarmStack, ZzimOff, ZzimOn], // 헤더 오른쪽에 들어갈 아이콘들
   activeIcons: [],
-  isShowIcon: true, // 아이콘은 기본으로 있음
   setThemeColor: (color) => set({ themeColor: color }),
   setPageName: (text) => set({ pageName: text }),
   setIsShowLogo: (isShowLogo) => set({ isShowLogo: isShowLogo }),
   setActiveIcons: (icons) => set({ activeIcons: icons }),
-  setIsBackIcon: (isBackIcon) => set({ isBackIcon: isBackIcon }),
-  setIsShowIcon: (isShowIcon) => set({ isShowIcon: isShowIcon }),
+  setIsShowBackIcon: (isShowBackIcon) =>
+    set({ isShowBackIcon: isShowBackIcon }),
 }));
 export default useHeaderStore;

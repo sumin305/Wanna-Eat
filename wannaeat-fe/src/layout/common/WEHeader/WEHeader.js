@@ -28,7 +28,7 @@ const HeaderLeft = styled.div`
   justify-content: flex-start;
   position: absolute;
   left: 0;
-  width: ${(props) => (props.isShowBackIcon ? '10%' : '0%')};
+  width: 10%;
 `;
 
 const HeaderCenter = styled.div`

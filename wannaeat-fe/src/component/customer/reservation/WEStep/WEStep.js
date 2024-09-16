@@ -54,7 +54,7 @@ const StepCircle = styled.div`
 
   background-color: ${(props) => {
     return props.isActive
-      ? `${theme.color.primary}`
+      ? `${theme.color.secondary}`
       : `${theme.color.disabled}`;
   }};
 
@@ -65,7 +65,7 @@ const TextStyled = styled.div`
   font-size: ${theme.fontSize.px8};
   color: ${(props) => {
     return props.isActive
-      ? `${theme.color.primary}`
+      ? `${theme.color.secondary}`
       : `${theme.color.disabled}`;
   }};
 `;

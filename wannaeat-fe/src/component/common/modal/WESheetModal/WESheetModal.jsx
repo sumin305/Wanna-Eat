@@ -8,7 +8,7 @@ import {  HrStyled,
   ModalSelectWrapper,
   ModalContentWrapper
 } from '../../../../component/common/modal/WEModal.js'
-import useModalStore from '../../../../stores/modal/useModalStore';
+import useModalStore from '../../../../stores/common/modal/useModalStore.js';
 import theme from '../../../../style/common/theme.js';
 
 const WESheetModal = () => {

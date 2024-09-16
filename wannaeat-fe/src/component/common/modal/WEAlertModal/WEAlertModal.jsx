@@ -5,7 +5,7 @@ import {
 } from './WEAlertModal';
 import WEButton from '../../button/WEButton/WEButton';
 import theme from '../../../../style/common/theme';
-import useModalStore from '../../../../stores/modal/useModalStore';
+import useModalStore from '../../../../stores/common/modal/useModalStore';
 const WEAlertModal = () => {
   const { alertText, cancelText, confirmText, close } = useModalStore();
   return (

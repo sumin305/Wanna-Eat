@@ -13,7 +13,7 @@ import MyinfoOff from '../../../assets/icons/myinfo-off.svg';
 import MyinfoOn from '../../../assets/icons/myinfo-on.svg';
 
 import useCommonStore from '../../../stores/common/useCommonStore';
-import useTabbarStore from '../../../stores/tabbar/useTabbarStore';
+import useTabbarStore from '../../../stores/common/tabbar/useTabbarStore';
 
 const tabs = {
   manager: [

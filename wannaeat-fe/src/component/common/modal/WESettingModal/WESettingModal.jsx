@@ -1,4 +1,4 @@
-import useModalStore from "../../../../stores/modal/useModalStore"
+import useModalStore from "../../../../stores/common/modal/useModalStore.js"
 import { css } from "@emotion/react";
 import Button from "../../button/WEButton/WEButton";
 import {SettingModalContainer, ButtonWrapper} from "./WESettingModal";

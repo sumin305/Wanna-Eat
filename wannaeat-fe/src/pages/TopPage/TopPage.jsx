@@ -1,6 +1,6 @@
 import { React } from 'react';
 import TopPageStyled from './TopPage.js';
-import useModalStore from '../../stores/modal/useModalStore.js';
+import useModalStore from '../../stores/common/modal/useModalStore.js';
 import WEDropdown from '../../component/common/dropdown/WEDropdown.jsx'
 const TopPage = () => {
   const {

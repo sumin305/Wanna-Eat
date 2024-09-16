@@ -1,27 +1,23 @@
 import {StepContainer, StepItem, StepCircle, StepLine, TextStyled} from './WEStep'
 
-const WEStep = (idx) => {
+const WEStep = ({index}) => {
+    const stepList = [
+        '1. 시간 선택',
+        '2. 좌석 선택',
+        '3. 예약금 결제',
+        '4. 메뉴 선택'
+    ]
     return (
         <StepContainer>
-          <StepItem>
-            <StepCircle></StepCircle>
-            <TextStyled>1. 시간 선택</TextStyled>
+          <StepLine/>
+          {
+          stepList.map((title, idx) => (
+            <StepItem key={idx}>
+            <StepCircle isActive={index === idx}></StepCircle>
+            <TextStyled isActive={index === idx}>{title}</TextStyled>
           </StepItem>
-          <StepLine></StepLine>
-          <StepItem>
-            <StepCircle></StepCircle>
-            <TextStyled>2. 좌석 선택</TextStyled>
-          </StepItem>
-          <StepLine></StepLine>
-          <StepItem>
-            <StepCircle></StepCircle>
-            <TextStyled>3. 예약금 결제</TextStyled>
-          </StepItem>
-          <StepLine></StepLine>
-          <StepItem>
-            <StepCircle></StepCircle>
-            <TextStyled>4. 메뉴 선택</TextStyled>
-          </StepItem>
+          ))
+          }
         </StepContainer>
       );
     };

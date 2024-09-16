@@ -1,8 +1,22 @@
 import styled from '@emotion/styled/macro';
+import theme from '../../../../style/common/theme';
 
 const StepContainer = styled.div`
   display: flex;
+  justify-content: space-evenly;
   align-items: center;
+  width: 300px;
+  height: 50px;
+`;
+
+const StepLine = styled.div`
+  position: fixed;
+  display: flex;
+  z-index: ${theme.zIndex.stepLine};
+  background-color: ${theme.color.disabled};
+  height: 2px;
+  width: 220px;
+  margin-bottom: 10px;
 `;
 
 const StepItem = styled.div`
@@ -12,27 +26,26 @@ const StepItem = styled.div`
 `;
 
 const StepCircle = styled.div`
-  width: 30px;
-  height: 30px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
-  background-color: #ddd;
-  margin-bottom: 8px;
-`;
 
-// const circle.active {
-//     background-color: #f5a623;
-//   }
+  background-color: ${(props) => {
+    return props.isActive
+      ? `${theme.color.primary}`
+      : `${theme.color.disabled}`;
+  }};
 
-const StepLine = styled.div`
-  flex-grow: 1;
-  height: 2px;
-  background-color: #ddd;
-  margin: 0 10px;
+  margin: 3px 0;
 `;
 
 const TextStyled = styled.div`
-  font-size: 12px;
-  color: #ddd;
+  font-size: 8px;
+  color: ${(props) => {
+    return props.isActive
+      ? `${theme.color.primary}`
+      : `${theme.color.disabled}`;
+  }};
 `;
 
 //   p.active {

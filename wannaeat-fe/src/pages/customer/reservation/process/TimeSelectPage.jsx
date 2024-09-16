@@ -1,7 +1,7 @@
 import WEStep from "../../../../component/customer/reservation/WEStep/WEStep.jsx"
 const TimeSelectPage = () => {
     return(
-        <WEStep/>
+        <WEStep index={0}/>
     )
 }
 

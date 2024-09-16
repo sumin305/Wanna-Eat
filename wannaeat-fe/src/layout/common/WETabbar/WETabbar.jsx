@@ -48,7 +48,7 @@ const tabs = {
       label: '예약하기',
       offIcon: AdminOff,
       onIcon: AdminOn,
-      path: '/map',
+      path: '/reservation',
     },
     {
       id: 2,

@@ -43,6 +43,7 @@ const theme = {
   zIndex: {
     modal: 1000,
     blackLayout: 900,
+    stepLine: -1,
   },
 };
 

@@ -10,7 +10,7 @@ const MainPage = () => {
       <WEHeader
         isCarrot={false}
         text="메인페이지"
-        icon={[icons[0]]}
+        icon={[icons[2]]}
         isShowLogo={false}
         isShowBackIcon={true}
       />

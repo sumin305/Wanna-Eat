@@ -12,7 +12,7 @@ const TimeSelectModalTitleStyled = styled.p`
 `;
 const TimeSelectModalSubTitleWrapper = styled.div`
   display: flex;
-  padding: 0.2rem 1rem;
+  padding: 0.2rem;
   font-weight: ${theme.fontWeight.light};
   justify-content: space-between;
 `;
@@ -25,11 +25,17 @@ const TimeSelectModalListContainer = styled.div`
   grid-template-columns: repeat(5, 1fr);
   //   height: 100px;
   font-size: ${theme.fontSize.px11};
-  gap: 10px 20px;
+  gap: 3px 10px;
 `;
 
 const TimeSelectModalListItem = styled.div`
   height: 35px;
+`;
+
+const HeadCountInputWrapper = styled.div`
+  > * {
+    margin: 0 5px;
+  }
 `;
 export {
   TimeSelectModalBoxContainer,
@@ -38,4 +44,5 @@ export {
   TimeSelectModalSubTitleStyled,
   TimeSelectModalListContainer,
   TimeSelectModalListItem,
+  HeadCountInputWrapper,
 };

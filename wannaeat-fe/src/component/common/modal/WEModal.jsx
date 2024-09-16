@@ -15,7 +15,7 @@ const WEModal = () => {
 
   return (
     <ModalStyled>
-      {modalType === 'alert' ? <WEAlertModal /> : <></>}
+      {modalType === 'alert' ? <WEAlertModal isOneButton={false} /> : <></>}
       {modalType === 'sheet' ? <WESheetModal /> : <></>}
       {modalType === 'setting' ? <WESettingModal/> : <></>}
     </ModalStyled>

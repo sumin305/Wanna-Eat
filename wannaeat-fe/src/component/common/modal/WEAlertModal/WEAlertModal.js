@@ -28,10 +28,20 @@ const TitleStyled = styled.div`
   grid-row: 3;
 `;
 
-const ButtonContainerStyled = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+const OneButtonContainerStyled = styled.div`
   grid-row: 6;
 `;
+const ButtonContainerStyled = styled.div`
+  display: grid;
+  grid-template-columns: 3fr 3fr;
+  grid-row: 6;
+  column-gap: 10%;
+  justify-content: center;
+`;
 
-export { ModalStyled, TitleStyled, ButtonContainerStyled };
+export {
+  ModalStyled,
+  TitleStyled,
+  OneButtonContainerStyled,
+  ButtonContainerStyled,
+};

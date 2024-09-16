@@ -1,11 +1,12 @@
 import useTimeSelectStore from "../../../../stores/customer/useTimeSelectStore";
-import {TimeSelectModalBoxContainer, TimeSelectModalTitleStyled, TimeSelectModalSubTitleWrapper, TimeSelectModalSubTitleStyled, TimeSelectModalListContainer, TimeSelectModalListItem} from './TimeSelectModalBox'
+import {TimeSelectModalBoxContainer, TimeSelectModalTitleStyled, TimeSelectModalSubTitleWrapper, TimeSelectModalSubTitleStyled, TimeSelectModalListContainer, TimeSelectModalListItem, HeadCountInputWrapper} from './TimeSelectModalBox'
 import Button from "../../../common/button/WEButton/WEButton";
 import theme from "../../../../style/common/theme";
+import useModalStore from "../../../../stores/common/modal/useModalStore";
 const TimeSelectModalBox = () => {
     const {lunchTimes, dinnerTimes, setSelectedStartTime, setSelectedEndTime, setSelectedHeadCount} = useTimeSelectStore();
-
-    const handleHandCountChange = (e) => {
+    const {open, setModalType, setAlertText, setIsOneButton} = useModalStore();
+    const handleHeadCountChange = (e) => {
         console.log(typeof e.target.value)
         
         if (e.target.value === '') {
@@ -14,7 +15,12 @@ const TimeSelectModalBox = () => {
         }
 
         if (e.target.value <= 0) {
-            alert('0명 이하는 불가능합니다.')
+            setIsOneButton(true)
+            setModalType('alert');
+            setAlertText('0명 이하는 불가능합니다.')
+            open();
+            setSelectedHeadCount(0);
+            return;
         }
         setSelectedHeadCount(parseInt(e.target.value));
     }
@@ -29,7 +35,7 @@ const TimeSelectModalBox = () => {
             <TimeSelectModalListContainer>
                 {lunchTimes.map((time, index) => (
                     <TimeSelectModalListItem key={index}>
-                        <Button size={'menu'} width={'80%'} height={'70%'} outlined={true} miniOutlined={true} fontSize={theme.fontSize.px11}>{time}</Button>
+                        <Button size={'menu'} width={'100%'} height={'70%'} outlined={true} miniOutlined={true} fontSize={theme.fontSize.px11}>{time}</Button>
                     </TimeSelectModalListItem>
                 ))}
             </TimeSelectModalListContainer>
@@ -41,7 +47,7 @@ const TimeSelectModalBox = () => {
             <TimeSelectModalListContainer>
                 {dinnerTimes.map((time, index) => (
                     <TimeSelectModalListItem key={index}>
-                        <Button size={'menu'} width={'80%'} height={'70%'} outlined={true} miniOutlined={true} fontSize={theme.fontSize.px11} key={index}>{time}</Button>
+                        <Button size={'menu'} width={'100%'} height={'70%'} outlined={true} miniOutlined={true} fontSize={theme.fontSize.px11} key={index}>{time}</Button>
                     </TimeSelectModalListItem>
                 ))}
             </TimeSelectModalListContainer>
@@ -52,7 +58,7 @@ const TimeSelectModalBox = () => {
         <div>
             <TimeSelectModalSubTitleWrapper>
                 <TimeSelectModalSubTitleStyled>인원</TimeSelectModalSubTitleStyled>
-                <div><input onChange={handleHandCountChange} type='number'/>명</div>
+                <HeadCountInputWrapper><input onChange={handleHeadCountChange} type='number'/>명</HeadCountInputWrapper>
             </TimeSelectModalSubTitleWrapper>
         </div>
         </TimeSelectModalBoxContainer>

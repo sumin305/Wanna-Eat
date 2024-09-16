@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 const useModalStore = create((set) => ({
   isModalVisible: false,
+  isOneButton: true,
   modalType: '',
   title: '',
   alertText: '취소하시겠습니까?',
@@ -16,6 +17,7 @@ const useModalStore = create((set) => ({
   setCancelText: (text) => set({ cancelText: text }),
   setConfirmText: (text) => set({ confirmText: text }),
   setChildren: (children) => set({ children: children }),
+  setIsOneButton: (isOneButton) => set({ isOneButton: isOneButton }),
 }));
 
 export default useModalStore;

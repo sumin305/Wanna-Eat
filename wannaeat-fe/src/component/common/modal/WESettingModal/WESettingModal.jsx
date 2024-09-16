@@ -4,14 +4,12 @@ import Button from "../../button/WEButton/WEButton";
 import {SettingModalContainer, ButtonWrapper} from "./WESettingModal";
 import {  HrStyled,
     ModalTitleStyled,
-    ModalSelectTitleStyled,
-    ModalSelectWrapper,
     ModalContentWrapper
   } from '../../../../component/common/modal/WEModal.js'
 import theme from "../../../../style/common/theme.js";
   
 const WESettingModal = () => {
-    const {close, title, children} = useModalStore();
+    const {title, children} = useModalStore();
 
     return (
         <SettingModalContainer>

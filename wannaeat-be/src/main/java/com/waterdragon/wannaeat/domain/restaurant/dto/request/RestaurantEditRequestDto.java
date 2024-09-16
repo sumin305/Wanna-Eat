@@ -1,12 +1,17 @@
 package com.waterdragon.wannaeat.domain.restaurant.dto.request;
 
+import java.time.LocalTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class RestaurantRegisterRequestDto {
+public class RestaurantEditRequestDto {
 
 	@NotEmpty(message = "사업자 번호는 필수 입력값입니다.")
 	private String restaurantBusinessNumber;
@@ -26,4 +31,30 @@ public class RestaurantRegisterRequestDto {
 
 	@NotNull(message = "매장 카테고리는 필수 입력값입니다.")
 	private Long restaurantCategoryId;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+	private LocalTime restaurantOpenTime;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+	private LocalTime restaurantCloseTime;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+	private LocalTime breakStartTime;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+	private LocalTime breakEndTime;
+
+	private Integer maxReservationTime;
+
+	private Integer minMemberCount;
+
+	private Integer maxMemberCount;
+
+	private Integer depositPerMember;
+
+	private String restaurantDescription;
+
+	private Double latitude;
+
+	private Double longitude;
 }

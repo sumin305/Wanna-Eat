@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.waterdragon.wannaeat.global.exception.error.FileUploadFailureException;
+import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 import com.waterdragon.wannaeat.global.exception.error.BadRequestException;
 
@@ -46,6 +48,24 @@ public class GlobalExceptionHandler {
 
 		// 400 Bad Request 응답으로 에러 정보 반환
 		return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+	}
+
+	// FileUpload 에러
+	@ExceptionHandler(FileUploadFailureException.class)
+	public final ResponseEntity<ErrorResponseDto> handleFileUploadFailureException(Exception ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("File Upload Error", ex.getMessage());
+
+		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	// 비인가(권한 없음) 에러
+	@ExceptionHandler(NotAuthorizedException.class)
+	public final ResponseEntity<ErrorResponseDto> handleNotAuthorizedException(Exception ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Not Authorized", ex.getMessage());
+
+		return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
 	}
 
 }

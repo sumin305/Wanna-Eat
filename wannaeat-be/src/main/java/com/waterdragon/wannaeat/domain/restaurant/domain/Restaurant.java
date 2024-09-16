@@ -72,16 +72,16 @@ public class Restaurant {
 	private LocalTime breakEndTime;
 
 	@Column(name = "max_reservation_time")
-	private Long maxReservationTime;
+	private Integer maxReservationTime;
 
 	@Column(name = "min_member_cnt")
-	private Long minMemberCount;
+	private Integer minMemberCount;
 
 	@Column(name = "max_member_cnt")
-	private Long maxMemberCount;
+	private Integer maxMemberCount;
 
 	@Column(name = "deposit_per_member")
-	private Long depositPerMember;
+	private Integer depositPerMember;
 
 	@Column(name = "restaurant_description")
 	private String description;
@@ -101,5 +101,28 @@ public class Restaurant {
 	@OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
 	private List<RestaurantLike> restaurantLikes;
 
-	// Getters and setters
+	public void update(RestaurantCategory category, String businessNumber, String ownerName,
+		String name, String address, String phone, LocalTime openTime, LocalTime closeTime,
+		LocalTime breakStartTime, LocalTime breakEndTime, Integer maxReservationTime, Integer minMemberCount,
+		Integer maxMemberCount, Integer depositPerMember, String description, Double latitude, Double longitude) {
+
+		this.category = category;
+		this.businessNumber = businessNumber;
+		this.ownerName = ownerName;
+		this.name = name;
+		this.address = address;
+		this.phone = phone;
+		this.openTime = openTime;
+		this.closeTime = closeTime;
+		this.breakStartTime = breakStartTime;
+		this.breakEndTime = breakEndTime;
+		this.maxReservationTime = maxReservationTime;
+		this.minMemberCount = minMemberCount;
+		this.maxMemberCount = maxMemberCount;
+		this.depositPerMember = depositPerMember;
+		this.description = description;
+		this.latitude = latitude;
+		this.longitude = longitude;
+	}
+
 }

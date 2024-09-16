@@ -64,6 +64,7 @@ const CalendarStyled = styled(Calendar)`
     height: 40px;
     width: 40px;
     font-weight: bold;
+    border-radius: 8px;
   }
   .react-calendar__tile:enabled:hover,
   .react-calendar__tile:enabled:focus {

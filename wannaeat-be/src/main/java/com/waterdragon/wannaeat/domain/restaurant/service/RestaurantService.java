@@ -11,5 +11,6 @@ public interface RestaurantService {
 
 	void registerRestaurant(RestaurantRegisterRequestDto restaurantRegisterRequestDto);
 
-	void editRestaurant(Long restaurantId, RestaurantEditRequestDto restaurantEditRequestDto, List<MultipartFile> multipartFiles);
+	void editRestaurant(Long restaurantId, RestaurantEditRequestDto restaurantEditRequestDto,
+		List<MultipartFile> multipartFiles);
 }

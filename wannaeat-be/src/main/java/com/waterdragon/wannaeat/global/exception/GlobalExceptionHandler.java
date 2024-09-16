@@ -10,10 +10,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.waterdragon.wannaeat.global.exception.error.BadRequestException;
 import com.waterdragon.wannaeat.global.exception.error.FileUploadFailureException;
 import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
-import com.waterdragon.wannaeat.global.exception.error.BadRequestException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

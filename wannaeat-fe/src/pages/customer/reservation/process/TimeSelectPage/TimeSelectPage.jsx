@@ -37,7 +37,6 @@ const TimeSelectPage = () => {
                 <Button size="short" color={"black"} backgroundColor={theme.color.disabled}>이전</Button>
                 <Button size="venti">예약</Button>
             </ButtonWrapper>
-
         </TimeSelectPageContainer>
     )
 }

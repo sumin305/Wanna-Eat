@@ -16,16 +16,15 @@ import Logo from '../../../assets/icons/logo.svg';
 import BackCarrot from '../../../assets/icons/back-carrot.svg';
 import BackWhite from '../../../assets/icons/back-white.svg';
 
-const WEHeader = ({ text, icon }) => {
+const WEHeader = ({ text, icon, isShowLogo, isShowBackIcon }) => {
   const {
     themeColor,
     pageName,
     setPageName,
-    isShowLogo,
+    setIsShowLogo,
     activeIcons,
     setActiveIcons,
-    isShowIcon,
-    isShowBackIcon,
+    setIsShowBackIcon,
   } = useHeaderStore();
 
   const nav = useNavigate();
@@ -33,18 +32,19 @@ const WEHeader = ({ text, icon }) => {
   useEffect(() => {
     setPageName(text);
     setActiveIcons(icon);
-  }, [pageName]);
+    setIsShowLogo(isShowLogo);
+    setIsShowBackIcon(isShowBackIcon);
+  }, []);
 
   return (
     <HeaderContainer>
       <HeaderWrapper>
         <HeaderLeft>
-          {(isShowLogo || isShowBackIcon) &&
-            (isShowLogo ? (
-              <HeaderImg src={Logo} alt="로고" />
-            ) : (
-              <HeaderImg src={BackCarrot} alt="뒤로가기" />
-            ))}
+          {isShowLogo ? (
+            <HeaderImg src={Logo} alt="로고" />
+          ) : isShowBackIcon ? (
+            <HeaderImg src={BackCarrot} alt="뒤로가기" />
+          ) : null}
         </HeaderLeft>
         <HeaderCenter>
           <HeaderTitle isShowLogo={isShowLogo} isShowBackIcon={isShowBackIcon}>
@@ -52,9 +52,9 @@ const WEHeader = ({ text, icon }) => {
           </HeaderTitle>
         </HeaderCenter>
         <HeaderRight>
-          {isShowIcon &&
+          {activeIcons &&
             activeIcons.map((icon, index) => (
-              <IconImg key={index} src={icon} alt={icon.alt} />
+              <IconImg key={index} src={icon} alt="icon" />
             ))}
         </HeaderRight>
       </HeaderWrapper>

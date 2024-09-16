@@ -1,6 +1,7 @@
 const theme = {
   borderRadius: {
     default: '0.5rem',
+    px5: '0.313rem',
   },
 
   color: {

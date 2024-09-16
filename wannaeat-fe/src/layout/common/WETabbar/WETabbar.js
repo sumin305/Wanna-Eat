@@ -6,11 +6,10 @@ const TabbarContainer = styled.div`
   position: fixed;
   bottom: 0;
   left: 0;
+  background-color: ${theme.color.white};
   width: 100%;
   height: 10%;
   box-shadow: 1px 0px 4px 0px ${theme.color.disabled};
-  -webkit-tap-highlight-color: transparent;
-  background-color: ${theme.color.white};
   z-index: 800;
   p {
     margin: 0;
@@ -39,12 +38,12 @@ const TabImg = styled.img`
 `;
 
 const TabText = styled.p`
+  padding-bottom: 3%;
+  text-align: center;
   color: ${({ activeId }) =>
     activeId ? theme.color.primary : theme.color.disabled};
-  text-align: center;
   font-size: ${theme.fontSize.px10};
   font-weight: ${theme.fontWeight.bold};
-  padding-bottom: 3%;
 `;
 
 export { TabbarContainer, TabWrapper, TabImg, TabText };

@@ -11,8 +11,8 @@ const MainPage = () => {
         isCarrot={false}
         text="메인페이지"
         icon={[icons[0]]}
-        isShowLogo={true}
-        isShowBackIcon={false}
+        isShowLogo={false}
+        isShowBackIcon={true}
       />
 
       <WEExtraHeader isExtraCarrot={true} text="등록증 스캔" />

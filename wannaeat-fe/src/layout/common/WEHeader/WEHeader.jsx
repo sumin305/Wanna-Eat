@@ -38,6 +38,10 @@ const WEHeader = ({ isCarrot, text, icon, isShowLogo, isShowBackIcon }) => {
     setIsShowBackIcon(isShowBackIcon);
   }, []);
 
+  const handleBackClick = () => {
+    nav(-1); // 뒤로가기
+  };
+
   return (
     <HeaderContainer isCarrot={isCarrot}>
       <HeaderWrapper>
@@ -48,7 +52,11 @@ const WEHeader = ({ isCarrot, text, icon, isShowLogo, isShowBackIcon }) => {
               <LogoTitle isCarrot={isCarrot}>머 물래?</LogoTitle>
             </>
           ) : isShowBackIcon ? (
-            <HeaderImg src={isCarrot ? BackWhite : BackCarrot} alt="뒤로가기" />
+            <HeaderImg
+              src={isCarrot ? BackWhite : BackCarrot}
+              alt="뒤로가기"
+              onClick={handleBackClick}
+            />
           ) : null}
         </HeaderLeft>
         <HeaderCenter>

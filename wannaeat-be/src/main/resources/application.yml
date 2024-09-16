@@ -16,3 +16,7 @@ spring:
     include:
       - jwt
       - oauth
+
+#로컬 파일업로드 경로
+file:
+  upload-dir: ${FILE_UPLOAD_DIR}

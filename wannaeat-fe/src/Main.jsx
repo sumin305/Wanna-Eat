@@ -5,7 +5,7 @@ import useModalStore from './stores/modal/useModalStore.js';
 import WEBlackOutLayout from './layout/common/WEBlackOutLayout/WEBlackOutLayout.jsx';
 import WEModal from './component/common/modal/WEModal.jsx';
 import AppRoutes from './route/routes.js';
-
+import TimeSelectPage from './pages/customer/reservation/process/TimeSelectPage.jsx';
 const Main = () => {
   const { isModalVisible } = useModalStore();
 
@@ -29,7 +29,7 @@ const Main = () => {
       {isModalVisible && <WEModal />}
       <AppContainer>
         <AppRoutes />
-        <TopPage />
+        {/* <TimeSelectPage/> */}
         <WETabbar />
       </AppContainer>
     </div>

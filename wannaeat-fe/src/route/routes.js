@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import useCommonStore from '../stores/common/useCommonStore';
+import Layout from '../layout/common/Layout';
 
 // 사업자 관련 페이지
 import ManagerMainPage from '../pages/manager/main/MainPage';
@@ -19,19 +20,23 @@ import MyInfoPage from '../pages/customer/user/MyInfoPage';
 const AppRoutes = () => {
   const { isManager } = useCommonStore();
   return isManager ? (
-    <Routes>
-      <Route path="/" element={<ManagerMainPage />} />
-      <Route path="/admin" element={<AdminPage />} />
-      <Route path="/restaurantview" element={<RestaurantViewPage />} />
-      <Route path="/statistics" element={<StatisticsPage />} />
-    </Routes>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<ManagerMainPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/restaurantview" element={<RestaurantViewPage />} />
+        <Route path="/statistics" element={<StatisticsPage />} />
+      </Routes>
+    </Layout>
   ) : (
-    <Routes>
-      <Route path="/" element={<CustomerMainPage />} />
-      <Route path="/map" element={<MapRestaurantPage />} />
-      <Route path="/reservationlist" element={<ListPage />} />
-      <Route path="/myinfo" element={<MyInfoPage />} />
-    </Routes>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<CustomerMainPage />} />
+        <Route path="/map" element={<MapRestaurantPage />} />
+        <Route path="/reservationlist" element={<ListPage />} />
+        <Route path="/myinfo" element={<MyInfoPage />} />
+      </Routes>
+    </Layout>
   );
 };
 

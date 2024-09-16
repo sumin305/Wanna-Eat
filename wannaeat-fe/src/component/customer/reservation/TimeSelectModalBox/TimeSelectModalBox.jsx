@@ -6,7 +6,6 @@ import useModalStore from "../../../../stores/common/modal/useModalStore";
 import { useEffect } from "react";
 const TimeSelectModalBox = () => {
     const {isLunch, setIsLunch, lunchTimes, dinnerTimes, setSelectedStartTime, setSelectedEndTime, setSelectedHeadCount, setSelectedTimes, selectedTimes} = useTimeSelectStore();
-    const {open, setModalType, setAlertText, close, setHandleConfirmTextClick} = useModalStore();
     const handleHeadCountChange = (e) => {
         if (e.target.value === '') {
             setSelectedHeadCount(0);

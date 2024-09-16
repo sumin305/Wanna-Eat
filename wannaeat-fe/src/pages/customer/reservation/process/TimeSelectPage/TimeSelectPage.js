@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import Calendar from 'react-calendar';
+import theme from '../../../../../style/common/theme';
 
 const TimeSelectPageContainer = styled.div`
-  display: grid;
   width: 100%;
 `;
 const ButtonWrapper = styled.div`
@@ -12,8 +12,10 @@ const ButtonWrapper = styled.div`
   margin: 0 1rem;
 `;
 const CalendarWrapper = styled.div`
-  margin: 20px 0;
   text-align: -webkit-center;
+  border-radius: 8px;
+  margin: 20px 10px;
+  border: 1px solid ${theme.color.gray};
 `;
 
 const CalendarStyled = styled(Calendar)`
@@ -24,6 +26,7 @@ const CalendarStyled = styled(Calendar)`
     color: #222;
     border-radius: 8px;
     line-height: 1.125em;
+    text-align: -webkit-center;
   }
   .react-calendar__navigation button {
     color: #ff6528;
@@ -34,6 +37,13 @@ const CalendarStyled = styled(Calendar)`
     border: none;
     height: 50px;
   }
+
+  .react-calendar__navigation__label__labelText {
+    font-weight: bold;
+    color: black;
+    border: none;
+  }
+
   .react-calendar__navigation button:enabled:hover,
   .react-calendar__navigation button:enabled:focus {
     background-color: #f8f8fa;
@@ -48,9 +58,6 @@ const CalendarStyled = styled(Calendar)`
     border: none;
   }
 
-  .react-calendar > * {
-    border: 0.1px solid black;
-  }
   .react-calendar__tile {
     border: none;
     background: white;
@@ -79,6 +86,7 @@ const CalendarStyled = styled(Calendar)`
     color: white;
     border-radius: 6px;
     border: none;
+    font-weight: bold;
   }
   .react-calendar__tile--hasActive:enabled:hover,
   .react-calendar__tile--hasActive:enabled:focus {
@@ -97,6 +105,7 @@ const CalendarStyled = styled(Calendar)`
     background: #ff6528;
     color: white;
     border: none;
+    font-weight: bold;
   }
 `;
 export {

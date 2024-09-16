@@ -7,7 +7,6 @@ import TimeSelectModalBox from "../../../../../component/customer/reservation/Ti
 import useTimeSelectStore from "../../../../../stores/customer/useTimeSelectStore.js"
 import Calendar from 'react-calendar';
 import moment from 'moment';
-import 'react-calendar/dist/Calendar.css';
 
 const TimeSelectPage = () => {
     const {open, setModalType, setConfirmText, setTitle, setChildren} = useModalStore();

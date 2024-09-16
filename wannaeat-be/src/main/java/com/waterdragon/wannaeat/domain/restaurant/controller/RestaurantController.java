@@ -50,12 +50,20 @@ public class RestaurantController {
 		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 	}
 
+	/**
+	 * 매장 수정 API
+	 *
+	 * @param restaurantId 매장 id
+	 * @param restaurantEditRequestDto 매장 수정 정보
+	 * @param multipartFiles 매장 사진
+	 * @return void 매장 수정 결과
+	 */
 	@Operation(summary = "매장 정보 수정 API")
 	@PatchMapping("/{restaurantId}")
 	public ResponseEntity<ResponseDto<Void>> editRestaurant(
 		@PathVariable(name = "restaurantId") Long restaurantId,
 		@Valid @RequestPart(name = "restaurantEditRequestDto") RestaurantEditRequestDto restaurantEditRequestDto,
-		@RequestPart(name = "files", required = false) List<MultipartFile> multipartFiles) {
+		@RequestPart(name = "restaurantImages", required = false) List<MultipartFile> multipartFiles) {
 
 		restaurantService.editRestaurant(restaurantId, restaurantEditRequestDto, multipartFiles);
 		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()

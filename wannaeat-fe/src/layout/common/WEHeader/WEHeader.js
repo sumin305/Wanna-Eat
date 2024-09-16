@@ -8,7 +8,8 @@ const HeaderContainer = styled.div`
   position: fixed;
   width: 100%;
   height: 7%;
-  background-color: ${theme.color.white};
+  background-color: ${(props) =>
+    props.isCarrot ? theme.color.primary : theme.color.white};
   top: 0;
   left: 0;
   z-index: 1000;
@@ -25,10 +26,20 @@ const HeaderWrapper = styled.div`
 
 const HeaderLeft = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
+  align-items: center;
   position: absolute;
   left: 0;
-  width: 10%;
+  width: 20%;
+`;
+
+const LogoTitle = styled.h1`
+  color: ${(props) =>
+    props.isCarrot ? theme.color.white : theme.color.primary};
+  font-size: ${theme.fontSize.px9};
+  font-weight: ${theme.fontWeight.bold};
+  text-align: center;
 `;
 
 const HeaderCenter = styled.div`
@@ -61,7 +72,8 @@ const HeaderImg = styled.img`
 `;
 
 const HeaderTitle = styled.h1`
-  color: ${theme.color.primary};
+  color: ${(props) =>
+    props.isCarrot ? theme.color.white : theme.color.primary};
   font-size: ${theme.fontSize.px17};
   font-weight: ${theme.fontWeight.bold};
   text-align: center;
@@ -76,6 +88,7 @@ export {
   HeaderContainer,
   HeaderWrapper,
   HeaderLeft,
+  LogoTitle,
   HeaderCenter,
   HeaderRight,
   HeaderImg,

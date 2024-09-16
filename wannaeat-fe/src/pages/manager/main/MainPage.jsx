@@ -7,10 +7,11 @@ const MainPage = () => {
   return (
     <>
       <WEHeader
+        isCarrot={false}
         text="메인페이지"
         icon={[icons[0]]}
-        isShowLogo={false}
-        isShowBackIcon={true}
+        isShowLogo={true}
+        isShowBackIcon={false}
       />
       <div>사장님 메인페이지</div>
     </>

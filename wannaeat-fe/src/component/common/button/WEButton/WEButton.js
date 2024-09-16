@@ -50,29 +50,29 @@ const ButtonStyled = styled.button`
 
     const sizeMap = {
       long: '93%',
-      venti: '11rem',
-      medium: '7.5625rem',
-      modal: '5.25rem',
-      short: '4.75rem',
-      menu: '4.125rem',
+      venti: '63%',
+      medium: '43.4%',
+      modal: '34.4%',
+      short: '27.2%',
+      menu: '23.7%',
     };
 
-    return sizeMap[props.size] || '16.1875rem';
+    return sizeMap[props.size] || '93%';
   }};
 
   height: ${(props) => {
     if (props.height) return props.height;
 
     const sizeMap = {
-      long: '2.5rem',
-      venti: '2.5rem',
-      medium: '2.5rem',
-      modal: '2rem',
-      short: '2.5rem',
-      menu: '1.8125rem',
+      long: '6.8%',
+      venti: '6.8%',
+      medium: '6.8%',
+      modal: '5.5%',
+      short: '6.8%',
+      menu: '5%',
     };
 
-    return sizeMap[props.size] || '2.5rem';
+    return sizeMap[props.size] || '6.8%';
   }};
 
   user-select: none;

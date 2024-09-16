@@ -39,6 +39,7 @@ const ButtonStyled = styled.button`
   }};
 
   border: ${(props) => {
+    if (props.miniOutlined) return '1px solid #FF6528';
     if (props.disabled && props.outlined) return '2px solid #D4D4D4';
     if (props.outlined) return '2px solid #FF6528';
     return 'none';
@@ -49,27 +50,27 @@ const ButtonStyled = styled.button`
     if (props.width) return props.width;
 
     const sizeMap = {
-      long: '93%',
+      // long: `${theme.width.button}`,
       venti: '63%',
-      medium: '43.4%',
-      modal: '34.4%',
-      short: '27.2%',
-      menu: '23.7%',
+      medium: '7.5625rem',
+      modal: '5.25rem',
+      short: '27%',
+      menu: '4.125rem',
     };
 
-    return sizeMap[props.size] || '93%';
+    return sizeMap[props.size] || theme.width.button;
   }};
 
   height: ${(props) => {
     if (props.height) return props.height;
 
     const sizeMap = {
-      long: '6.8%',
-      venti: '6.8%',
-      medium: '6.8%',
-      modal: '5.5%',
-      short: '6.8%',
-      menu: '5%',
+      long: '6.8vh',
+      venti: '6.8vh',
+      medium: '6.8vh',
+      modal: '5.5vh',
+      short: '6.8vh',
+      menu: '5vh',
     };
 
     return sizeMap[props.size] || '6.8%';

@@ -5,14 +5,15 @@ const HeaderContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
   width: 100%;
-  height: 7%;
+  height: 10%;
   background-color: ${(props) =>
     props.isCarrot ? theme.color.primary : theme.color.white};
-  top: 0;
-  left: 0;
-  z-index: 1000;
+
+  @media (min-width: 480px) {
+    width: 480px;
+    align-items: center;
+  }
 `;
 
 const HeaderWrapper = styled.div`

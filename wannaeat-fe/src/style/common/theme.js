@@ -28,13 +28,13 @@ const theme = {
 
   fontWeight: {
     default: 500,
-    bold: 700,
+    bold: 900,
     light: 300,
   },
 
   width: {
-    button: '93%',
-    textfield: '90%',
+    button: '88%',
+    textfield: '86%',
   },
 
   height: {
@@ -44,6 +44,7 @@ const theme = {
   zIndex: {
     modal: 1000,
     blackLayout: 900,
+    stepLine: -1,
   },
 };
 

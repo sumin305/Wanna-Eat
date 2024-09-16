@@ -21,6 +21,7 @@ import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantImageRepo
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 import com.waterdragon.wannaeat.domain.user.repository.UserRepository;
+import com.waterdragon.wannaeat.global.exception.error.FileRemoveFailureException;
 import com.waterdragon.wannaeat.global.exception.error.FileUploadFailureException;
 import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
@@ -149,7 +150,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 			try {
 				fileUtil.removeFile("restaurants", existingRestaurantImage.getImageUrl());
 			} catch (IOException e) {
-				log.error("기존 이미지 삭제 작업중 실패 : {}", existingRestaurantImage.getImageUrl(), e);
+				throw new FileRemoveFailureException("파일 삭제 실패. 파일 이름 : " + existingRestaurantImage.getImageUrl());
 			}
 
 			restaurantImageRepository.delete(existingRestaurantImage);
@@ -178,7 +179,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 				try {
 					fileUtil.removeFile("restaurants", fileName);
 				} catch (IOException ex) {
-					log.error("파일 삭제 작업 중 실패 : {}", fileName, ex);
+					throw new FileRemoveFailureException("파일 삭제 실패. 파일 이름 : " + fileName);
 				}
 			}
 			throw new FileUploadFailureException("파일 업로드 실패 : " + e.getMessage());

@@ -27,12 +27,10 @@ const TimeSelectPage = () => {
     return(
         <TimeSelectPageContainer>
             <WEStep index={0}/>
-            <div>
-                <Button size="long" outlined={true} onClick={handleTimeSelectButtonClick} fontWeight={900} >{selectedDate} {selectedStartTime} ~ {selectedEndTime} {selectedHeadCount}명</Button>
-                <CalendarWrapper>
-                    <CalendarStyled showNeighboringMonth={false} onChange={handleDateChange} value={new Date()} formatDay={(locale, date) => moment(date).format("DD")}/>
-                </CalendarWrapper>
-            </div>
+            <Button size="long" outlined={true} onClick={handleTimeSelectButtonClick} fontWeight={900} >{selectedDate} {selectedStartTime} ~ {selectedEndTime} {selectedHeadCount}명</Button>
+            <CalendarWrapper>
+                <CalendarStyled showNeighboringMonth={false} onChange={handleDateChange} value={new Date()} formatDay={(locale, date) => moment(date).format("DD")}/>
+            </CalendarWrapper>
             <ButtonWrapper>
                 <Button size="short" color={"black"} backgroundColor={theme.color.disabled}>이전</Button>
                 <Button size="venti">예약</Button>

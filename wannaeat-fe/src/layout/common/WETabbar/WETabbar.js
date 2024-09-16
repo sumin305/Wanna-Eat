@@ -3,7 +3,6 @@ import theme from '../../../style/common/theme';
 
 const TabbarContainer = styled.div`
   display: flex;
-  position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
@@ -11,7 +10,6 @@ const TabbarContainer = styled.div`
   box-shadow: 1px 0px 4px 0px ${theme.color.disabled};
   -webkit-tap-highlight-color: transparent;
   background-color: ${theme.color.white};
-  z-index: 800;
   p {
     margin: 0;
   }

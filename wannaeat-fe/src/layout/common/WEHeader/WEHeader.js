@@ -1,18 +1,37 @@
 import styled from '@emotion/styled';
 import theme from '../../../style/common/theme';
+// display: flex;
+// bottom: 0;
+// left: 0;
+// width: 100%;
+// height: 10%;
+// box-shadow: 1px 0px 4px 0px ${theme.color.disabled};
+// -webkit-tap-highlight-color: transparent;
+// background-color: ${theme.color.white};
+// // z-index: 800;
+// p {
+//   margin: 0;
+// }
+
+// @media (min-width: 480px) {
+//   width: 480px;
+//   justify-content: center;
+// }
+// `;
 
 const HeaderContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
   width: 100%;
-  height: 7%;
+  height: 10%;
   background-color: ${(props) =>
     props.isCarrot ? theme.color.primary : theme.color.white};
-  top: 0;
-  left: 0;
-  z-index: 1000;
+
+  @media (min-width: 480px) {
+    width: 480px;
+    align-items: center;
+  }
 `;
 
 const HeaderWrapper = styled.div`

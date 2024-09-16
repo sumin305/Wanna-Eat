@@ -5,6 +5,7 @@ import {
   HeaderContainer,
   HeaderWrapper,
   HeaderLeft,
+  LogoTitle,
   HeaderCenter,
   HeaderRight,
   HeaderImg,
@@ -16,10 +17,10 @@ import Logo from '../../../assets/icons/logo.svg';
 import BackCarrot from '../../../assets/icons/back-carrot.svg';
 import BackWhite from '../../../assets/icons/back-white.svg';
 
-const WEHeader = ({ text, icon, isShowLogo, isShowBackIcon }) => {
+const WEHeader = ({ isCarrot, text, icon, isShowLogo, isShowBackIcon }) => {
   const {
-    themeColor,
     pageName,
+    setIsCarrot,
     setPageName,
     setIsShowLogo,
     activeIcons,
@@ -30,6 +31,7 @@ const WEHeader = ({ text, icon, isShowLogo, isShowBackIcon }) => {
   const nav = useNavigate();
 
   useEffect(() => {
+    setIsCarrot(isCarrot);
     setPageName(text);
     setActiveIcons(icon);
     setIsShowLogo(isShowLogo);
@@ -37,17 +39,24 @@ const WEHeader = ({ text, icon, isShowLogo, isShowBackIcon }) => {
   }, []);
 
   return (
-    <HeaderContainer>
+    <HeaderContainer isCarrot={isCarrot}>
       <HeaderWrapper>
         <HeaderLeft>
           {isShowLogo ? (
-            <HeaderImg src={Logo} alt="로고" />
+            <>
+              <HeaderImg src={Logo} alt="로고" />
+              <LogoTitle isCarrot={isCarrot}>머 물래?</LogoTitle>
+            </>
           ) : isShowBackIcon ? (
-            <HeaderImg src={BackCarrot} alt="뒤로가기" />
+            <HeaderImg src={isCarrot ? BackWhite : BackCarrot} alt="뒤로가기" />
           ) : null}
         </HeaderLeft>
         <HeaderCenter>
-          <HeaderTitle isShowLogo={isShowLogo} isShowBackIcon={isShowBackIcon}>
+          <HeaderTitle
+            isShowLogo={isShowLogo}
+            isShowBackIcon={isShowBackIcon}
+            isCarrot={isCarrot}
+          >
             {pageName}
           </HeaderTitle>
         </HeaderCenter>

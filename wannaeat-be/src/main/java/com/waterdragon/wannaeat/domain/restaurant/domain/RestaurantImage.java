@@ -35,5 +35,4 @@ public class RestaurantImage {
 	@Column(name = "restaurant_image_url", nullable = false)
 	private String imageUrl;
 
-	// Getters and setters
 }

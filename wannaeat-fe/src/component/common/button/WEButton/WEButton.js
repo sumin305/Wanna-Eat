@@ -49,15 +49,15 @@ const ButtonStyled = styled.button`
     if (props.width) return props.width;
 
     const sizeMap = {
-      long: '93%',
-      venti: '11rem',
+      // long: `${theme.width.button}`,
+      venti: '63%',
       medium: '7.5625rem',
       modal: '5.25rem',
-      short: '4.75rem',
+      short: '27%',
       menu: '4.125rem',
     };
 
-    return sizeMap[props.size] || '16.1875rem';
+    return sizeMap[props.size] || theme.width.button;
   }};
 
   height: ${(props) => {

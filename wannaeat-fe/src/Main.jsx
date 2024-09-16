@@ -29,7 +29,6 @@ const Main = () => {
       {isModalVisible && <WEModal />}
       <AppContainer>
         <AppRoutes />
-        {/* <TimeSelectPage/> */}
         <WETabbar />
       </AppContainer>
     </div>

@@ -3,14 +3,11 @@ import Button from '../../../../../component/common/button/WEButton/WEButton.jsx
 import theme from "../../../../../style/common/theme.js"
 import {TimeSelectPageContainer, ButtonWrapper} from './TimeSelectPage.js'
 import useModalStore from "../../../../../stores/common/modal/useModalStore.js"
-import TimeSelectModalBox from "../../../../../component/customer/reservation/WEStep/TimeSelectModalBox.jsx"
+import TimeSelectModalBox from "../../../../../component/customer/reservation/TimeSelectModalBox/TimeSelectModalBox.jsx"
+import useTimeSelectStore from "../../../../../stores/customer/useTimeSelectStore.js"
 const TimeSelectPage = () => {
-    const selectedDate = '09.06'
-    const selectedStartTime = '19:00'
-    const selectedEndTime = '20:00'
-    const selectedHeadCount = 2
     const {open, setModalType, setConfirmText, setTitle, setChildren} = useModalStore();
-
+    const {selectedDate, selectedStartTime, selectedEndTime, selectedHeadCount} = useTimeSelectStore();
     const handleTimeSelectButtonClick = e => {
         setModalType('sheet')
         setConfirmText('확인')

@@ -39,6 +39,7 @@ const ButtonStyled = styled.button`
   }};
 
   border: ${(props) => {
+    if (props.miniOutlined) return '1px solid #FF6528';
     if (props.disabled && props.outlined) return '2px solid #D4D4D4';
     if (props.outlined) return '2px solid #FF6528';
     return 'none';

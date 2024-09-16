@@ -14,6 +14,9 @@ import com.waterdragon.wannaeat.domain.user.repository.UserRepository;
 import com.waterdragon.wannaeat.domain.user.repository.UserTokenRepository;
 import com.waterdragon.wannaeat.global.auth.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.waterdragon.wannaeat.global.auth.jwt.service.JwtService;
+import com.waterdragon.wannaeat.global.auth.oauth2.handler.OAuth2LoginFailureHandler;
+import com.waterdragon.wannaeat.global.auth.oauth2.handler.OAuth2LoginSuccessHandler;
+import com.waterdragon.wannaeat.global.auth.oauth2.service.CustomOAuth2UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,9 @@ public class SecurityConfig {
 	private final JwtService jwtService;
 	private final UserRepository userRepository;
 	private final UserTokenRepository userTokenRepository;
+	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+	private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+	private final CustomOAuth2UserService customOAuth2UserService;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -45,7 +51,14 @@ public class SecurityConfig {
 				// 기본 페이지
 				.requestMatchers("/", "/favicon.ico", "/oauth2/authorization/**").permitAll()
 				.requestMatchers("/api/public/**").permitAll()
-				.anyRequest().permitAll()// 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
+				.anyRequest().authenticated()// 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
+			)
+
+			// 소셜 로그인
+			.oauth2Login(oauth2 -> oauth2
+				.userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(customOAuth2UserService))
+				.successHandler(oAuth2LoginSuccessHandler)
+				.failureHandler(oAuth2LoginFailureHandler)
 			)
 
 			// 예외 처리

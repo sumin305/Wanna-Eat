@@ -4,7 +4,7 @@ import TopPage from './pages/TopPage/TopPage.jsx';
 import useModalStore from './stores/modal/useModalStore.js';
 import WEBlackOutLayout from './layout/common/WEBlackOutLayout/WEBlackOutLayout.jsx';
 import WEModal from './component/common/modal/WEModal.jsx';
-import AppRoutes from './routes.js';
+import AppRoutes from './route/routes.js';
 
 const Main = () => {
   const { isModalVisible } = useModalStore();

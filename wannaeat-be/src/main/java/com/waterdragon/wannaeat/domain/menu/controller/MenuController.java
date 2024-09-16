@@ -2,6 +2,7 @@ package com.waterdragon.wannaeat.domain.menu.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,6 +73,27 @@ public class MenuController {
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	/**
+	 * 메뉴 삭제 API
+	 *
+	 * @param menuId 메뉴 id
+	 * @return void 메뉴 삭제 결과
+	 */
+	@Operation(summary = "메뉴 삭제 API")
+	@DeleteMapping("/{menuId}")
+	public ResponseEntity<ResponseDto<Void>> removeMenu(
+		@PathVariable(name = "menuId") Long menuId) {
+
+		menuService.removeMenu(menuId);
+		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+			.status(HttpStatus.NO_CONTENT.value())
+			.message("메뉴가 성공적으로 삭제되었습니다.")
+			.data(null)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.NO_CONTENT);
 	}
 
 }

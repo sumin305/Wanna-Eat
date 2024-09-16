@@ -10,4 +10,6 @@ public interface MenuService {
 	void registerMenu(MenuRegisterRequestDto menuRegisterRequestDto, MultipartFile multipartFile);
 
 	void editMenu(Long menuId, MenuEditRequestDto menuEditRequestDto, MultipartFile multipartFile);
+
+	void removeMenu(Long menuId);
 }

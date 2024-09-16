@@ -17,6 +17,7 @@ import com.waterdragon.wannaeat.domain.menu.repository.MenuRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
+import com.waterdragon.wannaeat.global.exception.error.FileRemoveFailureException;
 import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
 import com.waterdragon.wannaeat.global.util.FileUtil;
@@ -36,6 +37,12 @@ public class MenuServiceImpl implements MenuService {
 	private final FileUtil fileUtil;
 	private final MenuRepository menuRepository;
 
+	/**
+	 * 메뉴 등록 메소드
+	 *
+	 * @param menuRegisterRequestDto 메뉴 등록 정보
+	 * @param multipartFile 메뉴 사진
+	 */
 	@Override
 	@Transactional
 	public void registerMenu(MenuRegisterRequestDto menuRegisterRequestDto, MultipartFile multipartFile) {
@@ -78,6 +85,13 @@ public class MenuServiceImpl implements MenuService {
 		menuRepository.save(menu);
 	}
 
+	/**
+	 * 메뉴 수정 메소드
+	 *
+	 * @param menuId 메뉴 id
+	 * @param menuEditRequestDto 메뉴 수정 정보
+	 * @param multipartFile 메뉴 수정 사진
+	 */
 	@Override
 	@Transactional
 	public void editMenu(Long menuId, MenuEditRequestDto menuEditRequestDto, MultipartFile multipartFile) {
@@ -108,7 +122,7 @@ public class MenuServiceImpl implements MenuService {
 		try {
 			fileUtil.removeFile("menus", menu.getImage());
 		} catch (IOException e) {
-			log.error("기존 이미지 삭제 작업중 실패 : {}", menu.getImage(), e);
+			throw new FileRemoveFailureException("파일 삭제 실패. 파일 이름 : " + menu.getImage());
 		}
 
 		// 새로운 메뉴 사진 등록
@@ -123,5 +137,40 @@ public class MenuServiceImpl implements MenuService {
 		menu.update(menuCategory, menuEditRequestDto.getMenuName(), menuEditRequestDto.getMenuPrice(),
 			uploadedMenuImageFileName, menuEditRequestDto.getMenuDescription());
 		menuRepository.save(menu);
+	}
+
+	/**
+	 * 메뉴 삭제 메소드
+	 *
+	 * @param menuId 메뉴 id
+	 */
+	@Override
+	@Transactional
+	public void removeMenu(Long menuId) {
+
+		// 인증 회원 객체
+		User user = authUtil.getAuthenticatedUser();
+
+		// 메뉴 찾기
+		Menu menu = menuRepository.findByMenuIdAndDeletedFalse(menuId)
+			.orElseThrow(() -> new MenuNotExistException("해당 id의 메뉴를 찾을 수 없습니다. 메뉴 id : " + menuId));
+
+		// 유저에 해당하는 식당인지 확인
+		Restaurant restaurant = restaurantRepository.findByRestaurantIdAndUser(menu.getRestaurant().getRestaurantId(),
+				user)
+			.orElseThrow(() -> new NotAuthorizedException("메뉴 삭제 권한 없음."));
+
+		// 메뉴 이미지 삭제
+		String menuImageFileName = menu.getImage();
+		if (menuImageFileName != null) {
+			try {
+				fileUtil.removeFile("menus", menuImageFileName);
+			} catch (IOException e) {
+				throw new FileRemoveFailureException("파일 삭제 실패. 파일 이름 : " + menuImageFileName);
+			}
+		}
+
+		// 메뉴 삭제
+		menuRepository.delete(menu);
 	}
 }

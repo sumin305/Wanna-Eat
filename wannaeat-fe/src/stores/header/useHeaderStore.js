@@ -25,4 +25,5 @@ const useHeaderStore = create((set) => ({
     set({ isShowExtraHeader: isShowExtraHeader }),
   setExtraHeaderText: (text) => set({ extraHeaderText: text }),
 }));
+
 export default useHeaderStore;

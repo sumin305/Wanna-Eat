@@ -4,6 +4,9 @@ import useHeaderStore from '../../../stores/header/useHeaderStore';
 import {
   HeaderContainer,
   HeaderWrapper,
+  HeaderLeft,
+  HeaderCenter,
+  HeaderRight,
   HeaderImg,
   HeaderTitle,
   IconImg,
@@ -35,16 +38,25 @@ const WEHeader = ({ text, icon }) => {
   return (
     <HeaderContainer>
       <HeaderWrapper>
-        {isShowLogo ? (
-          <HeaderImg src={Logo} alt="로고" />
-        ) : (
-          <HeaderImg src={BackCarrot} alt="뒤로가기" />
-        )}
-        <HeaderTitle>{pageName}</HeaderTitle>
-        {isShowIcon &&
-          activeIcons.map((icon, index) => (
-            <IconImg key={index} src={icon} alt={icon.alt} />
-          ))}
+        <HeaderLeft>
+          {(isShowLogo || isShowBackIcon) &&
+            (isShowLogo ? (
+              <HeaderImg src={Logo} alt="로고" />
+            ) : (
+              <HeaderImg src={BackCarrot} alt="뒤로가기" />
+            ))}
+        </HeaderLeft>
+        <HeaderCenter>
+          <HeaderTitle isShowLogo={isShowLogo} isShowBackIcon={isShowBackIcon}>
+            {pageName}
+          </HeaderTitle>
+        </HeaderCenter>
+        <HeaderRight>
+          {isShowIcon &&
+            activeIcons.map((icon, index) => (
+              <IconImg key={index} src={icon} alt={icon.alt} />
+            ))}
+        </HeaderRight>
       </HeaderWrapper>
     </HeaderContainer>
   );

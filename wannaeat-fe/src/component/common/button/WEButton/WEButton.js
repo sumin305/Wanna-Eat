@@ -65,12 +65,12 @@ const ButtonStyled = styled.button`
     if (props.height) return props.height;
 
     const sizeMap = {
-      long: '6.8%',
-      venti: '6.8%',
-      medium: '6.8%',
-      modal: '5.5%',
-      short: '6.8%',
-      menu: '5%',
+      long: '6.8vh',
+      venti: '6.8vh',
+      medium: '6.8vh',
+      modal: '5.5vh',
+      short: '6.8vh',
+      menu: '5vh',
     };
 
     return sizeMap[props.size] || '6.8%';

@@ -88,11 +88,12 @@ public class RestaurantServiceImpl implements RestaurantService {
 	 */
 	@Override
 	@Transactional
-	public void editRestaurant(Long restaurantId, RestaurantEditRequestDto restaurantEditRequestDto, List<MultipartFile> multipartFiles) {
-		
+	public void editRestaurant(Long restaurantId, RestaurantEditRequestDto restaurantEditRequestDto,
+		List<MultipartFile> multipartFiles) {
+
 		// 인증 회원 객체
 		User user = authUtil.getAuthenticatedUser();
-		
+
 		// 유저에 해당하는 식당인지 확인
 		Restaurant restaurant = restaurantRepository.findByRestaurantIdAndUser(restaurantId, user)
 			.orElseThrow(() -> new NotAuthorizedException("식당 수정 권한 없음."));
@@ -108,12 +109,13 @@ public class RestaurantServiceImpl implements RestaurantService {
 		Long categoryId = restaurantEditRequestDto.getRestaurantCategoryId();
 		RestaurantCategory restaurantCategory = restaurantCategoryRepository.findByCategoryId(categoryId)
 			.orElseThrow(() -> new InvalidRestaurantCategoryException("미유효 식당 카테고리 번호 : " + categoryId));
-		
+
 		// 식당 시간 순서 체크
-		if (restaurantEditRequestDto.getRestaurantCloseTime().isBefore(restaurantEditRequestDto.getRestaurantOpenTime())) {
+		if (restaurantEditRequestDto.getRestaurantCloseTime()
+			.isBefore(restaurantEditRequestDto.getRestaurantOpenTime())) {
 			throw new InvalidRestaurantTimeException("매장 마감 시간은 오픈 시간 이후여야 합니다.");
 		}
-		
+
 		// 브레이크타임 시간 순서 체크
 		if (restaurantEditRequestDto.getBreakEndTime().isBefore(restaurantEditRequestDto.getBreakStartTime())) {
 			throw new InvalidBreakTimeException("브레이크타임 종료 시간은 브레이크타임 시작 시간 이후여야 합니다.");
@@ -139,7 +141,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 			restaurantEditRequestDto.getLatitude(),
 			restaurantEditRequestDto.getLongitude());
 		restaurantRepository.save(restaurant);
-		
+
 		// 기존 사진 삭제 (파일, db 모두)
 		List<RestaurantImage> existingRestaurantImages = restaurantImageRepository.findAllByRestaurant(restaurant);
 
@@ -170,7 +172,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 				}
 			}
 		} catch (IOException e) {
-			
+
 			// 파일 여러장을 올리다가 실패했을 때, 기존 올라갔던 파일 삭제 로직
 			for (String fileName : uploadedRestaurantImageFileNames) {
 				try {

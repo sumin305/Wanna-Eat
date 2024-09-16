@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class MenuRegisterRequestDto {
+public class MenuEditRequestDto {
 
 	@NotNull(message = "식당은 필수 입력값입니다.")
 	private Long restaurantId;

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.waterdragon.wannaeat.domain.menu.exception.error.InvalidMenuCategoryException;
 import com.waterdragon.wannaeat.domain.menu.exception.error.MenuNotBelongToRestaurantException;
+import com.waterdragon.wannaeat.domain.menu.exception.error.MenuNotExistException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
 @RestControllerAdvice
@@ -26,6 +27,15 @@ public class MenuExceptionHandler {
 		MenuNotBelongToRestaurantException ex) {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Menu Not Belong To Restaurant", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+	}
+
+	// 메뉴 id 해당 메뉴 존재 안함
+	@ExceptionHandler(MenuNotExistException.class)
+	public final ResponseEntity<ErrorResponseDto> handleMenuNotExistException(
+		MenuNotExistException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Menu Not Exist", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 	}
 }

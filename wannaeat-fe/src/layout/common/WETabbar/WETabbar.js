@@ -3,13 +3,14 @@ import theme from '../../../style/common/theme';
 
 const TabbarContainer = styled.div`
   display: flex;
+  position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 3.125rem;
+  height: 10%;
   box-shadow: 1px 0px 4px 0px ${theme.color.disabled};
   -webkit-tap-highlight-color: transparent;
-  background-color: white;
+  background-color: ${theme.color.white};
   z-index: 800;
   p {
     margin: 0;
@@ -31,10 +32,10 @@ const TabWrapper = styled.div`
 `;
 
 const TabImg = styled.img`
-  width: 1.5rem;
-  height: 1.5rem;
-  padding-top: 0.3rem;
-  padding-bottom: 0.073rem;
+  width: 45%;
+  height: 45%;
+  padding-top: 3%;
+  padding-bottom: 4%;
 `;
 
 const TabText = styled.p`
@@ -43,7 +44,7 @@ const TabText = styled.p`
   text-align: center;
   font-size: ${theme.fontSize.px10};
   font-weight: ${theme.fontWeight.bold};
-  padding-bottom: 0.364rem;
+  padding-bottom: 3%;
 `;
 
 export { TabbarContainer, TabWrapper, TabImg, TabText };

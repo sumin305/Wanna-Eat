@@ -2,7 +2,7 @@ import styled from '@emotion/styled/macro';
 import theme from '../../../../style/common/theme';
 
 const WESettingModalContainer = styled.div`
-  background: white;
+  background-color: ${theme.color.white};
   position: fixed;
   top: 25%;
   height: 40%;

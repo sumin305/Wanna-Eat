@@ -35,5 +35,4 @@ public class RestaurantCategory {
 	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
 	private List<Restaurant> restaurants;
 
-	// Getters and setters
 }

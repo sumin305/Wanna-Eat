@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import WEHeader from '../../../layout/common/WEHeader/WEHeader.jsx';
 import WEExtraHeader from '../../../layout/common/WEHeader/WEExtraHeader.jsx';
 import useHeaderStore from '../../../stores/header/useHeaderStore.js';
-import WEToggle from '../../../component/common/toggle/WEToggle.jsx';
 
 const MainPage = () => {
   const { icons, isShowExtraHeader, setIsShowExtraHeader } = useHeaderStore();
@@ -27,7 +26,6 @@ const MainPage = () => {
       )}
 
       <div>사장님 메인페이지</div>
-      <WEToggle />
     </>
   );
 };

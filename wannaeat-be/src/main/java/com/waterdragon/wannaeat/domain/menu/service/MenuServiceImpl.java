@@ -11,7 +11,7 @@ import com.waterdragon.wannaeat.domain.menu.dto.request.MenuEditRequestDto;
 import com.waterdragon.wannaeat.domain.menu.dto.request.MenuRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.menu.exception.error.InvalidMenuCategoryException;
 import com.waterdragon.wannaeat.domain.menu.exception.error.MenuNotBelongToRestaurantException;
-import com.waterdragon.wannaeat.domain.menu.exception.error.MenuNotExistException;
+import com.waterdragon.wannaeat.domain.menu.exception.error.MenuNotFoundException;
 import com.waterdragon.wannaeat.domain.menu.repository.MenuCategoryRepository;
 import com.waterdragon.wannaeat.domain.menu.repository.MenuRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
@@ -101,7 +101,7 @@ public class MenuServiceImpl implements MenuService {
 
 		// 메뉴 존재 확인
 		Menu menu = menuRepository.findByMenuIdAndDeletedFalse(menuId)
-			.orElseThrow(() -> new MenuNotExistException("메뉴id에 해당하는 메뉴 존재하지 않음. : " + menuId));
+			.orElseThrow(() -> new MenuNotFoundException("메뉴id에 해당하는 메뉴 존재하지 않음. : " + menuId));
 
 		// 유저에 해당하는 식당인지 확인
 		Restaurant restaurant = restaurantRepository.findByRestaurantIdAndUser(menuEditRequestDto.getRestaurantId(),
@@ -153,7 +153,7 @@ public class MenuServiceImpl implements MenuService {
 
 		// 메뉴 찾기
 		Menu menu = menuRepository.findByMenuIdAndDeletedFalse(menuId)
-			.orElseThrow(() -> new MenuNotExistException("해당 id의 메뉴를 찾을 수 없습니다. 메뉴 id : " + menuId));
+			.orElseThrow(() -> new MenuNotFoundException("해당 id의 메뉴를 찾을 수 없습니다. 메뉴 id : " + menuId));
 
 		// 유저에 해당하는 식당인지 확인
 		Restaurant restaurant = restaurantRepository.findByRestaurantIdAndUser(menu.getRestaurant().getRestaurantId(),

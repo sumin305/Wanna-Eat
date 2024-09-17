@@ -2,20 +2,26 @@ package com.waterdragon.wannaeat.domain.restaurant.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.waterdragon.wannaeat.domain.menu.domain.Menu;
+import com.waterdragon.wannaeat.domain.menu.dto.response.MenuDetailReponseDto;
+import com.waterdragon.wannaeat.domain.menu.repository.MenuRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantCategory;
 import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantImage;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantEditRequestDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.DuplicateBusinessNumberException;
-import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidBreakTimeException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidBreakStartEndTimeException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantCategoryException;
-import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantTimeException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantOpenCloseTimeException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantCategoryRepository;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantImageRepository;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
@@ -40,6 +46,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 	private final RestaurantRepository restaurantRepository;
 	private final RestaurantCategoryRepository restaurantCategoryRepository;
 	private final RestaurantImageRepository restaurantImageRepository;
+	private final MenuRepository menuRepository;
 	private final FileUtil fileUtil;
 	private final AuthUtil authUtil;
 
@@ -82,6 +89,47 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 
 	/**
+	 * 매장별 메뉴 목록 조회 메소드
+	 *
+	 * @param restaurantId 매장 id
+	 * @return Map<String, List < MenuDetailReponseDto>> 카테고리별 메뉴 리스트 반환
+	 */
+	@Override
+	public Map<String, List<MenuDetailReponseDto>> getListMenuByRestaurantId(Long restaurantId) {
+
+		// 식당 존재여부 확인
+		Restaurant restaurant = restaurantRepository.findByRestaurantId(restaurantId)
+			.orElseThrow(() -> new RestaurantNotFoundException("해당 매장 찾을 수 없음. restaurantId : " + restaurantId));
+
+		// restaurant에 해당하는 모든 메뉴 불러오기
+		List<Menu> menus = menuRepository.findAllByRestaurantAndDeletedFalse(restaurant);
+
+		// 카테고리별 메뉴 그룹화
+		Map<String, List<MenuDetailReponseDto>> map = new HashMap<>();
+		for (Menu menu : menus) {
+			// 해당 메뉴 카테고리 추출
+			String menuCategoryName = menu.getMenuCategory().getCategoryName();
+
+			// 반환 객체 MenuDetailResponseDto 생성
+			MenuDetailReponseDto menuDetailReponseDto = MenuDetailReponseDto.builder()
+				.menuId(menu.getMenuId())
+				.menuName(menu.getName())
+				.menuPrice(menu.getPrice())
+				.menuImage(menu.getImage())
+				.menuDescription(menu.getDescription())
+				.build();
+
+			// 카테고리 Key 있는지 여부 확인해서 처리
+			if (!map.containsKey(menuCategoryName)) {
+				map.put(menuCategoryName, new ArrayList<>());
+			}
+			map.get(menuCategoryName).add(menuDetailReponseDto);
+		}
+
+		return map;
+	}
+
+	/**
 	 * 매장 수정 메소드
 	 *
 	 * @param restaurantEditRequestDto 매장 수정 정보
@@ -114,12 +162,12 @@ public class RestaurantServiceImpl implements RestaurantService {
 		// 식당 시간 순서 체크
 		if (restaurantEditRequestDto.getRestaurantCloseTime()
 			.isBefore(restaurantEditRequestDto.getRestaurantOpenTime())) {
-			throw new InvalidRestaurantTimeException("매장 마감 시간은 오픈 시간 이후여야 합니다.");
+			throw new InvalidRestaurantOpenCloseTimeException("매장 마감 시간은 오픈 시간 이후여야 합니다.");
 		}
 
 		// 브레이크타임 시간 순서 체크
 		if (restaurantEditRequestDto.getBreakEndTime().isBefore(restaurantEditRequestDto.getBreakStartTime())) {
-			throw new InvalidBreakTimeException("브레이크타임 종료 시간은 브레이크타임 시작 시간 이후여야 합니다.");
+			throw new InvalidBreakStartEndTimeException("브레이크타임 종료 시간은 브레이크타임 시작 시간 이후여야 합니다.");
 		}
 
 		// Restaurant 엔티티 수정 후 저장

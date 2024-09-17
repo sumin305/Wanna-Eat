@@ -38,7 +38,7 @@ const WEHeader = ({ isCarrot, text, icon, isShowLogo, isShowBackIcon }) => {
     setIsShowBackIcon(isShowBackIcon);
   }, []);
 
-  const handleBackClick = () => {
+  const handleClickBack = () => {
     nav(-1); // 뒤로가기
   };
 
@@ -55,7 +55,7 @@ const WEHeader = ({ isCarrot, text, icon, isShowLogo, isShowBackIcon }) => {
             <HeaderImg
               src={isCarrot ? BackWhite : BackCarrot}
               alt="뒤로가기"
-              onClick={handleBackClick}
+              onClick={handleClickBack}
             />
           ) : null}
         </HeaderLeft>

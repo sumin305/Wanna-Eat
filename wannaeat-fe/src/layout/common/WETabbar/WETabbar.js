@@ -3,9 +3,6 @@ import theme from '../../../style/common/theme';
 
 const TabbarContainer = styled.div`
   display: flex;
-  position: fixed;
-  bottom: 0;
-  left: 0;
   background-color: ${theme.color.white};
   width: 100%;
   height: 10%;

@@ -11,12 +11,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.waterdragon.wannaeat.domain.menu.domain.Menu;
 import com.waterdragon.wannaeat.domain.menu.dto.response.MenuDetailReponseDto;
+import com.waterdragon.wannaeat.domain.menu.dto.response.MenuListResponseDto;
 import com.waterdragon.wannaeat.domain.menu.repository.MenuRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantCategory;
 import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantImage;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantEditRequestDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantRegisterRequestDto;
+import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantDetailResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.DuplicateBusinessNumberException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidBreakStartEndTimeException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantCategoryException;
@@ -89,44 +91,57 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 
 	/**
-	 * 매장별 메뉴 목록 조회 메소드
+	 * 매장 상세 조회 메소드 (메뉴 포함)
 	 *
 	 * @param restaurantId 매장 id
-	 * @return Map<String, List < MenuDetailReponseDto>> 카테고리별 메뉴 리스트 반환
+	 * @return RestaurantDetailResponseDto 매장 상세 조회 결과
 	 */
 	@Override
-	public Map<String, List<MenuDetailReponseDto>> getListMenuByRestaurantId(Long restaurantId) {
+	public RestaurantDetailResponseDto getDetailRestaurantByRestaurantId(Long restaurantId) {
 
 		// 식당 존재여부 확인
 		Restaurant restaurant = restaurantRepository.findByRestaurantId(restaurantId)
 			.orElseThrow(() -> new RestaurantNotFoundException("해당 매장 찾을 수 없음. restaurantId : " + restaurantId));
 
-		// restaurant에 해당하는 모든 메뉴 불러오기
-		List<Menu> menus = menuRepository.findAllByRestaurantAndDeletedFalse(restaurant);
+		// 식당 메뉴 목록 불러오기
+		MenuListResponseDto menuListResponseDto = getRestaurantMenuList(restaurant);
 
-		// 카테고리별 메뉴 그룹화
-		Map<String, List<MenuDetailReponseDto>> map = new HashMap<>();
-		for (Menu menu : menus) {
-			// 해당 메뉴 카테고리 추출
-			String menuCategoryName = menu.getMenuCategory().getCategoryName();
+		return RestaurantDetailResponseDto.builder()
+			.restaurantBusinessNumber(restaurant.getBusinessNumber())
+			.restaurantOwnerName(restaurant.getOwnerName())
+			.restaurantAddress(restaurant.getAddress())
+			.restaurantPhone(restaurant.getPhone())
+			.restaurantName(restaurant.getName())
+			.restaurantCategoryName(restaurant.getCategory().getCategoryName())
+			.restaurantOpenTime(restaurant.getOpenTime())
+			.restaurantCloseTime(restaurant.getCloseTime())
+			.breakStartTime(restaurant.getBreakStartTime())
+			.breakEndTime(restaurant.getBreakEndTime())
+			.maxReservationTime(restaurant.getMaxReservationTime())
+			.minMemberCount(restaurant.getMinMemberCount())
+			.maxMemberCount(restaurant.getMaxMemberCount())
+			.depositPerMember(restaurant.getDepositPerMember())
+			.restaurantDescription(restaurant.getDescription())
+			.latitude(restaurant.getLatitude())
+			.longitude(restaurant.getLongitude())
+			.menuListResponseDto(menuListResponseDto)
+			.build();
+	}
 
-			// 반환 객체 MenuDetailResponseDto 생성
-			MenuDetailReponseDto menuDetailReponseDto = MenuDetailReponseDto.builder()
-				.menuId(menu.getMenuId())
-				.menuName(menu.getName())
-				.menuPrice(menu.getPrice())
-				.menuImage(menu.getImage())
-				.menuDescription(menu.getDescription())
-				.build();
+	/**
+	 * 매장별 메뉴 목록 조회 메소드
+	 *
+	 * @param restaurantId 매장 id
+	 * @return MenuListResponseDto 카테고리별 메뉴 리스트 반환
+	 */
+	@Override
+	public MenuListResponseDto getListMenusByRestaurantId(Long restaurantId) {
 
-			// 카테고리 Key 있는지 여부 확인해서 처리
-			if (!map.containsKey(menuCategoryName)) {
-				map.put(menuCategoryName, new ArrayList<>());
-			}
-			map.get(menuCategoryName).add(menuDetailReponseDto);
-		}
+		// 식당 존재여부 확인
+		Restaurant restaurant = restaurantRepository.findByRestaurantId(restaurantId)
+			.orElseThrow(() -> new RestaurantNotFoundException("해당 매장 찾을 수 없음. restaurantId : " + restaurantId));
 
-		return map;
+		return getRestaurantMenuList(restaurant);
 	}
 
 	/**
@@ -192,6 +207,19 @@ public class RestaurantServiceImpl implements RestaurantService {
 		restaurantRepository.save(restaurant);
 
 		// 기존 사진 삭제 (파일, db 모두)
+		deleteExistingRestaurantImage(restaurant);
+
+		// 매장 사진 등록 및 수정
+		uploadNewRestaurantImages(restaurant, multipartFiles);
+	}
+
+	/**
+	 * 기존 매장 사진 삭제 메소드
+	 *
+	 * @param restaurant 매장
+	 */
+	private void deleteExistingRestaurantImage(Restaurant restaurant) {
+
 		List<RestaurantImage> existingRestaurantImages = restaurantImageRepository.findAllByRestaurant(restaurant);
 
 		for (RestaurantImage existingRestaurantImage : existingRestaurantImages) {
@@ -203,8 +231,16 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 			restaurantImageRepository.delete(existingRestaurantImage);
 		}
+	}
 
-		// 매장 사진 등록 및 수정
+	/**
+	 * 새로운 매장 사진들 등록 메소드
+	 *
+	 * @param restaurant 매장
+	 * @param multipartFiles 사진 파일들
+	 */
+	private void uploadNewRestaurantImages(Restaurant restaurant, List<MultipartFile> multipartFiles) {
+
 		List<String> uploadedRestaurantImageFileNames = new ArrayList<>();
 
 		try {
@@ -232,6 +268,43 @@ public class RestaurantServiceImpl implements RestaurantService {
 			}
 			throw new FileUploadFailureException("파일 업로드 실패 : " + e.getMessage());
 		}
+	}
 
+	/**
+	 * 매장별 메뉴 목록 조회 메소드
+	 *
+	 * @param restaurant 매장
+	 * @return
+	 */
+	private MenuListResponseDto getRestaurantMenuList(Restaurant restaurant) {
+
+		// restaurant에 해당하는 모든 메뉴 불러오기
+		List<Menu> menus = menuRepository.findAllByRestaurantAndDeletedFalse(restaurant);
+
+		// 카테고리별 메뉴 그룹화
+		Map<String, List<MenuDetailReponseDto>> map = new HashMap<>();
+		for (Menu menu : menus) {
+			// 해당 메뉴 카테고리 추출
+			String menuCategoryName = menu.getMenuCategory().getCategoryName();
+
+			// 반환 객체 MenuDetailResponseDto 생성
+			MenuDetailReponseDto menuDetailReponseDto = MenuDetailReponseDto.builder()
+				.menuId(menu.getMenuId())
+				.menuName(menu.getName())
+				.menuPrice(menu.getPrice())
+				.menuImage(menu.getImage())
+				.menuDescription(menu.getDescription())
+				.build();
+
+			// 카테고리 Key 있는지 여부 확인해서 처리
+			if (!map.containsKey(menuCategoryName)) {
+				map.put(menuCategoryName, new ArrayList<>());
+			}
+			map.get(menuCategoryName).add(menuDetailReponseDto);
+		}
+
+		return MenuListResponseDto.builder()
+			.menusMap(map)
+			.build();
 	}
 }

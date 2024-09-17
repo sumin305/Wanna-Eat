@@ -1,7 +1,6 @@
 package com.waterdragon.wannaeat.domain.restaurant.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +14,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.waterdragon.wannaeat.domain.menu.dto.response.MenuDetailReponseDto;
+import com.waterdragon.wannaeat.domain.menu.dto.response.MenuListResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantEditRequestDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantRegisterRequestDto;
+import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantDetailResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.service.RestaurantService;
 import com.waterdragon.wannaeat.global.response.ResponseDto;
 
@@ -53,6 +53,22 @@ public class RestaurantController {
 		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 	}
 
+	@Operation(summary = "매장 정보 상세 조회 API(메뉴 포함)")
+	@GetMapping("/public/restaurants/{restaurantId}")
+	public ResponseEntity<ResponseDto<RestaurantDetailResponseDto>> getDetailRestaurantByRestaurantId(
+		@PathVariable(name = "restaurantId") Long restaurantId) {
+
+		RestaurantDetailResponseDto restaurantDetailResponseDto = restaurantService.getDetailRestaurantByRestaurantId(
+			restaurantId);
+		ResponseDto<RestaurantDetailResponseDto> responseDto = ResponseDto.<RestaurantDetailResponseDto>builder()
+			.status(HttpStatus.OK.value())
+			.message("매장 상세가 성공적으로 조회되었습니다.")
+			.data(restaurantDetailResponseDto)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
 	/**
 	 * 매장별 메뉴 목록 조회 API
 	 *
@@ -61,14 +77,14 @@ public class RestaurantController {
 	 */
 	@Operation(summary = "매장별 메뉴 목록 조회 API")
 	@GetMapping("/public/restaurants/{restaurantId}/menus")
-	public ResponseEntity<ResponseDto<Map<String, List<MenuDetailReponseDto>>>> getListMenusByRestaurantId(
+	public ResponseEntity<ResponseDto<MenuListResponseDto>> getListMenusByRestaurantId(
 		@PathVariable(name = "restaurantId") Long restaurantId) {
 
-		Map<String, List<MenuDetailReponseDto>> map = restaurantService.getListMenuByRestaurantId(restaurantId);
-		ResponseDto<Map<String, List<MenuDetailReponseDto>>> responseDto = ResponseDto.<Map<String, List<MenuDetailReponseDto>>>builder()
+		MenuListResponseDto menuListResponseDto = restaurantService.getListMenusByRestaurantId(restaurantId);
+		ResponseDto<MenuListResponseDto> responseDto = ResponseDto.<MenuListResponseDto>builder()
 			.status(HttpStatus.OK.value())
-			.message("메뉴 목록이 성공적으로 반환되었습니다.")
-			.data(map)
+			.message("메뉴 목록이 성공적으로 조회되었습니다.")
+			.data(menuListResponseDto)
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);

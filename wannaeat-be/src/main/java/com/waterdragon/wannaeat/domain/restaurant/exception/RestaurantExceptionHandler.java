@@ -9,6 +9,7 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.DuplicateBusin
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidBreakStartEndTimeException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantCategoryException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantOpenCloseTimeException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantCategoryNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotFoundException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
@@ -57,6 +58,15 @@ public class RestaurantExceptionHandler {
 		RestaurantNotFoundException ex) {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Restaurant Not Found", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+	}
+
+	// 해당 매장 카테고리 존재 안함.
+	@ExceptionHandler(RestaurantCategoryNotFoundException.class)
+	public final ResponseEntity<ErrorResponseDto> handleRestaurantCategoryNotFoundException(
+		RestaurantCategoryNotFoundException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Restaurant Category Not Found", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 	}
 }

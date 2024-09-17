@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +19,8 @@ import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantCategory;
 import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantImage;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantEditRequestDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantRegisterRequestDto;
+import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantCategoryDetailResponseDto;
+import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantCategoryListResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantDetailResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.DuplicateBusinessNumberException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidBreakStartEndTimeException;
@@ -142,6 +145,31 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.orElseThrow(() -> new RestaurantNotFoundException("해당 매장 찾을 수 없음. restaurantId : " + restaurantId));
 
 		return getRestaurantMenuList(restaurant);
+	}
+
+	/**
+	 * 전체 매장 카테고리 목록 조회 메소드
+	 * 
+	 * @return RestaurantCategoryListResponseDto 매장 카테고리 목록
+	 */
+	@Override
+	public RestaurantCategoryListResponseDto getListRestaurantCategories() {
+
+		// RestaurantCategory 엔티티 목록 조회
+		List<RestaurantCategory> categories = restaurantCategoryRepository.findAll();
+
+		// List<RestaurantCategoryDetailResponseDto>로 반환
+		List<RestaurantCategoryDetailResponseDto> restaurantCategoryListResponseDtos = categories.stream()
+			.map(category -> RestaurantCategoryDetailResponseDto.builder()
+				.restaurantCategoryId(category.getCategoryId())
+				.restaurantCategoryName(category.getCategoryName())
+				.build())
+			.toList();
+
+		// RestaurantCategoryListResponseDto로 변환
+		return RestaurantCategoryListResponseDto.builder()
+			.restaurantCategories(restaurantCategoryListResponseDtos)
+			.build();
 	}
 
 	/**

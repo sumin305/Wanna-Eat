@@ -110,8 +110,6 @@ public class RestaurantController {
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
-
-
 	/**
 	 * 매장 수정 API
 	 *

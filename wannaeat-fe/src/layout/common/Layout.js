@@ -6,6 +6,7 @@ const Layout = styled.div`
 
   @media (min-width: 480px) {
     display: flex;
+    flex-direction: column;
     width: 480px;
     justify-self: center;
   }

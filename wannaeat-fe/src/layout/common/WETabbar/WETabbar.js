@@ -10,7 +10,8 @@ const TabbarContainer = styled.div`
   width: 100%;
   height: 10%;
   box-shadow: 1px 0px 4px 0px ${theme.color.disabled};
-  z-index: 800;
+  -webkit-tap-highlight-color: transparent;
+  background-color: ${theme.color.white};
   p {
     margin: 0;
   }
@@ -44,6 +45,7 @@ const TabText = styled.p`
     activeId ? theme.color.primary : theme.color.disabled};
   font-size: ${theme.fontSize.px10};
   font-weight: ${theme.fontWeight.bold};
+  padding-bottom: 3%;
 `;
 
 export { TabbarContainer, TabWrapper, TabImg, TabText };

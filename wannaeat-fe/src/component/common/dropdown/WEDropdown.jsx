@@ -1,14 +1,13 @@
-import { useMemo, useEffect } from 'react';
-import useDropdownStore from '../../../stores/dropdown/useDropdownStore';
-import {
-  DropdownContainer,
-  DropdownLabelStyled,
-  IconStyled,
-  DropdownSelectOptions,
-  DropdownSelectOption,
-} from './WEDropdown';
-import ArrowUp from '../../../assets/icons/common/arrow-up.svg';
-import ArrowDown from '../../../assets/icons/common/arrow-down.svg';
+import { useMemo, useEffect } from "react";
+import useDropdownStore from "../../../stores/common/dropdown/useDropdownStore";
+import {   DropdownContainer, DropdownLabelStyled,
+    IconStyled,
+    DropdownSelectOptions,
+    DropdownSelectOption,
+  } from './WEDropdown';
+import theme from "../../../style/common/theme";
+import ArrowUp from '../../../assets/icons/arrow-up.svg'
+import ArrowDown from '../../../assets/icons/arrow-down.svg'
 
 const WEDropdown = () => {
   const {

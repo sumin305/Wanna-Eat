@@ -6,9 +6,9 @@ const SheetModalContainer = styled.div`
   position: fixed;
   bottom: 0;
   width: 100%;
+  padding: 0.5rem 0;
   border-top-left-radius: ${theme.borderRadius.default};
   border-top-right-radius: ${theme.borderRadius.default};
-  padding: 1rem 0;
 
   @media (min-width: 480px) {
     width: 480px;

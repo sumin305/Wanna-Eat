@@ -7,10 +7,11 @@ import TimeSelectModalBox from "../../../../../component/customer/reservation/Ti
 import useTimeSelectStore from "../../../../../stores/customer/useTimeSelectStore.js"
 import Calendar from 'react-calendar';
 import moment from 'moment';
-
+import { useNavigate } from "react-router-dom"
 const TimeSelectPage = () => {
     const {open, setModalType, setConfirmText, setTitle, setChildren} = useModalStore();
     const {selectedDate, selectedStartTime, selectedEndTime, selectedHeadCount, setSelectedDate, setSelectedStartTime, setSelectedEndTime} = useTimeSelectStore();
+    const navigate = useNavigate();
     const handleTimeSelectButtonClick = () => {
         setModalType('sheet')
         setConfirmText('확인')
@@ -24,6 +25,11 @@ const TimeSelectPage = () => {
         setSelectedStartTime('00:00')
         setSelectedEndTime('00:00')
     }
+
+    const hanldButtonClick = () => {
+        navigate('/customer/reservation/seat-select')
+    }
+    
     return(
         <TimeSelectPageContainer>
             <WEStep index={0}/>
@@ -33,7 +39,7 @@ const TimeSelectPage = () => {
             </CalendarWrapper>
             <ButtonWrapper>
                 <Button size="short" color={"black"} backgroundColor={theme.color.disabled}>이전</Button>
-                <Button size="venti">예약</Button>
+                <Button onClick={hanldButtonClick} size="venti">예약</Button>
             </ButtonWrapper>
         </TimeSelectPageContainer>
     )

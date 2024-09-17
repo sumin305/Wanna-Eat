@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -149,7 +148,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 	/**
 	 * 전체 매장 카테고리 목록 조회 메소드
-	 * 
+	 *
 	 * @return RestaurantCategoryListResponseDto 매장 카테고리 목록
 	 */
 	@Override

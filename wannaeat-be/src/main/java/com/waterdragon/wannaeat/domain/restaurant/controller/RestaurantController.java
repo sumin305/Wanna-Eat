@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.waterdragon.wannaeat.domain.menu.dto.response.MenuListResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantEditRequestDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantRegisterRequestDto;
+import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantCategoryListResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantDetailResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.service.RestaurantService;
 import com.waterdragon.wannaeat.global.response.ResponseDto;
@@ -89,6 +90,27 @@ public class RestaurantController {
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
+
+	/**
+	 * 매장 카테고리 목록 조회 API
+	 *
+	 * @return RestaurantCategoryListResponseDto 매장 카테고리 목록
+	 */
+	@Operation(summary = "매장 카테고리 목록 조회 API")
+	@GetMapping("/public/restaurants/categories")
+	public ResponseEntity<ResponseDto<RestaurantCategoryListResponseDto>> getListRestaurantCategories() {
+
+		RestaurantCategoryListResponseDto restaurantCategoryListResponseDto = restaurantService.getListRestaurantCategories();
+		ResponseDto<RestaurantCategoryListResponseDto> responseDto = ResponseDto.<RestaurantCategoryListResponseDto>builder()
+			.status(HttpStatus.OK.value())
+			.message("매장 카테고리 목록이 성공적으로 조회되었습니다.")
+			.data(restaurantCategoryListResponseDto)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+
 
 	/**
 	 * 매장 수정 API

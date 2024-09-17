@@ -9,6 +9,8 @@ import com.waterdragon.wannaeat.domain.user.domain.User;
 
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
+	Optional<Restaurant> findByRestaurantId(Long restaurantId);
+
 	Optional<Restaurant> findByRestaurantIdAndUser(Long restaurantId, User user);
 
 	Optional<Restaurant> findByBusinessNumber(String businessNumber);

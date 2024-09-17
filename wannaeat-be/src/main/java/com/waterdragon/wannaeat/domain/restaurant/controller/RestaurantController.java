@@ -1,9 +1,11 @@
 package com.waterdragon.wannaeat.domain.restaurant.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.waterdragon.wannaeat.domain.menu.dto.response.MenuDetailReponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantEditRequestDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.restaurant.service.RestaurantService;
@@ -24,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/restaurants")
+@RequestMapping("/api")
 public class RestaurantController {
 
 	private final RestaurantService restaurantService;
@@ -36,7 +39,7 @@ public class RestaurantController {
 	 * @return void 매장 등록 결과
 	 */
 	@Operation(summary = "매장 등록 API")
-	@PostMapping
+	@PostMapping("/restaurants")
 	public ResponseEntity<ResponseDto<Void>> registerRestaurant(
 		@Valid @RequestBody RestaurantRegisterRequestDto restaurantRegisterRequestDto) {
 
@@ -51,6 +54,27 @@ public class RestaurantController {
 	}
 
 	/**
+	 * 매장별 메뉴 목록 조회 API
+	 *
+	 * @param restaurantId 매장 id
+	 * @return Map<String, List < MenuDetailReponseDto>> 카테고리별 메뉴 목록 반환
+	 */
+	@Operation(summary = "매장별 메뉴 목록 조회 API")
+	@GetMapping("/public/restaurants/{restaurantId}/menus")
+	public ResponseEntity<ResponseDto<Map<String, List<MenuDetailReponseDto>>>> getListMenusByRestaurantId(
+		@PathVariable(name = "restaurantId") Long restaurantId) {
+
+		Map<String, List<MenuDetailReponseDto>> map = restaurantService.getListMenuByRestaurantId(restaurantId);
+		ResponseDto<Map<String, List<MenuDetailReponseDto>>> responseDto = ResponseDto.<Map<String, List<MenuDetailReponseDto>>>builder()
+			.status(HttpStatus.OK.value())
+			.message("메뉴 목록이 성공적으로 반환되었습니다.")
+			.data(map)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	/**
 	 * 매장 수정 API
 	 *
 	 * @param restaurantId 매장 id
@@ -59,7 +83,7 @@ public class RestaurantController {
 	 * @return void 매장 수정 결과
 	 */
 	@Operation(summary = "매장 정보 수정 API")
-	@PatchMapping("/{restaurantId}")
+	@PatchMapping("/restaurants/{restaurantId}")
 	public ResponseEntity<ResponseDto<Void>> editRestaurant(
 		@PathVariable(name = "restaurantId") Long restaurantId,
 		@Valid @RequestPart(name = "restaurantEditRequestDto") RestaurantEditRequestDto restaurantEditRequestDto,
@@ -73,7 +97,6 @@ public class RestaurantController {
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
-
 	}
 
 }

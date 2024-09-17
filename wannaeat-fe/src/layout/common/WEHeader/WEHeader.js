@@ -5,23 +5,24 @@ const HeaderContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
+  width: 100%;
+  height: 10%;
   background-color: ${(props) =>
     props.isCarrot ? theme.color.primary : theme.color.white};
-  width: 100%;
-  height: 7%;
-  z-index: 1000;
+
+  @media (min-width: 480px) {
+    width: 480px;
+    align-items: center;
+  }
 `;
 
 const HeaderWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
   width: 90%;
   height: 100%;
+  position: relative;
 `;
 
 const HeaderLeft = styled.div`

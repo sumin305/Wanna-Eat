@@ -1,4 +1,4 @@
-import useModalStore from '../../../stores/modal/useModalStore';
+import useModalStore from '../../../stores/common/modal/useModalStore';
 import BlackOutLayoutStyled from './WEBlackOutLayout';
 
 const WEBlackOutLayout = () => {

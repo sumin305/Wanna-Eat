@@ -36,11 +36,11 @@ const HeaderLeft = styled.div`
 `;
 
 const LogoTitle = styled.h1`
+  text-align: center;
   color: ${(props) =>
     props.isCarrot ? theme.color.white : theme.color.primary};
   font-size: ${theme.fontSize.px9};
   font-weight: ${theme.fontWeight.bold};
-  text-align: center;
 `;
 
 const HeaderCenter = styled.div`
@@ -73,11 +73,11 @@ const HeaderImg = styled.img`
 `;
 
 const HeaderTitle = styled.h1`
+  text-align: center;
   color: ${(props) =>
     props.isCarrot ? theme.color.white : theme.color.primary};
   font-size: ${theme.fontSize.px17};
   font-weight: ${theme.fontWeight.bold};
-  text-align: center;
 `;
 
 const IconImg = styled.img`

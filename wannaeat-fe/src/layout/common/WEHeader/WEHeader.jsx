@@ -13,9 +13,9 @@ import {
   IconImg,
 } from './WEHeader';
 
-import Logo from '../../../assets/icons/logo.svg';
-import BackCarrot from '../../../assets/icons/back-carrot.svg';
-import BackWhite from '../../../assets/icons/back-white.svg';
+import Logo from '../../../assets/icons/header/logo.svg';
+import BackCarrot from '../../../assets/icons/header/back-carrot.svg';
+import BackWhite from '../../../assets/icons/header/back-white.svg';
 
 const WEHeader = ({ isCarrot, text, icon, isShowLogo, isShowBackIcon }) => {
   const {

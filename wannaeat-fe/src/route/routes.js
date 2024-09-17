@@ -44,7 +44,7 @@ const AppRoutes = () => {
         />
         <Route
           path="/customer/reservation/seat-select"
-          elemet={<SeatSelectPage/>}
+          element={<SeatSelectPage />}
         />
         <Route
           path="/customer/reservation/deposit-payment"

@@ -26,7 +26,10 @@ const TimeSelectPage = () => {
         setSelectedEndTime('00:00')
     }
 
-    const hanldButtonClick = () => {
+    const handleBeforeButtonClick = () => {
+        navigate('/customer/restaurant/')
+    }
+    const handleNextButtonClick = () => {
         navigate('/customer/reservation/seat-select')
     }
     
@@ -38,8 +41,8 @@ const TimeSelectPage = () => {
                 <CalendarStyled showNeighboringMonth={false} onChange={handleDateChange} value={new Date()} formatDay={(locale, date) => moment(date).format("DD")}/>
             </CalendarWrapper>
             <ButtonWrapper>
-                <Button size="short" color={"black"} backgroundColor={theme.color.disabled}>이전</Button>
-                <Button onClick={hanldButtonClick} size="venti">예약</Button>
+                <Button onClick={handleBeforeButtonClick} size="short" color={"black"} backgroundColor={theme.color.disabled}>이전</Button>
+                <Button onClick={handleNextButtonClick} size="venti">예약</Button>
             </ButtonWrapper>
         </TimeSelectPageContainer>
     )

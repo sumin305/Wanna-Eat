@@ -1,6 +1,7 @@
 package com.waterdragon.wannaeat.domain.menu.service;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,12 +10,17 @@ import com.waterdragon.wannaeat.domain.menu.domain.Menu;
 import com.waterdragon.wannaeat.domain.menu.domain.MenuCategory;
 import com.waterdragon.wannaeat.domain.menu.dto.request.MenuEditRequestDto;
 import com.waterdragon.wannaeat.domain.menu.dto.request.MenuRegisterRequestDto;
+import com.waterdragon.wannaeat.domain.menu.dto.response.MenuCategoryDetailResponseDto;
+import com.waterdragon.wannaeat.domain.menu.dto.response.MenuCategoryListResponseDto;
 import com.waterdragon.wannaeat.domain.menu.exception.error.InvalidMenuCategoryException;
 import com.waterdragon.wannaeat.domain.menu.exception.error.MenuNotBelongToRestaurantException;
 import com.waterdragon.wannaeat.domain.menu.exception.error.MenuNotFoundException;
 import com.waterdragon.wannaeat.domain.menu.repository.MenuCategoryRepository;
 import com.waterdragon.wannaeat.domain.menu.repository.MenuRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
+import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantCategory;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantCategoryNotFoundException;
+import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantCategoryRepository;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 import com.waterdragon.wannaeat.global.exception.error.FileRemoveFailureException;
@@ -36,6 +42,7 @@ public class MenuServiceImpl implements MenuService {
 	private final AuthUtil authUtil;
 	private final FileUtil fileUtil;
 	private final MenuRepository menuRepository;
+	private final RestaurantCategoryRepository restaurantCategoryRepository;
 
 	/**
 	 * 메뉴 등록 메소드
@@ -83,6 +90,37 @@ public class MenuServiceImpl implements MenuService {
 			.description(menuRegisterRequestDto.getMenuDescription())
 			.build();
 		menuRepository.save(menu);
+	}
+
+	/**
+	 * 메뉴 카테고리 목록 조회 메소드
+	 *
+	 * @param restaurantCategoryId 매장 카테고리 id
+	 * @return MenuCategoryListResponseDto 매장 카테고리별 메뉴 카테고리 목록 조회
+	 */
+	@Override
+	public MenuCategoryListResponseDto getListMenuCategoriesByRestaurantCategoryId(Long restaurantCategoryId) {
+
+		// RestaurantCategory 조회
+		RestaurantCategory restaurantCategory = restaurantCategoryRepository.findByCategoryId(restaurantCategoryId)
+			.orElseThrow(() -> new RestaurantCategoryNotFoundException(
+				"해당 매장 카테고리 존재하지 않음. restaurantCategoryId : " + restaurantCategoryId));
+
+		// MenuCategory 목록 조회
+		List<MenuCategory> categories = menuCategoryRepository.findAllByRestaurantCategory(restaurantCategory);
+
+		// List<MenuCategoryDetailResponseDto>로 반환
+		List<MenuCategoryDetailResponseDto> menuCategoryDetailResponseDtos = categories.stream()
+			.map(category -> MenuCategoryDetailResponseDto.builder()
+				.menuCategoryId(category.getCategoryId())
+				.menuCategoryName(category.getCategoryName())
+				.build())
+			.toList();
+
+		// MenuCategoryListResponseDto로 변환
+		return MenuCategoryListResponseDto.builder()
+			.menuCategories(menuCategoryDetailResponseDtos)
+			.build();
 	}
 
 	/**

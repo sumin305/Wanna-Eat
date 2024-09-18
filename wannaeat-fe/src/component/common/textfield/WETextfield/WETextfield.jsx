@@ -5,13 +5,7 @@ import useTextfieldStore from '../../../../stores/textfield/useTextfieldStore.js
 const { TextfieldStyled, ErrorMessageStyled, ErrorMessageDivStyled } =
   components;
 
-const Textfield = ({
-  type = 'text',
-  name,
-  error = false,
-  errorMessage = '',
-  ...props
-}) => {
+const Textfield = ({ type = 'text', name, ...props }) => {
   const { errors, errorMessages, clearError } = useTextfieldStore();
 
   const handleFocus = () => {
@@ -30,7 +24,7 @@ const Textfield = ({
         onFocus={handleFocus}
         {...props}
       />
-      {error && (
+      {errorType && (
         <ErrorMessageDivStyled>
           {<WarningIcon />}
           <ErrorMessageStyled>

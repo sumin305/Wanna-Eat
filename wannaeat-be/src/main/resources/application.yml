@@ -17,6 +17,23 @@ spring:
       - jwt
       - oauth
 
+  phone-authcode-expiration-millis: ${PHONE_AUTHCODE_EXPIRATION}
+
+redis:
+  host: ${REDIS_SERVER_ADDRESS}
+  port: 6379
+
+#SMS 인증을 위한 api key
+coolsms:
+  apiKey: ${COOLSMS_API_KEY}
+  apiSecret: ${COOLSMS_SECRET_KEY}
+  senderNumber: ${COOLSMS_SENDER_NUMBER}
+
+#전화번호 양방향 암호화 대칭키
+symmetric:
+  key: ${SYMMETRIC_KEY}
+  salt: ${SYMMETRIC_SALT}
+
 #로컬 파일업로드 경로
 file:
   upload-dir: ${FILE_UPLOAD_DIR}

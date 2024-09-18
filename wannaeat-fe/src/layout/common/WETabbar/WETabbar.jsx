@@ -1,68 +1,68 @@
-import { TabbarContainer, TabWrapper, TabImg, TabText } from './WETabbarStyle';
+import { TabbarContainer, TabWrapper, TabImg, TabText } from './WETabbar.js';
 import { useNavigate } from 'react-router-dom';
 
-import HomeOff from '../../../assets/icons/home-off.svg';
-import HomeOn from '../../../assets/icons/home-on.svg';
-import ReservationOff from '../../../assets/icons/reservation-off.svg';
-import ReservationOn from '../../../assets/icons/reservation-on.svg';
-import AdminOff from '../../../assets/icons/admin-off.svg';
-import AdminOn from '../../../assets/icons/admin-on.svg';
-import StatisticsOff from '../../../assets/icons/statistics-off.svg';
-import StatisticsOn from '../../../assets/icons/statistics-on.svg';
-import MyinfoOff from '../../../assets/icons/myinfo-off.svg';
-import MyinfoOn from '../../../assets/icons/myinfo-on.svg';
+import HomeOff from '../../../assets/icons/tabbar/home-off.svg';
+import HomeOn from '../../../assets/icons/tabbar/home-on.svg';
+import ReservationOff from '../../../assets/icons/tabbar/reservation-off.svg';
+import ReservationOn from '../../../assets/icons/tabbar/reservation-on.svg';
+import AdminOff from '../../../assets/icons/tabbar/admin-off.svg';
+import AdminOn from '../../../assets/icons/tabbar/admin-on.svg';
+import StatisticsOff from '../../../assets/icons/tabbar/statistics-off.svg';
+import StatisticsOn from '../../../assets/icons/tabbar/statistics-on.svg';
+import MyinfoOff from '../../../assets/icons/tabbar/myinfo-off.svg';
+import MyinfoOn from '../../../assets/icons/tabbar/myinfo-on.svg';
 
 import useCommonStore from '../../../stores/common/useCommonStore';
-import useTabbarStore from '../../../stores/tabbar/useTabbarStore';
+import useTabbarStore from '../../../stores/common/tabbar/useTabbarStore';
 
 const tabs = {
   manager: [
-    { id: 0, label: '홈', offIcon: HomeOff, onIcon: HomeOn, path: '/' },
+    { id: 0, label: '홈', offIcon: HomeOff, onIcon: HomeOn, path: '/manager' },
     {
       id: 1,
       label: '예약현황',
       offIcon: ReservationOff,
       onIcon: ReservationOn,
-      path: '/admin',
+      path: '/manager/admin',
     },
     {
       id: 2,
       label: '매장관리',
       offIcon: AdminOff,
       onIcon: AdminOn,
-      path: '/restaurantview',
+      path: '/manager/restaurantview',
     },
     {
       id: 3,
       label: '통계',
       offIcon: StatisticsOff,
       onIcon: StatisticsOn,
-      path: '/statistics',
+      path: '/manager/statistics',
     },
   ],
 
   customer: [
-    { id: 0, label: '홈', offIcon: HomeOff, onIcon: HomeOn, path: '/' },
+    { id: 0, label: '홈', offIcon: HomeOff, onIcon: HomeOn, path: '/customer' },
     {
       id: 1,
       label: '예약하기',
       offIcon: AdminOff,
       onIcon: AdminOn,
-      path: '/map',
+      path: '/customer/reservation',
     },
     {
       id: 2,
       label: '예약현황',
       offIcon: ReservationOff,
       onIcon: ReservationOn,
-      path: '/reservationlist',
+      path: '/customer/reservationlist',
     },
     {
       id: 3,
       label: '내정보',
       offIcon: MyinfoOff,
       onIcon: MyinfoOn,
-      path: '/myinfo',
+      path: '/customer/myinfo',
     },
   ],
 };

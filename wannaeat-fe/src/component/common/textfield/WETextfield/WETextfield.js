@@ -1,14 +1,20 @@
 import styled from '@emotion/styled';
 import theme from '../../../../style/common/theme';
 
+const TextfieldWrapperStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: ${(props) => (props.width ? props.width : theme.width.textfield)};
+  margin: 0 auto;
+`;
+
 const TextfieldStyled = styled.input`
-  width: ${theme.width.textfield};
   height: ${theme.height.textfield};
   border: 1px solid
     ${(props) => (props.error ? theme.color.warning : '#606060')};
   font-weight: 500;
   color: ${(props) => (props.error ? theme.color.warning : '#606060')};
-  padding: 0.625rem 1.5rem;
+  padding: 0.625rem 0.938rem;
   font-size: ${theme.fontSize.px11};
 
   box-sizing: border-box;
@@ -32,12 +38,18 @@ const ErrorMessageStyled = styled.div`
 `;
 
 const ErrorMessageDivStyled = styled.div`
+  width: fit-content;
+  height: 1.3rem;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
   margin-top: 0.313rem;
   margin-left: 0.213rem;
+
+  visibility: ${(props) => (props.error ? 'visible' : 'hidden')};
+  opacity: ${(props) => (props.error ? 1 : 0)};
+  transition: opacity 0.3s ease;
 
   svg {
     width: 0.88542rem;
@@ -46,4 +58,9 @@ const ErrorMessageDivStyled = styled.div`
   }
 `;
 
-export default { TextfieldStyled, ErrorMessageStyled, ErrorMessageDivStyled };
+export default {
+  TextfieldWrapperStyled,
+  TextfieldStyled,
+  ErrorMessageStyled,
+  ErrorMessageDivStyled,
+};

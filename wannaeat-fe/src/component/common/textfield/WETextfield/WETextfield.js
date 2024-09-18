@@ -9,7 +9,7 @@ const TextfieldWrapperStyled = styled.div`
 `;
 
 const TextfieldStyled = styled.input`
-  height: ${theme.height.textfield};
+  height: ${(props) => (props.height ? props.height : theme.height.textfield)};
   border: 1px solid
     ${(props) => (props.error ? theme.color.warning : '#606060')};
   font-weight: 500;

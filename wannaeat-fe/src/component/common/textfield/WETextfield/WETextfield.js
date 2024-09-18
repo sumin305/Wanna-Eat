@@ -13,7 +13,8 @@ const TextfieldStyled = styled.input`
   border: 1px solid
     ${(props) => (props.error ? theme.color.warning : '#606060')};
   font-weight: 500;
-  color: ${(props) => (props.error ? theme.color.warning : '#606060')};
+  color: ${(props) =>
+    props.color || (props.error ? theme.color.warning : '#606060')};
   padding: 0.625rem 0.938rem;
   font-size: ${theme.fontSize.px11};
 

@@ -5,50 +5,29 @@ import WEBlackOutLayout from './layout/common/WEBlackOutLayout/WEBlackOutLayout.
 import WEModal from './component/common/modal/WEModal.jsx';
 import AppRoutes from './route/routes.js';
 import WEHeader from './layout/common/WEHeader/WEHeader.jsx';
-import WETab from './component/common/tab/WETab/WETab.jsx';
-import { useState } from 'react';
-
 const Main = () => {
   const { isModalVisible } = useModalStore();
 
   const AppContainer = styled.div`
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    box-sizing: border-box;
-    max-width: 100vw;  /* 페이지의 최대 너비를 화면 너비로 고정 */
-    overflow: hidden;  /* 페이지의 오버플로우 방지 */
-  `;
+    flex-direction: column; /* 세로 방향 정렬 */
+    align-items: center; /* 수평 가운데 정렬 */
+    height: 100vh; /* 뷰포트 전체 높이를 채움 */
+    box-sizing: border-box; /* 패딩이 height에 포함되도록 설정 */
 
-  const tabs = ['전체', '메뉴 주문', '예약 신청', '예약 취소', '결제 완료'];
-  const [activeTab, setActiveTab] = useState(0);
-
-  const renderContent = (activeTab) => {
-    switch (activeTab) {
-      case 0:
-        return <div>전체 알림</div>;
-      case 1:
-        return <div>메뉴 주문 알림</div>;
-      case 2:
-        return <div>예약 신청 알림</div>;
-      case 3:
-        return <div>예약 취소 알림</div>;
-      case 4:
-        return <div>결제 완료 알림</div>;
-      default:
-        return null;
+    @media (min-width: 480px) {
+      > * {
+        justify-content: center;
+      }
     }
-  };
+  `;
 
   return (
     <div>
-      {isModalVisible && <WEBlackOutLayout />}
+      {isModalVisible && <WEBlackOutLayout></WEBlackOutLayout>}
       {isModalVisible && <WEModal />}
       <AppContainer>
-        <WEHeader isCarrot={true} text="메인페이지" />
-        <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
-        {renderContent(activeTab)}
+        <WEHeader isCarrot={true}text="메인페이지"/>
         <AppRoutes />
         <WETabbar />
       </AppContainer>

@@ -34,7 +34,7 @@ const ErrorMessageStyled = styled.div`
 const ErrorMessageDivStyled = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   margin-top: 0.313rem;
 

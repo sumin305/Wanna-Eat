@@ -13,7 +13,7 @@ const TestPage = () => {
       setError('nickname', 'exist', '이미 있는 닉네임입니다.');
     } else if (nickname.length > 10) {
       setError('nickname', 'long', '닉네임이 너무 깁니다.');
-    } else if (/[^a-zA-Z0-9]/.test(nickname)) {
+    } else if (/[^ㄱ-ㅎ가-힣a-zA-Z0-9]/.test(nickname)) {
       setError('nickname', 'invalid', '특수문자는 사용할 수 없습니다.');
     } else {
       clearError('nickname');
@@ -29,7 +29,9 @@ const TestPage = () => {
         value={nickname}
         onChange={(e) => setNickname(e.target.value)}
       />
-      <button onClick={validateNickname}>확인</button>
+      <button className="testButton" onClick={validateNickname}>
+        확인
+      </button>
     </div>
   );
 };

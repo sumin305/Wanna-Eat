@@ -37,6 +37,7 @@ const ErrorMessageDivStyled = styled.div`
   justify-content: flex-start;
   align-items: center;
   margin-top: 0.313rem;
+  margin-left: 0.213rem;
 
   svg {
     width: 0.88542rem;

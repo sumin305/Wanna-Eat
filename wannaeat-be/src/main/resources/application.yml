@@ -17,6 +17,10 @@ spring:
       - jwt
       - oauth
 
+redis:
+  host: localhost
+  port: 6379
+
 #SMS 인증을 위한 api key
 coolsms:
   apiKey: ${COOLSMS_API_KEY}

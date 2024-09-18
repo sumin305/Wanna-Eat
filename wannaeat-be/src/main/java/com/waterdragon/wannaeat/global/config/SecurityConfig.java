@@ -52,7 +52,7 @@ public class SecurityConfig {
 	// AesBytesEncryptor 사용을 위한 Bean등록
 	@Bean
 	public AesBytesEncryptor aesBytesEncryptor() {
-		return new AesBytesEncryptor(symmetrickey,salt);
+		return new AesBytesEncryptor(symmetrickey, salt);
 	}
 
 	@Bean

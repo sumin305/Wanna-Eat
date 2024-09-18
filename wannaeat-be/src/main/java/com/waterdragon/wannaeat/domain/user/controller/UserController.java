@@ -1,24 +1,13 @@
 package com.waterdragon.wannaeat.domain.user.controller;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.waterdragon.wannaeat.domain.menu.dto.response.MenuListResponseDto;
-import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantEditRequestDto;
-import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantRegisterRequestDto;
-import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantCategoryListResponseDto;
-import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantDetailResponseDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
 import com.waterdragon.wannaeat.domain.user.service.UserService;
@@ -44,7 +33,7 @@ public class UserController {
 	@Operation(summary = "SMS 인증코드 전송 API")
 	@PostMapping("/public/users/send-code")
 	public ResponseEntity<ResponseDto<Void>> sendPhoneAuthenticationCode(
-		@Valid @RequestBody PhoneCodeSendRequestDto phoneCodeSendRequestDto){
+		@Valid @RequestBody PhoneCodeSendRequestDto phoneCodeSendRequestDto) {
 
 		userService.sendPhoneAuthenticationCode(phoneCodeSendRequestDto);
 		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
@@ -75,7 +64,5 @@ public class UserController {
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
-
-
 
 }

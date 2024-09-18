@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantCategoryException;
 import com.waterdragon.wannaeat.domain.user.exception.error.DuplicatePhoneException;
 import com.waterdragon.wannaeat.domain.user.exception.error.InvalidCodeException;
 import com.waterdragon.wannaeat.domain.user.exception.error.InvalidPhoneException;
@@ -40,6 +39,5 @@ public class UserExceptionHandler {
 		ErrorResponseDto error = new ErrorResponseDto("Duplicate Phone Number", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
 	}
-
 
 }

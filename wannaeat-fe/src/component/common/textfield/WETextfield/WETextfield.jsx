@@ -5,25 +5,32 @@ import useTextfieldStore from '../../../../stores/textfield/useTextfieldStore.js
 const { TextfieldStyled, ErrorMessageStyled, ErrorMessageDivStyled } =
   components;
 
-const Textfield = ({ type = 'text', fieldName, ...props }) => {
+const Textfield = ({
+  type = 'text',
+  name,
+  error = false,
+  errorMessage = '',
+  ...props
+}) => {
   const { errors, errorMessages, clearError } = useTextfieldStore();
 
   const handleFocus = () => {
-    clearError(fieldName);
+    clearError(name);
   };
 
-  const isError = errors[fieldName];
-  const errorMessage = errorMessages[fieldName];
+  const errorType = errors[name];
+  const errorMessage = errorMessages[name];
 
   return (
     <div>
       <TextfieldStyled
         type={type}
-        error={isError}
+        name={name}
+        error={!!errorType}
         onFocus={handleFocus}
         {...props}
       />
-      {isError && (
+      {error && (
         <ErrorMessageDivStyled>
           {<WarningIcon />}
           <ErrorMessageStyled>

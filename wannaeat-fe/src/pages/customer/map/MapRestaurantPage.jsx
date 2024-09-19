@@ -1,5 +1,11 @@
+import MapContainer from '../../../component/customer/map/Map.jsx';
+
 const MapRestaurantPage = () => {
-  return <div id="map" style={{ width: '500px', height: '500px' }}></div>;
+  return (
+    <>
+      <MapContainer />
+    </>
+  );
 };
 
 export default MapRestaurantPage;

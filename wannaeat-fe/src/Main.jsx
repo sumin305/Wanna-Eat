@@ -27,7 +27,7 @@ const Main = () => {
       {isModalVisible && <WEBlackOutLayout></WEBlackOutLayout>}
       {isModalVisible && <WEModal />}
       <AppContainer>
-        <WEHeader isCarrot={true}text="메인페이지"/>
+        <WEHeader isCarrot={true} text="메인페이지" />
         <AppRoutes />
         <WETabbar />
       </AppContainer>

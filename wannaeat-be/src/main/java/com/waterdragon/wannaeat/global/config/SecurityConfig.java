@@ -71,7 +71,7 @@ public class SecurityConfig {
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
 				// 기본 페이지
-				.requestMatchers("/", "/favicon.ico", "/oauth2/authorization/**").permitAll()
+				.requestMatchers("/", "/favicon.ico", "/oauth2/authorization/**", "/api/health-check").permitAll()
 				.requestMatchers("/api/public/**").permitAll()
 				.anyRequest().authenticated()// 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
 			)

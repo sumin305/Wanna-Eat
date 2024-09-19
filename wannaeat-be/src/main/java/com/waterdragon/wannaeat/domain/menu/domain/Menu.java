@@ -60,5 +60,11 @@ public class Menu {
 	@OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
 	private List<Order> orders;
 
-	// Getters and setters
+	public void update(MenuCategory menuCategory, String name, int price, String image, String description) {
+		this.menuCategory = menuCategory;
+		this.name = name;
+		this.price = price;
+		this.image = image;
+		this.description = description;
+	}
 }

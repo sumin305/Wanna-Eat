@@ -21,8 +21,11 @@ import lombok.NoArgsConstructor;
 public class UserToken {
 
 	@Id
+	@Column(name = "user_id")
+	private Long userId;
+
 	@OneToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
 
 	@Column(name = "refresh_token")
@@ -30,6 +33,10 @@ public class UserToken {
 
 	@Column(name = "fcm_token")
 	private String fcmToken;
+
+	public void editRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
 
 	// Getters and setters
 }

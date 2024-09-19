@@ -20,7 +20,7 @@ import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage
 const AppRoutes = () => {
   const { isManager } = useCommonStore();
 
-  return isManager ? (
+  return (
     <Layout>
       <Routes>
         <Route path="/manager" element={<ManagerMainPage />} />
@@ -30,11 +30,6 @@ const AppRoutes = () => {
           element={<RestaurantViewPage />}
         />
         <Route path="/manager/statistics" element={<StatisticsPage />} />
-      </Routes>
-    </Layout>
-  ) : (
-    <Layout>
-      <Routes>
         <Route path="/customer" element={<CustomerMainPage />} />
         <Route path="/customer/reservation" element={<MapRestaurantPage />} />
         <Route
@@ -45,7 +40,7 @@ const AppRoutes = () => {
         <Route path="/customer/myinfo" element={<MyInfoPage />} />
       </Routes>
     </Layout>
-  );
+  )
 };
 
 export default AppRoutes;

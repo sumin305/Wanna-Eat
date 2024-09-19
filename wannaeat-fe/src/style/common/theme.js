@@ -35,11 +35,11 @@ const theme = {
 
   width: {
     button: '88%',
-    textfield: '86%',
+    textfield: '88%',
   },
 
   height: {
-    textfield: '2rem',
+    textfield: '5.5vh',
   },
 
   zIndex: {

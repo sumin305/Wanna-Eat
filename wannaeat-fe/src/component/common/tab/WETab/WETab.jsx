@@ -12,7 +12,7 @@ const WETab = ({ tabs, activeTab, setActiveTab }) => {
 
   const handleWheelAxis = (event) => {
     if (tabContainerRef.current) {
-      tabContainerRef.current.scrollLeft += event.deltaY; // 휠 스크롤을 가로 스크롤로 전환
+      tabContainerRef.current.scrollLeft += event.deltaY;
     }
   };
 

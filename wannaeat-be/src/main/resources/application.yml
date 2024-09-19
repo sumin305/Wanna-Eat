@@ -21,7 +21,7 @@ spring:
 
 redis:
   host: ${REDIS_SERVER_ADDRESS}
-  port: 6379
+  port: ${REDIS_SERVER_PORT}
 
 #SMS 인증을 위한 api key
 coolsms:

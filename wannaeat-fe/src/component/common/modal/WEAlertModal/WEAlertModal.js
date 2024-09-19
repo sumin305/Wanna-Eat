@@ -5,7 +5,7 @@ const ModalStyled = styled.div`
   display: grid;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 2fr 0.5fr;
   position: fixed;
-  background-color: white;
+  background-color: ${theme.color.white};
   border-radius: ${theme.borderRadius.default};
   padding: 0.5rem;
   width: 70%;
@@ -28,10 +28,20 @@ const TitleStyled = styled.div`
   grid-row: 3;
 `;
 
-const ButtonContainerStyled = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+const OneButtonContainerStyled = styled.div`
   grid-row: 6;
 `;
+const ButtonContainerStyled = styled.div`
+  display: grid;
+  grid-template-columns: 3fr 3fr;
+  grid-row: 6;
+  column-gap: 10%;
+  justify-content: center;
+`;
 
-export { ModalStyled, TitleStyled, ButtonContainerStyled };
+export {
+  ModalStyled,
+  TitleStyled,
+  OneButtonContainerStyled,
+  ButtonContainerStyled,
+};

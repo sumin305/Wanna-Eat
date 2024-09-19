@@ -39,6 +39,7 @@ const ButtonStyled = styled.button`
   }};
 
   border: ${(props) => {
+    if (props.miniOutlined) return '1px solid #FF6528';
     if (props.disabled && props.outlined) return '2px solid #D4D4D4';
     if (props.outlined) return '2px solid #FF6528';
     return 'none';
@@ -49,30 +50,30 @@ const ButtonStyled = styled.button`
     if (props.width) return props.width;
 
     const sizeMap = {
-      long: '93%',
-      venti: '11rem',
+      // long: `${theme.width.button}`,
+      venti: '63%',
       medium: '7.5625rem',
       modal: '5.25rem',
-      short: '4.75rem',
+      short: '27%',
       menu: '4.125rem',
     };
 
-    return sizeMap[props.size] || '16.1875rem';
+    return sizeMap[props.size] || theme.width.button;
   }};
 
   height: ${(props) => {
     if (props.height) return props.height;
 
     const sizeMap = {
-      long: '2.5rem',
-      venti: '2.5rem',
-      medium: '2.5rem',
-      modal: '2rem',
-      short: '2.5rem',
-      menu: '1.8125rem',
+      long: '6.8vh',
+      venti: '6.8vh',
+      medium: '6.8vh',
+      modal: '5.5vh',
+      short: '6.8vh',
+      menu: '5vh',
     };
 
-    return sizeMap[props.size] || '2.5rem';
+    return sizeMap[props.size] || '6.8%';
   }};
 
   user-select: none;

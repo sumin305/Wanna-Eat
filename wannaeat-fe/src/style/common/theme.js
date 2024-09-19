@@ -1,6 +1,7 @@
 const theme = {
   borderRadius: {
     default: '0.5rem',
+    px5: '0.313rem',
   },
 
   color: {
@@ -10,6 +11,7 @@ const theme = {
     accent: '#FFF1AA',
     warning: '#FF444F',
     gray: '#E6EAEE',
+    white: '#FFFFFF',
     statisticsPink: '#FF81C5',
     statisticsBlue: '#5A6ACF',
     statisticsSkyBlue: '#8593ED',
@@ -27,22 +29,23 @@ const theme = {
 
   fontWeight: {
     default: 500,
-    bold: 700,
+    bold: 900,
     light: 300,
   },
 
   width: {
-    button: '93%',
-    textfield: '90%',
+    button: '88%',
+    textfield: '88%',
   },
 
   height: {
-    textfield: '2rem',
+    textfield: '5.5vh',
   },
 
   zIndex: {
     modal: 1000,
     blackLayout: 900,
+    stepLine: -1,
   },
 };
 

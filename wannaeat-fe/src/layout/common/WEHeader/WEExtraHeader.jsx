@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import useHeaderStore from '../../../stores/header/useHeaderStore';
+import useHeaderStore from '../../../stores/common/header/useHeaderStore';
 import { HeaderContainer, HeaderText } from './WEExtraHeader';
 
 const WEExtraHeader = ({ isExtraCarrot, text }) => {

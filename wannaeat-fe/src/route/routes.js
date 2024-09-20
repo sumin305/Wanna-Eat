@@ -9,7 +9,7 @@ import StatisticsPage from '../pages/manager/statistics/StatisticsPage';
 
 // 손님 관련 페이지
 import CustomerMainPage from '../pages/customer/main/MainPage';
-import MapRestaurantPage from '../pages/customer/map/MapStorePage';
+import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage';
 import ListPage from '../pages/customer/reservation/history/ListPage';
 import MyInfoPage from '../pages/customer/user/MyInfoPage';
 import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage/TimeSelectPage.jsx';
@@ -21,7 +21,7 @@ import SeatSelectPage from '../pages/customer/reservation/process/SeatSelectPage
 const AppRoutes = () => {
   const { isManager } = useCommonStore();
 
-  return isManager ? (
+  return (
     <Layout>
       <Routes>
         <Route path="/manager" element={<ManagerMainPage />} />
@@ -31,11 +31,6 @@ const AppRoutes = () => {
           element={<RestaurantViewPage />}
         />
         <Route path="/manager/statistics" element={<StatisticsPage />} />
-      </Routes>
-    </Layout>
-  ) : (
-    <Layout>
-      <Routes>
         <Route path="/customer" element={<CustomerMainPage />} />
         <Route path="/customer/reservation" element={<MapRestaurantPage />} />
         <Route

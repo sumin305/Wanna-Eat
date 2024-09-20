@@ -1,5 +1,5 @@
 import styled from '@emotion/styled/macro';
-import WETabbar from './layout/common/WETabbar/WETabbar.jsx';
+import WEFooter from './layout/common/WEFooter/WEFooter.jsx';
 import useModalStore from './stores/common/modal/useModalStore.js';
 import WEBlackOutLayout from './layout/common/WEBlackOutLayout/WEBlackOutLayout.jsx';
 import WEModal from './component/common/modal/WEModal.jsx';
@@ -27,9 +27,9 @@ const Main = () => {
       {isModalVisible && <WEBlackOutLayout></WEBlackOutLayout>}
       {isModalVisible && <WEModal />}
       <AppContainer>
-        <WEHeader isCarrot={true}text="메인페이지"/>
+        <WEHeader isCarrot={true} text="메인페이지" />
         <AppRoutes />
-        <WETabbar />
+        <WEFooter />
       </AppContainer>
     </div>
   );

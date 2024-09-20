@@ -76,5 +76,4 @@ public class Reservation {
 	@OneToMany(mappedBy = "reservation", fetch = FetchType.LAZY)
 	private List<Order> orders;
 
-	// Getters and setters
 }

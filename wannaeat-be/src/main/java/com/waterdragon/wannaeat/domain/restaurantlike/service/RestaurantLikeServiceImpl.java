@@ -7,6 +7,7 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotF
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
 import com.waterdragon.wannaeat.domain.restaurantlike.domain.RestaurantLike;
 import com.waterdragon.wannaeat.domain.restaurantlike.exception.error.AlreadyLikeException;
+import com.waterdragon.wannaeat.domain.restaurantlike.exception.error.LikeNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurantlike.repository.RestaurantLikeRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
@@ -50,5 +51,29 @@ public class RestaurantLikeServiceImpl implements RestaurantLikeService {
 			.restaurant(restaurant)
 			.build();
 		restaurantLikeRepository.save(restaurantLike);
+	}
+
+	/**
+	 * 찜 삭제 메소드
+	 *
+	 * @param restaurantId 매장 id
+	 */
+	@Override
+	@Transactional
+	public void removeRestaurantLike(Long restaurantId) {
+
+		// 인증 회원 객체
+		User user = authUtil.getAuthenticatedUser();
+
+		// 식당 존재여부 확인
+		Restaurant restaurant = restaurantRepository.findByRestaurantId(restaurantId)
+			.orElseThrow(() -> new RestaurantNotFoundException("해당 매장 찾을 수 없음. restaurantId : " + restaurantId));
+
+		// 이미 찜한 매장
+		RestaurantLike restaurantLike = restaurantLikeRepository.findByUserAndRestaurant(user, restaurant)
+			.orElseThrow(() -> new LikeNotFoundException("해당 매장 찜 존재안함. restaurantId : " + restaurantId));
+
+		// 찜 삭제
+		restaurantLikeRepository.delete(restaurantLike);
 	}
 }

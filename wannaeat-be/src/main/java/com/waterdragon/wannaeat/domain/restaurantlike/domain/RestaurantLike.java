@@ -39,6 +39,4 @@ public class RestaurantLike {
 	@JoinColumn(name = "restaurant_id", nullable = false)
 	private Restaurant restaurant;
 
-	// 생성자, getter, setter
-
 }

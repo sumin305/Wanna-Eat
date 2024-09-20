@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.TimeRequestWithoutDateException;
 import com.waterdragon.wannaeat.domain.restaurantlike.exception.error.AlreadyLikeException;
+import com.waterdragon.wannaeat.domain.restaurantlike.exception.error.LikeNotFoundException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
 @RestControllerAdvice
@@ -19,5 +20,14 @@ public class RestaurantLikeExceptionHandler {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Already Like Exception", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+	}
+
+	// 찜 없음
+	@ExceptionHandler(LikeNotFoundException.class)
+	public final ResponseEntity<ErrorResponseDto> handleLikeNotFoundException(
+		LikeNotFoundException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Like Not Found", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 	}
 }

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { MapView } from './Map';
-import PinkMarker from '../../../assets/icons/common/pink-maker.png';
+import PinkMarker from '../../../assets/icons/map/pink-maker.png';
+import ArrowWhite from '../../../assets/icons/map/arrow-white.png';
+import VertexWhite from '../../../assets/icons/map/vertex-white.png';
 
 const MapContainer = () => {
   const [lat, setLat] = useState(33.450701); // 위도값
@@ -16,13 +18,6 @@ const MapContainer = () => {
 
     const map = new kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
 
-    // 현재 위치에 해당하는 위도, 경도값으로 변경
-    // if (navigator.geolocation) {
-    //   navigator.geolocation.getCurrentPosition(function (position) {
-    //     setLat(position.coords.latitude);
-    //     setLon(position.coords.longitude);
-    //   });
-    // }
     var positions = [
       {
         title: '카카오',
@@ -43,26 +38,58 @@ const MapContainer = () => {
     ];
 
     // 마커 이미지의 이미지 주소입니다
-    // var imageSrc = YellowMarker;
     var imageSrc = PinkMarker;
 
     for (var i = 0; i < positions.length; i++) {
       // 마커 이미지의 이미지 크기 입니다
-      var imageSize = new kakao.maps.Size(35, 35);
+      var imageSize = new kakao.maps.Size(35, 35),
+        imageOption = { offset: new kakao.maps.Point(18, 50) }; // 마커이미지 옵션
 
       // 마커 이미지를 생성합니다
-      var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+      var markerImage = new kakao.maps.MarkerImage(
+          imageSrc,
+          imageSize,
+          imageOption
+        ),
+        markerPosition = positions[i].latlng; // 마커가 표시될 위치
 
       // 마커를 생성합니다
       var marker = new kakao.maps.Marker({
-        map: map, // 마커를 표시할 지도
-        position: positions[i].latlng, // 마커를 표시할 위치
-        title: positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
-        image: markerImage, // 마커 이미지
+        position: markerPosition,
+        image: markerImage, // 마커이미지 설정
       });
+
+      // 마커가 지도 위에 표시되도록 설정합니다
+      marker.setMap(map);
+
+      // 커스텀 오버레이의 HTML 콘텐츠
+      var content = `
+       <div class="customoverlay">
+         <a href="https://map.kakao.com/link/map/${i}" target="_blank">
+           <span class="title">${positions[i].title}</span>
+         </a>
+       </div>
+     `;
+
+      var customOverlay = new kakao.maps.CustomOverlay({
+        map: map,
+        position: markerPosition,
+        content: content,
+        yAnchor: 1,
+      });
+
+      // 커스텀 스타일 추가
+      const styleTag = document.createElement('style');
+      styleTag.textContent = `
+       .customoverlay {position:relative;bottom:60px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;}
+       .customoverlay:nth-of-type(n) {border:0; box-shadow:0px 1px 2px #888;}
+       .customoverlay a {display:block;text-decoration:none;color:#000;text-align:center;border-radius:6px;font-size:14px;font-weight:bold;overflow:hidden;background: #d95050;background: #d95050 url(${ArrowWhite}) no-repeat right 14px center;}
+       .customoverlay .title {display:block;text-align:center;background:#fff;margin-right:35px;padding:10px 15px;font-size:14px;font-weight:bold;}
+       .customoverlay:after {content:'';position:absolute;margin-left:-12px;left:50%;bottom:-12px;width:22px;height:12px;background:url(${VertexWhite})}
+     `;
+      document.head.appendChild(styleTag);
     }
   }, [lat, lon]);
-  // 마커를 표시할 위치와 title 객체 배열입니다
 
   return <MapView id="map"></MapView>;
 };

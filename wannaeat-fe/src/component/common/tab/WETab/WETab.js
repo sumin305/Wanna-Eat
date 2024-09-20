@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
-import theme from '../../../../style/common/theme.js'
-
+import theme from '../../../../style/common/theme.js';
 
 const TabContainer = styled.div`
   display: flex;
@@ -15,6 +14,12 @@ const TabContainer = styled.div`
   max-width: 100vw;
   box-sizing: border-box;
   position: relative;
+
+  @media (min-width: 480px) {
+    max-width: 480px;
+    justify-self: center;
+    box-sizing: border-box;
+  }
 `;
 
 const Tab = styled.button`
@@ -25,7 +30,8 @@ const Tab = styled.button`
   font-weight: ${(props) => (props.active ? 700 : 500)};
   border: none;
   background-color: transparent;
-  color: ${(props) => (props.active ? theme.color.primary : theme.color.disabled)};
+  color: ${(props) =>
+    props.active ? theme.color.primary : theme.color.disabled};
   cursor: pointer;
   white-space: nowrap;
 `;

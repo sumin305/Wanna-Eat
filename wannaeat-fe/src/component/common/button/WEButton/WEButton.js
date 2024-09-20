@@ -13,6 +13,7 @@ const ButtonStyled = styled.button`
   }};
 
   color: ${(props) => {
+    if (props.color) return props.color;
     if (props.disabled) return 'white';
     if (props.outlined) return '#FF6528';
     return props.color || 'white';
@@ -39,6 +40,7 @@ const ButtonStyled = styled.button`
   }};
 
   border: ${(props) => {
+    if (props.borderColor && props.outlined) return '2px solid ' + props.borderColor;
     if (props.miniOutlined) return '1px solid #FF6528';
     if (props.disabled && props.outlined) return '2px solid #D4D4D4';
     if (props.outlined) return '2px solid #FF6528';
@@ -50,15 +52,15 @@ const ButtonStyled = styled.button`
     if (props.width) return props.width;
 
     const sizeMap = {
-      // long: `${theme.width.button}`,
-      venti: '63%',
-      medium: '7.5625rem',
-      modal: '5.25rem',
-      short: '27%',
-      menu: '4.125rem',
+      long: '93vw',
+      venti: '63vw',
+      medium: '43.4vw',
+      modal: '34.4vw',
+      short: '27.2vw',
+      menu: '23.7vw',
     };
 
-    return sizeMap[props.size] || theme.width.button;
+    return sizeMap[props.size] || '93vw';
   }};
 
   height: ${(props) => {
@@ -73,7 +75,7 @@ const ButtonStyled = styled.button`
       menu: '5vh',
     };
 
-    return sizeMap[props.size] || '6.8%';
+    return sizeMap[props.size] || '6.8vh';
   }};
 
   user-select: none;

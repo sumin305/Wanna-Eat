@@ -2,7 +2,6 @@ package com.waterdragon.wannaeat.domain.restaurant.domain;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
 @Builder

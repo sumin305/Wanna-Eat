@@ -34,7 +34,7 @@ dependencies {
 
 	// Database
 	runtimeOnly 'com.mysql:mysql-connector-j'
-	//	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
 	//QueryDSL
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'

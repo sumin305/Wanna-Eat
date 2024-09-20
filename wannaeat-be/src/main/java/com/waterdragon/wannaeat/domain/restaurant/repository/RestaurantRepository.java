@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 
-public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
+public interface RestaurantRepository extends JpaRepository<Restaurant, Long>, RestaurantCustomRepository {
 
 	Optional<Restaurant> findByRestaurantId(Long restaurantId);
 

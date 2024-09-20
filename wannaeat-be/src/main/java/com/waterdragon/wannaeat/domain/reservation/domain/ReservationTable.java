@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Getter
@@ -33,7 +34,6 @@ public class ReservationTable {
 	private Reservation reservation;
 
 	@Column(name = "table_id", nullable = false)
-	private Long tableId;
+	private int tableId;
 
-	// 생성자, getter, setter
 }

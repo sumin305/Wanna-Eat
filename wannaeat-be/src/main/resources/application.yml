@@ -19,6 +19,9 @@ spring:
 
   phone-authcode-expiration-millis: ${PHONE_AUTHCODE_EXPIRATION}
 
+  data:
+    mongodb:
+      uri: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}/${MONGODB_DATABASE}?authSource=admin
 redis:
   host: ${REDIS_SERVER_ADDRESS}
   port: ${REDIS_SERVER_PORT}

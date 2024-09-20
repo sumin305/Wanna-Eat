@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import theme from '../../../style/common/theme';
 
-const TabbarContainer = styled.div`
+const FooterContainer = styled.div`
   display: flex;
   background-color: ${theme.color.white};
   width: 100%;
@@ -19,7 +19,7 @@ const TabbarContainer = styled.div`
   }
 `;
 
-const TabWrapper = styled.div`
+const FooterWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -28,14 +28,14 @@ const TabWrapper = styled.div`
   height: 100%;
 `;
 
-const TabImg = styled.img`
+const FooterImg = styled.img`
   width: 45%;
   height: 45%;
   padding-top: 3%;
   padding-bottom: 4%;
 `;
 
-const TabText = styled.p`
+const FooterText = styled.p`
   padding-bottom: 3%;
   text-align: center;
   color: ${({ activeId }) =>
@@ -45,4 +45,4 @@ const TabText = styled.p`
   padding-bottom: 3%;
 `;
 
-export { TabbarContainer, TabWrapper, TabImg, TabText };
+export { FooterContainer, FooterWrapper, FooterImg, FooterText };

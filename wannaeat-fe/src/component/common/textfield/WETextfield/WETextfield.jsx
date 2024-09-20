@@ -1,4 +1,4 @@
-import { ReactComponent as WarningIcon } from '../../../../assets/warning.svg';
+import { ReactComponent as WarningIcon } from '../../../../assets/icons/common/warning.svg';
 import components from './WETextfield.js';
 import useTextfieldStore from '../../../../stores/textfield/useTextfieldStore.js';
 

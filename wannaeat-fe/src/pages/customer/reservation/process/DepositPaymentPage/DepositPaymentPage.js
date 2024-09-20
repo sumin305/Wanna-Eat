@@ -10,7 +10,7 @@ const DepositInfoContainer = styled.div`
     align-content: center;
     margin: 0 auto;
     width: 250px;
-    height: 150px;
+    height: 30%;
     > * {
         width: 80%;
         margin: 0 auto;
@@ -37,4 +37,21 @@ const DepositPriceText = styled.p`
 const DepositCardWrapper = styled.div`
     text-align: center;
 `
-export {DepositPaymentPageContainer, DepositInfoContainer, DepositPriceInfoWrapper, DepositPriceInfo, DepositPriceText, DepositCardWrapper}
+
+const CardSelectBoxStyled = styled.div`
+    width: 100%;
+    height: 70%;
+    margin: 0 auto; 
+    > * {
+        width: 100%;
+    }
+    `
+export {
+    DepositPaymentPageContainer, 
+    DepositInfoContainer, 
+    DepositPriceInfoWrapper, 
+    DepositPriceInfo, 
+    DepositPriceText, 
+    DepositCardWrapper, 
+    CardSelectBoxStyled
+}

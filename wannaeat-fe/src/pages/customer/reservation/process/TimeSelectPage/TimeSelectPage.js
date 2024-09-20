@@ -3,13 +3,19 @@ import Calendar from 'react-calendar';
 import theme from '../../../../../style/common/theme';
 
 const TimeSelectPageContainer = styled.div`
-  width: 100%;
-`;
+  display: grid;
+  grid-template-rows: 1fr 56vh 1fr;
+  `;
+
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   margin: 0 1rem;
+  grid-row: 4;
+  bottom: 0;
+
+
 `;
 const CalendarWrapper = styled.div`
   text-align: -webkit-center;
@@ -95,10 +101,10 @@ const CalendarStyled = styled(Calendar)`
     border: none;
   }
   .react-calendar__tile--active {
-    background: #fff1aa;
+    background: #ff6528;
     border-radius: 6px;
     font-weight: bold;
-    color: black;
+    color: white;
     border: none;
   }
   .react-calendar__tile--active:enabled:hover,

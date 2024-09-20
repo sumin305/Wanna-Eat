@@ -21,9 +21,11 @@ const TimeSelectPage = () => {
     }
 
     const handleDateChange = (date) => {
+        console.log(date)
         setSelectedDate(moment(date).format('MM.DD'))
         setSelectedStartTime('00:00')
         setSelectedEndTime('00:00')
+        handleTimeSelectButtonClick()
     }
 
     const handleBeforeButtonClick = () => {
@@ -36,10 +38,12 @@ const TimeSelectPage = () => {
     return(
         <TimeSelectPageContainer>
             <WEStep index={0}/>
-            <Button size="long" outlined={true} onClick={handleTimeSelectButtonClick} fontWeight={900} >{selectedDate} {selectedStartTime} ~ {selectedEndTime} {selectedHeadCount}명</Button>
-            <CalendarWrapper>
-                <CalendarStyled showNeighboringMonth={false} onChange={handleDateChange} value={new Date()} formatDay={(locale, date) => moment(date).format("DD")}/>
-            </CalendarWrapper>
+            <div>
+                <Button size="long" outlined={true} onClick={handleTimeSelectButtonClick} fontWeight={900} >{selectedDate} {selectedStartTime} ~ {selectedEndTime} {selectedHeadCount}명</Button>
+                <CalendarWrapper>
+                    <CalendarStyled showNeighboringMonth={false} onChange={handleDateChange} value={moment(selectedDate, 'MM.DD').toDate()} formatDay={(locale, date) => moment(date).format("DD")}/>
+                </CalendarWrapper>
+            </div>
             <ButtonWrapper>
                 <Button onClick={handleBeforeButtonClick} size="short" color={"black"} backgroundColor={theme.color.disabled}>이전</Button>
                 <Button onClick={handleNextButtonClick} size="venti">예약</Button>

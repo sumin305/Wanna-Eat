@@ -1,27 +1,24 @@
 import styled from "@emotion/styled/macro";
 import theme from "../../../../../style/common/theme";
 
-const DepositInfoPageContainer = styled.div`
+const DepositPaymentPageContainer = styled.div`
   display: grid;
-  grid-template-rows: 0.5fr 0.5fr 0.5fr;
+  grid-template-rows: 1fr 56vh 1fr;
 `
 const DepositInfoContainer = styled.div`
-align-self: center;
-justify-self: center;
-text-align: -webkit-center;
-align-content: center;
+    align-self: center;
+    align-content: center;
+    margin: 0 auto;
     width: 250px;
-    height: 200px;
+    height: 150px;
     > * {
         width: 80%;
+        margin: 0 auto;
     }
 `
-
 const DepositPriceInfoWrapper = styled.div`
     display: flex;
-    flex-column: row;
     justify-content: center;
-
 `
 const DepositPriceInfo = styled.p`
     font-size: 2.5rem;
@@ -36,4 +33,8 @@ const DepositPriceText = styled.p`
     font-weight: ${theme.fontWeight.bold};
     text-align: end;
 `
-export {DepositInfoPageContainer, DepositInfoContainer, DepositPriceInfoWrapper, DepositPriceInfo, DepositPriceText}
+
+const DepositCardWrapper = styled.div`
+    text-align: center;
+`
+export {DepositPaymentPageContainer, DepositInfoContainer, DepositPriceInfoWrapper, DepositPriceInfo, DepositPriceText, DepositCardWrapper}

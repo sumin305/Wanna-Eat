@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { MapView } from './Map';
 import PinkMarker from '../../../assets/icons/map/pink-maker.png';
 import ArrowWhite from '../../../assets/icons/map/arrow-white.png';
 import VertexWhite from '../../../assets/icons/map/vertex-white.png';
+import useMapStore from '../../../stores/map/useMapStore';
 
 const MapContainer = () => {
-  const [lat, setLat] = useState(33.450701); // 위도값
-  const [lon, setLon] = useState(126.570667); // 경도값
+  const { lat, lon, setLat, setLon } = useMapStore();
 
   useEffect(() => {
     const { kakao } = window;
@@ -17,6 +17,14 @@ const MapContainer = () => {
     };
 
     const map = new kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
+
+    // // 현재 위치에 해당하는 위도, 경도값으로 변경
+    // if (navigator.geolocation) {
+    //   navigator.geolocation.getCurrentPosition(function (position) {
+    //     setLat(position.coords.latitude);
+    //     setLon(position.coords.longitude);
+    //   });
+    // }
 
     var positions = [
       {

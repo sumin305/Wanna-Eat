@@ -1,5 +1,7 @@
 package com.waterdragon.wannaeat.domain.restaurant.controller;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +22,7 @@ import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantEditRequ
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantCategoryListResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantDetailResponseDto;
+import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantMapListResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.service.RestaurantService;
 import com.waterdragon.wannaeat.global.response.ResponseDto;
 
@@ -54,6 +58,49 @@ public class RestaurantController {
 		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 	}
 
+	/**
+	 * 조건별 매장 목록 조회 API
+	 *
+	 * @param categoryId 카테고리 id
+	 * @param keyword 검색어
+	 * @param reservationDate 예약 일자
+	 * @param startTime 예약 시작 시간
+	 * @param endTime 예약 끝 시간
+	 * @param memberCount 예약 인원 수
+	 * @param latitude 사용자 위도
+	 * @param longitude 사용자 경도
+	 * @return RestaurantMapListResponseDto 해당하는 매장 거리순 최대 30개 반환
+	 */
+	@Operation(summary = "검색 조건별 매장 목록 조회 API")
+	@GetMapping("public/restaurants")
+	public ResponseEntity<ResponseDto<RestaurantMapListResponseDto>> getListRestaurantsByFilter(
+		@RequestParam(required = false) Long categoryId,
+		@RequestParam(required = false) String keyword,
+		@RequestParam(required = false) LocalDate reservationDate,
+		@RequestParam(required = false) LocalTime startTime,
+		@RequestParam(required = false) LocalTime endTime,
+		@RequestParam(required = false) Integer memberCount,
+		@RequestParam(required = false) Double latitude,
+		@RequestParam(required = false) Double longitude) {
+
+		RestaurantMapListResponseDto restaurantMapListResponseDto = restaurantService.getListRestaurantsByFilter(
+			categoryId, keyword, reservationDate, startTime, endTime, memberCount, latitude, longitude);
+		ResponseDto<RestaurantMapListResponseDto> responseDto = ResponseDto.<RestaurantMapListResponseDto>builder()
+			.status(HttpStatus.OK.value())
+			.message("매장 목록이 성공적으로 조회되었습니다.")
+			.data(restaurantMapListResponseDto)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+
+	}
+
+	/**
+	 * 매장 정보 상세 조회 API
+	 *
+	 * @param restaurantId 매장 id
+	 * @return RestaurantDetailResponseDto 매장 정보
+	 */
 	@Operation(summary = "매장 정보 상세 조회 API(메뉴 포함)")
 	@GetMapping("/public/restaurants/{restaurantId}")
 	public ResponseEntity<ResponseDto<RestaurantDetailResponseDto>> getDetailRestaurantByRestaurantId(

@@ -4,6 +4,7 @@ import Button from "../../../common/button/WEButton/WEButton";
 import theme from "../../../../style/common/theme";
 import useModalStore from "../../../../stores/common/modal/useModalStore";
 import { useEffect } from "react";
+
 const TimeSelectModalBox = () => {
     const {isLunch, setIsLunch, lunchTimes, dinnerTimes, setSelectedStartTime, setSelectedEndTime, setSelectedHeadCount, setSelectedTimes, selectedTimes} = useTimeSelectStore();
     const handleHeadCountChange = (e) => {
@@ -142,7 +143,7 @@ const TimeSelectModalBox = () => {
             <TimeSelectModalListContainer>
                 {lunchTimes.map((time, index) => (
                     <TimeSelectModalListItem key={index}>
-                        <Button onClick={() => handleLunchTimeClick(index)} size={'menu'} width={'100%'} height={'70%'} outlined={selectedTimes.includes(time) ? false : true} miniOutlined={true} fontSize={theme.fontSize.px11}>{time}</Button>
+                        <Button onClick={() => handleLunchTimeClick(index)} borderColor={theme.color.disabled} color={selectedTimes.includes(time) ? 'white' : theme.color.disabled}  size={'menu'} width={'100%'} height={'70%'} outlined={selectedTimes.includes(time) ? false : true} miniOutlined={true} fontSize={theme.fontSize.px11}>{time}</Button>
                     </TimeSelectModalListItem>
                 ))}
             </TimeSelectModalListContainer>
@@ -154,7 +155,7 @@ const TimeSelectModalBox = () => {
             <TimeSelectModalListContainer>
                 {dinnerTimes.map((time, index) => (
                     <TimeSelectModalListItem key={index}>
-                        <Button onClick={() => handleDinnerTimeClick(index)} size={'menu'} width={'100%'} height={'70%'} outlined={selectedTimes.includes(time) ? false : true} miniOutlined={true} fontSize={theme.fontSize.px11} key={index}>{time}</Button>
+                        <Button onClick={() => handleDinnerTimeClick(index)} borderColor={theme.color.disabled} color={selectedTimes.includes(time) ? 'white' : theme.color.disabled} size={'menu'} width={'100%'} height={'70%'} outlined={selectedTimes.includes(time) ? false : true} miniOutlined={true} fontSize={theme.fontSize.px11} key={index}>{time}</Button>
                     </TimeSelectModalListItem>
                 ))}
             </TimeSelectModalListContainer>

@@ -13,6 +13,7 @@ const ButtonStyled = styled.button`
   }};
 
   color: ${(props) => {
+    if (props.color) return props.color;
     if (props.disabled) return 'white';
     if (props.outlined) return '#FF6528';
     return props.color || 'white';
@@ -39,6 +40,7 @@ const ButtonStyled = styled.button`
   }};
 
   border: ${(props) => {
+    if (props.borderColor && props.outlined) return '2px solid ' + props.borderColor;
     if (props.miniOutlined) return '1px solid #FF6528';
     if (props.disabled && props.outlined) return '2px solid #D4D4D4';
     if (props.outlined) return '2px solid #FF6528';

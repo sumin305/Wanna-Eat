@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-const useTabbarStore = create((set) => ({
+const useFooterStore = create((set) => ({
   activeId: 0,
   activePath: '/',
   handleClickTab: (index, path) => {
@@ -8,4 +8,4 @@ const useTabbarStore = create((set) => ({
   },
 }));
 
-export default useTabbarStore;
+export default useFooterStore;

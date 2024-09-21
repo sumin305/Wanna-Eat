@@ -9,7 +9,7 @@ import StatisticsPage from '../pages/manager/statistics/StatisticsPage';
 
 // 손님 관련 페이지
 import CustomerMainPage from '../pages/customer/main/MainPage';
-import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage';
+import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage.jsx';
 import ListPage from '../pages/customer/reservation/history/ListPage';
 import MyInfoPage from '../pages/customer/user/MyInfoPage';
 import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage/TimeSelectPage.jsx';
@@ -43,7 +43,7 @@ const AppRoutes = () => {
         />
         <Route
           path="/customer/reservation/deposit-payment"
-          element={<DepositPaymentPage/>}
+          element={<DepositPaymentPage />}
         />
         <Route path="/customer/reservationlist" element={<ListPage />} />
         <Route path="/customer/myinfo" element={<MyInfoPage />} />

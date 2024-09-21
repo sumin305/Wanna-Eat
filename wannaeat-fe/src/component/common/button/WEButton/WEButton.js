@@ -52,15 +52,15 @@ const ButtonStyled = styled.button`
     if (props.width) return props.width;
 
     const sizeMap = {
-      long: '93vw',
-      venti: '63vw',
-      medium: '43.4vw',
-      modal: '34.4vw',
-      short: '27.2vw',
-      menu: '23.7vw',
+      long: '93%',
+      venti: '63%',
+      medium: '43.4%',
+      modal: '34.4%',
+      short: '27.2%',
+      menu: '23.7%',
     };
 
-    return sizeMap[props.size] || '93vw';
+    return sizeMap[props.size] || '93%';
   }};
 
   height: ${(props) => {

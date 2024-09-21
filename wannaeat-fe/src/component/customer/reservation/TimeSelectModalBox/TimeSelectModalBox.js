@@ -36,8 +36,10 @@ const TimeSelectModalListItem = styled.div`
 `;
 
 const HeadCountInputWrapper = styled.div`
+display: flex;
   > * {
     margin: 0 5px;
+    padding: 0 5px;
   }
 `;
 

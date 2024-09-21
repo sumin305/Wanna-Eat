@@ -2,11 +2,15 @@ import useTimeSelectStore from "../../../../stores/customer/useTimeSelectStore";
 import {TimeSelectModalBoxContainer, TimeSelectModalTitleStyled, TimeSelectModalSubTitleWrapper, TimeSelectModalSubTitleStyled, TimeSelectModalListContainer, TimeSelectModalListItem, HeadCountInputWrapper} from './TimeSelectModalBox'
 import Button from "../../../common/button/WEButton/WEButton";
 import theme from "../../../../style/common/theme";
-import useModalStore from "../../../../stores/common/modal/useModalStore";
-import { useEffect } from "react";
-
+import { useEffect } from "react"
+import Textfield from "../../../common/textfield/WETextfield/WETextfield.jsx";
 const TimeSelectModalBox = () => {
-    const {isLunch, setIsLunch, lunchTimes, dinnerTimes, setSelectedStartTime, setSelectedEndTime, setSelectedHeadCount, setSelectedTimes, selectedTimes} = useTimeSelectStore();
+    const {isLunch, lunchTimes, dinnerTimes, headCount, setIsLunch, setSelectedStartTime, setSelectedEndTime, setSelectedHeadCount, setSelectedTimes, selectedTimes} = useTimeSelectStore();
+
+    useEffect(() => {
+        setSelectedTimes([])
+    }, [])
+    
     const handleHeadCountChange = (e) => {
         if (e.target.value === '') {
             setSelectedHeadCount(0);
@@ -55,7 +59,7 @@ const TimeSelectModalBox = () => {
 
             // 추가 완료
             setSelectedTimes(newSelectedTimes)
-            setStartEndTime(selectedTimes)
+            setStartEndTime(newSelectedTimes)
         } else {
             let newSelectedTimes = []
             newSelectedTimes.push(lunchTimes[index])
@@ -110,7 +114,7 @@ const TimeSelectModalBox = () => {
         setIsLunch(false)
     }
 
-    // 연속된 시간 선택했는지 판별해주는 함수
+    // 연속된 시간 선택 여부 검사 함수
     const checkContinuousTime = (times, selectedTimes) => {
             selectedTimes.sort()
             let beforeIdx = times.indexOf(selectedTimes[0])
@@ -125,13 +129,17 @@ const TimeSelectModalBox = () => {
  
     const setStartEndTime = (selectedTimes) => {
         selectedTimes = selectedTimes.sort()
-        setSelectedStartTime(selectedTimes[0])
-        setSelectedEndTime(selectedTimes[selectedTimes.length - 1])
-
+        const startTime = selectedTimes[0]
+        setSelectedStartTime(startTime)
+        const endTime = selectedTimes[selectedTimes.length - 1]
+            if (endTime.split(':')[1] == '00') {
+                setSelectedEndTime(endTime.split(':')[0] + ':30')
+            }
+            else if (endTime.split(':')[1] == '30') {
+                setSelectedEndTime((parseInt(endTime.split(':')[0]) + 1) + ':00')
+            }
     }
-    useEffect(() => {
-        setSelectedTimes([])
-    }, [])
+
     return (
         <TimeSelectModalBoxContainer>
         <TimeSelectModalTitleStyled>시간을 선택하세요</TimeSelectModalTitleStyled>
@@ -166,7 +174,9 @@ const TimeSelectModalBox = () => {
         <div>
             <TimeSelectModalSubTitleWrapper>
                 <TimeSelectModalSubTitleStyled>인원</TimeSelectModalSubTitleStyled>
-                <HeadCountInputWrapper><input onChange={handleHeadCountChange} type='number'/>명</HeadCountInputWrapper>
+                <HeadCountInputWrapper>
+                    <Textfield height="3%" width="6.25rem" onChange={handleHeadCountChange} type='number'/>명
+                </HeadCountInputWrapper>
             </TimeSelectModalSubTitleWrapper>
         </div>
         </TimeSelectModalBoxContainer>

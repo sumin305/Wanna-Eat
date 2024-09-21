@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import useHeaderStore from '../../../stores/header/useHeaderStore';
+import useHeaderStore from '../../../stores/common/header/useHeaderStore';
 import {
   HeaderContainer,
   HeaderWrapper,

@@ -31,7 +31,7 @@ const DepositPaymentPage = () => {
         navigate('/customer/reservation/seat-select')
     }
     const handleNextButtonClick = () => {
-        navigate('/customer/reservation/')
+        navigate('/customer/reservation/fingerprint-auth')
     }
     return(
         <DepositPaymentPageContainer>

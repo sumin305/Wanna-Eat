@@ -88,7 +88,7 @@ public class JwtService {
 		setAccessTokenHeader(response, accessToken);
 
 		// RefreshToken을 쿠키에 설정
-		Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+		Cookie refreshTokenCookie = new Cookie(refreshHeader, refreshToken);
 		refreshTokenCookie.setHttpOnly(true); // 보안을 위해 JavaScript에서 접근 불가
 		// refreshTokenCookie.setSecure(true); // HTTPS에서만 전송되도록 설정
 		refreshTokenCookie.setPath("/"); // 도메인 전체에서 사용 가능하게 설정
@@ -104,7 +104,7 @@ public class JwtService {
 	public Optional<String> extractRefreshTokenFromCookies(HttpServletRequest request) {
 		if (request.getCookies() != null) {
 			for (Cookie cookie : request.getCookies()) {
-				if ("refreshToken".equals(cookie.getName())) {
+				if (refreshHeader.equals(cookie.getName())) {
 					return Optional.of(cookie.getValue());
 				}
 			}
@@ -201,5 +201,21 @@ public class JwtService {
 			log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
 			return false;
 		}
+	}
+
+	public void removeAccessToken(HttpServletResponse response) {
+		response.setHeader(accessHeader, "");
+		log.info("AccessToken이 삭제되었습니다.");
+	}
+
+	public void removeRefreshTokenCookie(HttpServletResponse response) {
+		// RefreshToken 쿠키 삭제를 위해 만료 시간 0 설정
+		Cookie refreshTokenCookie = new Cookie(refreshHeader, null);
+		refreshTokenCookie.setHttpOnly(true); // 보안을 위해 JavaScript에서 접근 불가
+		refreshTokenCookie.setPath("/"); // 모든 경로에서 적용되도록 설정
+		refreshTokenCookie.setMaxAge(0); // 쿠키 만료 시간 0으로 설정하여 삭제
+		response.addCookie(refreshTokenCookie);
+
+		log.info("RefreshToken이 쿠키에서 삭제되었습니다.");
 	}
 }

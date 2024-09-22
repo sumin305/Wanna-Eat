@@ -20,6 +20,7 @@ const useReservationStore = create((set) => ({
     '4시간',
   ],
   selectedDurationTime: '', // 머무는 시간
+  selectedCategory: null, // 선택한 카테고리
   setIsLunch: (isLunch) => set({ isLunch: isLunch }),
   setSelectedDate: (date) => set({ selectedDate: date }),
   setSelectedStartTime: (time) => set({ selectedStartTime: time }),
@@ -29,6 +30,7 @@ const useReservationStore = create((set) => ({
   setDinnerTimes: (times) => set({ dinnerTimes: times }),
   setSelectedTimes: (times) => set({ selectedTimes: times }),
   setSelectedDurationTime: (times) => set({ selectedDurationTime: times }),
+  setSelectedCategory: (category) => set({ selectedCategory: category }),
 }));
 
 export default useReservationStore;

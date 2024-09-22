@@ -7,14 +7,12 @@ const useDropdownStore = create((set) => ({
   items: [],
   isShowOption: false,
   placeholder: '카테고리를 선택하세요',
-  selectedItem: null,
   setWidth: (width) => set({ width: width }),
   setHeight: (height) => set({ height: height }),
   setPlaceholder: (placeholder) => set({ placeholder: placeholder }),
   setSelectedId: (idx) => set({ selectedId: idx }),
   setItems: (items) => set({ items: items }),
   setIsShowOption: (isShowOption) => set({ isShowOption: isShowOption }),
-  setSelectedItem: (item) => set({ selectedItem: item }),
 }));
 
 const useVisitTimeDropdownStore = create((set) => ({
@@ -24,7 +22,6 @@ const useVisitTimeDropdownStore = create((set) => ({
   items: [],
   isShowOption: false,
   visitTimePlaceholder: '방문시간',
-  selectedItem: null,
   setWidth: (width) => set({ width: width }),
   setHeight: (height) => set({ height: height }),
   setVisitTimePlaceholder: (placeholder) =>
@@ -32,7 +29,6 @@ const useVisitTimeDropdownStore = create((set) => ({
   setSelectedId: (idx) => set({ selectedId: idx }),
   setItems: (items) => set({ items: items }),
   setIsShowOption: (isShowOption) => set({ isShowOption: isShowOption }),
-  setSelectedItem: (item) => set({ selectedItem: item }),
 }));
 
 const useDurationDropdownStore = create((set) => ({
@@ -42,7 +38,6 @@ const useDurationDropdownStore = create((set) => ({
   items: [],
   isShowOption: false,
   durationPlaceholder: '머물시간',
-  selectedItem: null,
   setWidth: (width) => set({ width: width }),
   setHeight: (height) => set({ height: height }),
   setDurationPlaceholder: (placeholder) =>
@@ -50,7 +45,6 @@ const useDurationDropdownStore = create((set) => ({
   setSelectedId: (idx) => set({ selectedId: idx }),
   setItems: (items) => set({ items: items }),
   setIsShowOption: (isShowOption) => set({ isShowOption: isShowOption }),
-  setSelectedItem: (item) => set({ selectedItem: item }),
 }));
 
 export {

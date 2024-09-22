@@ -26,6 +26,8 @@ const MapFilterModalBox = () => {
     durationTimes,
     selectedDurationTime,
     setSelectedDurationTime,
+    selectedCategory,
+    setSelectedCategory,
   } = useReservationStore();
 
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
@@ -53,7 +55,7 @@ const MapFilterModalBox = () => {
 
   const { categories } = useCommonStore();
 
-  const { selectedItem, setItems } = useDropdownStore();
+  const { setItems } = useDropdownStore();
 
   const allTimes = [...lunchTimes, ...dinnerTimes]; // 오전 오후 포함한 모든 시간
 
@@ -91,7 +93,7 @@ const MapFilterModalBox = () => {
   console.log(selectedDate);
   console.log(selectedStartTime);
   console.log(selectedDurationTime);
-  console.log(selectedItem);
+  console.log(selectedCategory);
 
   return (
     <>
@@ -153,6 +155,7 @@ const MapFilterModalBox = () => {
         <WEDropdown
           useDropdownStore={useDropdownStore}
           placeholder="카테고리를 선택하세요"
+          onSelect={setSelectedCategory}
         />
       </InputFieldContainer>
     </>

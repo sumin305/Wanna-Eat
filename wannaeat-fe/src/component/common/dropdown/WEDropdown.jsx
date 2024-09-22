@@ -8,7 +8,7 @@ import {
 import ArrowUp from '../../../assets/icons/common/arrow-up.svg';
 import ArrowDown from '../../../assets/icons/common/arrow-down.svg';
 
-const WEDropdown = ({ useDropdownStore, placeholder }) => {
+const WEDropdown = ({ useDropdownStore, placeholder, onSelect }) => {
   const {
     width,
     height,
@@ -17,7 +17,6 @@ const WEDropdown = ({ useDropdownStore, placeholder }) => {
     isShowOption,
     items,
     selectedId,
-    setSelectedItem,
   } = useDropdownStore();
 
   const handleLabelClick = () => {
@@ -26,7 +25,9 @@ const WEDropdown = ({ useDropdownStore, placeholder }) => {
 
   const handleOptionClick = (index) => {
     setSelectedId(index);
-    setSelectedItem(items[index]);
+    if (onSelect) {
+      onSelect(items[index]);
+    }
     setIsShowOption(false);
   };
 

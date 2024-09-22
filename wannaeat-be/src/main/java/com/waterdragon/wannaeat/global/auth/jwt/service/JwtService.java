@@ -207,5 +207,15 @@ public class JwtService {
 		response.setHeader(accessHeader, "");
 		log.info("AccessToken이 삭제되었습니다.");
 	}
-	
+
+	public void removeRefreshTokenCookie(HttpServletResponse response) {
+		// RefreshToken 쿠키 삭제를 위해 만료 시간 0 설정
+		Cookie refreshTokenCookie = new Cookie(refreshHeader, null);
+		refreshTokenCookie.setHttpOnly(true); // 보안을 위해 JavaScript에서 접근 불가
+		refreshTokenCookie.setPath("/"); // 모든 경로에서 적용되도록 설정
+		refreshTokenCookie.setMaxAge(0); // 쿠키 만료 시간 0으로 설정하여 삭제
+		response.addCookie(refreshTokenCookie);
+
+		log.info("RefreshToken이 쿠키에서 삭제되었습니다.");
+	}
 }

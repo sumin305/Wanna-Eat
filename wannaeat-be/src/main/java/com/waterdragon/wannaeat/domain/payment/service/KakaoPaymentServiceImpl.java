@@ -3,7 +3,6 @@ package com.waterdragon.wannaeat.domain.payment.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -48,7 +47,7 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 
 	/**
 	 * 카카오페이 최초 요청 및 결제창 연결 메소드
-	 * 
+	 *
 	 * @param kakaoPaymentRequestDto 카카오페이 메뉴 결제 요청 정보
 	 * @return KakaoPaymentReadyResponseDto 결제 고유번호 및 redirect 주소
 	 */
@@ -60,10 +59,11 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 		List<KakaoPaymentMenuRequestDto> menuItems = kakaoPaymentRequestDto.getKakaoPaymentMenuRequestDtos();
 
 		for (KakaoPaymentMenuRequestDto menuItem : menuItems) {
-			// Order 존재여부 확인
+			// Order 존재여부 확인 (락 없이 조회)
 			Order order = orderRepository.findByOrderId(menuItem.getOrderId())
-				.orElseThrow(() -> new OrderNotFoundException("해당 번호의 주문이 존재하지 않습니다. orderId : " + menuItem.getOrderId()));
-			
+				.orElseThrow(
+					() -> new OrderNotFoundException("해당 번호의 주문이 존재하지 않습니다. orderId : " + menuItem.getOrderId()));
+
 			// Menu 존재여부 확인
 			Menu menu = menuRepository.findByMenuIdAndDeletedFalse(menuItem.getMenuId())
 				.orElseThrow(() -> new MenuNotFoundException("해당 번호의 메뉴가 존재하지 않습니다. menuId : " + menuItem.getMenuId()));
@@ -71,7 +71,8 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 			// 재고 확인 (totalCnt, paidCnt 비교)
 			int stock = order.getTotalCnt() - order.getPaidCnt();
 			if (menuItem.getMenuCount() > stock) {
-				throw new MenuCountRequestMoreThanUnpaidException("미결제 수량은 " + menuItem.getMenuCount() + "개 미만인 "+ stock + "개입니다.");
+				throw new MenuCountRequestMoreThanUnpaidException(
+					"미결제 수량은 " + menuItem.getMenuCount() + "개 미만인 " + stock + "개입니다.");
 			}
 
 			totalPrice += menu.getPrice() * menuItem.getMenuCount();
@@ -84,7 +85,8 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 
 		// 카카오페이 결제 준비
 		Reservation reservation = reservationRepository.findByReservationId(kakaoPaymentRequestDto.getReservationId())
-			.orElseThrow(() -> new ReservationNotFoundException("해당 번호의 예약은 존재하지 않습니다. reservationId : " + kakaoPaymentRequestDto.getReservationId()));
+			.orElseThrow(() -> new ReservationNotFoundException(
+				"해당 번호의 예약은 존재하지 않습니다. reservationId : " + kakaoPaymentRequestDto.getReservationId()));
 		Restaurant restaurant = reservation.getRestaurant();
 
 		Map<String, String> parameters = new HashMap<>();
@@ -95,7 +97,8 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 		parameters.put("quantity", "1");                                        // 상품 수량
 		parameters.put("total_amount", String.valueOf(totalPrice));             // 상품 총액
 		parameters.put("tax_free_amount", "0");                                 // 상품 비과세 금액
-		parameters.put("approval_url", REDIRECT_URL + "/api/payments/completed/kakao?payment_id=" + paymentId); // 결제 성공 시 URL
+		parameters.put("approval_url",
+			REDIRECT_URL + "/api/payments/completed/kakao?payment_id=" + paymentId); // 결제 성공 시 URL
 		parameters.put("cancel_url", REDIRECT_URL + "/api/payments/cancel/kakao");      // 결제 취소 시 URL
 		parameters.put("fail_url", REDIRECT_URL + "/api/payments/fail/kakao");          // 결제 실패 시 URL
 
@@ -106,11 +109,12 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 		// Rest 방식 API를 호출할 수 있는 Spring 내장 클래스
 		RestTemplate template = new RestTemplate();
 		String url = "https://open-api.kakaopay.com/online/v1/payment/ready";
-		ResponseEntity<KakaoPaymentReadyResponseDto> responseEntity = template.postForEntity(url, requestEntity, KakaoPaymentReadyResponseDto.class);
+		ResponseEntity<KakaoPaymentReadyResponseDto> responseEntity = template.postForEntity(url, requestEntity,
+			KakaoPaymentReadyResponseDto.class);
 
 		return responseEntity.getBody();
 	}
-	
+
 	// 카카오페이 측에 요청 시 헤더부에 필요한 값
 	public HttpHeaders getHeaders() {
 		HttpHeaders headers = new HttpHeaders();
@@ -122,7 +126,7 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 
 	/**
 	 * 카카오페이 결제 승인 메소드
-	 * 
+	 *
 	 * @param tid 카카오페이측 결제 고유번호
 	 * @param pgToken pgToken
 	 * @param paymentId 우리 서버측 결제 고유번호

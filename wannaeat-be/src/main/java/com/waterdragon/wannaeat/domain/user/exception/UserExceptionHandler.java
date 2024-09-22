@@ -27,7 +27,7 @@ public class UserExceptionHandler {
 	// 중복된 닉네임으로 가입된 계정 존재
 	@ExceptionHandler(DuplicateNicknameException.class)
 	public final ResponseEntity<ErrorResponseDto> handleDuplicateNicknameException(
-		DuplicateUserException ex) {
+		DuplicateNicknameException ex) {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Duplicate Nickname", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);

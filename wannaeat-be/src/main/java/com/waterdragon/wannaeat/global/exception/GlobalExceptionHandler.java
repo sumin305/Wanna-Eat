@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.waterdragon.wannaeat.global.exception.error.BadRequestException;
 import com.waterdragon.wannaeat.global.exception.error.FileUploadFailureException;
+import com.waterdragon.wannaeat.global.exception.error.NotAuthenticatedException;
 import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
@@ -57,6 +58,15 @@ public class GlobalExceptionHandler {
 		ErrorResponseDto error = new ErrorResponseDto("File Upload Error", ex.getMessage());
 
 		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	// 비인증 에러
+	@ExceptionHandler(NotAuthenticatedException.class)
+	public final ResponseEntity<ErrorResponseDto> handleNotAuthenticatedException(Exception ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Not Authenticated", ex.getMessage());
+
+		return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
 	}
 
 	// 비인가(권한 없음) 에러

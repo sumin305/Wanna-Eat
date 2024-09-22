@@ -18,6 +18,7 @@ import com.waterdragon.wannaeat.domain.user.domain.enums.SocialType;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
+import com.waterdragon.wannaeat.domain.user.exception.error.DuplicateNicknameException;
 import com.waterdragon.wannaeat.domain.user.exception.error.DuplicatePhoneException;
 import com.waterdragon.wannaeat.domain.user.exception.error.DuplicateUserException;
 import com.waterdragon.wannaeat.domain.user.exception.error.InvalidCodeException;
@@ -67,6 +68,9 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void signup(UserSignupRequestDto userSignupRequestDto) {
+		if(checkNicknameDuplicate(userSignupRequestDto.getNickname())) {
+			throw new DuplicateNicknameException("해당 닉네임으로 가입된 계정이 존재합니다.");
+		}
 		User user = authUtil.getAuthenticatedUser();
 		if (user.getRole() != Role.GUEST) {
 			throw new DuplicateUserException("이미 가입된 계정입니다. 다시 로그인 해 주세요.");

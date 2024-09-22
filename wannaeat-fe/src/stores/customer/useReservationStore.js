@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import moment from 'moment';
 const useReservationStore = create((set) => ({
   isLunch: true,
-  selectedDate: moment(new Date()).format('MM.DD'),
+  selectedDate: moment(new Date()).format('YYYY-MM-DD'),
   selectedStartTime: '00:00',
   selectedEndTime: '00:00',
   selectedHeadCount: 0,

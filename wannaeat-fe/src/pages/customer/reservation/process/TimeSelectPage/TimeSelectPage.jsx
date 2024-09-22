@@ -25,6 +25,7 @@ const TimeSelectPage = () => {
     setSelectedStartTime,
     setSelectedEndTime,
   } = useReservationStore();
+  console.log(selectedHeadCount);
   const navigate = useNavigate();
   const handleTimeSelectButtonClick = () => {
     setModalType('sheet');
@@ -36,7 +37,7 @@ const TimeSelectPage = () => {
 
   const handleDateChange = (date) => {
     console.log(date);
-    setSelectedDate(moment(date).format('MM.DD'));
+    setSelectedDate(moment(date).format('YYYY-MM-DD'));
     setSelectedStartTime('00:00');
     setSelectedEndTime('00:00');
     handleTimeSelectButtonClick();
@@ -49,6 +50,8 @@ const TimeSelectPage = () => {
     navigate('/customer/reservation/seat-select');
   };
 
+  var showDate = selectedDate.slice(5).replace('-', '.');
+
   return (
     <TimeSelectPageContainer>
       <WEStep index={0} />
@@ -59,14 +62,14 @@ const TimeSelectPage = () => {
           onClick={handleTimeSelectButtonClick}
           fontWeight={900}
         >
-          {selectedDate} {selectedStartTime} ~ {selectedEndTime}{' '}
-          {selectedHeadCount}명
+          {showDate} {selectedStartTime} ~ {selectedEndTime} {selectedHeadCount}
+          명
         </Button>
         <CalendarWrapper>
           <CalendarStyled
             showNeighboringMonth={false}
             onChange={handleDateChange}
-            value={moment(selectedDate, 'MM.DD').toDate()}
+            value={moment(selectedDate, 'YYYY-MM-DD').toDate()}
             formatDay={(locale, date) => moment(date).format('DD')}
           />
         </CalendarWrapper>

@@ -17,12 +17,12 @@ const useDropdownStore = create((set, get) => ({
 }));
 
 const useVisitTimeDropdownStore = create((set, get) => ({
-  width: '35%',
-  height: '25px',
+  width: '93%',
+  height: '30px',
   selectedId: -1,
   items: [],
   isShowOption: false,
-  visitTimePlaceholder: '방문시간을 선택하세요.',
+  visitTimePlaceholder: '방문시간',
   getItems: () => get().items,
   setWidth: (width) => set({ width: width }),
   setHeight: (height) => set({ height: height }),
@@ -34,12 +34,12 @@ const useVisitTimeDropdownStore = create((set, get) => ({
 }));
 
 const useDurationDropdownStore = create((set, get) => ({
-  width: '35%',
-  height: '25px',
+  width: '93%',
+  height: '30px',
   selectedId: -1,
   items: [],
   isShowOption: false,
-  durationPlaceholder: '머물시간을 선택하세요.',
+  durationPlaceholder: '머물시간',
   getItems: () => get().items,
   setWidth: (width) => set({ width: width }),
   setHeight: (height) => set({ height: height }),

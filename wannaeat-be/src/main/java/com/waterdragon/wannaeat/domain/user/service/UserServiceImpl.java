@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
 	public boolean verifyPhoneAuthenticationCode(PhoneCodeVerifyRequestDto phoneCodeVerifyRequestDto) {
 		String phone = encryptService.encryptData(phoneCodeVerifyRequestDto.getPhone());
 		String key = phone + phoneCodeVerifyRequestDto.getSocialType().toString();
-		String redisAuthCode = redisService.getValues(key);
+		String redisAuthCode = (String) redisService.getValues(key);
 
 		if (!redisService.checkExistsValue(redisAuthCode)) {
 			throw new InvalidCodeException("인증코드가 만료되었습니다.");

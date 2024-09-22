@@ -7,6 +7,7 @@ import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.restaurantlike.domain.RestaurantLike;
 import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
 import com.waterdragon.wannaeat.domain.user.domain.enums.SocialType;
+import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,10 +42,10 @@ public class User {
 	@Column(name = "email", nullable = false)
 	private String email;
 
-	@Column(name = "nickname", nullable = false)
+	@Column(name = "nickname")
 	private String nickname;
 
-	@Column(name = "phone", nullable = false)
+	@Column(name = "phone")
 	private String phone;
 
 	@Enumerated(EnumType.STRING)
@@ -70,5 +71,9 @@ public class User {
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<RestaurantLike> restaurantLikes;
 
-	// Getters and setters
+	public void update(UserSignupRequestDto userSignupRequestDto) {
+		this.nickname = userSignupRequestDto.getNickname();
+		this.phone = userSignupRequestDto.getPhone();
+		this.role = userSignupRequestDto.getRole();
+	}
 }

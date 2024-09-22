@@ -9,6 +9,8 @@ import com.waterdragon.wannaeat.domain.user.domain.enums.SocialType;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
+	Optional<User> findByUserId(Long userId);
+
 	Optional<User> findByUserIdAndDeletedFalse(Long id);
 
 	Optional<User> findByEmail(String email);

@@ -3,6 +3,7 @@ package com.waterdragon.wannaeat.global.auth.oauth2;
 import java.util.Map;
 
 import com.waterdragon.wannaeat.domain.user.domain.User;
+import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
 import com.waterdragon.wannaeat.domain.user.domain.enums.SocialType;
 import com.waterdragon.wannaeat.global.auth.oauth2.userinfo.GoogleOAuth2UserInfo;
 import com.waterdragon.wannaeat.global.auth.oauth2.userinfo.KakaoOAuth2UserInfo;
@@ -66,6 +67,7 @@ public class OAuthAttributes {
 		return User.builder()
 			.socialType(socialType)
 			.email(oauth2UserInfo.getEmail())
+			.role(Role.GUEST)
 			.build();
 	}
 }

@@ -7,6 +7,8 @@ import {
   useDurationDropdownStore,
 } from '../../../stores/common/dropdown/useDropdownStore.js';
 import WEDropdown from '../../common/dropdown/WEDropdown.jsx';
+import moment from 'moment';
+import { CalendarWrapper, CalendarStyled } from './MapFilterModalBox.js';
 
 const MapFilterModalBox = () => {
   const {
@@ -14,6 +16,7 @@ const MapFilterModalBox = () => {
     setSelectedHeadCount,
     lunchTimes,
     dinnerTimes,
+    selectedDate,
     selectedStartTime,
     setSelectedStartTime,
     durationTimes,
@@ -65,6 +68,14 @@ const MapFilterModalBox = () => {
   console.log(selectedStartTime);
   console.log(selectedDurationTime);
 
+  //   const handleDateChange = (date) => {
+  //     console.log(date);
+  //     setSelectedDate(moment(date).format('MM.DD'));
+  //     setSelectedStartTime('00:00');
+  //     setSelectedEndTime('00:00');
+  //     handleTimeSelectButtonClick();
+  //   };
+
   return (
     <>
       <InputFieldContainer>
@@ -79,6 +90,18 @@ const MapFilterModalBox = () => {
           width="70%"
         />
         <InputFieldText>명</InputFieldText>
+      </InputFieldContainer>
+
+      <InputFieldContainer>
+        <InputFieldText> 방문 날짜</InputFieldText>
+        <CalendarWrapper>
+          <CalendarStyled
+            showNeighboringMonth={false}
+            // onChange={handleDateChange}
+            value={moment(selectedDate, 'MM.DD').toDate()}
+            formatDay={(locale, date) => moment(date).format('DD')}
+          />
+        </CalendarWrapper>
       </InputFieldContainer>
 
       <InputFieldContainer>

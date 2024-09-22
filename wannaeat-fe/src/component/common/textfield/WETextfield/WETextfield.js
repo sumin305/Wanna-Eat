@@ -11,13 +11,13 @@ const TextfieldWrapperStyled = styled.div`
 const TextfieldStyled = styled.input`
   height: ${(props) => (props.height ? props.height : theme.height.textfield)};
   border: 1px solid
-    ${(props) => (props.error ? theme.color.warning : '#606060')};
+    ${(props) => (props.error ? theme.color.warning : theme.color.disabled)};
   font-weight: 500;
   color: ${(props) =>
-    props.color || (props.error ? theme.color.warning : '#606060')};
+    props.color || (props.error ? theme.color.warning : theme.color.info)};
   padding: 0.625rem 0.938rem;
   font-size: ${theme.fontSize.px11};
-
+  border-radius: 0.3rem;
   box-sizing: border-box;
 
   outline: none;

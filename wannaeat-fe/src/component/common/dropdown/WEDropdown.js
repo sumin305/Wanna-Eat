@@ -15,9 +15,9 @@ const DropdownLabelStyled = styled.div`
   background-color: ${theme.color.white};
   font-size: ${theme.fontSize.px13};
   border-radius: 0.3rem;
-  border: 0.5px solid #c0c0c0;
+  border: 0.5px solid ${theme.color.disabled};
   padding: 0 10px;
-  color: #414141;
+  color: ${theme.color.info};
   align-items: center;
 `;
 
@@ -40,9 +40,9 @@ const DropdownSelectOption = styled.li`
   font-size: ${theme.fontSize.px13};
   list-style: none;
   border-radius: 0.3rem;
-  border: 0.5px solid #c0c0c0;
+  border: 0.5px solid ${theme.color.disabled};
   padding: 0 10px;
-  color: #414141;
+  color: ${theme.color.info};
   align-content: center;
 
   :hover {

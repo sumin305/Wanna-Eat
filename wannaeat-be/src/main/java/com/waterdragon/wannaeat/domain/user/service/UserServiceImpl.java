@@ -80,12 +80,11 @@ public class UserServiceImpl implements UserService {
 	 * 닉네임 중복검사 메소드
 	 *
 	 * @param nickname 닉네임
-	 * @return 미중복시 true, 중복시 true
+	 * @return 중복시 true, 미중복시 false
 	 */
 	@Override
 	public boolean checkNicknameDuplicate(String nickname) {
-		Optional<User> user = userRepository.findByNickname(nickname);
-		return user.isEmpty();
+		return userRepository.findByNickname(nickname).isPresent();
 	}
 
 	/**

@@ -5,6 +5,6 @@ import lombok.Getter;
 @Getter
 public enum Role {
 
-	NONE, CUSTOMER, MANAGER;
+	GUEST, CUSTOMER, MANAGER;
 
 }

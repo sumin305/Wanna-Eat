@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+
 const useDropdownStore = create((set, get) => ({
   width: '93%',
   height: '30px',
@@ -15,4 +16,42 @@ const useDropdownStore = create((set, get) => ({
   setIsShowOption: (isShowOption) => set({ isShowOption: isShowOption }),
 }));
 
-export default useDropdownStore;
+const useVisitTimeDropdownStore = create((set, get) => ({
+  width: '35%',
+  height: '25px',
+  selectedId: -1,
+  items: [],
+  isShowOption: false,
+  visitTimePlaceholder: '방문시간을 선택하세요.',
+  getItems: () => get().items,
+  setWidth: (width) => set({ width: width }),
+  setHeight: (height) => set({ height: height }),
+  setVisitTimePlaceholder: (placeholder) =>
+    set({ visitTimePlaceholder: placeholder }),
+  setSelectedId: (idx) => set({ selectedId: idx }),
+  setItems: (items) => set({ items: items }),
+  setIsShowOption: (isShowOption) => set({ isShowOption: isShowOption }),
+}));
+
+const useDurationDropdownStore = create((set, get) => ({
+  width: '35%',
+  height: '25px',
+  selectedId: -1,
+  items: [],
+  isShowOption: false,
+  durationPlaceholder: '머물시간을 선택하세요.',
+  getItems: () => get().items,
+  setWidth: (width) => set({ width: width }),
+  setHeight: (height) => set({ height: height }),
+  setDurationPlaceholder: (placeholder) =>
+    set({ durationPlaceholder: placeholder }),
+  setSelectedId: (idx) => set({ selectedId: idx }),
+  setItems: (items) => set({ items: items }),
+  setIsShowOption: (isShowOption) => set({ isShowOption: isShowOption }),
+}));
+
+export {
+  useDropdownStore,
+  useVisitTimeDropdownStore,
+  useDurationDropdownStore,
+};

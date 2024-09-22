@@ -1,15 +1,17 @@
-import { useMemo, useEffect } from "react";
-import useDropdownStore from "../../../stores/common/dropdown/useDropdownStore";
-import {   DropdownContainer, DropdownLabelStyled,
-    IconStyled,
-    DropdownSelectOptions,
-    DropdownSelectOption,
-  } from './WEDropdown';
-import theme from "../../../style/common/theme";
-import ArrowUp from '../../../assets/icons/arrow-up.svg'
-import ArrowDown from '../../../assets/icons/arrow-down.svg'
+import { useMemo, useEffect } from 'react';
+// import useDropdownStore from '../../../stores/common/dropdown/useDropdownStore';
+import {
+  DropdownContainer,
+  DropdownLabelStyled,
+  IconStyled,
+  DropdownSelectOptions,
+  DropdownSelectOption,
+} from './WEDropdown';
+import theme from '../../../style/common/theme';
+import ArrowUp from '../../../assets/icons/common/arrow-up.svg';
+import ArrowDown from '../../../assets/icons/common/arrow-down.svg';
 
-const WEDropdown = () => {
+const WEDropdown = ({ useDropdownStore, placeholder }) => {
   const {
     width,
     height,
@@ -33,13 +35,10 @@ const WEDropdown = () => {
     setSelectedId(index);
   };
 
-  const defaultLabelText = '메뉴를 입력하세요';
   return (
     <DropdownContainer width={width} onClick={handleLabelClick}>
       <DropdownLabelStyled height={height}>
-        <div>
-          {selectedId == -1 ? `${defaultLabelText}` : `${items[selectedId]}`}
-        </div>
+        <div>{selectedId == -1 ? placeholder : `${items[selectedId]}`}</div>
         <IconStyled src={isShowOption ? ArrowUp : ArrowDown} />
       </DropdownLabelStyled>
       <DropdownSelectOptions isShowOption={isShowOption}>

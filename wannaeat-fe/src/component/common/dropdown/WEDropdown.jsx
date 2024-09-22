@@ -1,5 +1,3 @@
-import { useMemo, useEffect } from 'react';
-// import useDropdownStore from '../../../stores/common/dropdown/useDropdownStore';
 import {
   DropdownContainer,
   DropdownLabelStyled,
@@ -7,7 +5,6 @@ import {
   DropdownSelectOptions,
   DropdownSelectOption,
 } from './WEDropdown';
-import theme from '../../../style/common/theme';
 import ArrowUp from '../../../assets/icons/common/arrow-up.svg';
 import ArrowDown from '../../../assets/icons/common/arrow-down.svg';
 
@@ -16,23 +13,19 @@ const WEDropdown = ({ useDropdownStore, placeholder }) => {
     width,
     height,
     setIsShowOption,
-    setItems,
     setSelectedId,
     isShowOption,
     items,
     selectedId,
   } = useDropdownStore();
-  const handleLabelClick = (e) => {
+
+  const handleLabelClick = () => {
     setIsShowOption(!isShowOption);
   };
 
-  useEffect(() => {
-    setItems(['보쌈', '족발', '치킨']);
-  }, []);
-
   const handleOptionClick = (index) => {
-    setIsShowOption(false);
     setSelectedId(index);
+    setIsShowOption(false);
   };
 
   return (

@@ -1,7 +1,6 @@
 package com.waterdragon.wannaeat.domain.user.service;
 
 import java.time.Duration;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,6 +17,7 @@ import com.waterdragon.wannaeat.domain.user.domain.enums.SocialType;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
+import com.waterdragon.wannaeat.domain.user.dto.response.UserDetailResponseDto;
 import com.waterdragon.wannaeat.domain.user.exception.error.DuplicateNicknameException;
 import com.waterdragon.wannaeat.domain.user.exception.error.DuplicatePhoneException;
 import com.waterdragon.wannaeat.domain.user.exception.error.DuplicateUserException;
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void signup(UserSignupRequestDto userSignupRequestDto) {
-		if(checkNicknameDuplicate(userSignupRequestDto.getNickname())) {
+		if (checkNicknameDuplicate(userSignupRequestDto.getNickname())) {
 			throw new DuplicateNicknameException("해당 닉네임으로 가입된 계정이 존재합니다.");
 		}
 		User user = authUtil.getAuthenticatedUser();
@@ -78,6 +78,20 @@ public class UserServiceImpl implements UserService {
 		userSignupRequestDto.setPhone(encryptService.encryptData(userSignupRequestDto.getPhone()));
 		user.update(userSignupRequestDto);
 		userRepository.save(user);
+	}
+
+	@Override
+	public UserDetailResponseDto getDetailMyUser() {
+		User user = authUtil.getAuthenticatedUser();
+		String phone = encryptService.decryptData(user.getPhone());
+		return UserDetailResponseDto.builder()
+			.userId(user.getUserId())
+			.email(user.getEmail())
+			.nickname(user.getNickname())
+			.phone(phone)
+			.role(user.getRole())
+			.socialType(user.getSocialType())
+			.build();
 	}
 
 	/**

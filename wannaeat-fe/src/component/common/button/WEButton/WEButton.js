@@ -20,6 +20,7 @@ const ButtonStyled = styled.button`
   }};
 
   font-weight: ${(props) => {
+    if (props.fontWeight) return props.fontWeight;
     if (props.size === 'modal') return 500;
     return 700;
   }};
@@ -40,8 +41,12 @@ const ButtonStyled = styled.button`
   }};
 
   border: ${(props) => {
-    if (props.borderColor && props.outlined) return '2px solid ' + props.borderColor;
-    if (props.miniOutlined) return '1px solid #FF6528';
+    if (props.borderColor && props.outlined)
+      return '2px solid ' + props.borderColor;
+    if (props.miniOutlined) {
+      if (props.borderColor) return '1px solid ' + props.borderColor;
+      return '1px solid #FF6528';
+    }
     if (props.disabled && props.outlined) return '2px solid #D4D4D4';
     if (props.outlined) return '2px solid #FF6528';
     return 'none';
@@ -60,7 +65,7 @@ const ButtonStyled = styled.button`
       menu: '23.7%',
     };
 
-    return sizeMap[props.size] || '93%';
+    return sizeMap[props.size] || 'none';
   }};
 
   height: ${(props) => {
@@ -75,7 +80,7 @@ const ButtonStyled = styled.button`
       menu: '5vh',
     };
 
-    return sizeMap[props.size] || '6.8vh';
+    return sizeMap[props.size] || 'none';
   }};
 
   user-select: none;

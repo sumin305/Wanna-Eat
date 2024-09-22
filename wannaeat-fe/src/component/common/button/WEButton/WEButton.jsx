@@ -12,7 +12,9 @@ const Button = ({
   outlined = false,
   disabled = false,
   onClick,
-  miniOutlined
+  miniOutlined,
+  fontWeight,
+  borderColor,
 }) => {
   return (
     <ButtonStyled
@@ -27,6 +29,8 @@ const Button = ({
       disabled={disabled}
       onClick={onClick}
       miniOutlined={miniOutlined}
+      fontWeight={fontWeight}
+      borderColor={borderColor}
     >
       {children}
     </ButtonStyled>

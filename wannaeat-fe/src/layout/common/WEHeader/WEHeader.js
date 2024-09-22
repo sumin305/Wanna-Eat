@@ -3,12 +3,14 @@ import theme from '../../../style/common/theme';
 
 const HeaderContainer = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 10%;
-  background-color: ${(props) =>
-    props.isCarrot ? theme.color.primary : theme.color.white};
+  height: 10vh;
+  padding: 0.1rem 0;
+
+  background-color: ${(props) => props.isCarrot ? theme.color.primary : theme.color.white};
 
   @media (min-width: 480px) {
     width: 480px;
@@ -30,7 +32,6 @@ const HeaderLeft = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  position: absolute;
   left: 0;
   width: 20%;
 `;
@@ -39,8 +40,13 @@ const LogoTitle = styled.h1`
   text-align: center;
   color: ${(props) =>
     props.isCarrot ? theme.color.white : theme.color.primary};
-  font-size: ${theme.fontSize.px9};
+  font-size: ${theme.fontSize.px11};
   font-weight: ${theme.fontWeight.bold};
+  letter-spacing: 0px;
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px13};
+  }
 `;
 
 const HeaderCenter = styled.div`
@@ -68,8 +74,13 @@ const HeaderRight = styled.div`
 `;
 
 const HeaderImg = styled.img`
-  width: 1.5rem;
+  width: 2rem;
   height: 1.5rem;
+  margin-top: 0.5rem;
+  @media (min-width: 480px) {
+    width: 3rem;
+    height: 2rem;
+  }
 `;
 
 const HeaderTitle = styled.h1`
@@ -81,8 +92,8 @@ const HeaderTitle = styled.h1`
 `;
 
 const IconImg = styled.img`
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.3rem;
+  height: 1.3rem;
 `;
 
 export {

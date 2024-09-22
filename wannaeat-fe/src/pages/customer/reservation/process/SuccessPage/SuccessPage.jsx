@@ -1,6 +1,5 @@
 import WEStep from '../../../../../component/customer/reservation/WEStep/WEStep.jsx';
 import Button from '../../../../../component/common/button/WEButton/WEButton.jsx';
-import useTimeSelectStore from '../../../../../stores/customer/useTimeSelectStore';
 import {
   SuccessPageContainer,
   SuccessMessageWrapper,
@@ -17,6 +16,7 @@ import {
 } from './SuccessPage.js';
 import theme from '../../../../../style/common/theme.js';
 import paper from '../../../.././../assets/icons/common/paper.svg';
+import useReservationStore from '../../../../../stores/customer/reservation/useReservationStore.js';
 const SuccessPage = () => {
   const {
     selectedDate,
@@ -24,7 +24,7 @@ const SuccessPage = () => {
     selectedEndTime,
     selectedHeadCount,
     selectedSeatNumber,
-  } = useTimeSelectStore();
+  } = useReservationStore();
   const link = 'https://wannaeat/invite/myrestaurant';
 
   const handleCopyButtonClick = (e) => {

@@ -23,7 +23,7 @@ const TimeSelectModalBox = () => {
     setSelectedHeadCount,
     setSelectedTimes,
     selectedTimes,
-  } = useTimeSelectStore();
+  } = useReservationStore();
 
   useEffect(() => {
     setSelectedTimes([]);

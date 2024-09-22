@@ -25,7 +25,7 @@ const ReservationInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   > * {
-    margin-bottom: 10px;
+    margin-bottom: 0.8rem;
   }
 `;
 

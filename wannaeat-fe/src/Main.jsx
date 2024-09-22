@@ -5,8 +5,16 @@ import WEBlackOutLayout from './layout/common/WEBlackOutLayout/WEBlackOutLayout.
 import WEModal from './component/common/modal/WEModal.jsx';
 import AppRoutes from './route/routes.js';
 import WEHeader from './layout/common/WEHeader/WEHeader.jsx';
+import { useEffect } from 'react';
+import useCommonStore from './stores/common/useCommonStore.js';
+
 const Main = () => {
   const { isModalVisible } = useModalStore();
+  const { setCategories } = useCommonStore();
+
+  useEffect(() => {
+    setCategories(['고기', '족발', '찌개', '회', '돈까스']);
+  }, []);
 
   const AppContainer = styled.div`
     display: flex;

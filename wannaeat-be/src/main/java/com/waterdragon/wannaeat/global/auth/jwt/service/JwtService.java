@@ -88,7 +88,7 @@ public class JwtService {
 		setAccessTokenHeader(response, accessToken);
 
 		// RefreshToken을 쿠키에 설정
-		Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+		Cookie refreshTokenCookie = new Cookie(refreshHeader, refreshToken);
 		refreshTokenCookie.setHttpOnly(true); // 보안을 위해 JavaScript에서 접근 불가
 		// refreshTokenCookie.setSecure(true); // HTTPS에서만 전송되도록 설정
 		refreshTokenCookie.setPath("/"); // 도메인 전체에서 사용 가능하게 설정
@@ -104,7 +104,7 @@ public class JwtService {
 	public Optional<String> extractRefreshTokenFromCookies(HttpServletRequest request) {
 		if (request.getCookies() != null) {
 			for (Cookie cookie : request.getCookies()) {
-				if ("refreshToken".equals(cookie.getName())) {
+				if (refreshHeader.equals(cookie.getName())) {
 					return Optional.of(cookie.getValue());
 				}
 			}
@@ -202,4 +202,10 @@ public class JwtService {
 			return false;
 		}
 	}
+
+	public void removeAccessToken(HttpServletResponse response) {
+		response.setHeader(accessHeader, "");
+		log.info("AccessToken이 삭제되었습니다.");
+	}
+	
 }

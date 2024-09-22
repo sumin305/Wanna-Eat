@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waterdragon.wannaeat.domain.user.dto.request.NicknameDuplicateCheckRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
+import com.waterdragon.wannaeat.domain.user.exception.error.DuplicateNicknameException;
 import com.waterdragon.wannaeat.domain.user.service.UserService;
 import com.waterdragon.wannaeat.global.response.ResponseDto;
 
@@ -44,6 +46,31 @@ public class UserController {
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+	}
+
+	/**
+	 * 닉네임 중복검사 API
+	 *
+	 * @param nickname 닉네임
+	 * @return 중복검사 결과
+	 */
+	@Operation(summary = "닉네임 중복검사 API")
+	@PostMapping("/public/users/check-nickname")
+	public ResponseEntity<ResponseDto<Void>> checkNicknameDuplicate(
+		@Valid @RequestBody NicknameDuplicateCheckRequestDto nicknameDuplicateCheckRequestDto) {
+
+		if (userService.checkNicknameDuplicate(nicknameDuplicateCheckRequestDto.getNickname())) {
+			throw new DuplicateNicknameException("해당 닉네임으로 가입된 계정이 존재합니다.");
+		}
+
+		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+			.status(HttpStatus.OK.value())
+			.message("사용 가능한 닉네임입니다.")
+			.data(null)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+
 	}
 
 	/**

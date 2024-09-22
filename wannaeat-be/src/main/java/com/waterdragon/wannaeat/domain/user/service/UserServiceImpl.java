@@ -1,6 +1,7 @@
 package com.waterdragon.wannaeat.domain.user.service;
 
 import java.time.Duration;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import com.waterdragon.wannaeat.domain.user.domain.enums.SocialType;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
+import com.waterdragon.wannaeat.domain.user.exception.error.DuplicateNicknameException;
 import com.waterdragon.wannaeat.domain.user.exception.error.DuplicatePhoneException;
 import com.waterdragon.wannaeat.domain.user.exception.error.DuplicateUserException;
 import com.waterdragon.wannaeat.domain.user.exception.error.InvalidCodeException;
@@ -66,6 +68,9 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void signup(UserSignupRequestDto userSignupRequestDto) {
+		if(checkNicknameDuplicate(userSignupRequestDto.getNickname())) {
+			throw new DuplicateNicknameException("해당 닉네임으로 가입된 계정이 존재합니다.");
+		}
 		User user = authUtil.getAuthenticatedUser();
 		if (user.getRole() != Role.GUEST) {
 			throw new DuplicateUserException("이미 가입된 계정입니다. 다시 로그인 해 주세요.");
@@ -73,6 +78,17 @@ public class UserServiceImpl implements UserService {
 		userSignupRequestDto.setPhone(encryptService.encryptData(userSignupRequestDto.getPhone()));
 		user.update(userSignupRequestDto);
 		userRepository.save(user);
+	}
+
+	/**
+	 * 닉네임 중복검사 메소드
+	 *
+	 * @param nickname 닉네임
+	 * @return 중복시 true, 미중복시 false
+	 */
+	@Override
+	public boolean checkNicknameDuplicate(String nickname) {
+		return userRepository.findByNickname(nickname).isPresent();
 	}
 
 	/**
@@ -91,7 +107,7 @@ public class UserServiceImpl implements UserService {
 
 		// 해당 번호로 가입된 계정 조회
 		userRepository.findByPhoneAndSocialTypeAndDeletedFalse(phone, socialType)
-			.ifPresent((existingRestaurant) -> {
+			.ifPresent((user) -> {
 				throw new DuplicatePhoneException("해당 번호로 가입된 " + socialType.toString() + " 계정이 존재합니다.");
 			});
 

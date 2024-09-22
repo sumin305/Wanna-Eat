@@ -8,6 +8,8 @@ public interface UserService {
 
 	void signup(UserSignupRequestDto userSignupRequestDto);
 
+	boolean checkNicknameDuplicate(String nickname);
+
 	void sendPhoneAuthenticationCode(PhoneCodeSendRequestDto phoneCodeSendRequestDto);
 
 	boolean verifyPhoneAuthenticationCode(PhoneCodeVerifyRequestDto phoneCodeSendRequestDto);

@@ -12,6 +12,7 @@ import com.waterdragon.wannaeat.domain.user.dto.request.NicknameDuplicateCheckRe
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
+import com.waterdragon.wannaeat.domain.user.dto.response.UserDetailResponseDto;
 import com.waterdragon.wannaeat.domain.user.exception.error.DuplicateNicknameException;
 import com.waterdragon.wannaeat.domain.user.service.UserService;
 import com.waterdragon.wannaeat.global.response.ResponseDto;
@@ -48,10 +49,22 @@ public class UserController {
 		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 	}
 
+	@Operation(summary = "내 정보 조회 API")
+	@GetMapping("/users")
+	public ResponseEntity<ResponseDto<UserDetailResponseDto>> getDetailMyUser() {
+		ResponseDto<UserDetailResponseDto> responseDto = ResponseDto.<UserDetailResponseDto>builder()
+			.status(HttpStatus.OK.value())
+			.message("로그인 유저 정보")
+			.data(userService.getDetailMyUser())
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
 	/**
 	 * 닉네임 중복검사 API
 	 *
-	 * @param nickname 닉네임
+	 * @param nicknameDuplicateCheckRequestDto 닉네임 정보
 	 * @return 중복검사 결과
 	 */
 	@Operation(summary = "닉네임 중복검사 API")

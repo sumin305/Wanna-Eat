@@ -14,7 +14,7 @@ public interface UserService {
 
 	void editUser(UserEditRequestDto userEditRequestDto);
 
-	boolean checkNicknameDuplicate(String nickname);
+	void checkNicknameDuplicate(String nickname);
 
 	void sendPhoneAuthenticationCode(PhoneCodeSendRequestDto phoneCodeSendRequestDto);
 

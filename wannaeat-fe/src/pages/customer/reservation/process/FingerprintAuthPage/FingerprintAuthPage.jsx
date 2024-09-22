@@ -1,5 +1,3 @@
-// import { credential } from "../FingerprintAuthPage/registerCredential.js";
-
 const FingerprintAuthPage = () => {
 
     const handleRegisterButtonClick = async () => {

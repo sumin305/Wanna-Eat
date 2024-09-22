@@ -3,7 +3,8 @@ import { ButtonWrapper } from "../TimeSelectPage/TimeSelectPage";
 import theme from "../../../../../style/common/theme";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../../../component/common/button/WEButton/WEButton.jsx";
-import {SeatSelectPageContainer} from './SeatSelectPage.js'
+import { SeatSelectPageContainer }  from './SeatSelectPage.js'
+
 const SeatSelectPage = () => {
 
     const navigate = useNavigate();

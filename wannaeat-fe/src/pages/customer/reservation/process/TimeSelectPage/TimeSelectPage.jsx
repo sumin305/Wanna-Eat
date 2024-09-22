@@ -5,7 +5,6 @@ import {TimeSelectPageContainer, ButtonWrapper, CalendarWrapper, CalendarStyled}
 import useModalStore from "../../../../../stores/common/modal/useModalStore.js"
 import TimeSelectModalBox from "../../../../../component/customer/reservation/TimeSelectModalBox/TimeSelectModalBox.jsx"
 import useTimeSelectStore from "../../../../../stores/customer/useTimeSelectStore.js"
-import Calendar from 'react-calendar';
 import moment from 'moment';
 import { useNavigate } from "react-router-dom"
 const TimeSelectPage = () => {

@@ -16,6 +16,7 @@ import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
 import com.waterdragon.wannaeat.domain.user.domain.enums.SocialType;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
+import com.waterdragon.wannaeat.domain.user.dto.request.UserEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.response.UserDetailResponseDto;
 import com.waterdragon.wannaeat.domain.user.exception.error.DuplicateNicknameException;
@@ -64,7 +65,6 @@ public class UserServiceImpl implements UserService {
 	 * 추가정보를 받아 회원가입을 처리하는 메소드
 	 *
 	 * @param userSignupRequestDto 회원 추가 정보
-	 * @return void 가입 요청 결과
 	 */
 	@Override
 	public void signup(UserSignupRequestDto userSignupRequestDto) {
@@ -76,10 +76,15 @@ public class UserServiceImpl implements UserService {
 			throw new DuplicateUserException("이미 가입된 계정입니다. 다시 로그인 해 주세요.");
 		}
 		userSignupRequestDto.setPhone(encryptService.encryptData(userSignupRequestDto.getPhone()));
-		user.update(userSignupRequestDto);
+		user.edit(userSignupRequestDto);
 		userRepository.save(user);
 	}
 
+	/**
+	 * 로그인 유저 정보를 받아오는 메소드
+	 *
+	 * @return 로그인 유저 정보
+	 */
 	@Override
 	public UserDetailResponseDto getDetailMyUser() {
 		User user = authUtil.getAuthenticatedUser();
@@ -92,6 +97,21 @@ public class UserServiceImpl implements UserService {
 			.role(user.getRole())
 			.socialType(user.getSocialType())
 			.build();
+	}
+
+	/**
+	 * 로그인 유저 정보를 수정하는 메소드
+	 *
+	 * @param userEditRequestDto 수정할 유저 정보
+	 */
+	@Override
+	public void editUser(UserEditRequestDto userEditRequestDto) {
+		if(checkNicknameDuplicate(userEditRequestDto.getNickname())){
+			throw new DuplicateNicknameException("해당 닉네임으로 가입된 계정이 존재합니다.");
+		}
+		User user = authUtil.getAuthenticatedUser();
+		user.edit(userEditRequestDto);
+		userRepository.save(user);
 	}
 
 	/**
@@ -109,7 +129,6 @@ public class UserServiceImpl implements UserService {
 	 * SMS 인증코드 전송을 요청하는 메소드
 	 *
 	 * @param phoneCodeSendRequestDto 인증코드 요청 정보
-	 * @return void 인증코드 전송 결과
 	 */
 	@Override
 	public void sendPhoneAuthenticationCode(PhoneCodeSendRequestDto phoneCodeSendRequestDto) {
@@ -131,7 +150,7 @@ public class UserServiceImpl implements UserService {
 		message.setText("[머물래] 본인 확인 인증번호는 [" + certificationNumber + "]입니다.\n5분 이내에 인증을 완료해주세요.");
 
 		SingleMessageSentResponse m = messageService.sendOne(new SingleMessageSendingRequest(message));
-		if (!m.getStatusCode().substring(0, 1).equals("2")) {
+		if (m.getStatusCode().charAt(0) != '2') {
 			throw new InvalidPhoneException("유효하지 않은 번호입니다.");
 		}
 		// SMS 인증 요청 시 인증 번호 Redis에 저장 ( key = phone + socialType / value = AuthCode )

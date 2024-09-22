@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waterdragon.wannaeat.domain.user.dto.request.NicknameDuplicateCheckRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
@@ -56,9 +57,9 @@ public class UserController {
 	@Operation(summary = "닉네임 중복검사 API")
 	@PostMapping("/public/users/check-nickname")
 	public ResponseEntity<ResponseDto<Void>> checkNicknameDuplicate(
-		@Valid @RequestBody String nickname) {
+		@Valid @RequestBody NicknameDuplicateCheckRequestDto nicknameDuplicateCheckRequestDto) {
 
-		if (userService.checkNicknameDuplicate(nickname)) {
+		if (userService.checkNicknameDuplicate(nicknameDuplicateCheckRequestDto.getNickname())) {
 			throw new DuplicateNicknameException("해당 닉네임으로 가입된 계정이 존재합니다.");
 		}
 

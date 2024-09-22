@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
+import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
 import com.waterdragon.wannaeat.domain.user.service.UserService;
 import com.waterdragon.wannaeat.global.response.ResponseDto;
 
@@ -23,6 +24,27 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
 	private final UserService userService;
+
+	/**
+	 * 회원가입 API
+	 *
+	 * @param userSignupRequestDto 회원 추가 정보
+	 * @return void 가입 요청 결과
+	 */
+	@Operation(summary = "회원가입 API")
+	@PostMapping("/public/users/signup")
+	public ResponseEntity<ResponseDto<Void>> signup(
+		@Valid @RequestBody UserSignupRequestDto userSignupRequestDto) {
+
+		userService.signup(userSignupRequestDto);
+		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+			.status(HttpStatus.CREATED.value())
+			.message("회원가입이 완료되었습니다.")
+			.data(null)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+	}
 
 	/**
 	 * SMS 인증코드 전송 API

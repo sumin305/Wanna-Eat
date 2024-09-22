@@ -10,7 +10,6 @@ import {
 } from './TimeSelectModalBox';
 import Button from '../../../common/button/WEButton/WEButton';
 import theme from '../../../../style/common/theme';
-import useModalStore from '../../../../stores/common/modal/useModalStore';
 import { useEffect } from 'react';
 
 const TimeSelectModalBox = () => {
@@ -46,7 +45,7 @@ const TimeSelectModalBox = () => {
         // 해당 시간을 제거할 때 연속되지 않을 경우 제거 실패
         let newSelectedTimes = [...selectedTimes];
         newSelectedTimes = newSelectedTimes.filter(
-          (time) => time != lunchTimes[index]
+          (time) => time !== lunchTimes[index]
         );
         if (!checkContinuousTime(lunchTimes, newSelectedTimes)) {
           alert('연속된 시간만 선택 가능합니다.');
@@ -92,7 +91,7 @@ const TimeSelectModalBox = () => {
         // 해당 시간을 제거할 때 연속되지 않을 경우 제거 실패
         let newSelectedTimes = [...selectedTimes];
         newSelectedTimes = newSelectedTimes.filter(
-          (time) => time != dinnerTimes[index]
+          (time) => time !== dinnerTimes[index]
         );
         if (!checkContinuousTime(dinnerTimes, newSelectedTimes)) {
           alert('연속된 시간만 선택 가능합니다.');
@@ -151,6 +150,7 @@ const TimeSelectModalBox = () => {
   useEffect(() => {
     setSelectedTimes([]);
   }, []);
+
   return (
     <TimeSelectModalBoxContainer>
       <TimeSelectModalTitleStyled>시간을 선택하세요</TimeSelectModalTitleStyled>

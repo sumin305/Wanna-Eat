@@ -1,5 +1,11 @@
 import useReservationStore from '../../../stores/customer/reservation/useReservationStore.js';
-import { InputFieldContainer, InputFieldText } from './MapFilterModalBox';
+import {
+  InputFieldContainer,
+  InputFieldText,
+  InputFieldContent,
+  CalendarWrapper,
+  CalendarStyled,
+} from './MapFilterModalBox';
 import { useEffect, useState } from 'react';
 import WETextfield from '../../common/textfield/WETextfield/WETextfield.jsx';
 import {
@@ -9,7 +15,6 @@ import {
 } from '../../../stores/common/dropdown/useDropdownStore.js';
 import WEDropdown from '../../common/dropdown/WEDropdown.jsx';
 import moment from 'moment';
-import { CalendarWrapper, CalendarStyled } from './MapFilterModalBox.js';
 import CalendarImg from '../../../assets/icons/common/calendar.svg';
 import useCommonStore from '../../../stores/common/useCommonStore.js';
 
@@ -109,54 +114,62 @@ const MapFilterModalBox = () => {
       )}
       <InputFieldContainer>
         <InputFieldText>인원 수</InputFieldText>
-        <WETextfield
-          name="personnel"
-          placeholder="최대가능인원 6"
-          value={selectedHeadCount}
-          onChange={(e) => {
-            setSelectedHeadCount(e.target.value);
-          }}
-        />
-        <InputFieldText>명</InputFieldText>
+        <InputFieldContent>
+          <WETextfield
+            name="personnel"
+            placeholder="최대가능인원 6"
+            value={selectedHeadCount}
+            onChange={(e) => {
+              setSelectedHeadCount(e.target.value);
+            }}
+          />
+          <div>명</div>
+        </InputFieldContent>
       </InputFieldContainer>
 
       <InputFieldContainer>
         <InputFieldText> 방문 날짜</InputFieldText>
-        <WETextfield
-          style={{
-            backgroundImage: `url(${CalendarImg})`,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'left center',
-          }}
-          name="date"
-          placeholder=""
-          value={selectedDate}
-          onChange={(e) => console.log(e)}
-          onClick={toggleCalendar}
-        />
+        <InputFieldContent>
+          <WETextfield
+            style={{
+              backgroundImage: `url(${CalendarImg})`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'left center',
+            }}
+            name="date"
+            placeholder=""
+            value={selectedDate}
+            onChange={(e) => console.log(e)}
+            onClick={toggleCalendar}
+          />
+        </InputFieldContent>
       </InputFieldContainer>
 
       <InputFieldContainer>
         <InputFieldText>방문 시간</InputFieldText>
-        {/* 시작시간 드롭다운 */}
-        <WEDropdown
-          useDropdownStore={useVisitTimeDropdownStore}
-          placeholder={visitTimePlaceholder}
-        />
-        {/* 머무는 시간 드롭다운 */}
-        <WEDropdown
-          useDropdownStore={useDurationDropdownStore}
-          placeholder={durationPlaceholder}
-        />
+        <InputFieldContent>
+          {/* 시작시간 드롭다운 */}
+          <WEDropdown
+            useDropdownStore={useVisitTimeDropdownStore}
+            placeholder={visitTimePlaceholder}
+          />
+          {/* 머무는 시간 드롭다운 */}
+          <WEDropdown
+            useDropdownStore={useDurationDropdownStore}
+            placeholder={durationPlaceholder}
+          />
+        </InputFieldContent>
       </InputFieldContainer>
 
       <InputFieldContainer>
         <InputFieldText>카테고리</InputFieldText>
-        <WEDropdown
-          useDropdownStore={useDropdownStore}
-          placeholder="카테고리를 선택하세요"
-          onSelect={setSelectedCategory}
-        />
+        <InputFieldContent>
+          <WEDropdown
+            useDropdownStore={useDropdownStore}
+            placeholder="카테고리를 선택하세요"
+            onSelect={setSelectedCategory}
+          />
+        </InputFieldContent>
       </InputFieldContainer>
     </>
   );

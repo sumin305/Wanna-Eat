@@ -34,7 +34,7 @@ const WEDropdown = ({ useDropdownStore, placeholder, onSelect }) => {
   return (
     <DropdownContainer width={width} onClick={handleLabelClick}>
       <DropdownLabelStyled height={height}>
-        <div>{selectedId == -1 ? placeholder : `${items[selectedId]}`}</div>
+        <div>{selectedId === -1 ? placeholder : `${items[selectedId]}`}</div>
         <IconStyled src={isShowOption ? ArrowUp : ArrowDown} />
       </DropdownLabelStyled>
       <DropdownSelectOptions isShowOption={isShowOption}>

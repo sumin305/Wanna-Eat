@@ -1,5 +1,4 @@
 import styled from '@emotion/styled/macro';
-import useDropdownStore from '../../../stores/common/dropdown/useDropdownStore';
 import theme from '../../../style/common/theme';
 
 const DropdownContainer = styled.div`

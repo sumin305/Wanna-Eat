@@ -4,11 +4,20 @@ import Calendar from 'react-calendar';
 
 const InputFieldContainer = styled.div`
   display: flex;
+  align-items: center;
   width: 100%;
+  margin-bottom: 0.625rem;
 `;
 
 const InputFieldText = styled.p`
+  flex: 1; // 전체 width의 1/4을 차지하게끔 비율 설정
   font-size: ${theme.fontSize.px15};
+`;
+
+const InputFieldContent = styled.div`
+  flex: 3; // 나머지 3/4를 차지하도록 설정
+  display: flex;
+  align-items: center;
 `;
 
 const CalendarWrapper = styled.div`
@@ -110,4 +119,10 @@ const CalendarStyled = styled(Calendar)`
   }
 `;
 
-export { InputFieldContainer, InputFieldText, CalendarWrapper, CalendarStyled };
+export {
+  InputFieldContainer,
+  InputFieldText,
+  InputFieldContent,
+  CalendarWrapper,
+  CalendarStyled,
+};

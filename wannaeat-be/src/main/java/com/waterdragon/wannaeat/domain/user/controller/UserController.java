@@ -15,11 +15,13 @@ import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDt
 import com.waterdragon.wannaeat.domain.user.dto.request.UserEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.response.UserDetailResponseDto;
-import com.waterdragon.wannaeat.domain.user.exception.error.DuplicateNicknameException;
 import com.waterdragon.wannaeat.domain.user.service.UserService;
+import com.waterdragon.wannaeat.global.auth.jwt.service.JwtService;
 import com.waterdragon.wannaeat.global.response.ResponseDto;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
 	private final UserService userService;
+	private final JwtService jwtService;
 
 	/**
 	 * 회원가입 API
@@ -49,6 +52,22 @@ public class UserController {
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+	}
+
+	@Operation(summary = "로그아웃 API")
+	@PostMapping("/users/signout")
+	public ResponseEntity<ResponseDto<Void>> signout(HttpServletRequest request, HttpServletResponse response) {
+
+		jwtService.removeAccessToken(response);
+		jwtService.removeRefreshTokenCookie(response);
+
+		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+			.status(HttpStatus.OK.value())
+			.message("로그아웃 되었습니다.")
+			.data(null)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	@Operation(summary = "내 정보 조회 API")

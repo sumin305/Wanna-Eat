@@ -8,8 +8,8 @@ import RestaurantViewPage from '../pages/manager/restaurant/RestaurantViewPage';
 import StatisticsPage from '../pages/manager/statistics/StatisticsPage';
 
 // 손님 관련 페이지
-import CustomerMainPage from '../pages/customer/main/MainPage';
-import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage';
+import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
+import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage.jsx';
 import ListPage from '../pages/customer/reservation/history/ListPage';
 import MyInfoPage from '../pages/customer/user/MyInfoPage';
 import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage/TimeSelectPage.jsx';

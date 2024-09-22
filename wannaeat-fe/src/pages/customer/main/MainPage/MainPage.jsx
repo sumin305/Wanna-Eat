@@ -33,9 +33,7 @@ import arrowRightIcon from '../../../../assets/icons/common/arrow-right.svg';
 import blackArrowRightIcon from '../../../../assets/icons/common/black-arrow-right.svg';
 import bossamIcon from '../../../../assets/icons/food/bossam.svg';
 import foodImage from '../../../../assets/icons/common/food.png';
-import Button from '../../../../component/common/button/WEButton/WEButton.jsx';
 import { useNavigate } from 'react-router-dom';
-import theme from '../../../../style/common/theme.js';
 const MainPage = () => {
   const { setIsShowLogo, setActiveIcons } = useHeaderStore();
   const navigate = useNavigate();

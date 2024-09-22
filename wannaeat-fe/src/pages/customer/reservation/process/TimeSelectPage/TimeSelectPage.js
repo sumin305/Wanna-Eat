@@ -14,9 +14,8 @@ const ButtonWrapper = styled.div`
   margin: 0 1rem;
   grid-row: 4;
   bottom: 0;
-
-
 `;
+
 const CalendarWrapper = styled.div`
   text-align: -webkit-center;
   border-radius: 8px;

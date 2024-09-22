@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.waterdragon.wannaeat.domain.user.domain.User;
@@ -18,6 +17,7 @@ import com.waterdragon.wannaeat.domain.user.repository.UserRepository;
 import com.waterdragon.wannaeat.domain.user.repository.UserTokenRepository;
 import com.waterdragon.wannaeat.global.auth.jwt.service.JwtService;
 import com.waterdragon.wannaeat.global.auth.jwt.util.PasswordUtil;
+import com.waterdragon.wannaeat.global.auth.oauth2.CustomUserDetail;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -178,11 +178,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		//(소셜 로그인의 경우 password가 null인데, 인증 처리 시 password가 null이면 안 되므로, 랜덤 패스워드를 임의로 부여해줍니다.)
 		String password = PasswordUtil.generateRandomPassword();
 
-		UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-			.username(myUser.getEmail())
-			.password(password)
-			.roles(String.valueOf(myUser.getRole()))
-			.build();
+		CustomUserDetail userDetailsUser = new CustomUserDetail(myUser);
 
 		Authentication authentication =
 			new UsernamePasswordAuthenticationToken(userDetailsUser, null,

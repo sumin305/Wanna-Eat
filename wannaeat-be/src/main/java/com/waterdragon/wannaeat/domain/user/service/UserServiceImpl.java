@@ -1,6 +1,7 @@
 package com.waterdragon.wannaeat.domain.user.service;
 
 import java.time.Duration;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -76,6 +77,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
+	 * 닉네임 중복검사 메소드
+	 *
+	 * @param nickname 닉네임
+	 * @return 미중복시 true, 중복시 true
+	 */
+	@Override
+	public boolean checkNicknameDuplicate(String nickname) {
+		Optional<User> user = userRepository.findByNickname(nickname);
+		return user.isEmpty();
+	}
+
+	/**
 	 * SMS 인증코드 전송을 요청하는 메소드
 	 *
 	 * @param phoneCodeSendRequestDto 인증코드 요청 정보
@@ -91,7 +104,7 @@ public class UserServiceImpl implements UserService {
 
 		// 해당 번호로 가입된 계정 조회
 		userRepository.findByPhoneAndSocialTypeAndDeletedFalse(phone, socialType)
-			.ifPresent((existingRestaurant) -> {
+			.ifPresent((user) -> {
 				throw new DuplicatePhoneException("해당 번호로 가입된 " + socialType.toString() + " 계정이 존재합니다.");
 			});
 

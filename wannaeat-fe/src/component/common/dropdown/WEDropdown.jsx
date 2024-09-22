@@ -17,6 +17,7 @@ const WEDropdown = ({ useDropdownStore, placeholder }) => {
     isShowOption,
     items,
     selectedId,
+    setSelectedItem,
   } = useDropdownStore();
 
   const handleLabelClick = () => {
@@ -25,6 +26,7 @@ const WEDropdown = ({ useDropdownStore, placeholder }) => {
 
   const handleOptionClick = (index) => {
     setSelectedId(index);
+    setSelectedItem(items[index]);
     setIsShowOption(false);
   };
 

@@ -1,4 +1,4 @@
-import useReservationStore from '../../../../stores/customer/useReservationStore';
+import useReservationStore from '../../../../stores/customer/reservation/useReservationStore';
 import {
   TimeSelectModalBoxContainer,
   TimeSelectModalTitleStyled,

@@ -9,10 +9,10 @@ import {
 } from './TimeSelectPage.js';
 import useModalStore from '../../../../../stores/common/modal/useModalStore.js';
 import TimeSelectModalBox from '../../../../../component/customer/reservation/TimeSelectModalBox/TimeSelectModalBox.jsx';
-import useReservationStore from '../../../../../stores/customer/useReservationStore.js';
-import Calendar from 'react-calendar';
+import useReservationStore from '../../../../../stores/customer/reservation/useReservationStore.js';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
+
 const TimeSelectPage = () => {
   const { open, setModalType, setConfirmText, setTitle, setChildren } =
     useModalStore();

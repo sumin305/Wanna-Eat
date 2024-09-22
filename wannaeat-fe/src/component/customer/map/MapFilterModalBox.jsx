@@ -1,8 +1,9 @@
-import useReservationStore from '../../../stores/customer/useReservationStore.js';
+import useReservationStore from '../../../stores/customer/reservation/useReservationStore.js';
 import { InputFieldContainer, InputFieldText } from './MapFilterModalBox';
 import { useEffect, useState } from 'react';
 import WETextfield from '../../common/textfield/WETextfield/WETextfield.jsx';
 import {
+  useDropdownStore,
   useVisitTimeDropdownStore,
   useDurationDropdownStore,
 } from '../../../stores/common/dropdown/useDropdownStore.js';
@@ -10,6 +11,7 @@ import WEDropdown from '../../common/dropdown/WEDropdown.jsx';
 import moment from 'moment';
 import { CalendarWrapper, CalendarStyled } from './MapFilterModalBox.js';
 import CalendarImg from '../../../assets/icons/common/calendar.svg';
+import useCommonStore from '../../../stores/common/useCommonStore.js';
 
 const MapFilterModalBox = () => {
   const {
@@ -49,7 +51,11 @@ const MapFilterModalBox = () => {
     selectedId: selectedDurationId,
   } = useDurationDropdownStore();
 
-  const allTimes = [...lunchTimes, ...dinnerTimes];
+  const { categories } = useCommonStore();
+
+  const { selectedItem, setItems } = useDropdownStore();
+
+  const allTimes = [...lunchTimes, ...dinnerTimes]; // 오전 오후 포함한 모든 시간
 
   // 시작 시간 드롭다운 목록생성
   useEffect(() => {
@@ -77,10 +83,15 @@ const MapFilterModalBox = () => {
     }
   }, [selectedDurationId]);
 
+  useEffect(() => {
+    setItems(categories);
+  }, []);
+
   console.log(selectedHeadCount);
   console.log(selectedDate);
   console.log(selectedStartTime);
   console.log(selectedDurationTime);
+  console.log(selectedItem);
 
   return (
     <>
@@ -134,6 +145,14 @@ const MapFilterModalBox = () => {
         <WEDropdown
           useDropdownStore={useDurationDropdownStore}
           placeholder={durationPlaceholder}
+        />
+      </InputFieldContainer>
+
+      <InputFieldContainer>
+        <InputFieldText>카테고리</InputFieldText>
+        <WEDropdown
+          useDropdownStore={useDropdownStore}
+          placeholder="카테고리를 선택하세요"
         />
       </InputFieldContainer>
     </>

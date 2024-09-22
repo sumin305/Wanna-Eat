@@ -4,7 +4,6 @@ import { ButtonWrapper } from "../TimeSelectPage/TimeSelectPage.js";
 import theme from "../../../../../style/common/theme.js";
 import Button from "../../../../../component/common/button/WEButton/WEButton.jsx";
 import { DepositPaymentPageContainer, DepositInfoContainer, DepositPriceInfoWrapper, DepositPriceInfo, DepositPriceText, DepositCardWrapper, CardSelectBoxStyled } from "./DepositPaymentPage.js";
-import CardCarousel from "../../../../../component/customer/reservation/CardCarousel/CardCarousel.jsx";
 import CardImage1 from '../../../../../assets/customer/card.png'
 import CardImage2 from '../../../../../assets/customer/card2.png'
 import CardImage3 from '../../../../../assets/customer/card3.png'
@@ -30,9 +29,25 @@ const DepositPaymentPage = () => {
     const handleBeforeButtonClick = () => {
         navigate('/customer/reservation/seat-select')
     }
-    const handleNextButtonClick = () => {
-        navigate('/customer/reservation/')
+    const handleNextButtonClick = async () => {
+        try {
+            await navigator.credentials.get({
+                publicKey: {
+                challenge: new Uint8Array([117, 61, 252, 231, 191, 241, 32, 4]),
+                rpId: window.location.hostname,
+                allowCredentials: [{
+                    type: "public-key",
+                    id: new Uint8Array([64, 66, 25, 78, 168, 226, 174, 23])
+                }],
+                userVerification: "required",
+                }
+            });
+        } catch (e) {
+            navigate('/customer/reservation/success')
+        }
+        navigate('/customer/reservation/success')
     }
+    
     return(
         <DepositPaymentPageContainer>
             <WEStep index={2}/>

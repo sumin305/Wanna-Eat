@@ -1,4 +1,4 @@
-import useReservationStore from '../../../../stores/customer/reservation/useReservationStore';
+import useReservationStore from '../../../../stores/customer/reservation/useReservationStore.js';
 import {
   TimeSelectModalBoxContainer,
   TimeSelectModalTitleStyled,
@@ -11,19 +11,24 @@ import {
 import Button from '../../../common/button/WEButton/WEButton';
 import theme from '../../../../style/common/theme';
 import { useEffect } from 'react';
-
+import Textfield from '../../../common/textfield/WETextfield/WETextfield.jsx';
 const TimeSelectModalBox = () => {
   const {
     isLunch,
-    setIsLunch,
     lunchTimes,
     dinnerTimes,
+    setIsLunch,
     setSelectedStartTime,
     setSelectedEndTime,
     setSelectedHeadCount,
     setSelectedTimes,
     selectedTimes,
   } = useReservationStore();
+
+  useEffect(() => {
+    setSelectedTimes([]);
+  }, []);
+
   const handleHeadCountChange = (e) => {
     if (e.target.value === '') {
       setSelectedHeadCount(0);
@@ -45,7 +50,7 @@ const TimeSelectModalBox = () => {
         // 해당 시간을 제거할 때 연속되지 않을 경우 제거 실패
         let newSelectedTimes = [...selectedTimes];
         newSelectedTimes = newSelectedTimes.filter(
-          (time) => time !== lunchTimes[index]
+          (time) => time != lunchTimes[index]
         );
         if (!checkContinuousTime(lunchTimes, newSelectedTimes)) {
           alert('연속된 시간만 선택 가능합니다.');
@@ -74,7 +79,7 @@ const TimeSelectModalBox = () => {
 
       // 추가 완료
       setSelectedTimes(newSelectedTimes);
-      setStartEndTime(selectedTimes);
+      setStartEndTime(newSelectedTimes);
     } else {
       let newSelectedTimes = [];
       newSelectedTimes.push(lunchTimes[index]);
@@ -91,7 +96,7 @@ const TimeSelectModalBox = () => {
         // 해당 시간을 제거할 때 연속되지 않을 경우 제거 실패
         let newSelectedTimes = [...selectedTimes];
         newSelectedTimes = newSelectedTimes.filter(
-          (time) => time !== dinnerTimes[index]
+          (time) => time != dinnerTimes[index]
         );
         if (!checkContinuousTime(dinnerTimes, newSelectedTimes)) {
           alert('연속된 시간만 선택 가능합니다.');
@@ -129,7 +134,7 @@ const TimeSelectModalBox = () => {
     setIsLunch(false);
   };
 
-  // 연속된 시간 선택했는지 판별해주는 함수
+  // 연속된 시간 선택 여부 검사 함수
   const checkContinuousTime = (times, selectedTimes) => {
     selectedTimes.sort();
     let beforeIdx = times.indexOf(selectedTimes[0]);
@@ -144,12 +149,15 @@ const TimeSelectModalBox = () => {
 
   const setStartEndTime = (selectedTimes) => {
     selectedTimes = selectedTimes.sort();
-    setSelectedStartTime(selectedTimes[0]);
-    setSelectedEndTime(selectedTimes[selectedTimes.length - 1]);
+    const startTime = selectedTimes[0];
+    setSelectedStartTime(startTime);
+    const endTime = selectedTimes[selectedTimes.length - 1];
+    if (endTime.split(':')[1] == '00') {
+      setSelectedEndTime(endTime.split(':')[0] + ':30');
+    } else if (endTime.split(':')[1] == '30') {
+      setSelectedEndTime(parseInt(endTime.split(':')[0]) + 1 + ':00');
+    }
   };
-  useEffect(() => {
-    setSelectedTimes([]);
-  }, []);
 
   return (
     <TimeSelectModalBoxContainer>
@@ -216,7 +224,13 @@ const TimeSelectModalBox = () => {
         <TimeSelectModalSubTitleWrapper>
           <TimeSelectModalSubTitleStyled>인원</TimeSelectModalSubTitleStyled>
           <HeadCountInputWrapper>
-            <input onChange={handleHeadCountChange} type="number" />명
+            <Textfield
+              height="3%"
+              width="6.25rem"
+              onChange={handleHeadCountChange}
+              type="number"
+            />
+            명
           </HeadCountInputWrapper>
         </TimeSelectModalSubTitleWrapper>
       </div>

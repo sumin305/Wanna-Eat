@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import moment from 'moment';
-const useTimeSelectStore = create((set) => ({
+const useReservationStore = create((set) => ({
   isLunch: true,
   selectedDate: moment(new Date()).format('MM.DD'),
   selectedStartTime: '00:00',
@@ -31,4 +31,4 @@ const useTimeSelectStore = create((set) => ({
   setSelectedDurationTime: (times) => set({ selectedDurationTime: times }),
 }));
 
-export default useTimeSelectStore;
+export default useReservationStore;

@@ -1,4 +1,4 @@
-import useTimeSelectStore from '../../../stores/customer/useTimeSelectStore';
+import useReservationStore from '../../../stores/customer/useReservationStore.js';
 import { InputFieldContainer, InputFieldText } from './MapFilterModalBox';
 import { useEffect } from 'react';
 import WETextfield from '../../common/textfield/WETextfield/WETextfield.jsx';
@@ -19,7 +19,7 @@ const MapFilterModalBox = () => {
     durationTimes,
     selectedDurationTime,
     setSelectedDurationTime,
-  } = useTimeSelectStore();
+  } = useReservationStore();
 
   const {
     visitTimePlaceholder,

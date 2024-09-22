@@ -89,10 +89,7 @@ public class UserController {
 	public ResponseEntity<ResponseDto<Void>> checkNicknameDuplicate(
 		@Valid @RequestBody NicknameDuplicateCheckRequestDto nicknameDuplicateCheckRequestDto) {
 
-		if (userService.checkNicknameDuplicate(nicknameDuplicateCheckRequestDto.getNickname())) {
-			throw new DuplicateNicknameException("해당 닉네임으로 가입된 계정이 존재합니다.");
-		}
-
+		userService.checkNicknameDuplicate(nicknameDuplicateCheckRequestDto.getNickname());
 		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
 			.status(HttpStatus.OK.value())
 			.message("사용 가능한 닉네임입니다.")

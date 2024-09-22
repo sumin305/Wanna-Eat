@@ -68,9 +68,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void signup(UserSignupRequestDto userSignupRequestDto) {
-		if (checkNicknameDuplicate(userSignupRequestDto.getNickname())) {
-			throw new DuplicateNicknameException("해당 닉네임으로 가입된 계정이 존재합니다.");
-		}
+		checkNicknameDuplicate(userSignupRequestDto.getNickname());
 		User user = authUtil.getAuthenticatedUser();
 		if (user.getRole() != Role.GUEST) {
 			throw new DuplicateUserException("이미 가입된 계정입니다. 다시 로그인 해 주세요.");
@@ -106,9 +104,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void editUser(UserEditRequestDto userEditRequestDto) {
-		if(checkNicknameDuplicate(userEditRequestDto.getNickname())){
-			throw new DuplicateNicknameException("해당 닉네임으로 가입된 계정이 존재합니다.");
-		}
+		checkNicknameDuplicate(userEditRequestDto.getNickname());
 		User user = authUtil.getAuthenticatedUser();
 		user.edit(userEditRequestDto);
 		userRepository.save(user);
@@ -118,11 +114,12 @@ public class UserServiceImpl implements UserService {
 	 * 닉네임 중복검사 메소드
 	 *
 	 * @param nickname 닉네임
-	 * @return 중복시 true, 미중복시 false
 	 */
 	@Override
-	public boolean checkNicknameDuplicate(String nickname) {
-		return userRepository.findByNickname(nickname).isPresent();
+	public void checkNicknameDuplicate(String nickname) {
+		if(userRepository.findByNickname(nickname).isPresent()){
+			throw new DuplicateNicknameException("해당 닉네임으로 가입된 계정이 존재합니다.");
+		}
 	}
 
 	/**

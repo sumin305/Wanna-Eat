@@ -83,7 +83,8 @@ public class RestaurantLikeServiceImpl implements RestaurantLikeService {
 		for (RestaurantLike restaurantLike : restaurantLikes) {
 			Restaurant restaurant = restaurantLike.getRestaurant();
 
-			Optional<RestaurantImage> restaurantImageUrlOptional = restaurantImageRepository.findTopByRestaurantOrderByImageIdAsc(restaurant);
+			Optional<RestaurantImage> restaurantImageUrlOptional = restaurantImageRepository.findTopByRestaurantOrderByImageIdAsc(
+				restaurant);
 			String restaurantImageUrl = restaurantImageUrlOptional
 				.map(RestaurantImage::getImageUrl)
 				.orElse("");

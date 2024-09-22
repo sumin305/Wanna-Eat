@@ -56,6 +56,7 @@ public class Order {
 	@Column(name = "paid_cnt", nullable = false)
 	private int paidCnt;
 
-	// 생성자, getter, setter
-
+	public void update(int paidMenuCnt) {
+		this.paidCnt += paidMenuCnt;
+	}
 }

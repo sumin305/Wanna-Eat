@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.waterdragon.wannaeat.domain.restaurant.exception.error.TimeRequestWithoutDateException;
 import com.waterdragon.wannaeat.domain.restaurantlike.exception.error.AlreadyLikeException;
 import com.waterdragon.wannaeat.domain.restaurantlike.exception.error.LikeNotFoundException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;

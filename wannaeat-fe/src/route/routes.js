@@ -15,6 +15,7 @@ import MyInfoPage from '../pages/customer/user/MyInfoPage';
 import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage/TimeSelectPage.jsx';
 import DepositPaymentPage from '../pages/customer/reservation/process/DepositPaymentPage/DepositPaymentPage.jsx';
 import SeatSelectPage from '../pages/customer/reservation/process/SeatSelectPage/SeatSelectPage.jsx';
+import FingerprintAuthPage from '../pages/customer/reservation/process/FingerprintAuthPage/FingerprintAuthPage.jsx';
 // 비회원 관련 페이지
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';
 
@@ -44,6 +45,10 @@ const AppRoutes = () => {
         <Route
           path="/customer/reservation/deposit-payment"
           element={<DepositPaymentPage/>}
+        />
+        <Route
+          path="/customer/reservation/fingerprint-auth"
+          element={<FingerprintAuthPage/>}
         />
         <Route path="/customer/reservationlist" element={<ListPage />} />
         <Route path="/customer/myinfo" element={<MyInfoPage />} />

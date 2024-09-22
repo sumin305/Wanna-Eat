@@ -1,6 +1,6 @@
 import WEStep from '../../../../../component/customer/reservation/WEStep/WEStep.jsx';
 import Button from '../../../../../component/common/button/WEButton/WEButton.jsx';
-import useReservationStore from '../../../../../stores/customer/reservation/useReservationStore.js';
+import useTimeSelectStore from '../../../../../stores/customer/useTimeSelectStore';
 import {
   SuccessPageContainer,
   SuccessMessageWrapper,
@@ -24,7 +24,7 @@ const SuccessPage = () => {
     selectedEndTime,
     selectedHeadCount,
     selectedSeatNumber,
-  } = useReservationStore();
+  } = useTimeSelectStore();
   const link = 'https://wannaeat/invite/myrestaurant';
 
   const handleCopyButtonClick = (e) => {

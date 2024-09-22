@@ -87,6 +87,9 @@ public class SecurityConfig {
 				.userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(customOAuth2UserService))
 				.successHandler(oAuth2LoginSuccessHandler)
 				.failureHandler(oAuth2LoginFailureHandler)
+				.authorizationEndpoint().baseUri("/api/public/oauth2/authorization")
+				.and()
+				.redirectionEndpoint().baseUri("/api/public/login/oauth2/code/**")
 			)
 
 			// 예외 처리

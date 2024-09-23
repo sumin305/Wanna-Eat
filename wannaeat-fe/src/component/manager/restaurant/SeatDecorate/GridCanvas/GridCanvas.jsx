@@ -7,8 +7,8 @@ import {
   GridBackgroundStyled,
   GridCellStyled,
   GridItemStyled,
-  SaveButtonStyled,
   CancelButtonStyled,
+  SaveButtonStyled,
 } from './GridCanvas';
 import { create } from 'zustand';
 
@@ -23,9 +23,9 @@ const useStore = create((set) => ({
 }));
 
 const GridCanvas = () => {
-  const gridColumns = 10; // 가로
-  const gridRows = 10; // 세로
-  const [gridSize, setGridSize] = useState(50); 
+  const gridColumns = 20; // 가로
+  const gridRows = 20; // 세로
+  const [gridSize, setGridSize] = useState(50);
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
@@ -54,7 +54,7 @@ const GridCanvas = () => {
   }, []);
 
   useEffect(() => {
-    fetch('/api/load')
+    fetch('/api/restaurants/{restaurantId}structure')
       .then((response) => response.json())
       .then((data) => setItems(data));
   }, [setItems]);
@@ -69,7 +69,10 @@ const GridCanvas = () => {
 
   const handleDragStart = (e) => {
     setIsDragging(true);
-    setLastPos({ x: e.clientX || e.touches[0].clientX, y: e.clientY || e.touches[0].clientY });
+    setLastPos({
+      x: e.clientX || e.touches[0].clientX,
+      y: e.clientY || e.touches[0].clientY,
+    });
   };
 
   const handleDragMove = (e) => {
@@ -97,13 +100,24 @@ const GridCanvas = () => {
     drop: (item, monitor) => {
       const offset = monitor.getClientOffset();
       const containerRect = containerRef.current.getBoundingClientRect();
-      const x = Math.round((offset.x - containerRect.left) / gridSize) * gridSize;
-      const y = Math.round((offset.y - containerRect.top) / gridSize) * gridSize;
+      const x =
+        Math.round((offset.x - containerRect.left) / gridSize) * gridSize;
+      const y =
+        Math.round((offset.y - containerRect.top) / gridSize) * gridSize;
 
-      const selectedItem = paletteItems.find((paletteItem) => paletteItem.id === item.id);
+      const selectedItem = paletteItems.find(
+        (paletteItem) => paletteItem.id === item.id
+      );
 
       if (selectedItem) {
-        addItem({ id: item.id, x, y, icon: selectedItem.icon, label: selectedItem.label, rotation: 0 });
+        addItem({
+          id: item.id,
+          x,
+          y,
+          icon: selectedItem.icon,
+          label: selectedItem.label,
+          rotation: 0,
+        });
       }
     },
   });
@@ -130,13 +144,30 @@ const GridCanvas = () => {
         onTouchMove={handleDragMove}
         onTouchEnd={handleDragEnd}
       >
-        <ZoomableGridWrapperStyled scale={scale} gridColumns={gridColumns} gridRows={gridRows} gridSize={gridSize}>
-          <GridBackgroundStyled ref={dropRef} gridColumns={gridColumns} gridRows={gridRows} gridSize={gridSize}>
+        <ZoomableGridWrapperStyled
+          scale={scale}
+          gridColumns={gridColumns}
+          gridRows={gridRows}
+          gridSize={gridSize}
+        >
+          <GridBackgroundStyled
+            ref={dropRef}
+            gridColumns={gridColumns}
+            gridRows={gridRows}
+            gridSize={gridSize}
+          >
             {Array.from({ length: gridColumns * gridRows }).map((_, index) => (
               <GridCellStyled key={index} />
             ))}
             {items.map((item) => (
-              <GridItemStyled key={item.id} style={{ left: `${item.x}px`, top: `${item.y}px`, transform: `rotate(${item.rotation}deg)` }}>
+              <GridItemStyled
+                key={item.id}
+                style={{
+                  left: `${item.x}px`,
+                  top: `${item.y}px`,
+                  transform: `rotate(${item.rotation}deg)`,
+                }}
+              >
                 <item.icon className="grid-item-icon" />
               </GridItemStyled>
             ))}

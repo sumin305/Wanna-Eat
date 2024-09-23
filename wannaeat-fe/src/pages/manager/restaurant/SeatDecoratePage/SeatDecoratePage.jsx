@@ -8,7 +8,7 @@ const SeatDecoratePage = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div>
-        <ItemPalette/>
+        <ItemPalette />
         <GridCanvas />
       </div>
     </DndProvider>

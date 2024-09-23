@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
 
 export const GridBackground = styled.div`
-  background-size: 3.125rem 3.125rem;
+  background-size: 5vw 2vh;
+  aspect-ratio: 1 / 1;
   background-image: linear-gradient(to right, lightgray 1px, transparent 1px),
     linear-gradient(to bottom, lightgray 1px, transparent 1px);
   display: grid;

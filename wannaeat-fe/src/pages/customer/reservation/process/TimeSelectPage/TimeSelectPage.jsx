@@ -24,10 +24,7 @@ const TimeSelectPage = () => {
     setSelectedDate,
     setSelectedStartTime,
     setSelectedEndTime,
-    selectedCategory,
   } = useReservationStore();
-  console.log(selectedHeadCount);
-  console.log(selectedCategory);
   const navigate = useNavigate();
   const handleTimeSelectButtonClick = () => {
     setModalType('sheet');

@@ -3,6 +3,9 @@ import styled from '@emotion/styled/macro';
 const Layout = styled.div`
   width: 100vw;
   height: 100vh;
+  overflow-y: auto;
+  margin-bottom: 10%;
+  scrollbar-width: none;
 
   @media (min-width: 480px) {
     display: flex;

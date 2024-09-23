@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import {
   DropdownContainer,
   DropdownLabelStyled,
@@ -9,6 +10,7 @@ import ArrowUp from '../../../assets/icons/common/arrow-up.svg';
 import ArrowDown from '../../../assets/icons/common/arrow-down.svg';
 
 const WEDropdown = ({ useDropdownStore, placeholder, onSelect }) => {
+  const dropdownRef = useRef(null);
   const {
     width,
     height,
@@ -31,8 +33,25 @@ const WEDropdown = ({ useDropdownStore, placeholder, onSelect }) => {
     setIsShowOption(false);
   };
 
+  const handleClickOutside = (e) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+      setIsShowOption(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <DropdownContainer width={width} onClick={handleLabelClick}>
+    <DropdownContainer
+      ref={dropdownRef}
+      width={width}
+      onClick={handleLabelClick}
+    >
       <DropdownLabelStyled height={height}>
         <div>{selectedId === -1 ? placeholder : `${items[selectedId]}`}</div>
         <IconStyled src={isShowOption ? ArrowUp : ArrowDown} />

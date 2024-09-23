@@ -28,7 +28,7 @@ const FingerprintAuthPage = () => {
       await navigator.credentials.get({
         publicKey: {
           challenge: new Uint8Array([117, 61, 252, 231, 191, 241, 32, 4]),
-          rpId: 'j11b302.p.ssafy.io', // 명시적으로 도메인 설정
+          rpId: 'j11b302.p.ssafy.io',
           allowCredentials: [
             {
               type: 'public-key',
@@ -36,12 +36,11 @@ const FingerprintAuthPage = () => {
             },
           ],
           userVerification: 'required',
+          timeout: 60000, // 타임아웃 설정 (60초)
         },
       });
     } catch (e) {
       console.log(e);
-    } finally {
-      navigate('/customer/reservation/success');
     }
   };
   return (

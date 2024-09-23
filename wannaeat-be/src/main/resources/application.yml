@@ -49,4 +49,4 @@ pay:
   secret-key: ${KAKAOPAY_SECRET_KEY}
 
 # Redirect URL
-redirectURL : http://localhost:8080
+redirectURL : ${REDIRECT_URL}

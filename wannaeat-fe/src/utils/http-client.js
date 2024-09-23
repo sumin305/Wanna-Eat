@@ -8,7 +8,7 @@ const createClientInstance = () => {
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': process.env.REACT_APP_REST_API_URL,
-      'Access-Control-Allow-Creddentials': 'true',
+      'Access-Control-Allow-Credentials': 'true',
     },
     withCredentials: true,
   });

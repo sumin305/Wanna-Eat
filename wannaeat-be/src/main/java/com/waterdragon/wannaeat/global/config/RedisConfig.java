@@ -7,12 +7,13 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Configuration
+@RequiredArgsConstructor
 @EnableRedisRepositories
 public class RedisConfig {
 
@@ -21,18 +22,28 @@ public class RedisConfig {
 	@Value("${redis.port}")
 	private int port;
 
-	// yml에 저장한 host, port를 연결
+	// Redis 연결 설정
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
 		return new LettuceConnectionFactory(host, port);
 	}
 
-	// serializer 설정으로 redis-cli를 통해 직접 데이터를 조회할 수 있도록 설정
+	// RedisTemplate 설정
 	@Bean
 	public RedisTemplate<String, Object> redisTemplate() {
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+
+		// Key는 문자열로 직렬화
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
-		redisTemplate.setValueSerializer(new StringRedisSerializer());
+
+		// Value는 JSON으로 직렬화
+		Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+		redisTemplate.setValueSerializer(serializer);
+
+		// HashValue도 JSON 직렬화
+		redisTemplate.setHashValueSerializer(serializer);
+
+		// Redis 연결 설정 적용
 		redisTemplate.setConnectionFactory(redisConnectionFactory());
 
 		return redisTemplate;

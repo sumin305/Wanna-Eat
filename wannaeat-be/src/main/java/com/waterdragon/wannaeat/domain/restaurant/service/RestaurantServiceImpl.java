@@ -1,10 +1,15 @@
 package com.waterdragon.wannaeat.domain.restaurant.service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,24 +18,37 @@ import com.waterdragon.wannaeat.domain.menu.domain.Menu;
 import com.waterdragon.wannaeat.domain.menu.dto.response.MenuDetailReponseDto;
 import com.waterdragon.wannaeat.domain.menu.dto.response.MenuListResponseDto;
 import com.waterdragon.wannaeat.domain.menu.repository.MenuRepository;
+import com.waterdragon.wannaeat.domain.reservation.domain.ReservationTable;
+import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
+import com.waterdragon.wannaeat.domain.reservation.repository.ReservationTableRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantCategory;
+import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantFilter;
 import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantImage;
+import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantStructure;
+import com.waterdragon.wannaeat.domain.restaurant.domain.Table;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantEditRequestDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantCategoryDetailResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantCategoryListResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantDetailResponseDto;
+import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantMapDetailResponseDto;
+import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantMapListResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.DuplicateBusinessNumberException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidBreakStartEndTimeException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidFilterReservationDateException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidFilterTimeSequenceException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantCategoryException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantOpenCloseTimeException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidUserLocationException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotFoundException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.TimeRequestWithoutDateException;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantCategoryRepository;
+import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantCustomRepositoryImpl;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantImageRepository;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
+import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructureRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
-import com.waterdragon.wannaeat.domain.user.repository.UserRepository;
 import com.waterdragon.wannaeat.global.exception.error.FileRemoveFailureException;
 import com.waterdragon.wannaeat.global.exception.error.FileUploadFailureException;
 import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
@@ -46,13 +64,16 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class RestaurantServiceImpl implements RestaurantService {
 
-	private final UserRepository userRepository;
 	private final RestaurantRepository restaurantRepository;
 	private final RestaurantCategoryRepository restaurantCategoryRepository;
 	private final RestaurantImageRepository restaurantImageRepository;
 	private final MenuRepository menuRepository;
 	private final FileUtil fileUtil;
 	private final AuthUtil authUtil;
+	private final RestaurantCustomRepositoryImpl restaurantCustomRepositoryImpl;
+	private final ReservationTableRepository reservationTableRepository;
+	private final RestaurantStructureRepository restaurantStructureRepository;
+	private final ReservationRepository reservationRepository;
 
 	/**
 	 * 매장 등록 메소드
@@ -90,6 +111,243 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.category(restaurantCategory)
 			.build();
 		restaurantRepository.save(restaurant);
+	}
+
+	/**
+	 * 조건별 매장 목록 조회
+	 *
+	 * @param categoryId 카테고리 id
+	 * @param keyword 검색어
+	 * @param reservationDate 예약 일자
+	 * @param startTime 예약 시작 시간
+	 * @param endTime 예약 끝 시간
+	 * @param memberCount 예약 인원 수
+	 * @param latitude 사용자 위도
+	 * @param longitude 사용자 경도
+	 * @return RestaurantMapListResponseDto 해당하는 매장 거리순 최대 30개 반환
+	 */
+	@Override
+	public RestaurantMapListResponseDto getListRestaurantsByFilter(
+		Long categoryId,
+		String keyword,
+		LocalDate reservationDate,
+		LocalTime startTime,
+		LocalTime endTime,
+		Integer memberCount,
+		Double latitude,
+		Double longitude) {
+
+		// GPS 입력은 필수
+		if (latitude == null || longitude == null) {
+			throw new InvalidUserLocationException("사용자 위도, 경도 값 없음.");
+		}
+
+		// RestaurantFilter 생성
+		RestaurantFilter filter = RestaurantFilter.builder()
+			.categoryId(categoryId)
+			.keyword(keyword)
+			.reservationDate(reservationDate)
+			.startTime(startTime)
+			.endTime(endTime)
+			.memberCount(memberCount)
+			.latitude(latitude)
+			.longitude(longitude)
+			.build();
+
+		// 날짜, 시간 예외 처리
+		if (filter.getReservationDate() != null) {
+			// 오늘 이전의 날짜로 요청
+			if (filter.getReservationDate().isBefore(LocalDate.now())) {
+				throw new InvalidFilterReservationDateException("필터링 날짜는 오늘 이후여야 합니다.");
+			}
+
+			// 둘 다 시간이 있는 경우에
+			if (filter.getStartTime() != null && filter.getEndTime() != null) {
+				if (filter.getEndTime().isBefore(filter.getStartTime())) {
+					throw new InvalidFilterTimeSequenceException("요청 시간 순서가 잘못되었습니다.");
+				}
+			}
+
+		} else { // 날짜 입력 없는 경우
+			// 날짜 입력 없는데, 시간 입력이 있는 경우
+			if (filter.getStartTime() != null || filter.getEndTime() != null) {
+				throw new TimeRequestWithoutDateException("날짜 없이 시간 필터링 요청은 불가능합니다.");
+			}
+		}
+
+		// 카테고리, 식당 이름, 메뉴 필터링
+		List<Restaurant> restaurants = restaurantCustomRepositoryImpl.findRestaurantsByFilter(filter);
+
+		// 예약 가능한 테이블이 있는 식당 필터링 (날짜 입력 있는 경우에만)
+		if (filter.getReservationDate() != null) {
+			restaurants = restaurants.stream()
+				.filter(restaurant -> checkAvailableTables(filter, restaurant))
+				.toList();
+		}
+
+		// 거리 순 30개 제한해서 return
+		List<RestaurantMapDetailResponseDto> restaurantMapDetailResponseDtos = restaurants.stream()
+			.sorted(Comparator.comparingDouble(restaurant -> calculateDistance(
+				filter.getLatitude(), filter.getLongitude(),
+				restaurant.getLatitude(), restaurant.getLongitude())))
+			.limit(30)
+			.map(this::toRestaurantMapDetailResponseDto)
+			.toList();
+
+		// RestaurantMapListResponseDto로 반환
+		return RestaurantMapListResponseDto.builder()
+			.restaurantMapDetailResponseDtos(restaurantMapDetailResponseDtos)
+			.build();
+	}
+
+	// 해당 식당에 대해서 빈(가능한) 테이블 확인 메소드
+	private boolean checkAvailableTables(RestaurantFilter filter, Restaurant restaurant) {
+
+		// MongoDB에서 해당 식당의 모든 테이블 가져오기 (인원 수 크거나 같은 애들만)
+		List<Table> tables = getTablesFromMongoDB(restaurant.getRestaurantId(), filter.getMemberCount());
+
+		// startTime, endTime 가공 작업
+		LocalTime startTime = filter.getStartTime();
+		LocalTime endTime = filter.getEndTime();
+
+		// 오늘 날짜인지 확인
+		if (filter.getReservationDate().isEqual(LocalDate.now())) {
+			// startTime이 없거나 과거 시간일 경우 현재 시간으로 설정, 그렇지 않으면 필터 값을 사용
+			if (startTime == null) {
+				startTime = LocalTime.now();
+			} else if (startTime.isBefore(LocalTime.now())) {
+				throw new InvalidFilterTimeSequenceException("지금보다 이전의 시작시각으로 필터링할 수 없습니다.");
+			}
+
+			// endTime이 없으면 레스토랑 종료 시간 또는 23:59로 설정, 과거 시간일 경우 예외 발생
+			if (endTime == null) {
+				endTime = (restaurant.getCloseTime() != null) ? restaurant.getCloseTime() : LocalTime.of(23, 59);
+			} else if (endTime.isBefore(LocalTime.now())) {
+				throw new InvalidFilterTimeSequenceException("지금보다 이전의 끝시각으로 필터링 할 수 없습니다.");
+			}
+		} else {
+			// startTime이 없으면 00:00으로 설정
+			startTime = (startTime == null) ? LocalTime.of(0, 0) : startTime;
+
+			// endTime이 없으면 레스토랑 종료 시간 또는 23:59로 설정
+			if (endTime == null) {
+				endTime = (restaurant.getCloseTime() != null) ? restaurant.getCloseTime() : LocalTime.of(23, 59);
+			}
+		}
+
+		// 내가 필터링 주문한 시간대에 대해서, 예약 정보가 있는 테이블들 몽땅 가져오기
+		List<ReservationTable> reservedTables = reservationTableRepository.findReservedTables(
+			restaurant.getRestaurantId(),
+			filter.getReservationDate(),
+			startTime,
+			endTime
+		);
+
+		// 예약된 테이블들을 기준으로 tableId를 key로 하는 Map 생성
+		Map<Integer, boolean[]> tableAvailabilityMap = new HashMap<>();
+
+		// 시간 단위로 배열 생성 (startTime ~ endTime, 분 단위)
+		int totalMinutes = (int)java.time.Duration.between(startTime, endTime).toMinutes();
+
+		// 테이블 별로 초기화된 배열 생성
+		for (Table table : tables) {
+			tableAvailabilityMap.put(table.getTableId(), new boolean[totalMinutes]); // boolean 배열은 기본값이 false로 초기화됨
+		}
+
+		// 예약된 테이블의 예약 시간에 해당하는 리스트에 'true'로 색칠
+		for (ReservationTable reservationTable : reservedTables) {
+
+			LocalTime reservationStartTime = reservationTable.getReservation().getStartTime();
+			LocalTime reservationEndTime = reservationTable.getReservation().getEndTime();
+			int startMinuteIndex = (int)java.time.Duration.between(startTime, reservationStartTime).toMinutes();
+			int endMinuteIndex = (int)java.time.Duration.between(startTime, reservationEndTime).toMinutes();
+
+			// 예약 시간이 전체 범위를 벗어나면 조정
+			startMinuteIndex = Math.max(0, startMinuteIndex);
+			endMinuteIndex = Math.min(totalMinutes, endMinuteIndex);
+
+			// 해당 예약 테이블이 요청에 대해 예약 가능한 테이블인지 확인
+			if (!tableAvailabilityMap.containsKey(reservationTable.getTableId()))
+				continue;
+			// 예약된 시간에 대해 색칠
+			boolean[] timeSlots = tableAvailabilityMap.get(reservationTable.getTableId());
+			for (int i = startMinuteIndex; i < endMinuteIndex; i++) {
+				timeSlots[i] = true; // 예약된 시간대를 true로 설정
+			}
+
+		}
+
+		// 브레이크 타임에 대해 색칠 (breakStartTime ~ breakEndTime)
+		if (restaurant.getBreakStartTime() != null && restaurant.getBreakEndTime() != null) {
+			int breakStartMinuteIndex = (int)java.time.Duration.between(startTime, restaurant.getBreakStartTime())
+				.toMinutes();
+			int breakEndMinuteIndex = (int)java.time.Duration.between(startTime, restaurant.getBreakEndTime())
+				.toMinutes();
+
+			// 브레이크 타임이 전체 범위를 벗어나면 조정
+			breakStartMinuteIndex = Math.max(0, breakStartMinuteIndex);
+			breakEndMinuteIndex = Math.min(totalMinutes, breakEndMinuteIndex);
+
+			// 모든 테이블에 대해 브레이크 타임을 색칠
+			for (boolean[] timeSlots : tableAvailabilityMap.values()) {
+				for (int i = breakStartMinuteIndex; i < breakEndMinuteIndex; i++) {
+					timeSlots[i] = true; // 브레이크 타임을 true로 설정
+				}
+			}
+		}
+
+		// 모든 테이블에 대해 예약되지 않은 시간대가 있는지 확인
+		for (Map.Entry<Integer, boolean[]> entry : tableAvailabilityMap.entrySet()) {
+			boolean[] timeSlots = entry.getValue();
+			boolean isAvailable = false;
+
+			// 배열에서 예약되지 않은 시간대(false)가 있는지 확인
+			for (boolean slot : timeSlots) {
+				if (!slot) { // false가 있으면 예약 가능한 테이블로 판단
+					isAvailable = true;
+					break;
+				}
+			}
+
+			if (isAvailable) {
+				return true;
+			}
+		}
+
+		// 예약 가능한 테이블이 없으면 false 반환
+		return false;
+	}
+
+	// MongoDB에서 해당 식당의 테이블 목록 조회 메소드 (인원 수 크거나 같은 테이블만)
+	private List<Table> getTablesFromMongoDB(Long restaurantId, Integer memberCount) {
+		// 우선 모든 테이블을 불러옴
+		List<Table> tables = restaurantStructureRepository.findByRestaurantId(restaurantId)
+			.map(RestaurantStructure::getTables)
+			.orElse(Collections.emptyList());
+
+		// memberCount가 있는 경우에만 필터링
+		if (memberCount != null) {
+			tables = tables.stream()
+				.filter(table -> table.getAssignedSeats() >= memberCount)
+				.collect(Collectors.toList());
+		}
+
+		return tables;
+	}
+
+	// Restaurant -> RestaurantMapDetailResponseDto 변환 메소드
+	private RestaurantMapDetailResponseDto toRestaurantMapDetailResponseDto(Restaurant restaurant) {
+		return RestaurantMapDetailResponseDto.builder()
+			.restaurantId(restaurant.getRestaurantId())
+			.restaurantName(restaurant.getName())
+			.latitude(restaurant.getLatitude())
+			.longitude(restaurant.getLongitude())
+			.build();
+	}
+
+	// 피타고라스 거리 계산
+	private double calculateDistance(Double lat1, Double lon1, Double lat2, Double lon2) {
+		return Math.sqrt(Math.pow(lat1 - lat2, 2) + Math.pow(lon1 - lon2, 2));
 	}
 
 	/**
@@ -240,11 +498,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 		uploadNewRestaurantImages(restaurant, multipartFiles);
 	}
 
-	/**
-	 * 기존 매장 사진 삭제 메소드
-	 *
-	 * @param restaurant 매장
-	 */
+	// 기존 매장 사진 삭제 메소드
 	private void deleteExistingRestaurantImage(Restaurant restaurant) {
 
 		List<RestaurantImage> existingRestaurantImages = restaurantImageRepository.findAllByRestaurant(restaurant);
@@ -260,12 +514,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 		}
 	}
 
-	/**
-	 * 새로운 매장 사진들 등록 메소드
-	 *
-	 * @param restaurant 매장
-	 * @param multipartFiles 사진 파일들
-	 */
+	// 새로운 매장 사진 등록 메소드
 	private void uploadNewRestaurantImages(Restaurant restaurant, List<MultipartFile> multipartFiles) {
 
 		List<String> uploadedRestaurantImageFileNames = new ArrayList<>();
@@ -297,12 +546,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 		}
 	}
 
-	/**
-	 * 매장별 메뉴 목록 조회 메소드
-	 *
-	 * @param restaurant 매장
-	 * @return
-	 */
+	// 매장별 메뉴 목록 조회 메소드
 	private MenuListResponseDto getRestaurantMenuList(Restaurant restaurant) {
 
 		// restaurant에 해당하는 모든 메뉴 불러오기

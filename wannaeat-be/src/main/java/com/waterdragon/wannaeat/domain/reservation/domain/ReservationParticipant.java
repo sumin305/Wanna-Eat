@@ -40,6 +40,4 @@ public class ReservationParticipant {
 	@OneToMany(mappedBy = "reservationParticipant", fetch = FetchType.LAZY)
 	private List<Order> orders;
 
-	// 생성자, getter, setter
-
 }

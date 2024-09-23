@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.waterdragon.wannaeat.domain.user.domain.User;
@@ -18,6 +17,7 @@ import com.waterdragon.wannaeat.domain.user.repository.UserRepository;
 import com.waterdragon.wannaeat.domain.user.repository.UserTokenRepository;
 import com.waterdragon.wannaeat.global.auth.jwt.service.JwtService;
 import com.waterdragon.wannaeat.global.auth.jwt.util.PasswordUtil;
+import com.waterdragon.wannaeat.global.auth.oauth2.CustomUserDetail;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -43,7 +43,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
-	private static final String NO_CHECK_URL = "/"; // "/login"으로 들어오는 요청은 Filter 작동 X
+	// 해당 URL로 들어오는 요청은 필터 작동 X
+	private static final String NO_CHECK_URL = "/api/public/";
+	private static final String SWAGGER_URL = "/swagger-ui/";
+	private static final String SWAGGER_URL2 = "/v3/api-docs/";
 
 	private final JwtService jwtService;
 	private final UserRepository userRepository;
@@ -55,18 +58,15 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
-		// if (request.getRequestURI().equals(NO_CHECK_URL)) {
-		// 	filterChain.doFilter(request, response); // "/login" 요청이 들어오면, 다음 필터 호출
-		// 	return; // return으로 이후 현재 필터 진행 막기 (안해주면 아래로 내려가서 계속 필터 진행시킴)
-		// }
+		if (request.getRequestURI().startsWith(NO_CHECK_URL) || request.getRequestURI().startsWith(SWAGGER_URL)
+			|| request.getRequestURI().startsWith(SWAGGER_URL2)) {
+			// 해당 요청에 대해선, 다음 filter 호출해서 return으로 넘어가게 함 (jwt 토큰이 아예 없는 요청이므로)
+			filterChain.doFilter(request, response);
+			return; // return으로 이후 현재 필터 진행 막기 (안해주면 아래로 내려가서 계속 필터 진행시킴)
+		}
 
 		System.out.println("jwt filter 들어옴");
 		System.out.println("accessToken은 " + jwtService.extractAccessToken(request));
-		if (request.getRequestURI().equals(NO_CHECK_URL)) {
-			// "/login" 요청에 대해선, 다음 filter 호출해서 return으로 넘어가게 함 (jwt 토큰이 아예 없는 요청이므로)
-			filterChain.doFilter(request, response);
-			return;
-		}
 
 		// 사용자 요청 쿠키에서 RefreshToken 추출
 		// -> RefreshToken이 없거나 유효하지 않다면(DB에 저장된 RefreshToken과 다르다면) null을 반환
@@ -178,11 +178,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 		//(소셜 로그인의 경우 password가 null인데, 인증 처리 시 password가 null이면 안 되므로, 랜덤 패스워드를 임의로 부여해줍니다.)
 		String password = PasswordUtil.generateRandomPassword();
 
-		UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-			.username(myUser.getEmail())
-			.password(password)
-			.roles(String.valueOf(myUser.getRole()))
-			.build();
+		CustomUserDetail userDetailsUser = new CustomUserDetail(myUser);
 
 		Authentication authentication =
 			new UsernamePasswordAuthenticationToken(userDetailsUser, null,

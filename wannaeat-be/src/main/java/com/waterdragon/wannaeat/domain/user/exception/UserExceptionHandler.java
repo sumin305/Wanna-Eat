@@ -5,13 +5,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.waterdragon.wannaeat.domain.user.exception.error.DuplicateNicknameException;
 import com.waterdragon.wannaeat.domain.user.exception.error.DuplicatePhoneException;
+import com.waterdragon.wannaeat.domain.user.exception.error.DuplicateUserException;
 import com.waterdragon.wannaeat.domain.user.exception.error.InvalidCodeException;
 import com.waterdragon.wannaeat.domain.user.exception.error.InvalidPhoneException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
 @RestControllerAdvice
 public class UserExceptionHandler {
+
+	// 이미 가입된 유저
+	@ExceptionHandler(DuplicateUserException.class)
+	public final ResponseEntity<ErrorResponseDto> handleDuplicateUserException(
+		DuplicateUserException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Duplicate User", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+	}
+
+	// 중복된 닉네임으로 가입된 계정 존재
+	@ExceptionHandler(DuplicateNicknameException.class)
+	public final ResponseEntity<ErrorResponseDto> handleDuplicateNicknameException(
+		DuplicateNicknameException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Duplicate Nickname", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+	}
 
 	// 유효하지 않은 전화번호
 	@ExceptionHandler(InvalidPhoneException.class)

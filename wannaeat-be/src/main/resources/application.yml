@@ -18,12 +18,18 @@ spring:
       - oauth
 
   phone-authcode-expiration-millis: ${PHONE_AUTHCODE_EXPIRATION}
+  
+  # Redis 카카오페이 tid 유효 기간
+  kakaopay-tid-expiration-millis: ${KAKAOPAY_TID_EXPIRATION}
 
+  data:
+    mongodb:
+      uri: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}/${MONGODB_DATABASE}?authSource=admin
 redis:
   host: ${REDIS_SERVER_ADDRESS}
   port: ${REDIS_SERVER_PORT}
 
-#SMS 인증을 위한 api key
+#SMS 인증을 위한 Api Key
 coolsms:
   apiKey: ${COOLSMS_API_KEY}
   apiSecret: ${COOLSMS_SECRET_KEY}
@@ -37,3 +43,10 @@ symmetric:
 #로컬 파일업로드 경로
 file:
   upload-dir: ${FILE_UPLOAD_DIR}
+
+# 카카오페이 Secret Key
+pay:
+  secret-key: ${KAKAOPAY_SECRET_KEY}
+
+# Redirect URL
+redirectURL : ${REDIRECT_URL}

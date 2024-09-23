@@ -33,7 +33,9 @@ import arrowRightIcon from '../../../../assets/icons/common/arrow-right.svg';
 import blackArrowRightIcon from '../../../../assets/icons/common/black-arrow-right.svg';
 import bossamIcon from '../../../../assets/icons/food/bossam.svg';
 import foodImage from '../../../../assets/icons/common/food.png';
+import { getRestaurants } from '../../../../api/customer/restaurant.js';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 const MainPage = () => {
   const { setIsShowLogo, setActiveIcons } = useHeaderStore();
   const navigate = useNavigate();
@@ -78,9 +80,14 @@ const MainPage = () => {
       totalReservationCount: 123,
     },
   ];
+
+  const [menus, setMenus] = useState([]);
+
   useEffect(() => {
     setIsShowLogo(true);
     setActiveIcons([3]);
+    setMenus(getRestaurants(1).data);
+    console.log(getRestaurants(1).data);
   }, []);
 
   const handleReservationButtonClick = (e) => {

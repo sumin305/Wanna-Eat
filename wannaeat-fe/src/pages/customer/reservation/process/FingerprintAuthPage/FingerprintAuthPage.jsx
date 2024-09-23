@@ -6,7 +6,7 @@ const FingerprintAuthPage = () => {
       await navigator.credentials.create({
         publicKey: {
           challenge: new Uint8Array([117, 61, 252, 231, 191, 241, 32, 4]),
-          rp: { id: window.location.hostname, name: 'wanna-eat' }, // 동적으로 현재 도메인 설정
+          rp: { id: 'j11b302.p.ssafy.io', name: 'wanna-eat' }, // 명시적으로 도메인 설정
           user: {
             id: new Uint8Array([79, 252, 83, 72, 214, 7, 89, 26]),
             name: 'sumin',
@@ -28,7 +28,7 @@ const FingerprintAuthPage = () => {
       await navigator.credentials.get({
         publicKey: {
           challenge: new Uint8Array([117, 61, 252, 231, 191, 241, 32, 4]),
-          rpId: window.location.hostname,
+          rpId: 'j11b302.p.ssafy.io', // 명시적으로 도메인 설정
           allowCredentials: [
             {
               type: 'public-key',

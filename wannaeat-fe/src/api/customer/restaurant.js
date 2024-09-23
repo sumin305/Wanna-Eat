@@ -3,6 +3,6 @@ import { clientInstance } from '../../utils/http-client';
 export const getRestaurants = async (restaurantId) => {
   return await clientInstance
     .get('/api/public/restaurants/' + restaurantId + '/menus')
-    .then((result) => result)
+    .then((result) => result.data)
     .catch((error) => error);
 };

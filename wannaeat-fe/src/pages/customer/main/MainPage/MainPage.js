@@ -2,7 +2,6 @@ import styled from '@emotion/styled/macro';
 import theme from '../../../../style/common/theme';
 
 const MainPageContainer = styled.div`
-  overflow-y: auto;
   scrollbar-width: none;
   scroll-behavior: smooth;
   display: flex;
@@ -10,21 +9,27 @@ const MainPageContainer = styled.div`
 `;
 
 const SearchWrapper = styled.div`
+  position: relative;
   background: ${theme.color.primary};
-  border-radius: 0 0 7px 7px;
-  text-align: center;
+  border-radius: 0 0 5px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0
+  margin: 0.5rem auto;
 `;
 
 const SearchInput = styled.input`
-  width: 90%;
+  width: 100%;
+  margin: 0 1rem;
   height: 5vh;
-  margin: 0.5rem 0 0.8rem 0;
   padding-left: 0.3rem;
+  padding-right: 3rem;
   border-radius: 5px;
   border: none;
-  justify-self: center;
   font-size: ${theme.fontSize.px13};
-
+  margin-bottom: 1rem;
   ::placeholder {
     color: ${theme.color.disabled};
   }
@@ -32,12 +37,15 @@ const SearchInput = styled.input`
 
 const SearchIcon = styled.img`
   position: absolute;
-  right: 1.5rem;
-  top: 11.3%;
-  font-size: 18px;
-  @media (min-width: 480px) {
-    right: calc(50vw - 240px + 3%);
-  }
+  right: 2rem;
+  height: 3vh;
+  border: none;
+  border-radius: 5px;
+  font-size: ${theme.fontSize.px13};
+  cursor: pointer;
+  color: white;
+  transform: translateY(-50%);
+  margin-top: 3px;
 `;
 
 const BannerWrapper = styled.div`
@@ -127,6 +135,7 @@ const RestaurantTitle = styled.p`
 `;
 
 const RestaurantTitleButton = styled.button`
+  color: black;
   display: flex;
   background: none;
   border: none;

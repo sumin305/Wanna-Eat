@@ -67,6 +67,7 @@ const LinkInfoTextWrapper = styled.div`
 `;
 const LinkInfoText = styled.p``;
 const LinkInfoButton = styled.button`
+  color: black;
   background: none;
   border: none;
   display: flex;

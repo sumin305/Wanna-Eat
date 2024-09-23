@@ -27,6 +27,7 @@ const TimeSelectModalBox = () => {
 
   useEffect(() => {
     setSelectedTimes([]);
+    console.log('hello');
   }, []);
 
   const handleHeadCountChange = (e) => {
@@ -52,6 +53,7 @@ const TimeSelectModalBox = () => {
         newSelectedTimes = newSelectedTimes.filter(
           (time) => time != lunchTimes[index]
         );
+
         if (!checkContinuousTime(lunchTimes, newSelectedTimes)) {
           alert('연속된 시간만 선택 가능합니다.');
           setSelectedTimes([]);
@@ -60,7 +62,7 @@ const TimeSelectModalBox = () => {
 
         // 제거 완료
         setSelectedTimes(newSelectedTimes);
-        setStartEndTime(selectedTimes);
+        setStartEndTime(newSelectedTimes);
         return;
       }
 
@@ -148,14 +150,23 @@ const TimeSelectModalBox = () => {
   };
 
   const setStartEndTime = (selectedTimes) => {
+    if (selectedTimes.length === 0) {
+      setSelectedStartTime('00:00');
+      setSelectedEndTime('00:00');
+      return;
+    }
     selectedTimes = selectedTimes.sort();
     const startTime = selectedTimes[0];
     setSelectedStartTime(startTime);
     const endTime = selectedTimes[selectedTimes.length - 1];
-    if (endTime.split(':')[1] == '00') {
+    console.log(selectedTimes, startTime, endTime);
+    if (endTime && endTime.split(':')[1] == '00') {
       setSelectedEndTime(endTime.split(':')[0] + ':30');
-    } else if (endTime.split(':')[1] == '30') {
+    } else if (endTime && endTime.split(':')[1] == '30') {
       setSelectedEndTime(parseInt(endTime.split(':')[0]) + 1 + ':00');
+    } else {
+      setSelectedStartTime('00:00');
+      setSelectedEndTime('00:00');
     }
   };
 

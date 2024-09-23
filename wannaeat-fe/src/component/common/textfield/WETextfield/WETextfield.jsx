@@ -1,6 +1,6 @@
-import { ReactComponent as WarningIcon } from '../../../../assets/warning.svg';
+import { ReactComponent as WarningIcon } from '../../../../assets/icons/common/warning.svg';
 import components from './WETextfield.js';
-import useTextfieldStore from '../../../../stores/textfield/useTextfieldStore.js';
+import useTextfieldStore from '../../../../stores/common/textfield/useTextfieldStore.js';
 
 const {
   TextfieldWrapperStyled,
@@ -29,12 +29,14 @@ const Textfield = ({ type = 'text', name, ...props }) => {
         {...props}
       />
 
-      <ErrorMessageDivStyled error={!!errorType}>
-        {<WarningIcon />}
-        <ErrorMessageStyled>
-          {errorMessage || '오류가 발생하였습니다.'}
-        </ErrorMessageStyled>
-      </ErrorMessageDivStyled>
+      {errorType && (
+        <ErrorMessageDivStyled error={!!errorType}>
+          {<WarningIcon />}
+          <ErrorMessageStyled>
+            {errorMessage || '오류가 발생하였습니다.'}
+          </ErrorMessageStyled>
+        </ErrorMessageDivStyled>
+      )}
     </TextfieldWrapperStyled>
   );
 };

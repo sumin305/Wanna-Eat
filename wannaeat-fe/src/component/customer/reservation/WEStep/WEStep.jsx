@@ -5,7 +5,7 @@ const WEStep = ({index}) => {
         '1. 시간 선택',
         '2. 좌석 선택',
         '3. 예약금 결제',
-        '4. 메뉴 선택'
+        '4. 예약 완료'
     ]
     return (
         <StepContainer>

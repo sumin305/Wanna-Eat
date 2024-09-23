@@ -1,12 +1,20 @@
 import styled from '@emotion/styled/macro';
-import WETabbar from './layout/common/WETabbar/WETabbar.jsx';
+import WEFooter from './layout/common/WEFooter/WEFooter.jsx';
 import useModalStore from './stores/common/modal/useModalStore.js';
 import WEBlackOutLayout from './layout/common/WEBlackOutLayout/WEBlackOutLayout.jsx';
 import WEModal from './component/common/modal/WEModal.jsx';
 import AppRoutes from './route/routes.js';
 import WEHeader from './layout/common/WEHeader/WEHeader.jsx';
+import { useEffect } from 'react';
+import useCommonStore from './stores/common/useCommonStore.js';
+
 const Main = () => {
   const { isModalVisible } = useModalStore();
+  const { setCategories } = useCommonStore();
+
+  useEffect(() => {
+    setCategories(['고기', '족발', '찌개', '회', '돈까스']);
+  }, []);
 
   const AppContainer = styled.div`
     display: flex;
@@ -27,9 +35,9 @@ const Main = () => {
       {isModalVisible && <WEBlackOutLayout></WEBlackOutLayout>}
       {isModalVisible && <WEModal />}
       <AppContainer>
-        <WEHeader isCarrot={true}text="메인페이지"/>
+        <WEHeader isCarrot={true} text="메인페이지" />
         <AppRoutes />
-        <WETabbar />
+        <WEFooter />
       </AppContainer>
     </div>
   );

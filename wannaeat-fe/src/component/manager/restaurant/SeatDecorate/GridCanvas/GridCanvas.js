@@ -4,8 +4,9 @@ import { ReactComponent as CancelButton } from '../../../../../assets/icons/mana
 
 const GridItemStyled = styled.div`
   position: absolute;
-  width: 40px;
-  height: 40px;
+  background-color: blue;
+  width: ${(props) => props.gridSize}px;
+  height: ${(props) => props.gridSize}px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -47,6 +48,7 @@ const GridWrapperStyled = styled.div`
   width: ${(props) => props.gridColumns * props.gridSize}px;
   height: ${(props) => props.gridRows * props.gridSize}px;
   cursor: grab;
+  touch-action: none;
 `;
 
 const ZoomableGridWrapperStyled = styled.div`

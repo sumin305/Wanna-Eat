@@ -1,4 +1,3 @@
-// SVG 파일을 React 컴포넌트로 임포트
 import { ReactComponent as SquareTableIcon } from '../../../../../assets/icons/manager/restaurant/table-square.svg';
 import { ReactComponent as RoundTableIcon } from '../../../../../assets/icons/manager/restaurant/table-rounded.svg';
 import { ReactComponent as RestroomIcon } from '../../../../../assets/icons/manager/restaurant/restroom.svg';
@@ -14,7 +13,7 @@ export const paletteItems = [
   {
     id: 2,
     label: '원형 테이블',
-    icon: RoundTableIcon, 
+    icon: RoundTableIcon,
   },
   {
     id: 3,
@@ -47,8 +46,10 @@ export const paletteStyles = {
     padding: '5px',
     textAlign: 'center',
     width: '60px',
-    flex: '0 0 auto', 
-    scrollSnapAlign: 'start', 
+    height: '60px',
+    flex: '0 0 auto',
+    scrollSnapAlign: 'start',
+    touchAction: 'none',
   },
   paletteItemIcon: {
     width: '40px',

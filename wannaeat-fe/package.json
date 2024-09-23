@@ -9,6 +9,7 @@
     "dnd-multi-backend": "^8.0.3",
     "moment": "^2.30.1",
     "prop-types": "^15.8.1",
+    "rdndmb-html5-to-touch": "^8.0.3",
     "react": "^18.3.1",
     "react-calendar": "^5.0.0",
     "react-dnd": "^16.0.1",

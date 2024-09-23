@@ -23,8 +23,8 @@ const useStore = create((set) => ({
 }));
 
 const GridCanvas = () => {
-  const gridColumns = 20; // 가로
-  const gridRows = 20; // 세로
+  const gridColumns = 5; // 가로
+  const gridRows = 5; // 세로
   const [gridSize, setGridSize] = useState(50);
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
@@ -162,13 +162,20 @@ const GridCanvas = () => {
             {items.map((item) => (
               <GridItemStyled
                 key={item.id}
+                gridSize={gridSize}
                 style={{
                   left: `${item.x}px`,
                   top: `${item.y}px`,
                   transform: `rotate(${item.rotation}deg)`,
                 }}
               >
-                <item.icon className="grid-item-icon" />
+                <item.icon
+                  className="grid-item-icon"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                  }}
+                />
               </GridItemStyled>
             ))}
           </GridBackgroundStyled>

@@ -1,34 +1,64 @@
 import styled from '@emotion/styled';
 
-export const GridBackground = styled.div`
-  background-size: 3.125rem 3.125rem;
-  background-image: linear-gradient(to right, lightgray 1px, transparent 1px),
-    linear-gradient(to bottom, lightgray 1px, transparent 1px);
-  display: grid;
-  grid-template-columns: repeat(${({ gridColumns }) => gridColumns}, 50px);
-  grid-template-rows: repeat(${({ gridColumns }) => gridColumns}, 50px);
-  gap: 2px;
-  position: relative;
-  /* width: ${({ gridColumns }) => gridColumns * 50}px;
-  height: ${({ gridColumns }) => gridColumns * 50}px; */
-
-  @media (max-width: 480px) {
-    grid-template-columns: repeat(${({ gridColumns }) => gridColumns}, 25px);
-    grid-template-rows: repeat(${({ gridColumns }) => gridColumns}, 25px);
-    width: ${({ gridColumns }) => gridColumns * 25}px;
-    height: ${({ gridColumns }) => gridColumns * 25}px;
-  }
+export const GridItemStyled = styled.div`
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
-export const GridItem = styled.div`
-  position: absolute;
-  left: ${({ x }) => `${x}px`};
-  top: ${({ y }) => `${y}px`};
-  width: 50px;
-  height: 50px;
+export const SaveButtonStyled = styled.button`
+  position: fixed;
+  bottom: 20px;
+  right: 100px;
+`;
 
-  @media (max-width: 480px) {
-    width: 25px;
-    height: 25px;
-  }
+export const CancelButtonStyled = styled.button`
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+`;
+
+export const GridWrapperStyled = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  width: ${(props) => props.gridColumns * props.gridSize}px;
+  height: ${(props) => props.gridRows * props.gridSize}px;
+  cursor: grab;
+`;
+
+export const ZoomableGridWrapperStyled = styled.div`
+  width: ${(props) => props.gridColumns * props.gridSize}px;
+  height: ${(props) => props.gridRows * props.gridSize}px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  transform: scale(${(props) => props.scale});
+  transform-origin: top left;
+  touch-action: none;
+`;
+
+export const GridBackgroundStyled = styled.div`
+  display: grid;
+  grid-template-columns: repeat(${(props) => props.gridColumns}, ${(props) => props.gridSize}px);
+  grid-template-rows: repeat(${(props) => props.gridRows}, ${(props) => props.gridSize}px);
+  background-color: transparent;
+  background-image: linear-gradient(to right, #FF6528 1px, transparent 1px),linear-gradient(to left, #FF6528 1px, transparent 1px),
+    linear-gradient(to bottom, #FF6528 1px, transparent 1px), linear-gradient(to top, #FF6528 1px, transparent 1px);
+  background-size: ${(props) => props.gridSize}px ${(props) => props.gridSize}px;
+  width: ${(props) => props.gridColumns * props.gridSize}px;
+  height: ${(props) => props.gridRows * props.gridSize}px;
+  position: relative;
+  overflow: hidden;
+`;
+
+export const GridCellStyled = styled.div`
+  width: 100%;
+  height: 100%;
+  background: transparent;
 `;

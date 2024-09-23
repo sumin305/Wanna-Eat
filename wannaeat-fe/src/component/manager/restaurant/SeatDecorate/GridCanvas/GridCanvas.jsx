@@ -1,67 +1,151 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDrop } from 'react-dnd';
-import useGridCanvasStore from '../../../../../stores/manager/restaurant/SeatDecorate/useGridCanvasStore.js'; // zustand 상태 관리 import
-import { GridBackground, GridItem } from './GridCanvas.js'; // 스타일링 import
+import { paletteItems } from '../ItemPalette/ItemPalette';
+import {
+  GridWrapperStyled,
+  ZoomableGridWrapperStyled,
+  GridBackgroundStyled,
+  GridCellStyled,
+  GridItemStyled,
+  SaveButtonStyled,
+  CancelButtonStyled,
+} from './GridCanvas';
+import { create } from 'zustand';
 
-const GridCanvas = ({ size = 'medium', floor = 1 }) => {
-  const [gridSize, setGridSize] = useState(50);
-  const [gridColumns, setGridColumns] = useState(12); // 기본 그리드 크기 설정
-  const addItem = useGridCanvasStore((state) => state.addItem); // zustand 상태 관리에서 요소 추가
-  const setFloor = useGridCanvasStore((state) => state.setFloor); // 층 변경 함수 가져오기
-  const layout = useGridCanvasStore((state) =>
-    state.elements.filter((el) => el.floor === floor)
-  );
+const useStore = create((set) => ({
+  items: [],
+  addItem: (item) =>
+    set((state) => ({
+      items: [...state.items, item],
+    })),
+  setItems: (items) => set({ items }),
+  clearItems: () => set({ items: [] }),
+}));
 
-  // 가게 크기에 따라 그리드 크기 설정
+const GridCanvas = () => {
+  const gridColumns = 10; // 가로
+  const gridRows = 10; // 세로
+  const [gridSize, setGridSize] = useState(50); 
+  const [scale, setScale] = useState(1);
+  const [isDragging, setIsDragging] = useState(false);
+  const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
+  const { items, addItem, setItems } = useStore();
+
+  const containerRef = useRef(null);
+
+  const calculateGridSize = () => {
+    const width = window.innerWidth;
+    const height = window.innerHeight - 200;
+
+    const maxGridWidth = Math.min(width, 480);
+    const maxGridHeight = height;
+
+    const sizeBasedOnWidth = maxGridWidth / gridColumns;
+    const sizeBasedOnHeight = maxGridHeight / gridRows;
+    const newSize = Math.min(sizeBasedOnWidth, sizeBasedOnHeight);
+
+    setGridSize(newSize);
+  };
+
   useEffect(() => {
-    switch (size) {
-      case 'small':
-        setGridColumns(8);
-        setGridSize(40);
-        break;
-      case 'small-medium':
-        setGridColumns(10);
-        setGridSize(45);
-        break;
-      case 'medium':
-        setGridColumns(12);
-        setGridSize(50);
-        break;
-      case 'large-medium':
-        setGridColumns(15);
-        setGridSize(55);
-        break;
-      case 'large':
-        setGridColumns(20);
-        setGridSize(60);
-        break;
-      default:
-        setGridColumns(10);
-        setGridSize(50);
+    calculateGridSize();
+    window.addEventListener('resize', calculateGridSize);
+    return () => window.removeEventListener('resize', calculateGridSize);
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/load')
+      .then((response) => response.json())
+      .then((data) => setItems(data));
+  }, [setItems]);
+
+  const handleWheel = (e) => {
+    if (e.ctrlKey) {
+      e.preventDefault();
+      const newScale = Math.min(Math.max(scale - e.deltaY * 0.01, 1), 3);
+      setScale(newScale);
+    }
+  };
+
+  const handleDragStart = (e) => {
+    setIsDragging(true);
+    setLastPos({ x: e.clientX || e.touches[0].clientX, y: e.clientY || e.touches[0].clientY });
+  };
+
+  const handleDragMove = (e) => {
+    if (!isDragging) return;
+    const currentX = e.clientX || e.touches[0].clientX;
+    const currentY = e.clientY || e.touches[0].clientY;
+
+    const deltaX = currentX - lastPos.x;
+    const deltaY = currentY - lastPos.y;
+
+    if (containerRef.current) {
+      containerRef.current.scrollLeft -= deltaX;
+      containerRef.current.scrollTop -= deltaY;
     }
 
-    // 'floor' 값을 zustand의 상태로 설정
-    setFloor(floor);
-  }, [size, floor, setFloor]);
+    setLastPos({ x: currentX, y: currentY });
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
 
   const [, dropRef] = useDrop({
     accept: 'ITEM',
     drop: (item, monitor) => {
       const offset = monitor.getClientOffset();
-      const x = Math.round(offset.x / gridSize) * gridSize;
-      const y = Math.round(offset.y / gridSize) * gridSize;
-      addItem({ ...item, x, y, floor });
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const x = Math.round((offset.x - containerRect.left) / gridSize) * gridSize;
+      const y = Math.round((offset.y - containerRect.top) / gridSize) * gridSize;
+
+      const selectedItem = paletteItems.find((paletteItem) => paletteItem.id === item.id);
+
+      if (selectedItem) {
+        addItem({ id: item.id, x, y, icon: selectedItem.icon, label: selectedItem.label, rotation: 0 });
+      }
     },
   });
 
+  const handleSave = () => {
+    fetch('/api/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(items),
+    });
+  };
+
   return (
-    <GridBackground ref={dropRef} gridColumns={gridColumns}>
-      {layout.map((el) => (
-        <GridItem key={el.id} x={el.x} y={el.y}>
-          <img src={`/path/to/${el.id}.png`} alt={el.label} />
-        </GridItem>
-      ))}
-    </GridBackground>
+    <div>
+      <GridWrapperStyled
+        ref={containerRef}
+        onWheel={handleWheel}
+        onMouseDown={handleDragStart}
+        onMouseMove={handleDragMove}
+        onMouseUp={handleDragEnd}
+        onTouchStart={handleDragStart}
+        onTouchMove={handleDragMove}
+        onTouchEnd={handleDragEnd}
+      >
+        <ZoomableGridWrapperStyled scale={scale} gridColumns={gridColumns} gridRows={gridRows} gridSize={gridSize}>
+          <GridBackgroundStyled ref={dropRef} gridColumns={gridColumns} gridRows={gridRows} gridSize={gridSize}>
+            {Array.from({ length: gridColumns * gridRows }).map((_, index) => (
+              <GridCellStyled key={index} />
+            ))}
+            {items.map((item) => (
+              <GridItemStyled key={item.id} style={{ left: `${item.x}px`, top: `${item.y}px`, transform: `rotate(${item.rotation}deg)` }}>
+                <item.icon className="grid-item-icon" />
+              </GridItemStyled>
+            ))}
+          </GridBackgroundStyled>
+        </ZoomableGridWrapperStyled>
+      </GridWrapperStyled>
+      <SaveButtonStyled onClick={handleSave}>저장</SaveButtonStyled>
+      <CancelButtonStyled>취소</CancelButtonStyled>
+    </div>
   );
 };
 

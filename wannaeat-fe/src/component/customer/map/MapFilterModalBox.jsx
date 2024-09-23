@@ -1,8 +1,10 @@
+import { useRef } from 'react';
 import useReservationStore from '../../../stores/customer/reservation/useReservationStore.js';
 import {
   InputFieldContainer,
   InputFieldText,
   InputFieldContent,
+  CalendarContainer,
   CalendarWrapper,
   CalendarStyled,
 } from './MapFilterModalBox';
@@ -37,6 +39,8 @@ const MapFilterModalBox = () => {
 
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
+  const calendarRef = useRef(null);
+
   const handleDateChange = (date) => {
     setSelectedDate(moment(date).format('YYYY-MM-DD'));
     setIsCalendarVisible(false);
@@ -46,21 +50,43 @@ const MapFilterModalBox = () => {
     setIsCalendarVisible(!isCalendarVisible);
   };
 
+  // 달력 외부 클릭 시 달력을 닫는 함수
+  const handleClickOutside = (e) => {
+    if (calendarRef.current && !calendarRef.current.contains(e.target)) {
+      setIsCalendarVisible(false);
+    }
+  };
+
+  // 외부 클릭 감지
+  useEffect(() => {
+    if (isCalendarVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isCalendarVisible]);
+
   const {
     visitTimePlaceholder,
     setItems: setVisitTimeItems,
     selectedId: selectedVisitTimeId,
+    isShowOption: isShowVisitTimeOption,
   } = useVisitTimeDropdownStore();
 
   const {
     durationPlaceholder,
     setItems: setDurationItems,
     selectedId: selectedDurationId,
+    isShowOption: isShowDurationOption,
   } = useDurationDropdownStore();
 
   const { categories } = useCommonStore();
 
-  const { setItems } = useDropdownStore();
+  const { setItems, isShowOption } = useDropdownStore();
 
   const allTimes = [...lunchTimes, ...dinnerTimes]; // 오전 오후 포함한 모든 시간
 
@@ -102,16 +128,6 @@ const MapFilterModalBox = () => {
 
   return (
     <>
-      {isCalendarVisible && (
-        <CalendarWrapper>
-          <CalendarStyled
-            showNeighboringMonth={false}
-            onChange={handleDateChange}
-            value={moment(selectedDate, 'YYYY-MM-DD').toDate()}
-            formatDay={(locale, date) => moment(date).format('DD')}
-          />
-        </CalendarWrapper>
-      )}
       <InputFieldContainer>
         <InputFieldText>인원 수</InputFieldText>
         <InputFieldContent>
@@ -127,9 +143,9 @@ const MapFilterModalBox = () => {
         </InputFieldContent>
       </InputFieldContainer>
 
-      <InputFieldContainer>
+      <InputFieldContainer isCalendarVisible={isCalendarVisible}>
         <InputFieldText> 방문 날짜</InputFieldText>
-        <InputFieldContent>
+        <CalendarContainer>
           <WETextfield
             style={{
               backgroundImage: `url(${CalendarImg})`,
@@ -142,12 +158,26 @@ const MapFilterModalBox = () => {
             onChange={(e) => console.log(e)}
             onClick={toggleCalendar}
           />
-        </InputFieldContent>
+          {isCalendarVisible && (
+            <CalendarWrapper ref={calendarRef}>
+              <CalendarStyled
+                showNeighboringMonth={false}
+                onChange={handleDateChange}
+                value={moment(selectedDate, 'YYYY-MM-DD').toDate()}
+                formatDay={(locale, date) => moment(date).format('DD')}
+              />
+            </CalendarWrapper>
+          )}
+        </CalendarContainer>
       </InputFieldContainer>
 
-      <InputFieldContainer>
+      <InputFieldContainer
+        isShowOption={isShowVisitTimeOption || isShowDurationOption}
+      >
         <InputFieldText>방문 시간</InputFieldText>
-        <InputFieldContent>
+        <InputFieldContent
+          isShowOption={isShowVisitTimeOption || isShowDurationOption}
+        >
           {/* 시작시간 드롭다운 */}
           <WEDropdown
             useDropdownStore={useVisitTimeDropdownStore}
@@ -161,7 +191,7 @@ const MapFilterModalBox = () => {
         </InputFieldContent>
       </InputFieldContainer>
 
-      <InputFieldContainer>
+      <InputFieldContainer isShowOption={isShowOption}>
         <InputFieldText>카테고리</InputFieldText>
         <InputFieldContent>
           <WEDropdown

@@ -4,7 +4,8 @@ import Calendar from 'react-calendar';
 
 const InputFieldContainer = styled.div`
   display: flex;
-  align-items: center;
+  align-items: ${(props) =>
+    props.isCalendarVisible || props.isShowOption ? 'flex-start' : 'center'};
   width: 100%;
   margin-bottom: 0.625rem;
 `;
@@ -17,14 +18,25 @@ const InputFieldText = styled.p`
 const InputFieldContent = styled.div`
   flex: 3; // 나머지 3/4를 차지하도록 설정
   display: flex;
+  align-items: ${(props) =>
+    props.isCalendarVisible || props.isShowOption ? 'flex-start' : 'center'};
+  position: relative;
+`;
+
+const CalendarContainer = styled.div`
+  flex: 3; // 나머지 3/4를 차지하도록 설정
+  display: flex;
+  flex-direction: column;
   align-items: center;
 `;
 
 const CalendarWrapper = styled.div`
-  text-align: -webkit-center;
-  border-radius: 8px;
+  width: 100%;
+  background-color: white;
   margin: 10px;
+  text-align: -webkit-center;
   border: 1px solid ${theme.color.gray};
+  border-radius: 8px;
 `;
 
 const CalendarStyled = styled(Calendar)`
@@ -37,6 +49,14 @@ const CalendarStyled = styled(Calendar)`
     line-height: 1.125em;
     text-align: -webkit-center;
   }
+
+  .react-calendar__navigation {
+    display: flex;
+    justify-content: space-between; // 화살표를 양쪽으로 배치
+    align-items: center;
+    width: 100%;
+  }
+
   .react-calendar__navigation button {
     color: #ff6528;
     min-width: 30px;
@@ -123,6 +143,7 @@ export {
   InputFieldContainer,
   InputFieldText,
   InputFieldContent,
+  CalendarContainer,
   CalendarWrapper,
   CalendarStyled,
 };

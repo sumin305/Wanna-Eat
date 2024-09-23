@@ -6,6 +6,7 @@ import MapFilterModalBox from '../../../component/customer/map/MapFilterModalBox
 const MapRestaurantPage = () => {
   const { open, setModalType, setTitle, setConfirmText, setChildren } =
     useModalStore();
+
   const handleFilterModalButtonClick = () => {
     setModalType('sheet');
     setTitle('식당 필터링');

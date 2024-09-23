@@ -1,13 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapView } from './Map';
 import PinkMarker from '../../../assets/icons/map/pink-maker.png';
 import ArrowWhite from '../../../assets/icons/map/arrow-white.png';
 import VertexWhite from '../../../assets/icons/map/vertex-white.png';
 import useMapStore from '../../../stores/map/useMapStore';
 import { useNavigate } from 'react-router-dom';
+
 const MapContainer = () => {
   const { lat, lon, setLat, setLon } = useMapStore();
+  const [centerLatLng, setCenterLatLng] = useState({ lat: lat, lon: lon });
   const navigate = useNavigate();
+
+  // 현재 위치 근처의 레스토랑 찾는 함수
+  const handleRestaurantFind = () => {
+    console.log(lat);
+    console.log(lon);
+    setLat(centerLatLng.lat);
+    setLon(centerLatLng.lon);
+    alert('현재위치 저장');
+  };
+
   useEffect(() => {
     const handleMarkerClick = (e) => {
       console.log('click');
@@ -31,22 +43,29 @@ const MapContainer = () => {
     //   });
     // }
 
+    // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
+    kakao.maps.event.addListener(map, 'center_changed', function () {
+      // 지도의 중심좌표를 얻어옵니다
+      const latlng = map.getCenter();
+      setCenterLatLng({ lat: latlng.getLat(), lon: latlng.getLng() });
+    });
+
     var positions = [
       {
-        title: '카카오',
-        latlng: new kakao.maps.LatLng(33.450705, 126.570677),
+        title: '지역1',
+        latlng: new kakao.maps.LatLng(lat + 0.000004, lon + 0.00001),
       },
       {
-        title: '생태연못',
-        latlng: new kakao.maps.LatLng(33.450936, 126.569477),
+        title: '지역2',
+        latlng: new kakao.maps.LatLng(lat + 0.000235, lon + 0.00119),
       },
       {
-        title: '텃밭',
-        latlng: new kakao.maps.LatLng(33.450879, 126.56994),
+        title: '지역3',
+        latlng: new kakao.maps.LatLng(lat + 0.000178, lon - 0.000727),
       },
       {
-        title: '근린공원',
-        latlng: new kakao.maps.LatLng(33.451393, 126.570738),
+        title: '지역4',
+        latlng: new kakao.maps.LatLng(lat + 0.000692, lon + 0.000071),
       },
     ];
 
@@ -104,7 +123,12 @@ const MapContainer = () => {
     }
   }, [lat, lon]);
 
-  return <MapView id="map"></MapView>;
+  return (
+    <>
+      <button onClick={handleRestaurantFind}>중심 위치로 주변 식당 찾기</button>
+      <MapView id="map"></MapView>
+    </>
+  );
 };
 
 export default MapContainer;

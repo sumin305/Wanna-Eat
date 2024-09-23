@@ -10,7 +10,8 @@ const HeaderContainer = styled.div`
   height: 10vh;
   padding: 0.1rem 0;
 
-  background-color: ${(props) => props.isCarrot ? theme.color.primary : theme.color.white};
+  background-color: ${(props) =>
+    props.isCarrot ? theme.color.primary : theme.color.white};
 
   @media (min-width: 480px) {
     width: 480px;

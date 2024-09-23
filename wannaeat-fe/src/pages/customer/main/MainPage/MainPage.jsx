@@ -86,6 +86,10 @@ const MainPage = () => {
   const handleReservationButtonClick = (e) => {
     navigate('/customer/reservation');
   };
+
+  const handleReservationListButtonClick = (e) => {
+    navigate('/customer/reservationlist');
+  };
   return (
     <MainPageContainer>
       <SearchWrapper>
@@ -122,7 +126,7 @@ const MainPage = () => {
       <RestaurantWrapper>
         <RestaurantHeader>
           <RestaurantTitle>최근 예약한 식당</RestaurantTitle>
-          <RestaurantTitleButton>
+          <RestaurantTitleButton onClick={handleReservationListButtonClick}>
             예약내역 보기
             <img src={blackArrowRightIcon} />
           </RestaurantTitleButton>

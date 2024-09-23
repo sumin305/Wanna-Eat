@@ -4,11 +4,16 @@ import PinkMarker from '../../../assets/icons/map/pink-maker.png';
 import ArrowWhite from '../../../assets/icons/map/arrow-white.png';
 import VertexWhite from '../../../assets/icons/map/vertex-white.png';
 import useMapStore from '../../../stores/map/useMapStore';
-
+import { useNavigate } from 'react-router-dom';
 const MapContainer = () => {
   const { lat, lon, setLat, setLon } = useMapStore();
-
+  const navigate = useNavigate();
   useEffect(() => {
+    const handleMarkerClick = (e) => {
+      console.log('click');
+      navigate('/customer/reservation/time-select');
+    };
+
     const { kakao } = window;
     const container = document.getElementById('map'); // 지도를 표시할 div
     const options = {
@@ -70,15 +75,15 @@ const MapContainer = () => {
       // 마커가 지도 위에 표시되도록 설정합니다
       marker.setMap(map);
 
+      // 마커에 클릭 이벤트를 추가합니다
+      kakao.maps.event.addListener(marker, 'click', handleMarkerClick);
+
       // 커스텀 오버레이의 HTML 콘텐츠
       var content = `
        <div class="customoverlay">
-         <a href="https://map.kakao.com/link/map/${i}" target="_blank">
-           <span class="title">${positions[i].title}</span>
-         </a>
+         <span class="title">${positions[i].title}</span>
        </div>
      `;
-
       var customOverlay = new kakao.maps.CustomOverlay({
         map: map,
         position: markerPosition,

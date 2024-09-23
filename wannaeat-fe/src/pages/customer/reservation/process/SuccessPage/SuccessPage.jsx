@@ -17,6 +17,7 @@ import {
 import theme from '../../../../../style/common/theme.js';
 import paper from '../../../.././../assets/icons/common/paper.svg';
 import useReservationStore from '../../../../../stores/customer/reservation/useReservationStore.js';
+import { useNavigate } from 'react-router-dom';
 const SuccessPage = () => {
   const {
     selectedDate,
@@ -26,12 +27,14 @@ const SuccessPage = () => {
     selectedSeatNumber,
   } = useReservationStore();
   const link = 'https://wannaeat/invite/myrestaurant';
-
+  const navigate = useNavigate();
   const handleCopyButtonClick = (e) => {
     navigator.clipboard.writeText(link);
     alert('복사가 완료되었습니다.');
   };
-  const handleSuccessButtonClick = (e) => {};
+  const handleSuccessButtonClick = (e) => {
+    navigate('/customer/reservationlist');
+  };
   return (
     <SuccessPageContainer>
       <WEStep index={3} />

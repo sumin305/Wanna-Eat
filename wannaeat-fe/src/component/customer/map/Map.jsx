@@ -13,11 +13,8 @@ const MapContainer = () => {
 
   // 현재 위치 근처의 레스토랑 찾는 함수
   const handleRestaurantFind = () => {
-    console.log(lat);
-    console.log(lon);
     setLat(centerLatLng.lat);
     setLon(centerLatLng.lon);
-    alert('현재위치 저장');
   };
 
   useEffect(() => {

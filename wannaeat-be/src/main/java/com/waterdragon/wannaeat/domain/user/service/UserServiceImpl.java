@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void checkNicknameDuplicate(String nickname) {
-		if(userRepository.findByNickname(nickname).isPresent()){
+		if (userRepository.findByNickname(nickname).isPresent()) {
 			throw new DuplicateNicknameException("해당 닉네임으로 가입된 계정이 존재합니다.");
 		}
 	}

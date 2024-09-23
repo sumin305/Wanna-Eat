@@ -30,6 +30,8 @@ const DropdownSelectOptions = styled.ul`
     if (!props.isShowOption) return 'none';
     return undefined;
   }};
+  max-height: 93px;
+  overflow-y: auto;
 `;
 
 const DropdownSelectOption = styled.li`

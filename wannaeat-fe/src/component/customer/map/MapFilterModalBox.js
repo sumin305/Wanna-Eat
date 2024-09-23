@@ -23,6 +23,25 @@ const InputFieldContent = styled.div`
   position: relative;
 `;
 
+const BoxStyled = styled.div`
+  width: 100%;
+  height: ${(props) => (props.height ? props.height : theme.height.textfield)};
+  border: 1px solid ${theme.color.disabled};
+  border-radius: 0.3rem;
+  padding: 0.625rem 2rem;
+  box-sizing: border-box;
+  font-size: ${theme.fontSize.px11};
+  color: ${theme.color.info};
+  background-color: ${theme.color.white};
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  &:hover {
+    border: 1px solid ${theme.color.primary};
+  }
+`;
+
 const CalendarContainer = styled.div`
   flex: 3; // 나머지 3/4를 차지하도록 설정
   display: flex;
@@ -31,7 +50,7 @@ const CalendarContainer = styled.div`
 `;
 
 const CalendarWrapper = styled.div`
-  width: 100%;
+  width: 90%;
   background-color: white;
   margin: 10px;
   text-align: -webkit-center;
@@ -143,6 +162,7 @@ export {
   InputFieldContainer,
   InputFieldText,
   InputFieldContent,
+  BoxStyled,
   CalendarContainer,
   CalendarWrapper,
   CalendarStyled,

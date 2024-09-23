@@ -4,6 +4,7 @@ import {
   InputFieldContainer,
   InputFieldText,
   InputFieldContent,
+  BoxStyled,
   CalendarContainer,
   CalendarWrapper,
   CalendarStyled,
@@ -146,18 +147,16 @@ const MapFilterModalBox = () => {
       <InputFieldContainer isCalendarVisible={isCalendarVisible}>
         <InputFieldText> 방문 날짜</InputFieldText>
         <CalendarContainer>
-          <WETextfield
+          <BoxStyled
+            onClick={toggleCalendar}
             style={{
               backgroundImage: `url(${CalendarImg})`,
               backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'left center',
+              backgroundPosition: 'left 10px center',
             }}
-            name="date"
-            placeholder=""
-            value={selectedDate}
-            onChange={(e) => console.log(e)}
-            onClick={toggleCalendar}
-          />
+          >
+            {selectedDate || '날짜를 선택하세요'}
+          </BoxStyled>
           {isCalendarVisible && (
             <CalendarWrapper ref={calendarRef}>
               <CalendarStyled

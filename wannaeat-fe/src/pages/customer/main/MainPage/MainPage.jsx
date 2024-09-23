@@ -81,14 +81,18 @@ const MainPage = () => {
     },
   ];
 
-  const [menus, setMenus] = useState([]);
+  const [menus, setMenus] = useState({});
 
   useEffect(() => {
     setIsShowLogo(true);
     setActiveIcons([3]);
-    setMenus(getRestaurants(1).data);
-    console.log(getRestaurants(1).data);
+    fetchData(); // 비동기 함수 호출
   }, []);
+
+  const fetchData = async () => {
+    const response = await getRestaurants(1); // API 호출
+    setMenus(response.data.menusMap.주류[0]); // 데이터 상태 업데이트
+  };
 
   const handleReservationButtonClick = (e) => {
     navigate('/customer/reservation');
@@ -97,6 +101,7 @@ const MainPage = () => {
   const handleReservationListButtonClick = (e) => {
     navigate('/customer/reservationlist');
   };
+
   return (
     <MainPageContainer>
       <SearchWrapper>

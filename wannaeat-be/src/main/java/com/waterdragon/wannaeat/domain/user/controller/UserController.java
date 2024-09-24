@@ -55,6 +55,13 @@ public class UserController {
 		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 	}
 
+	/**
+	 * 로그아웃 API
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@Operation(summary = "로그아웃 API")
 	@PostMapping("/users/signout")
 	public ResponseEntity<ResponseDto<Void>> signout(HttpServletRequest request, HttpServletResponse response) {
@@ -71,6 +78,11 @@ public class UserController {
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
+	/**
+	 * 내 정보 조회 API
+	 *
+	 * @return 로그인 유저 정보
+	 */
 	@Operation(summary = "내 정보 조회 API")
 	@GetMapping("/users")
 	public ResponseEntity<ResponseDto<UserDetailResponseDto>> getDetailMyUser() {
@@ -83,6 +95,12 @@ public class UserController {
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
+	/**
+	 * 회원 정보 수정 API
+	 *
+	 * @param userEditRequestDto 수정할 회원 정보
+	 * @return
+	 */
 	@Operation(summary = "회원 정보 수정 API")
 	@PatchMapping("/users")
 	public ResponseEntity<ResponseDto<Void>> editUser(
@@ -170,6 +188,24 @@ public class UserController {
 		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
 			.status(HttpStatus.OK.value())
 			.message("FcmToken이 갱신되었습니다.")
+			.data(null)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	/**
+	 * 토큰 재발급 요청 API
+	 *
+	 * @return
+	 */
+	@Operation(summary = "토큰 재발급 요청 API")
+	@PostMapping("/users/reissue")
+	public ResponseEntity<ResponseDto<Void>> sendRefreshToken() {
+
+		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+			.status(HttpStatus.OK.value())
+			.message("Token이 발급되었습니다.")
 			.data(null)
 			.build();
 

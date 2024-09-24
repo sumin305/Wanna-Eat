@@ -23,7 +23,7 @@ import FingerprintAuthPage from '../pages/customer/reservation/process/Fingerpri
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';
 
 const AppRoutes = () => {
-  const { isManager } = useCommonStore();
+  const { role } = useCommonStore();
 
   return (
     <Layout>

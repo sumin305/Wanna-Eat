@@ -23,8 +23,8 @@ const useStore = create((set) => ({
 }));
 
 const GridCanvas = () => {
-  const gridColumns = 15; // 가로
-  const gridRows = 15; // 세로
+  const gridColumns = 10; // 가로
+  const gridRows = 10; // 세로
   const [gridSize, setGridSize] = useState(50);
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
@@ -101,15 +101,12 @@ const GridCanvas = () => {
       const offset = monitor.getClientOffset();
       const containerRect = containerRef.current.getBoundingClientRect();
 
-      // 스크롤 위치 고려
       const scrollLeft = containerRef.current.scrollLeft;
       const scrollTop = containerRef.current.scrollTop;
 
-      // 스케일 고려
       const adjustedX = (offset.x - containerRect.left + scrollLeft) / scale;
       const adjustedY = (offset.y - containerRect.top + scrollTop) / scale;
 
-      // 그리드 셀에 맞춰 좌표 스냅핑
       const x = Math.floor(adjustedX / gridSize) * gridSize;
       const y = Math.floor(adjustedY / gridSize) * gridSize;
 

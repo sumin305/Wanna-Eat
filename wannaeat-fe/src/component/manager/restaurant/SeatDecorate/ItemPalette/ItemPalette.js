@@ -1,10 +1,11 @@
+import styled from '@emotion/styled';
 import { ReactComponent as SquareTableIcon } from '../../../../../assets/icons/manager/restaurant/table-square.svg';
 import { ReactComponent as RoundTableIcon } from '../../../../../assets/icons/manager/restaurant/table-rounded.svg';
 import { ReactComponent as RestroomIcon } from '../../../../../assets/icons/manager/restaurant/restroom.svg';
 import { ReactComponent as CounterIcon } from '../../../../../assets/icons/manager/restaurant/cashier.svg';
 import { ReactComponent as EntranceIcon } from '../../../../../assets/icons/manager/restaurant/door.svg';
 
-export const paletteItems = [
+const paletteItems = [
   {
     id: 1,
     label: '사각 테이블',
@@ -32,26 +33,54 @@ export const paletteItems = [
   },
 ];
 
-export const paletteStyles = {
-  itemPalette: {
-    display: 'flex',
-    overflowX: 'scroll',
-    padding: '10px',
-    backgroundColor: 'transparent',
-    borderBottom: '1px solid #ccc',
-    scrollSnapType: 'x mandatory',
-  },
-  paletteItem: {
-    cursor: 'grab',
-    padding: '5px',
-    textAlign: 'center',
-    width: '60px',
-    height: '60px',
-    flex: '0 0 auto',
-    scrollSnapAlign: 'start',
-  },
-  paletteItemIcon: {
-    width: '40px',
-    height: '40px',
-  },
+const ItemPaletteStyled = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 9vh;
+  display: flex;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  padding: 10px;
+  background-color: transparent;
+  border-bottom: 1px solid #ccc;
+  scroll-snap-type: x mandatory;
+`;
+
+const PaletteItemStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+  padding: 5px;
+  text-align: center;
+  width: 80px;
+  height: 100%;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  opacity: ${(props) => (props.isDragging ? 0.5 : 1)};
+  touch-action: none;
+`;
+
+const PaletteItemIconStyled = styled.div`
+  width: 40px;
+  height: 40px;
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+const PaletteItemLabelStyled = styled.div`
+  font-size: 0.8rem;
+`;
+
+export {
+  paletteItems,
+  ItemPaletteStyled,
+  PaletteItemStyled,
+  PaletteItemIconStyled,
+  PaletteItemLabelStyled,
 };

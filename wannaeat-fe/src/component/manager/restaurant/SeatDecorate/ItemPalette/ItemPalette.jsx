@@ -1,15 +1,20 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
-import { paletteItems } from './ItemPalette';
-import { paletteStyles } from './ItemPalette';
+import { paletteItems } from './ItemPalette.js';
+import {
+  ItemPaletteStyled,
+  PaletteItemStyled,
+  PaletteItemIconStyled,
+  PaletteItemLabelStyled,
+} from './ItemPalette.js';
 
 const ItemPalette = () => {
   return (
-    <div style={paletteStyles.itemPalette}>
+    <ItemPaletteStyled>
       {paletteItems.map((item) => (
         <PaletteItem key={item.id} item={item} />
       ))}
-    </div>
+    </ItemPaletteStyled>
   );
 };
 
@@ -23,17 +28,16 @@ const PaletteItem = ({ item }) => {
   }));
 
   return (
-    <div
+    <PaletteItemStyled
       ref={drag}
+      isDragging={isDragging}
       onTouchStart={(e) => e.stopPropagation()}
-      style={{
-        ...paletteStyles.paletteItem,
-        opacity: isDragging ? 0.5 : 1,
-        touchAction: 'none',
-      }}
     >
-      <item.icon style={paletteStyles.paletteItemIcon} />
-    </div>
+      <PaletteItemIconStyled>
+        <item.icon />
+      </PaletteItemIconStyled>
+      <PaletteItemLabelStyled>{item.label}</PaletteItemLabelStyled>
+    </PaletteItemStyled>
   );
 };
 

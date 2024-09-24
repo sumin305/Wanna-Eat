@@ -19,7 +19,7 @@ const FindRestaurantButton = styled.span`
   border-radius: ${theme.borderRadius.default};
   padding: 0.5rem 1rem;
   position: absolute;
-  top: 17%;
+  top: 18%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;

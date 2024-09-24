@@ -3,16 +3,13 @@ import { CheckContainer, CheckImg } from './WECheck';
 import CheckPrimary from '../../../assets/icons/common/check-primary.svg';
 import CheckWhite from '../../../assets/icons/common/check-white.svg';
 
-const WECheck = ({ type }) => {
+const WECheck = ({ isChecked }) => {
   return (
-    <CheckContainer type={type}>
-      {type === 'checkClickCarrot' && (
+    <div>
+      <CheckContainer isChecked={isChecked}>
         <CheckImg src={CheckWhite} alt="하얀색 체크" />
-      )}
-      {type === 'checkClickWhite' && (
-        <CheckImg src={CheckPrimary} alt="주황색 체크" />
-      )}
-    </CheckContainer>
+      </CheckContainer>
+    </div>
   );
 };
 

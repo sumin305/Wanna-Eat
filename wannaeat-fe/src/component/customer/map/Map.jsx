@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapView } from './Map';
+import { MapView, FindRestaurantButton } from './Map';
 import PinkMarker from '../../../assets/icons/map/pink-maker.png';
 import ArrowWhite from '../../../assets/icons/map/arrow-white.png';
 import VertexWhite from '../../../assets/icons/map/vertex-white.png';
@@ -9,12 +9,14 @@ import { useNavigate } from 'react-router-dom';
 const MapContainer = () => {
   const { lat, lon, setLat, setLon } = useMapStore();
   const [centerLatLng, setCenterLatLng] = useState({ lat: lat, lon: lon });
+  const [isButtonVisible, setIsButtonVisible] = useState(false);
   const navigate = useNavigate();
 
   // 현재 위치 근처의 레스토랑 찾는 함수
   const handleRestaurantFind = () => {
     setLat(centerLatLng.lat);
     setLon(centerLatLng.lon);
+    setIsButtonVisible(false);
   };
 
   useEffect(() => {
@@ -45,6 +47,7 @@ const MapContainer = () => {
       // 지도의 중심좌표를 얻어옵니다
       const latlng = map.getCenter();
       setCenterLatLng({ lat: latlng.getLat(), lon: latlng.getLng() });
+      setIsButtonVisible(true);
     });
 
     var positions = [
@@ -122,7 +125,11 @@ const MapContainer = () => {
 
   return (
     <>
-      <button onClick={handleRestaurantFind}>중심 위치로 주변 식당 찾기</button>
+      {isButtonVisible && (
+        <FindRestaurantButton onClick={handleRestaurantFind}>
+          중심 위치로 주변 식당 찾기
+        </FindRestaurantButton>
+      )}
       <MapView id="map"></MapView>
     </>
   );

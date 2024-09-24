@@ -1,6 +1,7 @@
-package com.waterdragon.wannaeat.domain.notification.domain;
+package com.waterdragon.wannaeat.domain.alarm.domain;
 
-import com.waterdragon.wannaeat.domain.notification.domain.enums.MoveCategory;
+import com.waterdragon.wannaeat.domain.alarm.domain.enums.AlarmType;
+import com.waterdragon.wannaeat.domain.alarm.domain.enums.MoveCategory;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 
 import jakarta.persistence.Column;
@@ -25,23 +26,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table(name = "notifications")
-public class Notification {
+@Table(name = "alarms")
+public class Alarm {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "notification_id")
-	private Long notificationId;
+	@Column(name = "alarm_id")
+	private Long alarmId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "notification_category_id", nullable = false)
-	private NotificationCategory category;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "alarm_type", nullable = false)
+	private AlarmType type;
 
-	@Column(name = "notification_message", nullable = false)
+	@Column(name = "alarm_message", nullable = false)
 	private String message;
 
 	@Enumerated(EnumType.STRING)

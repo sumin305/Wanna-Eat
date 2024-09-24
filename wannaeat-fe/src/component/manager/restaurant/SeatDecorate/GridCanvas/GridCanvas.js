@@ -4,7 +4,6 @@ import { ReactComponent as CancelButton } from '../../../../../assets/icons/mana
 
 const GridItemStyled = styled.div`
   position: absolute;
-  background-color: blue;
   width: ${(props) => props.gridSize}px;
   height: ${(props) => props.gridSize}px;
   display: flex;
@@ -14,13 +13,14 @@ const GridItemStyled = styled.div`
 
 const SaveButtonStyled = styled(SaveButton)`
   position: fixed;
-  bottom: 10vh;
-  right: 1vh;
+  bottom: 11vh;
+  right: 1vw;
 
   @media (min-width: 480px) {
+    width: 480px;
     justify-self: center;
     bottom: 85px;
-    right: 480px;
+    right: 18vw;
   }
 
   cursor: pointer;
@@ -28,13 +28,14 @@ const SaveButtonStyled = styled(SaveButton)`
 
 const CancelButtonStyled = styled(CancelButton)`
   position: fixed;
-  bottom: 10vh;
+  bottom: 11vh;
   right: 15vw;
 
   @media (min-width: 480px) {
+    width: 480px;
     justify-self: center;
     bottom: 85px;
-    right: 36vw;
+    right: 21vw;
   }
 
   cursor: pointer;

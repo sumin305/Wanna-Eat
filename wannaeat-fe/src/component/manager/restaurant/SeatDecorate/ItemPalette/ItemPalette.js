@@ -49,7 +49,6 @@ export const paletteStyles = {
     height: '60px',
     flex: '0 0 auto',
     scrollSnapAlign: 'start',
-    touchAction: 'none',
   },
   paletteItemIcon: {
     width: '40px',

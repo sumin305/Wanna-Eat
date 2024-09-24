@@ -23,9 +23,11 @@ const TextfieldStyled = styled.input`
   outline: none;
 
   &:focus {
-    border: 1px solid ${theme.color.primary};
+    border: 1px solid
+      ${(props) => (props.error ? theme.color.warning : theme.color.primary)};
     box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.5);
-    color: ${theme.color.primary};
+    color: ${(props) =>
+      props.error ? theme.color.warning : theme.color.primary};
   }
 
   &:focus::placeholder {

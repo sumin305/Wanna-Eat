@@ -9,7 +9,7 @@ const {
   ErrorMessageDivStyled,
 } = components;
 
-const Textfield = ({ type = 'text', name, ...props }) => {
+const Textfield = ({ placeholder = '', type = 'text', name, ...props }) => {
   const { errors, errorMessages, clearError } = useTextfieldStore();
 
   const handleFocus = () => {
@@ -26,6 +26,7 @@ const Textfield = ({ type = 'text', name, ...props }) => {
         name={name}
         error={!!errorType}
         onFocus={handleFocus}
+        placeholder={placeholder}
         {...props}
       />
 

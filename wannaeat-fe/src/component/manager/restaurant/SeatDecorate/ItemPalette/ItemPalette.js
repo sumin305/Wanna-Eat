@@ -56,25 +56,41 @@ const PaletteItemStyled = styled.div`
   cursor: grab;
   padding: 5px;
   text-align: center;
-  width: 80px;
+  width: 50px;
   height: 100%;
   flex: 0 0 auto;
   scroll-snap-align: start;
   opacity: ${(props) => (props.isDragging ? 0.5 : 1)};
   touch-action: none;
+
+  @media (min-width: 480px) {
+    width: 80px;
+    height: 100%;
+  }
 `;
 
 const PaletteItemIconStyled = styled.div`
   width: 40px;
   height: 40px;
   svg {
-    width: 100%;
-    height: 100%;
+    width: 80%;
+    height: 80%;
+  }
+
+  @media (min-width: 480px) {
+    svg {
+      width: 100%;
+      height: 100%;
+    }
   }
 `;
 
 const PaletteItemLabelStyled = styled.div`
-  font-size: 0.8rem;
+  font-size: 0.55rem;
+  @media (min-width: 480px) {
+    font-size: 0.8rem;
+    margin-top: 5px;
+  }
 `;
 
 export {

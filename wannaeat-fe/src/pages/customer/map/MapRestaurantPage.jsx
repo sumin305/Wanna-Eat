@@ -36,7 +36,11 @@ const MapRestaurantPage = () => {
     // selectedDate가 있을 때 버튼 생성
     if (selectedDate) {
       buttons.push(
-        <FilterButton onClick={handleFilterModalButtonClick} key="date">
+        <FilterButton
+          onClick={handleFilterModalButtonClick}
+          key="date"
+          isEven={buttons.length % 2 === 0}
+        >
           {selectedDate}
         </FilterButton>
       );
@@ -44,7 +48,11 @@ const MapRestaurantPage = () => {
 
     if (selectedHeadCount) {
       buttons.push(
-        <FilterButton onClick={handleFilterModalButtonClick} key="headCount">
+        <FilterButton
+          onClick={handleFilterModalButtonClick}
+          key="headCount"
+          isEven={buttons.length % 2 === 0}
+        >
           {selectedHeadCount}명
         </FilterButton>
       );
@@ -52,7 +60,11 @@ const MapRestaurantPage = () => {
 
     if (selectedCategory) {
       buttons.push(
-        <FilterButton onClick={handleFilterModalButtonClick} key="category">
+        <FilterButton
+          onClick={handleFilterModalButtonClick}
+          key="category"
+          isEven={buttons.length % 2 === 0}
+        >
           {selectedCategory}
         </FilterButton>
       );

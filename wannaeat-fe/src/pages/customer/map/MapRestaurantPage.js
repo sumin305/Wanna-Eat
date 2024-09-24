@@ -14,7 +14,7 @@ const HeaderContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 10%;
+  height: 15%;
 `;
 
 const SearchWrapper = styled.div`
@@ -53,23 +53,30 @@ const SearchIcon = styled.img`
 const MapBox = styled.div`
   display: flex;
   flex-direction: column;
-  height: 80%;
+  height: 75%;
 `;
 
 const FilterButton = styled.span`
-  margin-top: 0.5rem;
-  background-color: ${theme.color.primary};
-  color: white;
-  border: none;
-  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${(props) =>
+    props.isEven ? theme.color.white : theme.color.primary};
+  color: ${(props) => (props.isEven ? theme.color.primary : theme.color.white)};
+  font-size: ${theme.fontSize.px9};
+  height: 1.375rem;
+  padding: 0 0.5rem;
+  margin-top: 1rem;
+  border: 1px solid ${theme.color.white};
+  border-radius: ${theme.borderRadius.default};
   cursor: pointer;
-  font-size: ${theme.fontSize.px13};
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
-  flex-direction: row; // 버튼들을 한 줄로 정렬
-  gap: 0.5rem; // 버튼 간의 간격
+  flex-direction: row;
+  width: 90vw;
+  gap: 0.5rem;
 `;
 export {
   MapRestaurantBox,

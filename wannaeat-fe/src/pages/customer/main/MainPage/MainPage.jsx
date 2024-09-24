@@ -33,9 +33,8 @@ import arrowRightIcon from '../../../../assets/icons/common/arrow-right.svg';
 import blackArrowRightIcon from '../../../../assets/icons/common/black-arrow-right.svg';
 import bossamIcon from '../../../../assets/icons/food/bossam.svg';
 import foodImage from '../../../../assets/icons/common/food.png';
-import { getRestaurants } from '../../../../api/customer/restaurant.js';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+
 const MainPage = () => {
   const { setIsShowLogo, setActiveIcons } = useHeaderStore();
   const navigate = useNavigate();
@@ -81,18 +80,10 @@ const MainPage = () => {
     },
   ];
 
-  const [menus, setMenus] = useState({});
-
   useEffect(() => {
     setIsShowLogo(true);
     setActiveIcons([3]);
-    fetchData(); // 비동기 함수 호출
   }, []);
-
-  const fetchData = async () => {
-    const response = await getRestaurants(1); // API 호출
-    setMenus(response.data.menusMap.주류[0]); // 데이터 상태 업데이트
-  };
 
   const handleReservationButtonClick = (e) => {
     navigate('/customer/reservation');

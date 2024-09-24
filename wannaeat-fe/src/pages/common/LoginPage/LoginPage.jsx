@@ -1,5 +1,44 @@
+import { useEffect } from 'react';
+import useCommonStore, { ROLE } from '../../../stores/common/useCommonStore';
+import {
+  LoginPageContainer,
+  LoginPageLogo,
+  LoginPageTitle,
+  KakaoLoginButton,
+  KakaoLoginButtonImg,
+  GoogleLoginButton,
+  GoogleLoginButtonImg,
+  GoogleLoginTitle,
+} from './LoginPage';
+import Logo from '../../../assets/icons/header/logo-picture.svg';
+import kakaoLoginButton from '../../../assets/common/kakao_login_large_wide.png';
+import googleLoginLogo from '../../../assets/common/googleLoginLogo.svg';
 const LoginPage = () => {
-  return <div>로그인 페이지</div>;
+  const { setRole } = useCommonStore();
+  const kakaoLink = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_LOGIN_URL}&response_type=code`;
+  const googleLink = `https://securetoken.googleapis.com/v1/token?key=${process.env.REACT_APP_GOOGLE_REST_API_KEY}`;
+  const handleKakaoLoginButtonClick = () => {
+    console.log(kakaoLink);
+    window.location.href = kakaoLink;
+  };
+
+  const handleGoogleLoginButtonClick = () => {
+    console.log(googleLink);
+    window.location.href = googleLink;
+  };
+  return (
+    <LoginPageContainer>
+      <LoginPageLogo src={Logo} />
+      <LoginPageTitle>머 물래?</LoginPageTitle>
+      <KakaoLoginButton onClick={handleKakaoLoginButtonClick}>
+        <KakaoLoginButtonImg src={kakaoLoginButton} />
+      </KakaoLoginButton>
+      <GoogleLoginButton onClick={handleGoogleLoginButtonClick}>
+        <GoogleLoginButtonImg src={googleLoginLogo} />
+        <GoogleLoginTitle>구글 로그인</GoogleLoginTitle>
+      </GoogleLoginButton>
+    </LoginPageContainer>
+  );
 };
 
 export default LoginPage;

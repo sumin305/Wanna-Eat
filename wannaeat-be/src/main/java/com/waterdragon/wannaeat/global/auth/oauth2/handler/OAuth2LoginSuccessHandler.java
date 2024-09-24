@@ -8,7 +8,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
 import com.waterdragon.wannaeat.domain.user.repository.UserRepository;
 import com.waterdragon.wannaeat.global.auth.jwt.service.JwtService;
 import com.waterdragon.wannaeat.global.auth.oauth2.CustomOAuth2User;

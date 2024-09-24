@@ -10,13 +10,14 @@ const MapContainer = () => {
   const { lat, lon, setLat, setLon } = useMapStore();
   const [centerLatLng, setCenterLatLng] = useState({ lat: lat, lon: lon });
   const [isButtonVisible, setIsButtonVisible] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true); // 처음 로드인지 확인하는 상태
   const navigate = useNavigate();
 
   // 현재 위치 근처의 레스토랑 찾는 함수
   const handleRestaurantFind = () => {
-    setLat(centerLatLng.lat);
+    setLat(centerLatLng.lat); // 드래그 후의 중심 좌표로 상태 업데이트
     setLon(centerLatLng.lon);
-    setIsButtonVisible(false);
+    setIsButtonVisible(false); // 버튼 숨김
   };
 
   useEffect(() => {
@@ -34,20 +35,24 @@ const MapContainer = () => {
 
     const map = new kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
 
-    // 현재 위치에 해당하는 위도, 경도값으로 변경
-    if (navigator.geolocation) {
+    // 처음에 사용자의 현재 위치로 지도를 설정
+    if (isInitialLoad && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function (position) {
-        setLat(position.coords.latitude);
-        setLon(position.coords.longitude);
+        const currentLat = position.coords.latitude;
+        const currentLon = position.coords.longitude;
+        setLat(currentLat);
+        setLon(currentLon);
+        setCenterLatLng({ lat: currentLat, lon: currentLon }); // 현재 위치로 중심 좌표 설정
+        map.setCenter(new kakao.maps.LatLng(currentLat, currentLon)); // 지도의 중심을 현재 위치로 설정
+        setIsInitialLoad(false); // 처음 로드 상태를 false로 설정
       });
     }
 
-    // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
+    // 지도 드래그나 확대/축소로 중심 좌표가 변경될 때 이벤트 등록
     kakao.maps.event.addListener(map, 'center_changed', function () {
-      // 지도의 중심좌표를 얻어옵니다
       const latlng = map.getCenter();
       setCenterLatLng({ lat: latlng.getLat(), lon: latlng.getLng() });
-      setIsButtonVisible(true);
+      setIsButtonVisible(true); // 드래그 후 버튼을 보이게 설정
     });
 
     var positions = [
@@ -69,15 +74,12 @@ const MapContainer = () => {
       },
     ];
 
-    // 마커 이미지의 이미지 주소입니다
     var imageSrc = PinkMarker;
 
     for (var i = 0; i < positions.length; i++) {
-      // 마커 이미지의 이미지 크기 입니다
       var imageSize = new kakao.maps.Size(35, 35),
         imageOption = { offset: new kakao.maps.Point(18, 50) }; // 마커이미지 옵션
 
-      // 마커 이미지를 생성합니다
       var markerImage = new kakao.maps.MarkerImage(
           imageSrc,
           imageSize,
@@ -85,19 +87,15 @@ const MapContainer = () => {
         ),
         markerPosition = positions[i].latlng; // 마커가 표시될 위치
 
-      // 마커를 생성합니다
       var marker = new kakao.maps.Marker({
         position: markerPosition,
         image: markerImage, // 마커이미지 설정
       });
 
-      // 마커가 지도 위에 표시되도록 설정합니다
       marker.setMap(map);
 
-      // 마커에 클릭 이벤트를 추가합니다
       kakao.maps.event.addListener(marker, 'click', handleMarkerClick);
 
-      // 커스텀 오버레이의 HTML 콘텐츠
       var content = `
        <div class="customoverlay">
          <span class="title">${positions[i].title}</span>
@@ -110,7 +108,6 @@ const MapContainer = () => {
         yAnchor: 1,
       });
 
-      // 커스텀 스타일 추가
       const styleTag = document.createElement('style');
       styleTag.textContent = `
        .customoverlay {position:relative;bottom:60px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;}
@@ -121,7 +118,7 @@ const MapContainer = () => {
      `;
       document.head.appendChild(styleTag);
     }
-  }, [lat, lon]);
+  }, [lat, lon]); // lat, lon이 변경될 때만 다시 실행됨
 
   return (
     <>

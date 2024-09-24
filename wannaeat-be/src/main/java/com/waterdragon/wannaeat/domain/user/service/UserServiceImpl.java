@@ -12,8 +12,10 @@ import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 
 import com.waterdragon.wannaeat.domain.user.domain.User;
+import com.waterdragon.wannaeat.domain.user.domain.UserToken;
 import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
 import com.waterdragon.wannaeat.domain.user.domain.enums.SocialType;
+import com.waterdragon.wannaeat.domain.user.dto.request.FcmTokenEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserEditRequestDto;
@@ -25,6 +27,7 @@ import com.waterdragon.wannaeat.domain.user.exception.error.DuplicateUserExcepti
 import com.waterdragon.wannaeat.domain.user.exception.error.InvalidCodeException;
 import com.waterdragon.wannaeat.domain.user.exception.error.InvalidPhoneException;
 import com.waterdragon.wannaeat.domain.user.repository.UserRepository;
+import com.waterdragon.wannaeat.domain.user.repository.UserTokenRepository;
 import com.waterdragon.wannaeat.global.auth.oauth2.service.EncryptService;
 import com.waterdragon.wannaeat.global.redis.service.RedisService;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
@@ -42,6 +45,7 @@ public class UserServiceImpl implements UserService {
 	private final EncryptService encryptService;
 	private final RedisService redisService;
 	private final AuthUtil authUtil;
+	private final UserTokenRepository userTokenRepository;
 	private DefaultMessageService messageService; // 생성자 주입
 
 	@Value("${spring.phone-authcode-expiration-millis}")
@@ -176,5 +180,16 @@ public class UserServiceImpl implements UserService {
 		}
 		redisService.deleteValues(key);
 		return true;
+	}
+
+	@Override
+	public void editFcmToken(FcmTokenEditRequestDto fcmTokenEditRequestDto) {
+		UserToken userToken = authUtil.getAuthenticatedUser().getUserToken();
+		String fcmToken = fcmTokenEditRequestDto.getFcmToken();
+		if (userToken.getFcmToken() == null || !userToken.getFcmToken().equals(fcmToken)) {
+			userToken.editFcmToken(fcmToken);
+			userTokenRepository.save(userToken);
+		}
+
 	}
 }

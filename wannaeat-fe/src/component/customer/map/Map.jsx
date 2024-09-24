@@ -27,18 +27,18 @@ const MapContainer = () => {
     const container = document.getElementById('map'); // 지도를 표시할 div
     const options = {
       center: new kakao.maps.LatLng(lat, lon), // 지도의 중심좌표
-      level: 3, // 지도의 확대 레벨
+      level: 5, // 지도의 확대 레벨
     };
 
     const map = new kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
 
-    // // 현재 위치에 해당하는 위도, 경도값으로 변경
-    // if (navigator.geolocation) {
-    //   navigator.geolocation.getCurrentPosition(function (position) {
-    //     setLat(position.coords.latitude);
-    //     setLon(position.coords.longitude);
-    //   });
-    // }
+    // 현재 위치에 해당하는 위도, 경도값으로 변경
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        setLat(position.coords.latitude);
+        setLon(position.coords.longitude);
+      });
+    }
 
     // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
     kakao.maps.event.addListener(map, 'center_changed', function () {

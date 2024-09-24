@@ -25,7 +25,7 @@ const SearchWrapper = styled.div`
   top: 10%;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 90%;
 `;
 
 const SearchInput = styled.input`

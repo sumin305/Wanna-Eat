@@ -38,7 +38,7 @@ const AppRoutes = () => {
         <Route path="/customer" element={<CustomerMainPage />} />
         <Route path="/customer/reservation" element={<MapRestaurantPage />} />
         <Route
-          path="/customer/reservation/restaurant-detail"
+          path="/customer/reservation/restaurant-detail/:id"
           element={<RestaurantDetailPage />}
         />
         <Route

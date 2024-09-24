@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waterdragon.wannaeat.domain.user.dto.request.FcmTokenEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.NicknameDuplicateCheckRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
@@ -155,6 +156,21 @@ public class UserController {
 		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
 			.status(HttpStatus.OK.value())
 			.message("인증이 완료되었습니다.")
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	@Operation(summary = "FcmToken 갱신 API")
+	@PostMapping("/users/alarms")
+	public ResponseEntity<ResponseDto<Void>> EditFcmToken(
+		@Valid @RequestBody FcmTokenEditRequestDto fcmTokenEditRequestDto) {
+
+		userService.editFcmToken(fcmTokenEditRequestDto);
+		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+			.status(HttpStatus.OK.value())
+			.message("FcmToken이 갱신되었습니다.")
+			.data(null)
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);

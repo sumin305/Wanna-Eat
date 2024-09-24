@@ -7,10 +7,11 @@ import useMapStore from '../../../stores/map/useMapStore';
 import { useNavigate } from 'react-router-dom';
 
 const MapContainer = () => {
-  const { lat, lon, setLat, setLon } = useMapStore();
+  const { lat, lon, setLat, setLon, isInitialLoad, setIsInitialLoad } =
+    useMapStore();
   const [centerLatLng, setCenterLatLng] = useState({ lat: lat, lon: lon });
   const [isButtonVisible, setIsButtonVisible] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true); // 처음 로드인지 확인하는 상태
+  // const [isInitialLoad, setIsInitialLoad] = useState(true); // 처음 로드인지 확인하는 상태
   const navigate = useNavigate();
 
   // 현재 위치 근처의 레스토랑 찾는 함수

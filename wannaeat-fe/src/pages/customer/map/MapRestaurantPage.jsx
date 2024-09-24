@@ -13,6 +13,7 @@ import {
 import MapFilterModalBox from '../../../component/customer/map/MapFilterModalBox.jsx';
 import searchIcon from '../../../assets/icons/common/search.svg';
 import useReservationStore from '../../../stores/customer/reservation/useReservationStore.js';
+import useMapStore from '../../../stores/map/useMapStore.js';
 
 const MapRestaurantPage = () => {
   const { open, setModalType, setTitle, setConfirmText, setChildren } =
@@ -21,7 +22,11 @@ const MapRestaurantPage = () => {
   const { selectedDate, selectedHeadCount, selectedCategory } =
     useReservationStore();
 
+  const { setIsInitialLoad } = useMapStore();
+
   const handleFilterModalButtonClick = () => {
+    setIsInitialLoad(false);
+
     setModalType('sheet');
     setTitle('식당 필터링');
     setConfirmText('필터링');

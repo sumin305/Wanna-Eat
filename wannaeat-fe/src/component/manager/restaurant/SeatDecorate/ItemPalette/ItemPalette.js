@@ -53,7 +53,6 @@ const PaletteItemStyled = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  cursor: grab;
   padding: 5px;
   text-align: center;
   width: 50px;
@@ -72,6 +71,7 @@ const PaletteItemStyled = styled.div`
 const PaletteItemIconStyled = styled.div`
   width: 40px;
   height: 40px;
+  cursor: grab;
   svg {
     width: 80%;
     height: 80%;
@@ -87,6 +87,8 @@ const PaletteItemIconStyled = styled.div`
 
 const PaletteItemLabelStyled = styled.div`
   font-size: 0.55rem;
+  user-select: none;
+
   @media (min-width: 480px) {
     font-size: 0.8rem;
     margin-top: 5px;

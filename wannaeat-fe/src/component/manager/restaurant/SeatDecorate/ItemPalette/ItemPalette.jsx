@@ -29,11 +29,10 @@ const PaletteItem = ({ item }) => {
 
   return (
     <PaletteItemStyled
-      ref={drag}
       isDragging={isDragging}
       onTouchStart={(e) => e.stopPropagation()}
     >
-      <PaletteItemIconStyled>
+      <PaletteItemIconStyled ref={drag}>
         <item.icon />
       </PaletteItemIconStyled>
       <PaletteItemLabelStyled>{item.label}</PaletteItemLabelStyled>

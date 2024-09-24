@@ -1,6 +1,5 @@
-import { React, useEffect } from 'react';
-import { useDrag, DragPreviewImage } from 'react-dnd';
-import { getEmptyImage } from 'react-dnd-html5-backend';
+import React from 'react';
+import { useDrag } from 'react-dnd';
 import { paletteItems } from './ItemPalette';
 import { paletteStyles } from './ItemPalette';
 
@@ -15,20 +14,13 @@ const ItemPalette = () => {
 };
 
 const PaletteItem = ({ item }) => {
-  const [{ isDragging }, drag, preview] = useDrag(
-    () => ({
-      type: 'ITEM',
-      item: { id: item.id },
-      collect: (monitor) => ({
-        isDragging: !!monitor.isDragging(),
-      }),
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: 'ITEM',
+    item: { id: item.id },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
     }),
-    []
-  );
-
-  useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: true });
-  }, [preview]);
+  }));
 
   return (
     <div

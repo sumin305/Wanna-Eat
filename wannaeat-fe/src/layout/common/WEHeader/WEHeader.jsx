@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import useHeaderStore from '../../../stores/header/useHeaderStore';
+import useHeaderStore from '../../../stores/common/header/useHeaderStore';
+
 import {
   HeaderContainer,
   HeaderWrapper,
@@ -13,30 +13,15 @@ import {
   IconImg,
 } from './WEHeader';
 
-import Logo from '../../../assets/icons/header/logo.svg';
+import Logo from '../../../assets/icons/header/logo-picture.svg';
 import BackCarrot from '../../../assets/icons/header/back-carrot.svg';
 import BackWhite from '../../../assets/icons/header/back-white.svg';
 
-const WEHeader = ({ isCarrot, text, icon, isShowLogo, isShowBackIcon }) => {
-  const {
-    pageName,
-    setIsCarrot,
-    setPageName,
-    setIsShowLogo,
-    activeIcons,
-    setActiveIcons,
-    setIsShowBackIcon,
-  } = useHeaderStore();
+const WEHeader = () => {
+  const { pageName, isCarrot, activeIcons, isShowLogo, isShowBackIcon } =
+    useHeaderStore();
 
   const nav = useNavigate();
-
-  useEffect(() => {
-    setIsCarrot(isCarrot);
-    setPageName(text);
-    setActiveIcons(icon);
-    setIsShowLogo(isShowLogo);
-    setIsShowBackIcon(isShowBackIcon);
-  }, []);
 
   const handleClickBack = () => {
     nav(-1); // 뒤로가기

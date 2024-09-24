@@ -1,5 +1,6 @@
 package com.waterdragon.wannaeat.domain.user.service;
 
+import com.waterdragon.wannaeat.domain.user.dto.request.FcmTokenEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserEditRequestDto;
@@ -20,4 +21,5 @@ public interface UserService {
 
 	boolean verifyPhoneAuthenticationCode(PhoneCodeVerifyRequestDto phoneCodeSendRequestDto);
 
+	void editFcmToken(FcmTokenEditRequestDto fcmTokenEditRequestDto);
 }

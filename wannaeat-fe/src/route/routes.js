@@ -12,6 +12,7 @@ import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
 import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage.jsx';
 import ListPage from '../pages/customer/reservation/history/ListPage';
 import MyInfoPage from '../pages/customer/user/MyInfoPage';
+import RestaurantDetailPage from '../pages/customer/reservation/process/RestaurantDetailPage/RestaurantDetailPage.jsx';
 import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage/TimeSelectPage.jsx';
 import DepositPaymentPage from '../pages/customer/reservation/process/DepositPaymentPage/DepositPaymentPage.jsx';
 import SeatSelectPage from '../pages/customer/reservation/process/SeatSelectPage/SeatSelectPage.jsx';
@@ -36,6 +37,10 @@ const AppRoutes = () => {
         <Route path="/" element={<CustomerMainPage />} />
         <Route path="/customer" element={<CustomerMainPage />} />
         <Route path="/customer/reservation" element={<MapRestaurantPage />} />
+        <Route
+          path="/customer/reservation/restaurant-detail"
+          element={<RestaurantDetailPage />}
+        />
         <Route
           path="/customer/reservation/time-select"
           element={<TimeSelectPage />}

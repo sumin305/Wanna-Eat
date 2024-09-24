@@ -11,22 +11,20 @@ const MapContainer = () => {
     useMapStore();
   const [centerLatLng, setCenterLatLng] = useState({ lat: lat, lon: lon });
   const [isButtonVisible, setIsButtonVisible] = useState(false);
-  // const [isInitialLoad, setIsInitialLoad] = useState(true); // 처음 로드인지 확인하는 상태
   const navigate = useNavigate();
 
   // 현재 위치 근처의 레스토랑 찾는 함수
   const handleRestaurantFind = () => {
-    setLat(centerLatLng.lat); // 드래그 후의 중심 좌표로 상태 업데이트
+    setLat(centerLatLng.lat);
     setLon(centerLatLng.lon);
-    setIsButtonVisible(false); // 버튼 숨김
+    setIsButtonVisible(false);
   };
 
+  const handleMarkerClick = () => {
+    console.log('click');
+    navigate('/customer/reservation/restaurant-detail');
+  };
   useEffect(() => {
-    const handleMarkerClick = (e) => {
-      console.log('click');
-      navigate('/customer/reservation/time-select');
-    };
-
     const { kakao } = window;
     const container = document.getElementById('map'); // 지도를 표시할 div
     const options = {
@@ -43,9 +41,9 @@ const MapContainer = () => {
         const currentLon = position.coords.longitude;
         setLat(currentLat);
         setLon(currentLon);
-        setCenterLatLng({ lat: currentLat, lon: currentLon }); // 현재 위치로 중심 좌표 설정
-        map.setCenter(new kakao.maps.LatLng(currentLat, currentLon)); // 지도의 중심을 현재 위치로 설정
-        setIsInitialLoad(false); // 처음 로드 상태를 false로 설정
+        setCenterLatLng({ lat: currentLat, lon: currentLon });
+        map.setCenter(new kakao.maps.LatLng(currentLat, currentLon));
+        setIsInitialLoad(false);
       });
     }
 
@@ -53,7 +51,7 @@ const MapContainer = () => {
     kakao.maps.event.addListener(map, 'center_changed', function () {
       const latlng = map.getCenter();
       setCenterLatLng({ lat: latlng.getLat(), lon: latlng.getLng() });
-      setIsButtonVisible(true); // 드래그 후 버튼을 보이게 설정
+      setIsButtonVisible(true);
     });
 
     var positions = [

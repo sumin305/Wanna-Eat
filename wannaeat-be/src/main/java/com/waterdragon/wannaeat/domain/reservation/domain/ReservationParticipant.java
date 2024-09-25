@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table(name = "reservation_enter")
+@Table(name = "reservation_participants")
 public class ReservationParticipant {
 
 	@Id
@@ -36,6 +36,9 @@ public class ReservationParticipant {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "reservation_id", nullable = false)
 	private Reservation reservation;
+
+	@Column(name = "reservation_participant_nickname", nullable = false)
+	private String reservationParticipantNickName;
 
 	@OneToMany(mappedBy = "reservationParticipant", fetch = FetchType.LAZY)
 	private List<Order> orders;

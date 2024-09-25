@@ -9,18 +9,24 @@ const GridItemStyled = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  left: ${(props) => `${props.x}px`}; // x 좌표
+  top: ${(props) => `${props.y}px`}; // y 좌표
+  opacity: ${(props) => (props.isDragging ? 0.5 : 1)}; // 드래그 중일 때 투명도
+  transform: rotate(${(props) => `${props.rotation}deg`}); // 회전 각도
 `;
 
 const SaveButtonStyled = styled(SaveButton)`
   position: fixed;
   bottom: 11vh;
-  right: 1vw;
+  /* right: 1vw; */
+  transform: translateX(47%);
 
   @media (min-width: 480px) {
     width: 480px;
     justify-self: center;
     bottom: 85px;
-    right: 18vw;
+    transform: translateX(47%);
   }
 
   cursor: pointer;
@@ -29,13 +35,13 @@ const SaveButtonStyled = styled(SaveButton)`
 const CancelButtonStyled = styled(CancelButton)`
   position: fixed;
   bottom: 11vh;
-  right: 15vw;
+  /* right: 15vw; */
 
   @media (min-width: 480px) {
     width: 480px;
     justify-self: center;
     bottom: 85px;
-    right: 21vw;
+    transform: translateX(38%);
   }
 
   cursor: pointer;
@@ -49,6 +55,8 @@ const GridWrapperStyled = styled.div`
   width: ${(props) => props.gridColumns * props.gridSize}px;
   height: ${(props) => props.gridRows * props.gridSize}px;
   cursor: grab;
+
+  cursor: ${(props) => (props.scale > 1 ? 'grab' : 'default')};
   touch-action: none;
 `;
 

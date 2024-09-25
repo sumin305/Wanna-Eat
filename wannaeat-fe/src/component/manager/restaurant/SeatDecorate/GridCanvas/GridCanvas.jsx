@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useDrop } from 'react-dnd';
+import axios from 'axios';
+import { useDrop, useDrag } from 'react-dnd';
 import { paletteItems } from '../ItemPalette/ItemPalette';
 import {
   GridWrapperStyled,
@@ -18,18 +19,24 @@ const useStore = create((set) => ({
     set((state) => ({
       items: [...state.items, item],
     })),
+  updateItemPosition: (id, newX, newY) =>
+    set((state) => ({
+      items: state.items.map((item) =>
+        item.id === id ? { ...item, x: newX, y: newY } : item
+      ),
+    })),
   setItems: (items) => set({ items }),
   clearItems: () => set({ items: [] }),
 }));
 
 const GridCanvas = () => {
-  const gridColumns = 10; // 가로
-  const gridRows = 10; // 세로x
+  const gridColumns = 15; // 가로
+  const gridRows = 15; // 세로
   const [gridSize, setGridSize] = useState(50);
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
-  const { items, addItem, setItems } = useStore();
+  const { items, addItem, setItems, updateItemPosition } = useStore();
 
   const containerRef = useRef(null);
 
@@ -54,9 +61,14 @@ const GridCanvas = () => {
   }, []);
 
   useEffect(() => {
-    fetch('/api/restaurants/{restaurantId}structure')
-      .then((response) => response.json())
-      .then((data) => setItems(data));
+    axios
+      .get('/api/restaurants/{restaurantId}structure')
+      .then((response) => {
+        setItems(response.data);
+      })
+      .catch((error) => {
+        console.error('꾸미기 정보 요청 오류:', error);
+      });
   }, [setItems]);
 
   const handleWheel = (e) => {
@@ -96,7 +108,7 @@ const GridCanvas = () => {
   };
 
   const [, dropRef] = useDrop({
-    accept: 'ITEM',
+    accept: ['PALETTE_ITEM', 'GRID_ITEM'],
     drop: (item, monitor) => {
       const offset = monitor.getClientOffset();
       const containerRect = containerRef.current.getBoundingClientRect();
@@ -110,31 +122,42 @@ const GridCanvas = () => {
       const x = Math.floor(adjustedX / gridSize) * gridSize;
       const y = Math.floor(adjustedY / gridSize) * gridSize;
 
-      const selectedItem = paletteItems.find(
-        (paletteItem) => paletteItem.id === item.id
-      );
+      if (item.type === 'PALETTE_ITEM') {
+        const selectedItem = paletteItems.find(
+          (paletteItem) => paletteItem.id === item.id
+        );
 
-      if (selectedItem) {
-        addItem({
-          id: item.id,
-          x,
-          y,
-          icon: selectedItem.icon,
-          label: selectedItem.label,
-          rotation: 0,
-        });
+        if (selectedItem) {
+          addItem({
+            id: item.id,
+            x,
+            y,
+            icon: selectedItem.icon,
+            label: selectedItem.label,
+            rotation: 0,
+          });
+        }
+      } else if (item.type === 'GRID_ITEM') {
+        updateItemPosition(item.id, x, y);
       }
+
+      setIsDragging(false);
     },
   });
 
   const handleSave = () => {
-    fetch('/api/save', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(items),
-    });
+    axios
+      .post('/api/save', items, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log('꾸미기 저장 성공:', response);
+      })
+      .catch((error) => {
+        console.error('꾸미기 저장 실패:', error);
+      });
   };
 
   return (
@@ -148,6 +171,7 @@ const GridCanvas = () => {
         onTouchStart={handleDragStart}
         onTouchMove={handleDragMove}
         onTouchEnd={handleDragEnd}
+        scale={scale}
       >
         <ZoomableGridWrapperStyled
           scale={scale}
@@ -165,23 +189,7 @@ const GridCanvas = () => {
               <GridCellStyled key={index} />
             ))}
             {items.map((item) => (
-              <GridItemStyled
-                key={item.id}
-                gridSize={gridSize}
-                style={{
-                  left: `${item.x}px`,
-                  top: `${item.y}px`,
-                  transform: `rotate(${item.rotation}deg)`,
-                }}
-              >
-                <item.icon
-                  className="grid-item-icon"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                  }}
-                />
-              </GridItemStyled>
+              <GridItem key={item.id} item={item} gridSize={gridSize} />
             ))}
           </GridBackgroundStyled>
         </ZoomableGridWrapperStyled>
@@ -189,6 +197,35 @@ const GridCanvas = () => {
         <CancelButtonStyled>취소</CancelButtonStyled>
       </GridWrapperStyled>
     </div>
+  );
+};
+
+const GridItem = ({ item, gridSize }) => {
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: 'GRID_ITEM',
+    item: { id: item.id, type: 'GRID_ITEM' },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
+
+  return (
+    <GridItemStyled
+      ref={drag}
+      gridSize={gridSize}
+      isDragging={isDragging}
+      x={item.x}
+      y={item.y}
+      rotation={item.rotation}
+    >
+      <item.icon
+        className="grid-item-icon"
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+      />
+    </GridItemStyled>
   );
 };
 

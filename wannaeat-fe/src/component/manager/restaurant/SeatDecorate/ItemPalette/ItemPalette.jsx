@@ -20,8 +20,8 @@ const ItemPalette = () => {
 
 const PaletteItem = ({ item }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: 'ITEM',
-    item: { id: item.id },
+    type: 'PALETTE_ITEM',
+    item: { id: item.id, type: 'PALETTE_ITEM' },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),

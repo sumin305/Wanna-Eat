@@ -17,23 +17,12 @@ import {
 import Logo from '../../../assets/icons/header/logo-picture.svg';
 import BackCarrot from '../../../assets/icons/header/back-carrot.svg';
 import BackWhite from '../../../assets/icons/header/back-white.svg';
-const WEHeader = ({ isCarrot, isShowBackIcon }) => {
-  const {
-    pageName,
-    setIsCarrot,
-    setPageName,
-    activeIcons,
-    isShowLogo,
-    setIsShowBackIcon,
-  } = useHeaderStore();
+// import Logos from '../../../assets/icons/header/logo.png'
+const WEHeader = () => {
+  const { pageName, isCarrot, activeIcons, isShowLogo, isShowBackIcon } =
+    useHeaderStore();
 
   const nav = useNavigate();
-
-  useEffect(() => {
-    setIsCarrot(isCarrot);
-    // setPageName(text);
-    setIsShowBackIcon(isShowBackIcon);
-  }, []);
 
   const handleClickBack = () => {
     nav(-1); // 뒤로가기
@@ -45,6 +34,7 @@ const WEHeader = ({ isCarrot, isShowBackIcon }) => {
         <HeaderLeft>
           {isShowLogo ? (
             <>
+              {/* <HeaderImg src={Logos} alt="로고" /> */}
               <HeaderImg src={Logo} alt="로고" />
               <LogoTitle isCarrot={isCarrot}>머 물래?</LogoTitle>
             </>

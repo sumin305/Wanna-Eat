@@ -9,7 +9,7 @@ const Box = styled.div`
 
 const RestaurantImageBox = styled.img`
   src: ${(props) => props.src};
-  height: 27vh;
+  height: 26vh;
 `;
 
 const InformationContainer = styled.div`
@@ -26,4 +26,40 @@ const InformationText = styled.p`
   margin: 5px 0;
 `;
 
-export { Box, RestaurantImageBox, InformationContainer, InformationText };
+const WETabContainer = styled.div`
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: ${theme.color.white};
+`;
+
+const MenuContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  margin: 5%;
+  margin-bottom: 23vh;
+`;
+
+const ButtonBox = styled.div`
+  position: fixed;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: ${theme.color.white};
+  width: 100%;
+  padding: 1rem 0;
+`;
+
+export {
+  Box,
+  RestaurantImageBox,
+  InformationContainer,
+  InformationText,
+  WETabContainer,
+  MenuContainer,
+  ButtonBox,
+};

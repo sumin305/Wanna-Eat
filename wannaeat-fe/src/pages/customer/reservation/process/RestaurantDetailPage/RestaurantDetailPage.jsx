@@ -6,9 +6,13 @@ import {
   RestaurantImageBox,
   InformationText,
   InformationContainer,
+  WETabContainer,
+  MenuContainer,
+  ButtonBox,
 } from './RestaurantDetailPage';
 import RestaurantImg from '../../../../../assets/icons/common/food.png';
 import WETab from '../../../../../component/common/tab/WETab/WETab.jsx';
+import Button from '../../../../../component/common/button/WEButton/WEButton.jsx';
 
 const RestaurantDetailPage = () => {
   const params = useParams();
@@ -59,7 +63,56 @@ const RestaurantDetailPage = () => {
             menuDescription: '뒤지게 맛있음',
           },
           {
+            menuId: 2,
+            menuName: '개매운족발',
+            menuPrice: 10000,
+            menuImage: '47716e29-52a6-43ee-a1df-7f25e7a2baa4.jfif',
+            menuDescription: '뒤지게 맛있음',
+          },
+          {
             menuId: 3,
+            menuName: '개매운족발',
+            menuPrice: 10000,
+            menuImage: '47716e29-52a6-43ee-a1df-7f25e7a2baa4.jfif',
+            menuDescription: '뒤지게 맛있음',
+          },
+          {
+            menuId: 4,
+            menuName: '개매운족발',
+            menuPrice: 10000,
+            menuImage: '47716e29-52a6-43ee-a1df-7f25e7a2baa4.jfif',
+            menuDescription: '뒤지게 맛있음',
+          },
+          {
+            menuId: 5,
+            menuName: '개매운족발',
+            menuPrice: 10000,
+            menuImage: '47716e29-52a6-43ee-a1df-7f25e7a2baa4.jfif',
+            menuDescription: '뒤지게 맛있음',
+          },
+          {
+            menuId: 6,
+            menuName: '개매운족발',
+            menuPrice: 10000,
+            menuImage: '47716e29-52a6-43ee-a1df-7f25e7a2baa4.jfif',
+            menuDescription: '뒤지게 맛있음',
+          },
+          {
+            menuId: 7,
+            menuName: '개매운족발',
+            menuPrice: 10000,
+            menuImage: '47716e29-52a6-43ee-a1df-7f25e7a2baa4.jfif',
+            menuDescription: '뒤지게 맛있음',
+          },
+          {
+            menuId: 8,
+            menuName: '개매운족발',
+            menuPrice: 10000,
+            menuImage: '47716e29-52a6-43ee-a1df-7f25e7a2baa4.jfif',
+            menuDescription: '뒤지게 맛있음',
+          },
+          {
+            menuId: 9,
             menuName: 'ABC 초코',
             menuPrice: 10,
             menuImage: 'ffd2cade-a659-445f-a0c4-67ce68e1f58e.png',
@@ -103,12 +156,14 @@ const RestaurantDetailPage = () => {
         </InformationText>
         <InformationText>{informations.restaurantPhone}</InformationText>
       </InformationContainer>
-      <WETab
-        tabs={categories}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
-      <div>
+      <WETabContainer>
+        <WETab
+          tabs={categories}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
+      </WETabContainer>
+      <MenuContainer>
         {activeMenus.map((menu) => (
           <div key={menu.menuId}>
             <img src={menu.menuImage} alt={menu.menuName} width="100" />
@@ -117,7 +172,10 @@ const RestaurantDetailPage = () => {
             <p>{menu.menuDescription}</p>
           </div>
         ))}
-      </div>
+      </MenuContainer>
+      <ButtonBox>
+        <Button>예약하기</Button>
+      </ButtonBox>
     </Box>
   );
 };

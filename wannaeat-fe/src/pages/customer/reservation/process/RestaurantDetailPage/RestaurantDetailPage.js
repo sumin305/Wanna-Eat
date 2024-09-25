@@ -18,12 +18,23 @@ const InformationContainer = styled.div`
   justify-content: center;
   background-color: ${theme.color.primary};
   height: 15vh;
+  padding: 0 3%;
+`;
+
+const InformationWrapper = styled.div`
+  display: flex;
 `;
 
 const InformationText = styled.p`
-  font-size: ${theme.fontSize.px9};
+  font-size: ${theme.fontSize.px11};
   color: ${theme.color.white};
-  margin: 5px 0;
+  margin: 2% 0;
+`;
+
+const IconImg = styled.img`
+  width: 1.3rem;
+  height: 1.3rem;
+  margin: 0 0.3rem;
 `;
 
 const WETabContainer = styled.div`
@@ -40,8 +51,53 @@ const MenuContainer = styled.div`
   overflow-y: auto;
   scrollbar-width: none;
   scroll-behavior: smooth;
-  margin: 5%;
+  margin-top: 3%;
   margin-bottom: 23vh;
+`;
+
+const MenuBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+  margin: 2% 5%;
+  border: 2px solid ${theme.color.disabled};
+  border-radius: ${theme.borderRadius.px15};
+`;
+
+const ImageBox = styled.div`
+  overflow: hidden;
+  left: 0;
+  width: 32vw;
+  height: 15vh;
+  border-radius: ${theme.borderRadius.px15};
+`;
+
+const MenuImg = styled.img`
+  src: ${(props) => props.src};
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const MenuContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 10%;
+`;
+
+const MenuName = styled.p`
+  font-size: ${theme.fontSize.px13};
+  font-weight: bold;
+`;
+
+const MenuPrice = styled.p`
+  font-size: ${theme.fontSize.px13};
+  margin: 8px 0;
+`;
+
+const MenuDescription = styled.p`
+  font-size: ${theme.fontSize.px11};
 `;
 
 const ButtonBox = styled.div`
@@ -58,8 +114,17 @@ export {
   Box,
   RestaurantImageBox,
   InformationContainer,
+  InformationWrapper,
   InformationText,
+  IconImg,
   WETabContainer,
   MenuContainer,
+  MenuBox,
+  ImageBox,
+  MenuImg,
+  MenuContentContainer,
+  MenuName,
+  MenuPrice,
+  MenuDescription,
   ButtonBox,
 };

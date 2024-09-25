@@ -200,8 +200,8 @@ public class UserController {
 	 * @return
 	 */
 	@Operation(summary = "토큰 재발급 요청 API")
-	@PostMapping("/users/reissue")
-	public ResponseEntity<ResponseDto<Void>> sendRefreshToken() {
+	@GetMapping("/users/reissue")
+	public ResponseEntity<ResponseDto<Void>> reissueToken() {
 
 		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
 			.status(HttpStatus.OK.value())

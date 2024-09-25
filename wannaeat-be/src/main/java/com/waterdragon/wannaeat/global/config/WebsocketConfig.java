@@ -16,8 +16,9 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("api/public/ws").setAllowedOriginPatterns("*")
-			.setAllowedOrigins(URL, "null") // 올바른 출처 설정
+		registry.addEndpoint("api/public/ws")
+			.setAllowedOriginPatterns("*")
+			.setAllowedOrigins("http://localhost:3000", "null") // 원래는 URL, null
 			.withSockJS();
 
 	}
@@ -27,7 +28,6 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
 		registry.enableSimpleBroker("/queue", "/topic");
 
-		registry.setApplicationDestinationPrefixes("/api/public/ws/chat-messages", "api/public/ws/carts",
-			"api/public/ws/shared-orders");
+		registry.setApplicationDestinationPrefixes("/api/public/sockets");
 	}
 }

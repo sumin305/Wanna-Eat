@@ -13,4 +13,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	int countByUserAndRestaurant(User user, Restaurant restaurant);
 
 	Optional<Reservation> findByReservationId(Long id);
+
+	Optional<Reservation> findByReservationUrl(String url);
 }

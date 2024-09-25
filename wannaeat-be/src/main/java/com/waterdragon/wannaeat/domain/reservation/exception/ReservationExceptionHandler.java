@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationParticipantNotFoundException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
 @RestControllerAdvice
@@ -17,6 +18,15 @@ public class ReservationExceptionHandler {
 		ReservationNotFoundException ex) {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Reservation Not Found", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+	}
+
+	// 예약 참가자 존재 안함
+	@ExceptionHandler(ReservationParticipantNotFoundException.class)
+	public final ResponseEntity<ErrorResponseDto> handleReservationParticipantNotFoundException(
+		ReservationParticipantNotFoundException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Reservation Participant Not Found", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 	}
 }

@@ -41,7 +41,10 @@ const useCommonStore = create((set) => ({
       );
 
       set({ role: decodedJWT.role });
-      return decodedJWT;
+      set({ email: decodedJWT.email });
+      set({ socialType: decodedJWT.socialType });
+
+      return decodedJWT.role;
     } else {
       console.log('Authorization-wannaeat header not found');
     }

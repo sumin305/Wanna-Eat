@@ -32,17 +32,12 @@ const LoginPage = () => {
 
   useEffect(() => {
     const getLoginStatus = async () => {
-      const userInfo = await getUserRole();
-      setEmail(userInfo.email);
-      setSocialType(userInfo.socialType);
-      if (userInfo.role === ROLE.GUEST) {
-        setRole(ROLE.GUEST);
+      const role = await getUserRole();
+      if (role === ROLE.GUEST) {
         navigate('/join');
-      } else if (userInfo.role === ROLE.CUSTOMER) {
-        setRole(ROLE.CUSTOMER);
+      } else if (role === ROLE.CUSTOMER) {
         navigate('/customer');
       } else {
-        setRole(ROLE.MANAGER);
         navigate('/manager');
       }
     };

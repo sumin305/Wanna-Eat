@@ -21,7 +21,7 @@ const HeaderContainer = styled.div`
 
 const HeaderWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   width: 90%;
   height: 100%;
@@ -30,11 +30,12 @@ const HeaderWrapper = styled.div`
 
 const HeaderLeft = styled.div`
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   justify-content: flex-start;
   align-items: center;
-  left: 0;
-  width: 20%;
+  /* left: 0; */
+  width: 10%;
+  /* padding-left: 10px; */
 `;
 
 const LogoTitle = styled.h1`
@@ -58,6 +59,7 @@ const HeaderCenter = styled.div`
       ? 'center'
       : 'flex-start';
   }};
+  align-items: center;
   width: ${(props) => {
     return props.children.props.isShowBackIcon ||
       props.children.props.isShowLogo
@@ -69,9 +71,11 @@ const HeaderCenter = styled.div`
 const HeaderRight = styled.div`
   display: flex;
   justify-content: flex-end;
-  position: absolute;
-  right: 0;
+  /* position: absolute; */
+  align-items: center;
+  /* right: 0; */
   width: 10%;
+  /* padding-right: 10px; */
 `;
 
 const HeaderImg = styled.img`

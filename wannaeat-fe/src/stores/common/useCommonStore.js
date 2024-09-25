@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 export const ROLE = {
-  CUSTOMER: 'customer',
-  MANAGER: 'manager',
-  GUEST: 'guest',
+  CUSTOMER: 'CUSTOMER',
+  MANAGER: 'MANAGER',
+  GUEST: 'GUEST',
 };
 const useCommonStore = create((set) => ({
   role: ROLE.GUEST, //기본값은 customer

@@ -21,19 +21,27 @@ import {
   ButtonWrapper,
 } from './SignUpPage.js';
 import WEToggle from '../../../component/common/toggle/WEToggle.jsx';
+import { checkNickname, sendCode } from '../../../api/common/join.js';
+import { ROLE } from '../../../stores/common/useCommonStore.js';
 const SignUpPage = () => {
   const { setError, clearError } = useTextfieldStore();
   const { open, setAlertText, setModalType } = useModalStore();
   const [isChecked, setIsChecked] = useState(false);
+  const [isCustomer, setIsCustomer] = useState(false);
   const [verifyNickname, setVerifyNickname] = useState(false);
   const [isVerificationCodeSent, setIsVerificationCodeSent] = useState(false);
   const [verifyPhoneNumber, setVerifyPhoneNumber] = useState(false);
   const [userInfo, setUserInfo] = useState({
     nickname: '',
     email: 'gogotnals@naver.com',
+    socialType: 'KAKAO',
+    role: '',
     phoneNumber: '',
   });
+
   const handleCheckBoxClick = () => {
+    console.log(isCustomer);
+    console.log(userInfo);
     setIsChecked(!isChecked);
   };
 
@@ -52,6 +60,18 @@ const SignUpPage = () => {
     }));
   };
 
+  // 닉네임 중복 검사 핸들러
+  const handleNicknameVerifyButtonClick = async () => {
+    const response = await checkNickname(userInfo.nickname);
+    if (response.status === 200) {
+      alert('사용 가능한 닉네임입니다.');
+      setVerifyNickname(true);
+    } else {
+      alert('사용 불가능한 닉네임입니다.');
+      setVerifyNickname(false);
+    }
+  };
+
   // 휴대번호 변경 핸들러
   const handlePhoneNumberChange = (e) => {
     const phoneNumber = e.target.value;
@@ -62,13 +82,42 @@ const SignUpPage = () => {
   };
 
   // 휴대번호 인증 버튼 핸들러
-  const handlePhoneNumberVerifyButtonClick = () => {
+  const handlePhoneNumberVerifyButtonClick = async () => {
     setIsVerificationCodeSent(true);
 
-    // 휴대번호 인증 문자 요청
-    alert('인증번호가 전송되었습니다.');
+    const response = await sendCode(userInfo.phoneNumber);
+    if (response.status === '200') {
+      // 휴대번호 인증 문자 요청
+      alert('인증번호가 전송되었습니다.');
+    } else {
+      alert('인증번호가 전송에 실패했습니다.');
+    }
   };
 
+  const handleJoinButtonClick = () => {
+    // 약관 동의했는지 체크
+    if (!isChecked) {
+      alert('약관에 동의해주세요');
+      return;
+    }
+
+    // 닉네임 검사했는지 체크
+    if (!verifyNickname) {
+      alert('닉네임 중복 검사 해주세요');
+      return;
+    }
+
+    // 휴대번호 인증했는지 체크
+    if (!verifyPhoneNumber) {
+      alert('휴대번호 인증해주세요');
+      return;
+    }
+
+    setUserInfo((prevState) => ({
+      ...prevState,
+      role: isCustomer ? ROLE.CUSTOMER : ROLE.MANAGER,
+    }));
+  };
   const alert = (text) => {
     setModalType('alert');
     setAlertText(text);
@@ -81,20 +130,24 @@ const SignUpPage = () => {
       <SignUpPageHeaderHr />
       <UserModeWrapper>
         <InputTitle>사용자 모드</InputTitle>
-        <WEToggle></WEToggle>
+        <WEToggle isOn={isCustomer} setIsOn={setIsCustomer}></WEToggle>
         <UserModeToggle></UserModeToggle>
       </UserModeWrapper>
 
       <InputContainer>
         <InputWrapper>
           <InputTitle>닉네임 </InputTitle>
-          <TextfieldWrapper>
+          <TextfieldWrapperWithButton>
             <Textfield
               name="nickname"
+              value={userInfo.nickname}
               onChange={handleNicknameChange}
               placeholder="사용할 닉네임을 입력해주세요"
             ></Textfield>
-          </TextfieldWrapper>
+            <TextFieldWrapperButton onClick={handleNicknameVerifyButtonClick}>
+              검사
+            </TextFieldWrapperButton>
+          </TextfieldWrapperWithButton>
         </InputWrapper>
         <InputWrapper>
           <InputTitle>이메일 </InputTitle>
@@ -137,7 +190,7 @@ const SignUpPage = () => {
           <WECheck isChecked={isChecked} />
           <VerificationTitle>약관에 동의합니다.</VerificationTitle>
         </VerificationNumberInputWrapper>
-        <Button>회원가입</Button>
+        <Button onClick={handleJoinButtonClick}>회원가입</Button>
       </ButtonWrapper>
     </SignUpPageContainer>
   );

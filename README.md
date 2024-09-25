@@ -1,8 +1,10 @@
-# 🐶 유기/임보 동물 입양 장려 플랫폼 🐱
+# 👨🏻‍🍳 소상공인을 위한 식당 무인 운영 앱 👨🏻‍🍳
 
 
-![견직.png](/readme/견직.png)
-- **배포 URL : https://i11b106.p.ssafy.io**
+![image](/uploads/3b0bb255f510eefe6a4f657dc992867e/image.png){: width="100" height="100"}
+
+
+- **배포 URL : https://j11b302.p.ssafy.io**
 
 <br>
 
@@ -10,13 +12,12 @@
 
 1. [프로젝트 개요](#item-one)
 2. [팀원 소개](#item-two)
-3. [서비스 아키텍쳐](#item-three)
-4. [기술 스택](#item-four)
-5. [개발 환경](#item-five)
-6. [디렉토리 구조](#item-six)
-7. [기획 배경 및 목표](#item-seven)
-8. [서비스 주요 기능](#item-eight)
-9. [설계 문서](#item-nine)
+3. [기획 배경 및 목표](#item-seven)
+4. [서비스 주요 기능](#item-eight)
+5. [서비스 아키텍쳐](#item-three)
+6. [기술 스택](#item-four)
+7. [개발 환경](#item-five)
+8. [디렉토리 구조](#item-six)
 
 <br>
 
@@ -24,9 +25,9 @@
 
 # 프로젝트 개요
 
-- **유기/임시보호 동물 입양 장려 플랫폼**
-- 개발 기간: 2024.07.08 ~ 2024.08.16
-- 삼성 청년 소프트웨어 아카데미(SSAFY) 공통 프로젝트
+- **소상공인을 위한 식당 무인 운영 앱**
+- 개발 기간: 2024.08.19 ~ 2024.10.11 (7주)
+- 삼성 청년 소프트웨어 아카데미(SSAFY) 특화 프로젝트
 
 
 <br>
@@ -36,33 +37,79 @@
 # 팀원 소개
 
 
-| 이경곤                                                                 | 곽예빈                                                                    | 이승철                                                                   | 이다영                                                                   | 김재훈                                                                   | 정규영                                                                      |                                             
+| 장정현                                                                 | 곽예빈                                                                    | 박소정                                                                   | 이경곤                                                                   | 이수민                                                                   | 이정현                                                                      |                                             
 |---------------------------------------------------------------------|------------------------------------------------------------------------|-----------------------------------------------------------------------|-----------------------------------------------------------------------|-----------------------------------------------------------------------|--------------------------------------------------------------------------| 
-| <img src="/readme/이경곤.jpg" alt='@leeggon' width="120" height="120"> | <img src="/readme/곽예빈.PNG" alt="@Yebin-Gwak" width="120" height="120"> | <img src="/readme/이승철.PNG" alt="@Aeraekun" width="120" height="120" > | <img src="/readme/이다영.PNG" alt="@2dayoung" width="120" height="120" > | <img src="/readme/김재훈.PNG" alt="@GarrryKim" width="120" height="120"> | <img src="/readme/정규영.PNG" alt="@JungGyuYeong" width="120" height="120"> |
-| [@leeggon](https://github.com/leeggon)                              | [@Yebin-Gwak](https://github.com/Yebin-Gwak)                           | [@Aeraekun](https://github.com/Aeraekun)                              | [@2dayoung](https://github.com/2dayoung)                              | [@GarrryKim](https://github.com/GarrryKim)                            | [@JungGyuYeong](https://github.com/JungGyuYeong)                         
 
-**🐼 이경곤 : 팀장, Back-end**
+**🐼 장정현 : 팀장, Infra**
 
-**🦁 곽예빈 : Back-end**
+**🦁 곽예빈 : Back-end Leader**
 
-**🐯 이승철 : Infra**
+**🐯 이경곤 : Back-end**
 
-**🐰 이다영 : Front-end**
+**🐰 이수민: Front-end Leader**
 
-**🐱 김재훈 : Front-end**
+**🐱 박소정 : Front-end**
 
-**🐮 정규영 : Front-end**
+**🐮 이정현 : Front-end**
 
 <br>
 
 <a id="item-three"></a>
 
+# 기획 배경 및 목표
+
+### 기획 배경
+[손님]    
+- 단체 메뉴 주문 시, 상호 간 주문 현황 파악 어려움
+- 특별한 날 예약 방문을 했는데 불편한 자리에 앉음
+- 대화없이 밥만 먹고 오고 싶은 내향인 비율 증가
+
+[사업자]
+- 키오스크 구입 및 대여 비용이 부담스러움
+- 높은 인건비 문제
+- 피크타임에 예약, 주문, 결제를 수동으로 처리하기 바쁨.
+
+**일행들과 함께 예약부터 주문, 결제까지 할 수 있는 서비스가 필요!**
+
+### 기대효과
+**1. 사용자 편의성 개선**         
+한 곳에서 실시간 주문 현황 공유와 채팅 서비스를 제공하여 사용자 편의성을 개선하고, 예약자의 부담을 줄여줍니다.
+
+**2. 고객 경험 향상**      
+맞춤형 예약을 통해 원하는 시간, 자리에서 바로 식사가 가능합니다.   
+효율적인 프로세스로 사업자의 수고는 줄이고, 고객 경험은 향상됩니다. 
+
+**3. 시간 절약**    
+핸드폰으로 간편한 결제와  퇴실, 정산이 가능합니다.   
+사업자와 고객 모두의 시간을 절약해 줍니다.   
+
+**4. 효율적인 매장 운영**    
+매장 현황 파악과 예약 관리를 한 곳에서 제공하여 효율적인 매장 운영이 가능합니다.    
+
+**5. 비용 절감**    
+주문 프로세스 간소화를 통해 인건비와 키오스크 대여 비용을 절약합니다.   
+
+**6. 운영 최적화**    
+매장 맞춤형 통계를 제공하여 좌석 및 메뉴 최적화를 통한 운영 개선이 가능합니다.   
+<br>
+
+<a id="item-seven"></a>
+
+# 서비스 주요 기능
+
+[손님]    
+- 링크를 통한 예약 내역 공유    
+- 구성원간 실시간 메뉴 선정 및 소통    
+- 무인 예약 및 간편 결제 시스템   
+- 실제 현장 기반 매장 구조 파악    
+
+[사장님]   
+- 효율적인 예약 관리
+- 매장 알림을 통한 매장 현황 파악
+- 매장 통계 분석을 통한 향후 사업 전략 수립    
+
 # 서비스 아키텍쳐
-
-![아키텍처1.PNG](/readme/아키텍처1.PNG)
-
-![아키텍처2.PNG](/readme/아키텍처2.PNG)
-
+![image](/uploads/6d20cdbcb70a5fa33dd1efe9c3f7a843/image.png)
 <br>
 
 <a id="item-four"></a>
@@ -73,9 +120,6 @@
 ### 💡 Front-end
 ![react](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 
-![tailwind](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![redux](https://img.shields.io/badge/Redux-593D88?style=for-the-badge&logo=redux&logoColor=white)
-
 ### 🔎 Back-end
 
 <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
@@ -84,6 +128,7 @@
 <img src="https://img.shields.io/badge/OAuth2-113155?style=for-the-badge">
 <img src="https://img.shields.io/badge/QueryDSL-50ABF1?style=for-the-badge"> 
  <img src="https://img.shields.io/badge/Spring Data JPA-F8DC75?style=for-the-badge">
+ ![Apache Kafka](https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=Apache-Kafka&logoColor=white)
 ### 💾 DB
 
 ![mysql](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white) ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-badge&logo=redis&logoColor=white) ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
@@ -99,27 +144,45 @@
 
 <a id="item-five"></a>
 
+# 서비스 화면
+
+### 메인       
+![image](/uploads/abe6432440a0dddc238437c2ac22fc71/image.png){: width="100"}
+
+### 회원가입
+![image](/uploads/e5e696286fc0a28a144f3539ae57c6fe/image.png){: width="100"}
+
+### 소비자 메인
+![image](/uploads/6d537789a9b1a4c5e45ed78553581394/image.png){: width="100"}
+
+### 소비자 예약 - 지도
+![image](/uploads/23a4e01daa745417be8c5cc1952eda5d/image.png){: width="100"}
+
+### 소비자 예약 - 시간 선택
+![image](/uploads/51d4864f42a2c12937986dc8ecd7e4db/image.png){: width="100"}
+![image](/uploads/f0a043cc228d0f6e0dd06ed50d566626/image.png){: width="100"}
+
+### 소비자 예약 - 예약금 결제
+![image](/uploads/e795c27fa933e99b265c4515e32d42b5/image.png){: width="100"}
+![image](/uploads/9ff8bfa5287043544ab67fa843754fdd/image.png){: width="100"}
+
 # 개발 환경
 
 ### ⚙ Management Tool
 
-- 형상 관리 : [**GitLab**](https://lab.ssafy.com/s11-webmobile1-sub2/S11P12B106)
-- 이슈 관리 : [**Jira**](https://ssafy.atlassian.net/jira/software/c/projects/S11P12B106/boards/6989/timeline)
-- 커뮤니케이션 : Mattermost, [**Notion**](https://violet-chocolate-38b.notion.site/1-B106-05f8ebd301d743f09954b296abbe67b2?pvs=4)
-- 디자인 : [**Figma**](https://www.figma.com/design/owgNGh5aqpVMCSRlrj55u1/B106-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?node-id=0-1&t=qWFFCXsR9TmzkYUY-0), [**Google Slides**](https://docs.google.com/presentation/d/1H4gH4S2IEhLtv3xQTALmcKLCarNHXOriR3UzswWHek0/edit#slide=id.p)
+- 형상 관리 : [**GitLab**](https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21B302)
+- 이슈 관리 : [**Jira**](https://ssafy.atlassian.net/jira/software/c/projects/S11P21B302/boards/7268)
+- 디자인 : [**Figma**](https://www.figma.com/design/BrBuWz0hqMhEoj3P7te18M/%ED%85%8C%EC%9D%B4%EB%B8%94-%ED%8E%98%EC%9D%B4?node-id=229-3571&t=0BVg39wPm3Y9LXpj-1)
 
 ### 💻 IDE
 
 - Visual Studio Code
-- IntelliJ IDEA community
+- IntelliJ IDEA
 
 ### 💡 Front-end
 
 - React `18.3.1`
-- Node.js `20.15.0`
 - Axios `1.7.2`
-- Redux `9.1.2`
-- Tailwindcss `3.4.6`
 
 ### 🔎 Back-end
 
@@ -150,270 +213,7 @@
 <div markdown="1">
 
 ```
-📦src
- ┣ 📂api
- ┃ ┣ 📜animals-api.js
- ┃ ┣ 📜axios-instance.js
- ┃ ┣ 📜boards-api.js
- ┃ ┣ 📜chat-api.js
- ┃ ┣ 📜contracts-api.js
- ┃ ┣ 📜mypage-api.js
- ┃ ┣ 📜petpicks-api.js
- ┃ ┗ 📜users-api.js
- ┣ 📂assets
- ┃ ┣ 📂fonts
- ┃ ┃ ┣ 📜Pretendard-Bold.otf
- ┃ ┃ ┣ 📜Pretendard-Light.otf
- ┃ ┃ ┣ 📜Pretendard-Medium.otf
- ┃ ┃ ┗ 📜Pretendard-Regular.otf
- ┃ ┣ 📂icons
- ┃ ┃ ┣ 📜icon-call-facetime.svg
- ┃ ┃ ┣ 📜icon-chat-add.svg
- ┃ ┃ ┣ 📜icon-chat.svg
- ┃ ┃ ┣ 📜icon-close.svg
- ┃ ┃ ┣ 📜icon-cursor.png
- ┃ ┃ ┣ 📜icon-default-user-150.svg
- ┃ ┃ ┣ 📜icon-follow.svg
- ┃ ┃ ┣ 📜icon-goBack.svg
- ┃ ┃ ┣ 📜icon-loading.svg
- ┃ ┃ ┣ 📜icon-login-google.png
- ┃ ┃ ┣ 📜icon-login-google.svg
- ┃ ┃ ┣ 📜icon-login-kakao.png
- ┃ ┃ ┣ 📜icon-login-naver.png
- ┃ ┃ ┣ 📜icon-login-naver2.png
- ┃ ┃ ┣ 📜icon-login.svg
- ┃ ┃ ┣ 📜icon-minimize.svg
- ┃ ┃ ┣ 📜icon-my-articles.svg
- ┃ ┃ ┣ 📜icon-my-contracts.svg
- ┃ ┃ ┣ 📜icon-my-favorites.svg
- ┃ ┃ ┣ 📜icon-my-likes.svg
- ┃ ┃ ┣ 📜icon-my-pets.svg
- ┃ ┃ ┣ 📜icon-my-shorts.svg
- ┃ ┃ ┣ 📜icon-pawprint.png
- ┃ ┃ ┣ 📜icon-play.png
- ┃ ┃ ┣ 📜icon-scrolldown.gif
- ┃ ┃ ┣ 📜icon-search.png
- ┃ ┃ ┣ 📜icon-search.svg
- ┃ ┃ ┣ 📜icon-send-message.svg
- ┃ ┃ ┣ 📜icon-siren-white.svg
- ┃ ┃ ┣ 📜icon-siren.svg
- ┃ ┃ ┣ 📜icon-stop.png
- ┃ ┃ ┣ 📜icon-trashbin.png
- ┃ ┃ ┗ 📜Siren.svg
- ┃ ┣ 📂image
- ┃ ┃ ┣ 📜ai.jpg
- ┃ ┃ ┣ 📜Comment.png
- ┃ ┃ ┣ 📜contract-background.webp
- ┃ ┃ ┣ 📜contract-bg.webp
- ┃ ┃ ┣ 📜default_user_150.png
- ┃ ┃ ┣ 📜dog.png
- ┃ ┃ ┣ 📜Female.png
- ┃ ┃ ┣ 📜follow-white.png
- ┃ ┃ ┣ 📜Follow.png
- ┃ ┃ ┣ 📜Like.png
- ┃ ┃ ┣ 📜logo.png
- ┃ ┃ ┣ 📜Mainslide.png
- ┃ ┃ ┣ 📜Mainslide1.png
- ┃ ┃ ┣ 📜Mainslide2.jpg
- ┃ ┃ ┣ 📜Male.png
- ┃ ┃ ┣ 📜marker.png
- ┃ ┃ ┣ 📜pet.png
- ┃ ┃ ┣ 📜profile.JPG
- ┃ ┃ ┣ 📜Select.png
- ┃ ┃ ┣ 📜Share.png
- ┃ ┃ ┣ 📜Siren-white.png
- ┃ ┃ ┣ 📜Siren.png
- ┃ ┃ ┣ 📜Tag.png
- ┃ ┃ ┣ 📜UnLike.png
- ┃ ┃ ┣ 📜산책러버.png
- ┃ ┃ ┣ 📜애정 듬뿍러.png
- ┃ ┃ ┣ 📜쿨한 독립러.png
- ┃ ┃ ┣ 📜편안한 소울메이트.png
- ┃ ┃ ┗ 📜함께하는 베프.png
- ┃ ┣ 📂petpick
- ┃ ┃ ┣ 📜main1.mp4
- ┃ ┃ ┣ 📜main2.mp4
- ┃ ┃ ┗ 📜main3.mp4
- ┃ ┗ 📂ucc
- ┃ ┃ ┗ 📜ucc.mp4
- ┣ 📂components
- ┃ ┣ 📂board
- ┃ ┃ ┣ 📂animals
- ┃ ┃ ┃ ┣ 📜AnimalAPIBoardLIst.jsx
- ┃ ┃ ┃ ┣ 📜AnimalBoardList.jsx
- ┃ ┃ ┃ ┣ 📜animaldata.jsx
- ┃ ┃ ┃ ┣ 📜AnimalDetail.jsx
- ┃ ┃ ┃ ┣ 📜AnimalDetailModify.jsx
- ┃ ┃ ┃ ┣ 📜AnimalDetailProfile.jsx
- ┃ ┃ ┃ ┣ 📜AnimalItem.jsx
- ┃ ┃ ┃ ┣ 📜AnimalRegist.jsx
- ┃ ┃ ┃ ┗ 📜AnimalSearchForm.jsx
- ┃ ┃ ┗ 📂articles
- ┃ ┃ ┃ ┣ 📜ArticleBoardList.jsx
- ┃ ┃ ┃ ┣ 📜ArticleBoardWrite.jsx
- ┃ ┃ ┃ ┣ 📜ArticleComments.jsx
- ┃ ┃ ┃ ┣ 📜articledata.jsx
- ┃ ┃ ┃ ┣ 📜ArticleDetail.jsx
- ┃ ┃ ┃ ┣ 📜ArticleDetailModify.jsx
- ┃ ┃ ┃ ┣ 📜ArticleItem.jsx
- ┃ ┃ ┃ ┗ 📜Search.jsx
- ┃ ┣ 📂chat
- ┃ ┃ ┣ 📜CallPage copy.jsx
- ┃ ┃ ┣ 📜CallPage.jsx
- ┃ ┃ ┣ 📜ChatListContainer.jsx
- ┃ ┃ ┣ 📜ChatListItem.jsx
- ┃ ┃ ┣ 📜ChatMainContainer.jsx
- ┃ ┃ ┣ 📜MessageItem.jsx
- ┃ ┃ ┣ 📜OvVideo.js
- ┃ ┃ ┣ 📜UserVideo.css
- ┃ ┃ ┗ 📜UserVideoComponent.js
- ┃ ┣ 📂common
- ┃ ┃ ┣ 📜AnimalProfile.jsx
- ┃ ┃ ┣ 📜AnimalTag.jsx
- ┃ ┃ ┣ 📜ArticleTag.jsx
- ┃ ┃ ┣ 📜Button.jsx
- ┃ ┃ ┣ 📜Comment.jsx
- ┃ ┃ ┣ 📜CommentIcon.jsx
- ┃ ┃ ┣ 📜DeleteConfirmationModal.jsx
- ┃ ┃ ┣ 📜Editor.jsx
- ┃ ┃ ┣ 📜FollowButton.jsx
- ┃ ┃ ┣ 📜FollowIcon.jsx
- ┃ ┃ ┣ 📜Input.jsx
- ┃ ┃ ┣ 📜LikeIcon.jsx
- ┃ ┃ ┣ 📜LoginModalComponent.jsx
- ┃ ┃ ┣ 📜OpenPopover.jsx
- ┃ ┃ ┣ 📜OptionIcon.jsx
- ┃ ┃ ┣ 📜Pagination.jsx
- ┃ ┃ ┣ 📜Popover.jsx
- ┃ ┃ ┣ 📜Profile.jsx
- ┃ ┃ ┣ 📜ProfileForAnimal.jsx
- ┃ ┃ ┣ 📜SearchDropDown.jsx
- ┃ ┃ ┣ 📜SearchDropDownChat.jsx
- ┃ ┃ ┣ 📜ShareIcon.jsx
- ┃ ┃ ┣ 📜SirenButton.jsx
- ┃ ┃ ┣ 📜SirenIcon.jsx
- ┃ ┃ ┣ 📜SirenModal.jsx
- ┃ ┃ ┣ 📜SirenWhiteIcon.jsx
- ┃ ┃ ┣ 📜StateBadge.jsx
- ┃ ┃ ┣ 📜StateColorList.jsx
- ┃ ┃ ┣ 📜TagIcon.jsx
- ┃ ┃ ┣ 📜Timer.jsx
- ┃ ┃ ┗ 📜TopButton.jsx
- ┃ ┣ 📂contracts
- ┃ ┃ ┣ 📜ContractAnimal.jsx
- ┃ ┃ ┣ 📜ContractDetail.jsx
- ┃ ┃ ┣ 📜ContractPerson.jsx
- ┃ ┃ ┣ 📜ContractsContainer.jsx
- ┃ ┃ ┣ 📜ContractsCreateContainer.jsx
- ┃ ┃ ┗ 📜ContractStamp.jsx
- ┃ ┣ 📂header
- ┃ ┃ ┣ 📜NavAction.jsx
- ┃ ┃ ┣ 📜Navbar.jsx
- ┃ ┃ ┣ 📜NavChat.jsx
- ┃ ┃ ┣ 📜NavInput.jsx
- ┃ ┃ ┣ 📜NavItemList.jsx
- ┃ ┃ ┗ 📜NavLogo.jsx
- ┃ ┣ 📂main
- ┃ ┃ ┣ 📜MainAiComponent.jsx
- ┃ ┃ ┣ 📜MainAnimalComponent.jsx
- ┃ ┃ ┣ 📜MainArticleBanner.jsx
- ┃ ┃ ┣ 📜MainArticleComponent.jsx
- ┃ ┃ ┣ 📜MainBoardComponent.jsx
- ┃ ┃ ┣ 📜MainComponent.jsx
- ┃ ┃ ┣ 📜MainLostAndFoundComponent.jsx
- ┃ ┃ ┣ 📜MainPetpickBanner.jsx
- ┃ ┃ ┣ 📜MainPetpickComponent.jsx
- ┃ ┃ ┗ 📜MainShelterCard.jsx
- ┃ ┣ 📂map
- ┃ ┃ ┣ 📜LostAnimalMap.jsx
- ┃ ┃ ┗ 📜LostAnimalReport.jsx
- ┃ ┣ 📂my-page
- ┃ ┃ ┣ 📜AdminReport.jsx
- ┃ ┃ ┣ 📜AdminUser.jsx
- ┃ ┃ ┣ 📜MyPageAnimalsContainer.jsx
- ┃ ┃ ┣ 📜MyPageArticlesContainer.jsx
- ┃ ┃ ┣ 📜MyPageCard.jsx
- ┃ ┃ ┣ 📜MyPageContractsContainer.jsx
- ┃ ┃ ┣ 📜MyPageDisableContainer.jsx
- ┃ ┃ ┣ 📜MyPageFavoritesContainer.jsx
- ┃ ┃ ┣ 📜MyPageLikesContainer.jsx
- ┃ ┃ ┣ 📜MyPageNav.jsx
- ┃ ┃ ┣ 📜MyPageNavContainer.jsx
- ┃ ┃ ┣ 📜MyPagePetPicsContainer.jsx
- ┃ ┃ ┣ 📜MyPageReportsContainer.jsx
- ┃ ┃ ┗ 📜MyPageUsersContainer.jsx
- ┃ ┣ 📂payment
- ┃ ┃ ┣ 📜PaymentCancel.jsx
- ┃ ┃ ┣ 📜PaymentComplete.jsx
- ┃ ┃ ┗ 📜PaymentFail.jsx
- ┃ ┣ 📂petpick
- ┃ ┃ ┣ 📜AnimalAd.jsx
- ┃ ┃ ┣ 📜dummydata.jsx
- ┃ ┃ ┣ 📜PetpickComments.jsx
- ┃ ┃ ┣ 📜PetpickDetail.jsx
- ┃ ┃ ┣ 📜PetpickIconContainer.jsx
- ┃ ┃ ┣ 📜PetpickModify.jsx
- ┃ ┃ ┣ 📜PetpickVideo.jsx
- ┃ ┃ ┣ 📜PetpickWrite.jsx
- ┃ ┃ ┣ 📜TaggedAnimalItem.jsx
- ┃ ┃ ┗ 📜TaggedArticleItem.jsx
- ┃ ┣ 📂promotions
- ┃ ┃ ┗ 📜PromotionList.jsx
- ┃ ┣ 📂recommendation
- ┃ ┃ ┣ 📜ProposedBoardList.jsx
- ┃ ┃ ┣ 📜Recommendation.jsx
- ┃ ┃ ┗ 📜Recommendation2.jsx
- ┃ ┗ 📂users
- ┃ ┃ ┣ 📜Login.jsx
- ┃ ┃ ┣ 📜SignUp.jsx
- ┃ ┃ ┣ 📜SocailSuccessContainer.jsx
- ┃ ┃ ┣ 📜SocialUpdateContainer.jsx
- ┃ ┃ ┗ 📜UpdateProfileContainer.jsx
- ┣ 📂features
- ┃ ┣ 📂chat
- ┃ ┃ ┗ 📜chat-slice.js
- ┃ ┣ 📂petpick
- ┃ ┃ ┗ 📜petpick-slice.js
- ┃ ┗ 📂user
- ┃ ┃ ┗ 📜users-slice.js
- ┣ 📂layout
- ┃ ┣ 📜Layout.jsx
- ┃ ┣ 📜ShortsLayout.jsx
- ┃ ┗ 📜UsersLayout.jsx
- ┣ 📂pages
- ┃ ┣ 📜AnimalPage.jsx
- ┃ ┣ 📜BoardPage.jsx
- ┃ ┣ 📜ChatListPageTest.jsx
- ┃ ┣ 📜ChatModal.jsx
- ┃ ┣ 📜ContractsPage.jsx
- ┃ ┣ 📜LoginPage.jsx
- ┃ ┣ 📜LostAndFoundPage.jsx
- ┃ ┣ 📜MainPage.jsx
- ┃ ┣ 📜MyPage.jsx
- ┃ ┣ 📜PaymentPage.jsx
- ┃ ┣ 📜PetpickPage.jsx
- ┃ ┣ 📜PromotionPage.jsx
- ┃ ┣ 📜RecommendationPage.jsx
- ┃ ┣ 📜SignUpPage.jsx
- ┃ ┣ 📜SocialPage.jsx
- ┃ ┗ 📜UpdateProfilePage.jsx
- ┣ 📂routes
- ┃ ┗ 📜PrivateRoute.jsx
- ┣ 📂utils
- ┃ ┣ 📜chat-utils.js
- ┃ ┣ 📜common-utils.jsx
- ┃ ┣ 📜contract-utils.js
- ┃ ┣ 📜petpick-utils.js
- ┃ ┣ 📜user-utils.js
- ┃ ┗ 📜user-validations.js
- ┣ 📜App.jsx
- ┣ 📜index.css
- ┣ 📜index.js
- ┣ 📜registerServiceWorker.js
- ┣ 📜reportWebVitals.js
- ┣ 📜setupProxy.js
- ┣ 📜setupTests.js
- ┗ 📜store.js
+추후 공개
 ```
 
 </div>
@@ -423,313 +223,10 @@
 <summary>Back-end</summary>
 <div markdown="1">
 
- ``` 
- 📦petbridge
- ┣ 📂domain
- ┃ ┣ 📂animal
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜AnimalController.java
- ┃ ┃ ┣ 📂domain
- ┃ ┃ ┃ ┗ 📜Animal.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📂request
- ┃ ┃ ┃ ┃ ┣ 📜AnimalEditRequestDto.java
- ┃ ┃ ┃ ┃ ┗ 📜AnimalRegistRequestDto.java
- ┃ ┃ ┃ ┗ 📂response
- ┃ ┃ ┃ ┃ ┗ 📜AnimalResponseDto.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┣ 📜AnimalRepository.java
- ┃ ┃ ┃ ┣ 📜CustomAnimalRepository.java
- ┃ ┃ ┃ ┗ 📜CustomAnimalRepositoryImpl.java
- ┃ ┃ ┗ 📂service
- ┃ ┃ ┃ ┣ 📜AnimalService.java
- ┃ ┃ ┃ ┗ 📜AnimalServiceImpl.java
- ┃ ┣ 📂authentication
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┣ 📂domain
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┗ 📂service
- ┃ ┣ 📂board
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜BoardController.java
- ┃ ┃ ┣ 📂domain
- ┃ ┃ ┃ ┣ 📂enums
- ┃ ┃ ┃ ┃ ┗ 📜BoardType.java
- ┃ ┃ ┃ ┗ 📜Board.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📂request
- ┃ ┃ ┃ ┃ ┣ 📜BoardEditRequestDto.java
- ┃ ┃ ┃ ┃ ┗ 📜BoardRegistRequestDto.java
- ┃ ┃ ┃ ┗ 📂response
- ┃ ┃ ┃ ┃ ┗ 📜BoardResponseDto.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┣ 📜BoardRepository.java
- ┃ ┃ ┃ ┣ 📜CustomBoardRepository.java
- ┃ ┃ ┃ ┗ 📜CustomBoardRepositoryImpl.java
- ┃ ┃ ┗ 📂service
- ┃ ┃ ┃ ┣ 📜BoardService.java
- ┃ ┃ ┃ ┗ 📜BoardServiceImpl.java
- ┃ ┣ 📂boardcomment
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜BoardCommentController.java
- ┃ ┃ ┣ 📂domain
- ┃ ┃ ┃ ┗ 📜BoardComment.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📂request
- ┃ ┃ ┃ ┃ ┣ 📜BoardCommentEditRequestDto.java
- ┃ ┃ ┃ ┃ ┗ 📜BoardCommentRegistRequestDto.java
- ┃ ┃ ┃ ┗ 📂response
- ┃ ┃ ┃ ┃ ┗ 📜BoardCommentResponseDto.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜BoardCommentRepository.java
- ┃ ┃ ┗ 📂service
- ┃ ┃ ┃ ┣ 📜BoardCommentService.java
- ┃ ┃ ┃ ┗ 📜BoardCommentServiceImpl.java
- ┃ ┣ 📂chatmessage
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜ChatMessageController.java
- ┃ ┃ ┣ 📂domain
- ┃ ┃ ┃ ┗ 📜ChatMessage.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📂request
- ┃ ┃ ┃ ┃ ┗ 📜ChatMessageRequestDto.java
- ┃ ┃ ┃ ┗ 📂response
- ┃ ┃ ┃ ┃ ┗ 📜ChatMessageResponseDto.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜ChatMessageRepository.java
- ┃ ┃ ┗ 📂service
- ┃ ┃ ┃ ┣ 📜ChatMessageService.java
- ┃ ┃ ┃ ┗ 📜ChatMessageServiceImpl.java
- ┃ ┣ 📂chatroom
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜ChatRoomController.java
- ┃ ┃ ┣ 📂domain
- ┃ ┃ ┃ ┗ 📜ChatRoom.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📂request
- ┃ ┃ ┃ ┃ ┗ 📜ChatRoomRequestDto.java
- ┃ ┃ ┃ ┗ 📂response
- ┃ ┃ ┃ ┃ ┗ 📜ChatRoomResponseDto.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜ChatRoomRepository.java
- ┃ ┃ ┗ 📂service
- ┃ ┃ ┃ ┣ 📜ChatRoomService.java
- ┃ ┃ ┃ ┗ 📜ChatRoomServiceImpl.java
- ┃ ┣ 📂contract
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜ContractController.java
- ┃ ┃ ┣ 📂domain
- ┃ ┃ ┃ ┣ 📂enums
- ┃ ┃ ┃ ┃ ┗ 📜Status.java
- ┃ ┃ ┃ ┗ 📜Contract.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📂request
- ┃ ┃ ┃ ┃ ┣ 📜ContractEditRequestDto.java
- ┃ ┃ ┃ ┃ ┗ 📜ContractRequestDto.java
- ┃ ┃ ┃ ┗ 📂response
- ┃ ┃ ┃ ┃ ┣ 📜ContractListResponseDto.java
- ┃ ┃ ┃ ┃ ┗ 📜ContractResponseDto.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜ContractRepository.java
- ┃ ┃ ┗ 📂service
- ┃ ┃ ┃ ┣ 📜ContractService.java
- ┃ ┃ ┃ ┗ 📜ContractServiceImpl.java
- ┃ ┣ 📂contractcheck
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜ContractCheckController.java
- ┃ ┃ ┣ 📂domain
- ┃ ┃ ┃ ┗ 📜ContractCheck.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📂request
- ┃ ┃ ┃ ┃ ┗ 📜ContractCheckRequestDto.java
- ┃ ┃ ┃ ┗ 📂response
- ┃ ┃ ┃ ┃ ┗ 📜ContractCheckResponseDto.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜ContractCheckRepository.java
- ┃ ┃ ┗ 📂service
- ┃ ┃ ┃ ┣ 📜ContractCheckService.java
- ┃ ┃ ┃ ┗ 📜ContractCheckServiceImpl.java
- ┃ ┣ 📂follow
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜FollowController.java
- ┃ ┃ ┣ 📂domain
- ┃ ┃ ┃ ┗ 📜Follow.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📂request
- ┃ ┃ ┃ ┃ ┗ 📜FollowRequestDto.java
- ┃ ┃ ┃ ┗ 📂response
- ┃ ┃ ┃ ┃ ┗ 📜FollowResponseDto.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜FollowRepository.java
- ┃ ┃ ┗ 📂service
- ┃ ┃ ┃ ┣ 📜FollowService.java
- ┃ ┃ ┃ ┗ 📜FollowServiceImpl.java
- ┃ ┣ 📂petpick
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜PetPickController.java
- ┃ ┃ ┣ 📂domain
- ┃ ┃ ┃ ┗ 📜PetPick.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📂request
- ┃ ┃ ┃ ┃ ┣ 📜PetPickEditRequestDto.java
- ┃ ┃ ┃ ┃ ┗ 📜PetPickRegistRequestDto.java
- ┃ ┃ ┃ ┗ 📂response
- ┃ ┃ ┃ ┃ ┗ 📜PetPickResponseDto.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜PetPickRepository.java
- ┃ ┃ ┗ 📂service
- ┃ ┃ ┃ ┣ 📜PetPickService.java
- ┃ ┃ ┃ ┗ 📜PetPickServiceImpl.java
- ┃ ┣ 📂petpickcomment
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜PetPickCommentController.java
- ┃ ┃ ┣ 📂domain
- ┃ ┃ ┃ ┗ 📜PetPickComment.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📂request
- ┃ ┃ ┃ ┃ ┣ 📜PetPickCommentEditRequestDto.java
- ┃ ┃ ┃ ┃ ┗ 📜PetPickCommentRegistRequestDto.java
- ┃ ┃ ┃ ┗ 📂response
- ┃ ┃ ┃ ┃ ┗ 📜PetPickCommentResponseDto.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜PetPickCommentRepository.java
- ┃ ┃ ┗ 📂service
- ┃ ┃ ┃ ┣ 📜PetPickCommentService.java
- ┃ ┃ ┃ ┗ 📜PetPickCommentServiceImpl.java
- ┃ ┣ 📂petpicklike
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜PetPickLikeController.java
- ┃ ┃ ┣ 📂domain
- ┃ ┃ ┃ ┗ 📜PetPickLike.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📂request
- ┃ ┃ ┃ ┃ ┗ 📜PetPickLikeRequestDto.java
- ┃ ┃ ┃ ┗ 📂response
- ┃ ┃ ┃ ┃ ┗ 📜PetPickLikeResponseDto.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜PetPickLikeRepository.java
- ┃ ┃ ┗ 📂service
- ┃ ┃ ┃ ┣ 📜PetPickLikeService.java
- ┃ ┃ ┃ ┗ 📜PetPickLikeServiceImpl.java
- ┃ ┣ 📂report
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜ReportController.java
- ┃ ┃ ┣ 📂domain
- ┃ ┃ ┃ ┣ 📂enums
- ┃ ┃ ┃ ┃ ┗ 📜ReportType.java
- ┃ ┃ ┃ ┗ 📜Report.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📂request
- ┃ ┃ ┃ ┃ ┗ 📜ReportRegistRequestDto.java
- ┃ ┃ ┃ ┗ 📂response
- ┃ ┃ ┃ ┃ ┗ 📜ReportResponseDto.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜ReportRepository.java
- ┃ ┃ ┗ 📂service
- ┃ ┃ ┃ ┣ 📜ReportService.java
- ┃ ┃ ┃ ┗ 📜ReportServiceImpl.java
- ┃ ┗ 📂user
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┣ 📜HealthCheckController.java
- ┃ ┃ ┃ ┗ 📜UserController.java
- ┃ ┃ ┣ 📂domain
- ┃ ┃ ┃ ┣ 📂enums
- ┃ ┃ ┃ ┃ ┣ 📜Role.java
- ┃ ┃ ┃ ┃ ┗ 📜SocialType.java
- ┃ ┃ ┃ ┗ 📜User.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📂request
- ┃ ┃ ┃ ┃ ┣ 📜EmailRequestDto.java
- ┃ ┃ ┃ ┃ ┣ 📜PhoneRequestDto.java
- ┃ ┃ ┃ ┃ ┣ 📜UserEditRequestDto.java
- ┃ ┃ ┃ ┃ ┗ 📜UserSignUpRequestDto.java
- ┃ ┃ ┃ ┗ 📂response
- ┃ ┃ ┃ ┃ ┗ 📜UserResponseDto.java
- ┃ ┃ ┣ 📂exception
- ┃ ┃ ┃ ┗ 📜NotExistUserException.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┣ 📜UserCustomRepository.java
- ┃ ┃ ┃ ┣ 📜UserCustomRepositoryImpl.java
- ┃ ┃ ┃ ┗ 📜UserRepository.java
- ┃ ┃ ┗ 📂service
- ┃ ┃ ┃ ┣ 📜UserService.java
- ┃ ┃ ┃ ┗ 📜UserServiceImpl.java
- ┣ 📂global
- ┃ ┣ 📂config
- ┃ ┃ ┣ 📜ChatConfig.java
- ┃ ┃ ┣ 📜MongodbConfig.java
- ┃ ┃ ┣ 📜QueryDslConfig.java
- ┃ ┃ ┣ 📜S3Config.java
- ┃ ┃ ┣ 📜SecurityConfig.java
- ┃ ┃ ┗ 📜WebConfig.java
- ┃ ┣ 📂exception
- ┃ ┃ ┣ 📜ErrorCode.java
- ┃ ┃ ┣ 📜ErrorResponse.java
- ┃ ┃ ┣ 📜GlobalExceptionHandler.java
- ┃ ┃ ┗ 📜PetBridgeException.java
- ┃ ┣ 📂jwt
- ┃ ┃ ┣ 📂filter
- ┃ ┃ ┃ ┗ 📜JwtAuthenticationProcessingFilter.java
- ┃ ┃ ┣ 📂service
- ┃ ┃ ┃ ┗ 📜JwtService.java
- ┃ ┃ ┗ 📂util
- ┃ ┃ ┃ ┗ 📜PasswordUtil.java
- ┃ ┣ 📂login
- ┃ ┃ ┣ 📂filter
- ┃ ┃ ┃ ┗ 📜CustomJsonUsernamePasswordAuthenticationFilter.java
- ┃ ┃ ┣ 📂handler
- ┃ ┃ ┃ ┣ 📜LoginFailureHandler.java
- ┃ ┃ ┃ ┗ 📜LoginSuccessHandler.java
- ┃ ┃ ┣ 📂service
- ┃ ┃ ┃ ┗ 📜LoginService.java
- ┃ ┃ ┗ 📂userdetail
- ┃ ┃ ┃ ┗ 📜CustomUserDetail.java
- ┃ ┣ 📂oauth2
- ┃ ┃ ┣ 📂exception
- ┃ ┃ ┃ ┗ 📜DuplicateNicknameException.java
- ┃ ┃ ┣ 📂handler
- ┃ ┃ ┃ ┣ 📜OAuth2LoginFailureHandler.java
- ┃ ┃ ┃ ┗ 📜OAuth2LoginSuccessHandler.java
- ┃ ┃ ┣ 📂service
- ┃ ┃ ┃ ┗ 📜CustomOAuth2UserService.java
- ┃ ┃ ┣ 📂userinfo
- ┃ ┃ ┃ ┣ 📜GoogleOAuth2UserInfo.java
- ┃ ┃ ┃ ┣ 📜KakaoOAuth2UserInfo.java
- ┃ ┃ ┃ ┣ 📜NaverOAuth2UserInfo.java
- ┃ ┃ ┃ ┗ 📜OAuth2UserInfo.java
- ┃ ┃ ┣ 📜CustomOAuth2User.java
- ┃ ┃ ┗ 📜OAuthAttributes.java
- ┃ ┣ 📂openvidu
- ┃ ┃ ┗ 📜OpenviduController.java
- ┃ ┣ 📂payment
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜PaymentController.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📂request
- ┃ ┃ ┃ ┃ ┗ 📜PaymentRequestDto.java
- ┃ ┃ ┃ ┗ 📂response
- ┃ ┃ ┃ ┃ ┣ 📜ApproveResponseDto.java
- ┃ ┃ ┃ ┃ ┗ 📜ReadyResponseDto.java
- ┃ ┃ ┗ 📂service
- ┃ ┃ ┃ ┣ 📜KakaoPayService.java
- ┃ ┃ ┃ ┗ 📜KakaoPayServiceImpl.java
- ┃ ┣ 📂redis
- ┃ ┃ ┣ 📂config
- ┃ ┃ ┃ ┗ 📜RedisConfig.java
- ┃ ┃ ┗ 📂service
- ┃ ┃ ┃ ┗ 📜RedisService.java
- ┃ ┣ 📂response
- ┃ ┃ ┗ 📜SuccessResponse.java
- ┃ ┗ 📂websocket
- ┣ 📂util
- ┃ ┣ 📂logback
- ┃ ┃ ┗ 📜MattermostAppender.java
- ┃ ┣ 📜AuthUtil.java
- ┃ ┣ 📜FileUtil.java
- ┃ ┗ 📜S3FileUtil.java
- ┗ 📜PetbridgeApplication.java
- ```
+
+```
+추후 공개
+```
 </div>
 </details>
 
@@ -737,158 +234,3 @@
 
 <a id="item-six"></a>
 
-# 기획 배경 및 목표
-
-### 기획 배경
-- 유기동물 개체 수의 증가
-- 유기동물에 대한 부정적 인식 & 입양 절차의 무지
-- 임시보호자, 입양자 간 신뢰성 문제(부적합한 입양 환경, 입양 후 학대 등 문제)
-- 책임비 불법 및 남용 문제
-
-### `견우와 직묘` 목표
-- 유기, 임시보호 동물 입양 **접근성** 향상
-- 임시보호자, 입양자 간 **신뢰할 수 있는** 입양 절차 보장
-- 책임비 중개를 통해 **건강한 입양 문화** 조성
-
-<br>
-
-<a id="item-seven"></a>
-
-# 서비스 주요 기능
-
-### 입양 공고 확인
-
-<img src="readme/입양공고 확인.gif" alt="입양 공고 확인" width="800px">
-
-- 보호소 동물 혹은 임시보호중인 동물들의 공고를 확인
-
-<br>
-
-### 실종 동물 제보
-
-<img src="readme/실종동물 제보.gif" alt="실종동물 제보" width="800px">
-
-- 전국 실종 동물들을 제보
-- 경위도를 사용하여 실종 동물의 정확한 위치 제공
-- 실종 동물의 조기 발견을 통해 유기 동물 개체 수 최소화
-
-<br>
-
-### 펫픽
-
-<img src="readme/펫픽.gif" alt="펫픽" width="800px">
-
-- 보호소 동물 및 임시보호 동물들의 숏폼 비디오 컨텐츠
-- 숏폼 컨텐츠를 통해 유기동물에 대한 인식 개선 및 입양 장려
-- 숏폼 3개당 1회는 위치 기반 보호소 동물들을 함께 홍보
-
-<br>
-
-### 집사 유형 검사
-
-<img src="readme/집사유형검사.gif" alt="집사유형검사" width="800px">
-
-- 사용자 성향과 환경에 최적화된 맞춤형 반려동물 품종 추천
-- 해당 추천 품종 동물들의 게시글을 연동하여 입양 유도
-
-<br>
-
-### 입양 홍보 게시판 / 입양 후기 게시판
-
-<img src="readme/입양 게시판.gif" alt="입양 게시판" width="800px">
-
-- 입양 홍보를 통해 사용자의 입양 독려
-- 입양 후기를 통해 유기동물 입양의 긍정적 인식 제고
-
-<br>
-
-### 채팅
-
-<img src="readme/채팅.gif" alt="채팅" width="800px">
-
-- 입양 신청을 위해, 입양자는 임시보호자와 채팅 시도
-
-<br>
-
-### 화상채팅
-
-<img src="readme/화상채팅.gif" alt="화상채팅" width="800px">
-
-- 임시보호자와 입양자의 실시간 화상채팅으로 상호 간 신뢰성 향상
-- 임시보호자 : 입양자의 실제 환경을 사전 체크
-- 입양자 : 입양 받을 동물의 상태를 미리 확인
-
-<br>
-
-### 계약서
-
-<img src="readme/계약서1.gif" alt="계약서1" width="800px">
-
-- 임시보호자는 입양자와 협의한 내용을 기반으로 입양 보낼 동물에 대한 계약서 작성
-- 임시보호자는 계약서에 책임비, 특약사항 관련 내용 작성 후 SMS 본인 인증을 통해 서명
-
-<br>
-
-<img src="readme/계약서2.gif" alt="" width="800px">
-
-- 계약서를 전달 받은 입양자는 SMS 본인 인증 서명 후 계약 체결
-
-<br>
-
-<img src="readme/계약서3.gif" alt="" width="800px">
-
-- 입양자는 카카오페이 API를 활용하여 책임비 결제
-- 결제가 완료되면 입양 스탬프북 생성
-
-<br>
-
-<img src="readme/계약서4.gif" alt="" width="800px">
-
-- 임시보호자는 입양자가 계약서의 특약사항을 성실히 이행할 경우, 한 달에 한 번 스탬프를 찍어줄 수 있음
-
-<br>
-
-<img src="readme/계약서5.gif" alt="" width="800px">
-
-- 계약 기간 동안 스탬프를 모두 성실히 모은 입양자는 책임비 환급을 신청할 수 있음
-
-<br>
-
-<a id="item-nine"></a>
-
-# 설계 문서
-
-
-### 요구사항 명세서
-
-[**Google SpreadSheet**](https://docs.google.com/spreadsheets/d/10fPQWGjoIb0FMlQhBWriEXRb9Mn3Emnc065Hca7eTYI/edit?gid=0#gid=0)
-
-![요구사항명세서.PNG](/readme/요구사항명세서.PNG)
-
-
-### 와이어프레임
-
-[**Google Slides**](https://docs.google.com/presentation/d/1H4gH4S2IEhLtv3xQTALmcKLCarNHXOriR3UzswWHek0/edit#slide=id.g2785a9263da_7_0)
-
-![와이어프레임.PNG](/readme/와이어프레임.PNG)
-
-
-### 피그마
-
-[**Figma**](https://docs.google.com/presentation/d/1H4gH4S2IEhLtv3xQTALmcKLCarNHXOriR3UzswWHek0/edit#slide=id.g2785a9263da_7_0)
-
-![피그마.PNG](/readme/피그마.PNG)
-
-
-### ERD
-
-[**ERD**](https://www.erdcloud.com/d/vEKDwhTZd9fnKtWA8)
-
-![erd.png](/readme/erd.png)
-
-
-### 📝 API 명세서
-
-[**API 명세서**](https://violet-chocolate-38b.notion.site/API-Docs-145a09e708594958a41701dba986b4ea?pvs=4)
-
-![API명세서.PNG](/readme/API명세서.PNG)

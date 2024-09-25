@@ -3,6 +3,7 @@ package com.waterdragon.wannaeat.global.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -76,8 +77,12 @@ public class SecurityConfig {
 
 				// swagger 설정 (추후 막아야 함)
 				.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-				// 결제 설정 (누구나 결제할 수 있음 -> 추후 보증금 결제 등은 회원만 가능하므로 추가 처리해줄것)
-				.requestMatchers(("/api/payments/**")).permitAll()
+
+				// 예약
+				.requestMatchers(HttpMethod.POST, "/api/reservations/validation").permitAll()
+
+				// 결제 (누구나 결제할 수 있음 -> 추후 보증금 결제 등은 회원만 가능하므로 추가 처리해줄것)
+				.requestMatchers("/api/payments/**").permitAll()
 
 				.anyRequest().authenticated()// 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
 			)

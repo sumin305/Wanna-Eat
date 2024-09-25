@@ -36,21 +36,37 @@
 
 # 팀원 소개
 
+<table>
+  <tr>
+    <th>장정현</th>
+    <th>곽예빈</th>
+    <th>이경곤</th>
+    <th>이수민</th>
+    <th>박소정</th>
+    <th>이정현</th>
+  </tr>
+  <tr>
+    <td><img src="/uploads/73332892ccfb15155635b8126064f814/image.png" width="120" height="120"></td>
+    <td><img src="/uploads/7cd97476b00fc2b8561ef0b81c2692f3/image.png" width="120" height="120"></td>
+    <td><img src="/uploads/865c8847d21e605e02d8387ee4051f2a/image.png" width="120" height="120"></td>
+    <td><img src="/uploads/7486323ba58f29426659c91093f88ea6/image.png" width="120" height="120"></td>
+    <td><img src="/uploads/f32576199ea8275a1677bfcdd45527fc/image.png" width="120" height="120"></td>
+    <td><img src="/uploads/edfb7fb5763ceb8122fb5905f7411f20/image.png" width="120" height="120"></td>
+  </tr>
+</table>
 
-| 장정현                                                                 | 곽예빈                                                                    | 박소정                                                                   | 이경곤                                                                   | 이수민                                                                   | 이정현                                                                      |                                             
-|---------------------------------------------------------------------|------------------------------------------------------------------------|-----------------------------------------------------------------------|-----------------------------------------------------------------------|-----------------------------------------------------------------------|--------------------------------------------------------------------------| 
 
-**🐼 장정현 : 팀장, Infra**
+**🐯 장정현 : 팀장, Infra**
 
 **🦁 곽예빈 : Back-end Leader**
 
-**🐯 이경곤 : Back-end**
+**🐼 이경곤 : Back-end**
 
 **🐰 이수민: Front-end Leader**
 
-**🐱 박소정 : Front-end**
+**🐹 박소정 : Front-end**
 
-**🐮 이정현 : Front-end**
+**🐻 이정현 : Front-end**
 
 <br>
 
@@ -100,7 +116,7 @@
 ![image](/uploads/8df122a5dd3fb246b5ae315cb64507d5/image.png)
 
 # 서비스 아키텍쳐
-![image](/uploads/6d20cdbcb70a5fa33dd1efe9c3f7a843/image.png)
+![image](/uploads/9fb1d569c173893a32db6b6a7d8e2de5/image.png)
 <br>
 
 <a id="item-four"></a>
@@ -138,24 +154,20 @@
 # 서비스 화면
 
 ### 메인       
-![image](/uploads/abe6432440a0dddc238437c2ac22fc71/image.png){: width="100"}
+![image](/uploads/abe6432440a0dddc238437c2ac22fc71/image.png){: width="150"}
 
 ### 회원가입
-![image](/uploads/e5e696286fc0a28a144f3539ae57c6fe/image.png){: width="100"}
+![image](/uploads/e5e696286fc0a28a144f3539ae57c6fe/image.png){: width="150"}
 
-### 소비자 메인
-![image](/uploads/6d537789a9b1a4c5e45ed78553581394/image.png){: width="100"}
+### 소비자 페이지
+![image](/uploads/6d537789a9b1a4c5e45ed78553581394/image.png){: width="150"}
+![image](/uploads/23a4e01daa745417be8c5cc1952eda5d/image.png){: width="150"}
 
-### 소비자 예약 - 지도
-![image](/uploads/23a4e01daa745417be8c5cc1952eda5d/image.png){: width="100"}
-
-### 소비자 예약 - 시간 선택
-![image](/uploads/51d4864f42a2c12937986dc8ecd7e4db/image.png){: width="100"}
-![image](/uploads/f0a043cc228d0f6e0dd06ed50d566626/image.png){: width="100"}
-
-### 소비자 예약 - 예약금 결제
-![image](/uploads/e795c27fa933e99b265c4515e32d42b5/image.png){: width="100"}
-![image](/uploads/9ff8bfa5287043544ab67fa843754fdd/image.png){: width="100"}
+### 소비자 예약
+![image](/uploads/51d4864f42a2c12937986dc8ecd7e4db/image.png){: width="150"}
+![image](/uploads/f0a043cc228d0f6e0dd06ed50d566626/image.png){: width="150"}
+![image](/uploads/e795c27fa933e99b265c4515e32d42b5/image.png){: width="150"}
+![image](/uploads/9ff8bfa5287043544ab67fa843754fdd/image.png){: width="150"}
 
 # 개발 환경
 

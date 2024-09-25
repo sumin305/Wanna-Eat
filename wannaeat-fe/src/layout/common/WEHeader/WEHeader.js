@@ -30,12 +30,9 @@ const HeaderWrapper = styled.div`
 
 const HeaderLeft = styled.div`
   display: flex;
-  /* flex-direction: column; */
   justify-content: flex-start;
   align-items: center;
-  /* left: 0; */
   width: 10%;
-  /* padding-left: 10px; */
 `;
 
 const LogoTitle = styled.h1`
@@ -71,11 +68,8 @@ const HeaderCenter = styled.div`
 const HeaderRight = styled.div`
   display: flex;
   justify-content: flex-end;
-  /* position: absolute; */
   align-items: center;
-  /* right: 0; */
   width: 10%;
-  /* padding-right: 10px; */
 `;
 
 const HeaderImg = styled.img`

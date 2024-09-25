@@ -1,21 +1,40 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import useHeaderStore from '../../../../../stores/common/header/useHeaderStore';
 import {
   Box,
   RestaurantImageBox,
-  InformationText,
   InformationContainer,
+  InformationWrapper,
+  InformationText,
+  IconImg,
   WETabContainer,
   MenuContainer,
+  MenuBox,
+  ImageBox,
+  MenuImg,
+  MenuContentContainer,
+  MenuName,
+  MenuPrice,
+  MenuDescription,
   ButtonBox,
 } from './RestaurantDetailPage';
-import RestaurantImg from '../../../../../assets/icons/common/food.png';
+import RestaurantImg from '../../../../../assets/customer/restaurant.jpeg';
 import WETab from '../../../../../component/common/tab/WETab/WETab.jsx';
 import Button from '../../../../../component/common/button/WEButton/WEButton.jsx';
+import FoodImg from '../../../../../assets/icons/common/food.png';
+import Location from '../../../../../assets/icons/reservation/location.svg';
+import Clock from '../../../../../assets/icons/reservation/clock.svg';
+import Phone from '../../../../../assets/icons/reservation/phone.svg';
 
 const RestaurantDetailPage = () => {
   const params = useParams();
+  const nav = useNavigate();
+
+  const handleReservationButtonClick = () => {
+    nav('/customer/reservation/time-select');
+  };
+
   const {
     setIsCarrot,
     setPageName,
@@ -54,68 +73,68 @@ const RestaurantDetailPage = () => {
     longitude: 35.0,
     menuListResponseDto: {
       menusMap: {
-        족발: [
+        고기: [
           {
             menuId: 1,
-            menuName: '개매운족발',
+            menuName: '갈매기살',
             menuPrice: 10000,
-            menuImage: '47716e29-52a6-43ee-a1df-7f25e7a2baa4.jfif',
+            menuImage: FoodImg,
             menuDescription: '뒤지게 맛있음',
           },
           {
             menuId: 2,
             menuName: '개매운족발',
             menuPrice: 10000,
-            menuImage: '47716e29-52a6-43ee-a1df-7f25e7a2baa4.jfif',
-            menuDescription: '뒤지게 맛있음',
+            menuImage: FoodImg,
+            menuDescription: '뒤지게 맛있음,뒤지게 맛있음',
           },
           {
             menuId: 3,
             menuName: '개매운족발',
             menuPrice: 10000,
-            menuImage: '47716e29-52a6-43ee-a1df-7f25e7a2baa4.jfif',
+            menuImage: FoodImg,
             menuDescription: '뒤지게 맛있음',
           },
           {
             menuId: 4,
             menuName: '개매운족발',
             menuPrice: 10000,
-            menuImage: '47716e29-52a6-43ee-a1df-7f25e7a2baa4.jfif',
+            menuImage: FoodImg,
             menuDescription: '뒤지게 맛있음',
           },
           {
             menuId: 5,
             menuName: '개매운족발',
             menuPrice: 10000,
-            menuImage: '47716e29-52a6-43ee-a1df-7f25e7a2baa4.jfif',
+            menuImage: FoodImg,
             menuDescription: '뒤지게 맛있음',
           },
           {
             menuId: 6,
             menuName: '개매운족발',
             menuPrice: 10000,
-            menuImage: '47716e29-52a6-43ee-a1df-7f25e7a2baa4.jfif',
+            menuImage: FoodImg,
             menuDescription: '뒤지게 맛있음',
           },
           {
             menuId: 7,
             menuName: '개매운족발',
             menuPrice: 10000,
-            menuImage: '47716e29-52a6-43ee-a1df-7f25e7a2baa4.jfif',
+            menuImage: FoodImg,
             menuDescription: '뒤지게 맛있음',
           },
           {
             menuId: 8,
             menuName: '개매운족발',
             menuPrice: 10000,
-            menuImage: '47716e29-52a6-43ee-a1df-7f25e7a2baa4.jfif',
+            menuImage: FoodImg,
             menuDescription: '뒤지게 맛있음',
           },
           {
             menuId: 9,
             menuName: 'ABC 초코',
             menuPrice: 10,
-            menuImage: 'ffd2cade-a659-445f-a0c4-67ce68e1f58e.png',
+            menuImage: FoodImg,
             menuDescription: '많이달다',
           },
         ],
@@ -124,7 +143,7 @@ const RestaurantDetailPage = () => {
             menuId: 2,
             menuName: '맥주',
             menuPrice: 10000,
-            menuImage: '82371d62-09f6-4c5d-a685-b3cc5cdf83dd.jfif',
+            menuImage: FoodImg,
             menuDescription: '뒤지게 맛있음',
           },
         ],
@@ -147,14 +166,25 @@ const RestaurantDetailPage = () => {
       {/* <div> {params.id}번 가게 상세페이지</div> */}
       <RestaurantImageBox src={RestaurantImg} />
       <InformationContainer>
-        <InformationText>{informations.restaurantDescription}</InformationText>
-        <InformationText>{informations.restaurantAddress}</InformationText>
         <InformationText>
-          {informations.restaurantOpenTime}~{informations.restaurantCloseTime}
-          &nbsp;(브레이크타임 {informations.breakStartTime}~
-          {informations.breakEndTime})
+          &emsp;&emsp;{informations.restaurantDescription}
         </InformationText>
-        <InformationText>{informations.restaurantPhone}</InformationText>
+        <InformationWrapper>
+          <IconImg src={Location} alt="주소" />
+          <InformationText>{informations.restaurantAddress}</InformationText>
+        </InformationWrapper>
+        <InformationWrapper>
+          <IconImg src={Clock} alt="영업시간" />
+          <InformationText>
+            {informations.restaurantOpenTime}~{informations.restaurantCloseTime}
+            &nbsp;(브레이크타임 {informations.breakStartTime}~
+            {informations.breakEndTime})
+          </InformationText>
+        </InformationWrapper>
+        <InformationWrapper>
+          <IconImg src={Phone} alt="전화번호" />
+          <InformationText>{informations.restaurantPhone}</InformationText>
+        </InformationWrapper>
       </InformationContainer>
       <WETabContainer>
         <WETab
@@ -165,16 +195,20 @@ const RestaurantDetailPage = () => {
       </WETabContainer>
       <MenuContainer>
         {activeMenus.map((menu) => (
-          <div key={menu.menuId}>
-            <img src={menu.menuImage} alt={menu.menuName} width="100" />
-            <p>{menu.menuName}</p>
-            <p>{menu.menuPrice}원</p>
-            <p>{menu.menuDescription}</p>
-          </div>
+          <MenuBox key={menu.menuId}>
+            <ImageBox key={menu.menuId}>
+              <MenuImg src={menu.menuImage} alt={menu.menuName} width="100" />
+            </ImageBox>
+            <MenuContentContainer>
+              <MenuName>{menu.menuName}</MenuName>
+              <MenuPrice>{menu.menuPrice}원</MenuPrice>
+              <MenuDescription>{menu.menuDescription}</MenuDescription>
+            </MenuContentContainer>
+          </MenuBox>
         ))}
       </MenuContainer>
       <ButtonBox>
-        <Button>예약하기</Button>
+        <Button onClick={handleReservationButtonClick}>예약하기</Button>
       </ButtonBox>
     </Box>
   );

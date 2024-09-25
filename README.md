@@ -1,7 +1,7 @@
 # 👨🏻‍🍳 소상공인을 위한 식당 무인 운영 앱 👨🏻‍🍳
 
 
-![image](/uploads/3b0bb255f510eefe6a4f657dc992867e/image.png){: width="100" height="100"}
+![image](/uploads/54cca10bd926fba70fa4705d7b7b4755/image.png)
 
 
 - **배포 URL : https://j11b302.p.ssafy.io**
@@ -97,16 +97,7 @@
 
 # 서비스 주요 기능
 
-[손님]    
-- 링크를 통한 예약 내역 공유    
-- 구성원간 실시간 메뉴 선정 및 소통    
-- 무인 예약 및 간편 결제 시스템   
-- 실제 현장 기반 매장 구조 파악    
-
-[사장님]   
-- 효율적인 예약 관리
-- 매장 알림을 통한 매장 현황 파악
-- 매장 통계 분석을 통한 향후 사업 전략 수립    
+![image](/uploads/8df122a5dd3fb246b5ae315cb64507d5/image.png)
 
 # 서비스 아키텍쳐
 ![image](/uploads/6d20cdbcb70a5fa33dd1efe9c3f7a843/image.png)

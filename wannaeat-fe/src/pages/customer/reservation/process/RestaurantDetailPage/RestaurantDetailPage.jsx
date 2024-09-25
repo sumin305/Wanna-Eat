@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useHeaderStore from '../../../../../stores/common/header/useHeaderStore';
 import {
   Box,
@@ -8,18 +8,16 @@ import {
   InformationContainer,
 } from './RestaurantDetailPage';
 import RestaurantImg from '../../../../../assets/icons/common/food.png';
+import WETab from '../../../../../component/common/tab/WETab/WETab.jsx';
 
 const RestaurantDetailPage = () => {
   const params = useParams();
   const {
     setIsCarrot,
-    pageName,
     setPageName,
     setIsShowLogo,
     setActiveIcons,
     setIsShowBackIcon,
-    activeIcons,
-    isShowBackIcon,
   } = useHeaderStore();
 
   useEffect(() => {
@@ -29,6 +27,8 @@ const RestaurantDetailPage = () => {
     setIsShowBackIcon(true);
     setActiveIcons([3]);
   }, []);
+
+  const [activeTab, setActiveTab] = useState(0);
 
   const informations = {
     restaurantBusinessNumber: '수정-수정',
@@ -79,6 +79,16 @@ const RestaurantDetailPage = () => {
     },
   };
 
+  // const categories = [
+  //   { id: 1, Name: '메인메뉴' },
+  //   { id: 2, Name: '사이드' },
+  //   { id: 3, Name: '음료/주류' },
+  // ];
+
+  const categories = Object.keys(informations.menuListResponseDto.menusMap);
+  const activeMenus =
+    informations.menuListResponseDto.menusMap[categories[activeTab]];
+
   return (
     <Box>
       {/* <div> {params.id}번 가게 상세페이지</div> */}
@@ -93,6 +103,21 @@ const RestaurantDetailPage = () => {
         </InformationText>
         <InformationText>{informations.restaurantPhone}</InformationText>
       </InformationContainer>
+      <WETab
+        tabs={categories}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
+      <div>
+        {activeMenus.map((menu) => (
+          <div key={menu.menuId}>
+            <img src={menu.menuImage} alt={menu.menuName} width="100" />
+            <p>{menu.menuName}</p>
+            <p>{menu.menuPrice}원</p>
+            <p>{menu.menuDescription}</p>
+          </div>
+        ))}
+      </div>
     </Box>
   );
 };

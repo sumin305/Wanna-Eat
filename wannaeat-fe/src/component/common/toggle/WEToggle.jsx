@@ -7,8 +7,8 @@ import {
   ToggleBackground,
 } from './WEToggle';
 
-const WEToggle = () => {
-  const [isOn, setIsOn] = useState(false);
+const WEToggle = ({ isOn, setIsOn }) => {
+  // const [isOn, setIsOn] = useState(false);
 
   const handleClickToggle = () => {
     setIsOn(!isOn);

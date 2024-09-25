@@ -1,8 +1,12 @@
 import styled from '@emotion/styled';
 import theme from '../../../style/common/theme';
+import { ROLE } from '../../../stores/common/useCommonStore';
 
 const HeaderContainer = styled.div`
-  display: flex;
+  display: ${({ role }) => {
+    if (role === 'GUEST') return 'none';
+    else return 'flex';
+  }};
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -10,7 +14,8 @@ const HeaderContainer = styled.div`
   height: 10vh;
   padding: 0.1rem 0;
 
-  background-color: ${(props) => props.isCarrot ? theme.color.primary : theme.color.white};
+  background-color: ${(props) =>
+    props.isCarrot ? theme.color.primary : theme.color.white};
 
   @media (min-width: 480px) {
     width: 480px;

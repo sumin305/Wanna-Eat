@@ -1,4 +1,4 @@
-import useModalStore from '../../../stores/common/modal/useModalStore.js';
+import useModalStore from '../../../stores/common/useModalStore.js';
 import WEAlertModal from './WEAlertModal/WEAlertModal.jsx';
 import WESheetModal from './WESheetModal/WESheetModal.jsx';
 import WESettingModal from './WESettingModal/WESettingModal.jsx';

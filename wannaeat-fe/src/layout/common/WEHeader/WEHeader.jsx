@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import useHeaderStore from '../../../stores/common/header/useHeaderStore';
+import useHeaderStore from '../../../stores/common/useHeaderStore';
 
 import {
   HeaderContainer,
@@ -17,6 +17,7 @@ import {
 import Logo from '../../../assets/icons/header/logo-picture.svg';
 import BackCarrot from '../../../assets/icons/header/back-carrot.svg';
 import BackWhite from '../../../assets/icons/header/back-white.svg';
+import useCommonStore from '../../../stores/common/useCommonStore';
 const WEHeader = ({ isCarrot, isShowBackIcon }) => {
   const {
     pageName,
@@ -28,6 +29,7 @@ const WEHeader = ({ isCarrot, isShowBackIcon }) => {
   } = useHeaderStore();
 
   const nav = useNavigate();
+  const { role } = useCommonStore();
 
   useEffect(() => {
     setIsCarrot(isCarrot);
@@ -40,7 +42,7 @@ const WEHeader = ({ isCarrot, isShowBackIcon }) => {
   };
 
   return (
-    <HeaderContainer isCarrot={isCarrot}>
+    <HeaderContainer role={role} isCarrot={isCarrot}>
       <HeaderWrapper>
         <HeaderLeft>
           {isShowLogo ? (

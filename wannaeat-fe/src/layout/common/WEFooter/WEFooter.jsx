@@ -19,7 +19,7 @@ import MyinfoOff from '../../../assets/icons/footer/myinfo-off.svg';
 import MyinfoOn from '../../../assets/icons/footer/myinfo-on.svg';
 
 import useCommonStore, { ROLE } from '../../../stores/common/useCommonStore.js';
-import useFooterStore from '../../../stores/common/footer/useFooterStore.js';
+import useFooterStore from '../../../stores/common/useFooterStore.js';
 
 const tabs = {
   manager: [
@@ -90,7 +90,7 @@ const WEFooter = () => {
   }, [currentTabId]);
 
   return (
-    <FooterContainer>
+    <FooterContainer role={role}>
       {currentTabs.map((tab) => (
         <FooterWrapper
           key={tab.id}

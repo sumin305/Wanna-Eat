@@ -1,5 +1,5 @@
 import MapContainer from '../../../component/customer/map/Map.jsx';
-import useModalStore from '../../../stores/common/modal/useModalStore.js';
+import useModalStore from '../../../stores/common/useModalStore.js';
 import { MapBox } from './MapRestaurantPage';
 import MapFilterModalBox from '../../../component/customer/map/MapFilterModalBox.jsx';
 

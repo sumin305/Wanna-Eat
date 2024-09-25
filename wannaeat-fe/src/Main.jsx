@@ -1,6 +1,6 @@
 import styled from '@emotion/styled/macro';
 import WEFooter from './layout/common/WEFooter/WEFooter.jsx';
-import useModalStore from './stores/common/modal/useModalStore.js';
+import useModalStore from './stores/common/useModalStore.js';
 import WEBlackOutLayout from './layout/common/WEBlackOutLayout/WEBlackOutLayout.jsx';
 import WEModal from './component/common/modal/WEModal.jsx';
 import AppRoutes from './route/routes.js';
@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import useCommonStore, { ROLE } from './stores/common/useCommonStore.js';
 
 const Main = () => {
-  const { setCategories, role } = useCommonStore();
+  const { setCategories } = useCommonStore();
 
   useEffect(() => {
     setCategories(['고기', '족발', '찌개', '회', '돈까스']);
@@ -34,15 +34,9 @@ const Main = () => {
       <WEBlackOutLayout />
       <WEModal />
       <AppContainer>
-        {role === ROLE.GUEST ? (
-          <AppRoutes />
-        ) : (
-          <div>
-            <WEHeader isCarrot={true} text="메인페이지" />
-            <AppRoutes />
-            <WEFooter />
-          </div>
-        )}
+        <WEHeader isCarrot={true} text="메인페이지" />
+        <AppRoutes />
+        <WEFooter />
       </AppContainer>
     </div>
   );

@@ -1,5 +1,4 @@
 import { Route, Routes } from 'react-router-dom';
-import useCommonStore from '../stores/common/useCommonStore';
 import Layout from '../layout/common/Layout';
 // 공통 페이지
 import LoginPage from '../pages/common/LoginPage/LoginPage.jsx';
@@ -24,8 +23,6 @@ import FingerprintAuthPage from '../pages/customer/reservation/process/Fingerpri
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';
 
 const AppRoutes = () => {
-  const { role } = useCommonStore();
-
   return (
     <Layout>
       <Routes>

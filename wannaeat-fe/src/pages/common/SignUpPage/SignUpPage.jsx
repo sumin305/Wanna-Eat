@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import WECheck from '../../../component/common/check/WECheck.jsx';
 import Textfield from '../../../component/common/textfield/WETextfield/WETextfield.jsx';
 import Button from '../../../component/common/button/WEButton/WEButton.jsx';
-import useTextfieldStore from '../../../stores/common/textfield/useTextfieldStore.js';
-import useModalStore from '../../../stores/common/modal/useModalStore.js';
+import useTextfieldStore from '../../../stores/common/useTextfieldStore.js';
+import useModalStore from '../../../stores/common/useModalStore.js';
 import {
   SignUpPageContainer,
   SignUpPageHeader,

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import useHeaderStore from '../../../../stores/common/header/useHeaderStore.js';
+import useHeaderStore from '../../../../stores/common/useHeaderStore.js';
 import {
   MainPageContainer,
   SearchWrapper,

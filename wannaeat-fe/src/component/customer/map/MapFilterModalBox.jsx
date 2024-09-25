@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import useReservationStore from '../../../stores/customer/reservation/useReservationStore.js';
+import useReservationStore from '../../../stores/customer/useReservationStore.js';
 import {
   InputFieldContainer,
   InputFieldText,
@@ -15,7 +15,7 @@ import {
   useDropdownStore,
   useVisitTimeDropdownStore,
   useDurationDropdownStore,
-} from '../../../stores/common/dropdown/useDropdownStore.js';
+} from '../../../stores/common/useDropdownStore.js';
 import WEDropdown from '../../common/dropdown/WEDropdown.jsx';
 import moment from 'moment';
 import CalendarImg from '../../../assets/icons/common/calendar.svg';

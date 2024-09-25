@@ -16,7 +16,7 @@ import {
 } from './SuccessPage.js';
 import theme from '../../../../../style/common/theme.js';
 import paper from '../../../.././../assets/icons/common/paper.svg';
-import useReservationStore from '../../../../../stores/customer/reservation/useReservationStore.js';
+import useReservationStore from '../../../../../stores/customer/useReservationStore.js';
 import { useNavigate } from 'react-router-dom';
 const SuccessPage = () => {
   const {

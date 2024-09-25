@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import useModalStore from '../../../stores/common/modal/useModalStore';
+import useModalStore from '../../../stores/common/useModalStore';
 import BlackOutLayoutStyled from './WEBlackOutLayout';
 
 const WEBlackOutLayout = () => {

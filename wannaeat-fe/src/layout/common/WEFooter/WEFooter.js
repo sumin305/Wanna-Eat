@@ -1,8 +1,13 @@
 import styled from '@emotion/styled';
 import theme from '../../../style/common/theme';
+import { ROLE } from '../../../stores/common/useCommonStore';
 
 const FooterContainer = styled.div`
-  display: flex;
+  display: ${({ role }) => {
+    if (role === ROLE.GUEST) return 'none';
+    else return 'flex';
+  }};
+
   background-color: ${theme.color.white};
   width: 100%;
   height: 10%;

@@ -6,6 +6,7 @@ import GridCanvas from '../../../../component/manager/restaurant/SeatDecorate/Gr
 import ItemPalette from '../../../../component/manager/restaurant/SeatDecorate/ItemPalette/ItemPalette.jsx';
 import useHeaderStore from '../../../../stores/common/header/useHeaderStore.js';
 import { isMobile } from 'react-device-detect';
+import { SeatDecoratePageStyled } from './SeatDecoreatePage.js';
 
 const SeatDecoratePage = () => {
   const { setIsCarrot, setIsShowBackIcon, setActiveIcons, setPageName } =
@@ -22,10 +23,10 @@ const SeatDecoratePage = () => {
     <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
       {/* <DndProvider backend={HTML5Backend}> */}
       {/* <DndProvider backend={TouchBackend}> */}
-      <div>
+      <SeatDecoratePageStyled>
         <ItemPalette />
         <GridCanvas />
-      </div>
+      </SeatDecoratePageStyled>
     </DndProvider>
   );
 };

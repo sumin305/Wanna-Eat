@@ -31,8 +31,8 @@ const useStore = create((set) => ({
 }));
 
 const GridCanvas = () => {
-  const gridColumns = 15; // 가로
-  const gridRows = 15; // 세로
+  const gridColumns = 5; // 가로
+  const gridRows = 5; // 세로
   const [gridSize, setGridSize] = useState(50);
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
@@ -43,7 +43,7 @@ const GridCanvas = () => {
 
   const calculateGridSize = () => {
     const width = window.innerWidth;
-    const height = window.innerHeight - 200;
+    const height = window.innerHeight;
 
     const maxGridWidth = Math.min(width, 480);
     const maxGridHeight = height;

@@ -14,6 +14,8 @@ const GridItemStyled = styled.div`
   top: ${(props) => `${props.y}px`};
   opacity: ${(props) => (props.isDragging ? 0.5 : 1)};
   transform: rotate(${(props) => `${props.rotation}deg`});
+
+  overflow: auto;
 `;
 
 const ButtonWrapperStyled = styled.div`
@@ -43,7 +45,6 @@ const GridWrapperStyled = styled.div`
   overflow: auto;
   width: ${(props) => props.gridColumns * props.gridSize}px;
   height: ${(props) => props.gridRows * props.gridSize}px;
-  cursor: grab;
 
   cursor: ${(props) => (props.scale > 1 ? 'grab' : 'default')};
   touch-action: none;

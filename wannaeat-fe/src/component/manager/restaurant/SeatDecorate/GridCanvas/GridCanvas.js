@@ -10,40 +10,29 @@ const GridItemStyled = styled.div`
   justify-content: center;
   align-items: center;
 
-  left: ${(props) => `${props.x}px`}; // x 좌표
-  top: ${(props) => `${props.y}px`}; // y 좌표
-  opacity: ${(props) => (props.isDragging ? 0.5 : 1)}; // 드래그 중일 때 투명도
-  transform: rotate(${(props) => `${props.rotation}deg`}); // 회전 각도
+  left: ${(props) => `${props.x}px`};
+  top: ${(props) => `${props.y}px`};
+  opacity: ${(props) => (props.isDragging ? 0.5 : 1)};
+  transform: rotate(${(props) => `${props.rotation}deg`});
+`;
+
+const ButtonWrapperStyled = styled.div`
+  position: fixed;
+  bottom: 12%;
+  right: 1%;
+
+  @media (min-width: 480px) {
+    justify-self: center;
+    right: 34%;
+  }
 `;
 
 const SaveButtonStyled = styled(SaveButton)`
-  position: fixed;
-  bottom: 11vh;
-  /* right: 1vw; */
-  transform: translateX(47%);
-
-  @media (min-width: 480px) {
-    width: 480px;
-    justify-self: center;
-    bottom: 85px;
-    transform: translateX(47%);
-  }
-
   cursor: pointer;
 `;
 
 const CancelButtonStyled = styled(CancelButton)`
-  position: fixed;
-  bottom: 11vh;
-  /* right: 15vw; */
-
-  @media (min-width: 480px) {
-    width: 480px;
-    justify-self: center;
-    bottom: 85px;
-    transform: translateX(38%);
-  }
-
+  margin-left: 0.5rem;
   cursor: pointer;
 `;
 
@@ -108,4 +97,5 @@ export {
   ZoomableGridWrapperStyled,
   GridBackgroundStyled,
   GridCellStyled,
+  ButtonWrapperStyled,
 };

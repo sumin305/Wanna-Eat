@@ -10,6 +10,7 @@ import {
   GridItemStyled,
   CancelButtonStyled,
   SaveButtonStyled,
+  ButtonWrapperStyled,
 } from './GridCanvas';
 import { create } from 'zustand';
 
@@ -145,7 +146,7 @@ const GridCanvas = () => {
     },
   });
 
-  const handleSave = () => {
+  const handleCanvasSave = () => {
     axios
       .post('/api/save', items, {
         headers: {
@@ -193,9 +194,11 @@ const GridCanvas = () => {
             ))}
           </GridBackgroundStyled>
         </ZoomableGridWrapperStyled>
-        <SaveButtonStyled onClick={handleSave}>저장</SaveButtonStyled>
-        <CancelButtonStyled>취소</CancelButtonStyled>
       </GridWrapperStyled>
+      <ButtonWrapperStyled>
+        <SaveButtonStyled onClick={handleCanvasSave}>저장</SaveButtonStyled>
+        <CancelButtonStyled>취소</CancelButtonStyled>
+      </ButtonWrapperStyled>
     </div>
   );
 };

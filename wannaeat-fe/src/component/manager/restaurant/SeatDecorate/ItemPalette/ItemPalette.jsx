@@ -6,14 +6,18 @@ import {
   PaletteItemStyled,
   PaletteItemIconStyled,
   PaletteItemLabelStyled,
+  ArrowLeftIconStyled,
+  ArrowRightIconStyled,
 } from './ItemPalette.js';
 
 const ItemPalette = () => {
   return (
     <ItemPaletteStyled>
+      <ArrowLeftIconStyled />
       {paletteItems.map((item) => (
         <PaletteItem key={item.id} item={item} />
       ))}
+      <ArrowRightIconStyled />
     </ItemPaletteStyled>
   );
 };

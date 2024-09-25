@@ -5,7 +5,35 @@ import { ReactComponent as RestroomIcon } from '../../../../../assets/icons/mana
 import { ReactComponent as CounterIcon } from '../../../../../assets/icons/manager/restaurant/cashier.svg';
 import { ReactComponent as EntranceIcon } from '../../../../../assets/icons/manager/restaurant/door.svg';
 
+import { ReactComponent as ArrowLeftIcon } from '../../../../../assets/icons/manager/restaurant/arrow-left.svg';
+import { ReactComponent as ArrowRIghtIcon } from '../../../../../assets/icons/manager/restaurant/arrow-right.svg';
+
 const paletteItems = [
+  {
+    id: 1,
+    label: '사각 테이블',
+    icon: SquareTableIcon,
+  },
+  {
+    id: 2,
+    label: '원형 테이블',
+    icon: RoundTableIcon,
+  },
+  {
+    id: 3,
+    label: '화장실',
+    icon: RestroomIcon,
+  },
+  {
+    id: 4,
+    label: '계산대',
+    icon: CounterIcon,
+  },
+  {
+    id: 5,
+    label: '출입구',
+    icon: EntranceIcon,
+  },
   {
     id: 1,
     label: '사각 테이블',
@@ -46,6 +74,8 @@ const ItemPaletteStyled = styled.div`
   background-color: transparent;
   border-bottom: 1px solid #ccc;
   scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `;
 
 const PaletteItemStyled = styled.div`
@@ -95,10 +125,21 @@ const PaletteItemLabelStyled = styled.div`
   }
 `;
 
+const ArrowLeftIconStyled = styled(ArrowLeftIcon)`
+  position: absolute;
+  left: 34%;
+`;
+const ArrowRightIconStyled = styled(ArrowRIghtIcon)`
+  position: absolute;
+  right: 34%;
+`;
+
 export {
   paletteItems,
   ItemPaletteStyled,
   PaletteItemStyled,
   PaletteItemIconStyled,
   PaletteItemLabelStyled,
+  ArrowLeftIconStyled,
+  ArrowRightIconStyled,
 };

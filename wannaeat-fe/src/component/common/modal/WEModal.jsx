@@ -3,21 +3,24 @@ import WEAlertModal from './WEAlertModal/WEAlertModal.jsx';
 import WESheetModal from './WESheetModal/WESheetModal.jsx';
 import WESettingModal from './WESettingModal/WESettingModal.jsx';
 import styled from '@emotion/styled/macro';
-import theme from '../../../style/common/theme.js'
+import theme from '../../../style/common/theme.js';
 const WEModal = () => {
-  const { modalType } = useModalStore()
+  const { modalType, isModalVisible } = useModalStore();
 
   const ModalStyled = styled.div`
     position: relative;
-    display: grid;
     z-index: ${theme.zIndex.modal};
+    display: ${({ isModalVisible }) => {
+      if (!isModalVisible) return 'none';
+      else return 'grid';
+    }};
   `;
 
   return (
-    <ModalStyled>
+    <ModalStyled isModalVisible={isModalVisible}>
       {modalType === 'alert' ? <WEAlertModal isOneButton={false} /> : <></>}
       {modalType === 'sheet' ? <WESheetModal /> : <></>}
-      {modalType === 'setting' ? <WESettingModal/> : <></>}
+      {modalType === 'setting' ? <WESettingModal /> : <></>}
     </ModalStyled>
   );
 };

@@ -9,7 +9,6 @@ import { useEffect } from 'react';
 import useCommonStore, { ROLE } from './stores/common/useCommonStore.js';
 
 const Main = () => {
-  const { isModalVisible } = useModalStore();
   const { setCategories, role } = useCommonStore();
 
   useEffect(() => {
@@ -32,8 +31,8 @@ const Main = () => {
 
   return (
     <div>
-      {isModalVisible && <WEBlackOutLayout></WEBlackOutLayout>}
-      {isModalVisible && <WEModal />}
+      <WEBlackOutLayout />
+      <WEModal />
       <AppContainer>
         {role === ROLE.GUEST ? (
           <AppRoutes />

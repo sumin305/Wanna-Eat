@@ -183,15 +183,14 @@ public class JwtService {
 	 */
 	public void updateRefreshToken(String email, SocialType socialType, String refreshToken) {
 		userRepository.findByEmailAndSocialType(email, socialType)
-			.ifPresent(
+			.ifPresentOrElse(
 				user -> {
 					UserToken userToken = user.getUserToken();
-					if (userToken != null) {
-						userToken.editRefreshToken(refreshToken);
-						userTokenRepository.save(userToken); // 업데이트 후 저장
-					} else {
-						throw new IllegalStateException("해당 유저에 대한 UserToken이 존재하지 않습니다.");
-					}
+					userToken.editRefreshToken(refreshToken);
+					userTokenRepository.save(userToken); // 업데이트 후 저장
+				},
+				() -> {
+					throw new IllegalStateException("해당 유저가 존재하지 않습니다.");
 				}
 			);
 	}

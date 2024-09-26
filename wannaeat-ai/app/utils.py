@@ -4,7 +4,7 @@ import cv2
 from segment_anything import SamPredictor
 
 # SAM 모델 로드 함수
-def load_sam_model(model_path):
+def load_sam_model(model_path="/app/models/sam_vit_h_4b8939.pth"):
     from segment_anything import sam_model_registry
     sam = sam_model_registry["vit_h"](checkpoint=model_path)
     sam.to("cuda" if torch.cuda.is_available() else "cpu")
@@ -71,7 +71,7 @@ def adjust_saturation_and_brightness(image, saturation_scale=1.3, brightness_sca
 
 # 이미지 배경과 합성하는 함수
 def composite_image(rgba_image):
-    background_image_path = "C:/jeonghyeon/project/segment-anything/images/background.jpg"
+    background_image_path = "/app/images/background.jpg"
     background_image = cv2.imread(background_image_path)
 
     if background_image is None:

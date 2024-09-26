@@ -1,5 +1,5 @@
 import MapContainer from '../../../component/customer/map/Map.jsx';
-import useModalStore from '../../../stores/common/modal/useModalStore.js';
+import useModalStore from '../../../stores/common/useModalStore.js';
 import {
   MapRestaurantBox,
   MapBox,
@@ -12,7 +12,7 @@ import {
 } from './MapRestaurantPage';
 import MapFilterModalBox from '../../../component/customer/map/MapFilterModalBox.jsx';
 import searchIcon from '../../../assets/icons/common/search.svg';
-import useReservationStore from '../../../stores/customer/reservation/useReservationStore.js';
+import useReservationStore from '../../../stores/customer/useReservationStore.js';
 import useMapStore from '../../../stores/map/useMapStore.js';
 
 const MapRestaurantPage = () => {
@@ -89,7 +89,7 @@ const MapRestaurantPage = () => {
         </SearchWrapper>
         <ButtonContainer>
           {buttons.length === 0 ? (
-            <FilterButton onClick={handleFilterModalButtonClick}>
+            <FilterButton onClick={handleFilterModalButtonClick} isEven={true}>
               검색 조건 설정하기
             </FilterButton>
           ) : (

@@ -5,12 +5,12 @@ const CheckContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ type }) =>
-    type === 'checkClickCarrot' ? theme.color.primary : theme.color.white};
+  background-color: ${({ isChecked }) =>
+    isChecked ? theme.color.primary : theme.color.white};
   width: 1.25rem;
   height: 1.25rem;
-  border: ${({ type }) =>
-    type === 'checkClickCarrot'
+  border: ${({ isChecked }) =>
+    isChecked
       ? `1px solid ${theme.color.primary}`
       : `1px solid ${theme.color.disabled}`};
   border-radius: ${theme.borderRadius.px5};

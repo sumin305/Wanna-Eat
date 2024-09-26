@@ -35,7 +35,7 @@ const AppRoutes = () => {
           element={<SeatDecoratePage />}
         />
         <Route
-          path="/manager/restaurant/ManagerRegistPage"
+          path="/manager/restaurant/managerregistpage"
           element={<ManagerRegistPage />}
         />
         <Route

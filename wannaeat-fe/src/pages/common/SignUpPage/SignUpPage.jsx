@@ -4,6 +4,12 @@ import Textfield from '../../../component/common/textfield/WETextfield/WETextfie
 import Button from '../../../component/common/button/WEButton/WEButton.jsx';
 import useTextfieldStore from '../../../stores/common/useTextfieldStore.js';
 import useModalStore from '../../../stores/common/useModalStore.js';
+import WEToggle from '../../../component/common/toggle/WEToggle.jsx';
+import {
+  checkNickname,
+  sendCode,
+  verifyCode,
+} from '../../../api/common/join.js';
 import {
   SignUpPageContainer,
   SignUpPageHeader,
@@ -20,19 +26,15 @@ import {
   VerificationTitle,
   ButtonWrapper,
 } from './SignUpPage.js';
-import WEToggle from '../../../component/common/toggle/WEToggle.jsx';
-import {
-  checkNickname,
-  sendCode,
-  verifyCode,
-} from '../../../api/common/join.js';
 import useCommonStore, { ROLE } from '../../../stores/common/useCommonStore.js';
+import useAlert from 'utils/alert';
 import { useNavigate } from 'react-router-dom';
 const SignUpPage = () => {
-  const { role, setRole, email, socialType, requestSignUp } = useCommonStore();
+  const { setRole, email, socialType, requestSignUp } = useCommonStore();
   const { setError, clearError } = useTextfieldStore();
   const { open, setAlertText, setModalType } = useModalStore();
   const navigate = useNavigate();
+  const alert = useAlert();
   const [isChecked, setIsChecked] = useState(false);
   const [isCustomer, setIsCustomer] = useState(false);
   const [verifyNickname, setVerifyNickname] = useState(false);
@@ -41,8 +43,8 @@ const SignUpPage = () => {
   const [code, setCode] = useState(0);
   const [userInfo, setUserInfo] = useState({
     nickname: '',
-    email: 'gogotnals@naver.com',
-    socialType: 'KAKAO',
+    email: '',
+    socialType: '',
     role: '',
     phone: '',
   });
@@ -69,6 +71,7 @@ const SignUpPage = () => {
   // 닉네임 중복 검사 핸들러
   const handleNicknameVerifyButtonClick = async () => {
     const response = await checkNickname(userInfo.nickname);
+    console.log(response);
     if (response.status === 200) {
       alert('사용 가능한 닉네임입니다.');
       setVerifyNickname(true);
@@ -90,13 +93,12 @@ const SignUpPage = () => {
   // 휴대번호 인증 버튼 핸들러
   const handlePhoneNumberVerifyButtonClick = async () => {
     const response = await sendCode(userInfo.phone, socialType);
-    console.log(response);
     if (response.status === 201) {
       // 휴대번호 인증 문자 요청
       alert('인증번호가 전송되었습니다.');
       setIsVerificationCodeSent(true);
     } else {
-      alert('인증번호가 전송에 실패했습니다.');
+      alert('인증번호 전송에 실패했습니다.');
     }
   };
 
@@ -105,6 +107,7 @@ const SignUpPage = () => {
   };
 
   const handleCheckCodeButtonClick = async () => {
+    // 전화번호 인증 코드 검증
     const response = await verifyCode(
       parseInt(code),
       userInfo.phone,
@@ -137,6 +140,7 @@ const SignUpPage = () => {
       return;
     }
 
+    // 회원가입 요청할 request form
     const requestUserInfo = {
       nickname: userInfo.nickname,
       role: isCustomer ? ROLE.CUSTOMER : ROLE.MANAGER,
@@ -144,9 +148,8 @@ const SignUpPage = () => {
     };
 
     const response = await requestSignUp(requestUserInfo);
-    if (response.status === 200) {
+    if (response.status === 201) {
       alert('회원가입 성공');
-
       if (requestUserInfo.role === ROLE.CUSTOMER) {
         navigate('/customer');
         setRole(ROLE.CUSTOMER);
@@ -157,11 +160,6 @@ const SignUpPage = () => {
     } else {
       alert('회원가입 실패');
     }
-  };
-  const alert = (text) => {
-    setModalType('alert');
-    setAlertText(text);
-    open();
   };
 
   return (

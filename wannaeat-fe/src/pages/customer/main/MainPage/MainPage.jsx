@@ -34,9 +34,13 @@ import blackArrowRightIcon from '../../../../assets/icons/common/black-arrow-rig
 import bossamIcon from '../../../../assets/icons/food/bossam.svg';
 import foodImage from '../../../../assets/icons/common/food.png';
 import { useNavigate } from 'react-router-dom';
+import useCommonStore, {
+  ROLE,
+} from '../../../../stores/common/useCommonStore.js';
 
 const MainPage = () => {
   const { setIsShowLogo, setActiveIcons } = useHeaderStore();
+  const { role, setRole } = useCommonStore();
   const navigate = useNavigate();
   const foodCategories = [
     { index: 1, category: '보쌈·족발', image: bossamIcon },

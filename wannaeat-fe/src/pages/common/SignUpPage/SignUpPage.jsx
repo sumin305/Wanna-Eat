@@ -21,27 +21,33 @@ import {
   ButtonWrapper,
 } from './SignUpPage.js';
 import WEToggle from '../../../component/common/toggle/WEToggle.jsx';
-import { checkNickname, sendCode } from '../../../api/common/join.js';
-import { ROLE } from '../../../stores/common/useCommonStore.js';
+import {
+  checkNickname,
+  sendCode,
+  verifyCode,
+} from '../../../api/common/join.js';
+import useCommonStore, { ROLE } from '../../../stores/common/useCommonStore.js';
+import { useNavigate } from 'react-router-dom';
 const SignUpPage = () => {
+  const { role, setRole, email, socialType, requestSignUp } = useCommonStore();
   const { setError, clearError } = useTextfieldStore();
   const { open, setAlertText, setModalType } = useModalStore();
+  const navigate = useNavigate();
   const [isChecked, setIsChecked] = useState(false);
   const [isCustomer, setIsCustomer] = useState(false);
   const [verifyNickname, setVerifyNickname] = useState(false);
   const [isVerificationCodeSent, setIsVerificationCodeSent] = useState(false);
   const [verifyPhoneNumber, setVerifyPhoneNumber] = useState(false);
+  const [code, setCode] = useState(0);
   const [userInfo, setUserInfo] = useState({
     nickname: '',
     email: 'gogotnals@naver.com',
     socialType: 'KAKAO',
     role: '',
-    phoneNumber: '',
+    phone: '',
   });
 
   const handleCheckBoxClick = () => {
-    console.log(isCustomer);
-    console.log(userInfo);
     setIsChecked(!isChecked);
   };
 
@@ -77,24 +83,42 @@ const SignUpPage = () => {
     const phoneNumber = e.target.value;
     setUserInfo((prevState) => ({
       ...prevState,
-      phoneNumber: phoneNumber,
+      phone: phoneNumber,
     }));
   };
 
   // 휴대번호 인증 버튼 핸들러
   const handlePhoneNumberVerifyButtonClick = async () => {
-    setIsVerificationCodeSent(true);
-
-    const response = await sendCode(userInfo.phoneNumber);
-    if (response.status === '200') {
+    const response = await sendCode(userInfo.phone, socialType);
+    console.log(response);
+    if (response.status === 201) {
       // 휴대번호 인증 문자 요청
       alert('인증번호가 전송되었습니다.');
+      setIsVerificationCodeSent(true);
     } else {
       alert('인증번호가 전송에 실패했습니다.');
     }
   };
 
-  const handleJoinButtonClick = () => {
+  const handleCodeChange = (e) => {
+    setCode(e.target.value);
+  };
+
+  const handleCheckCodeButtonClick = async () => {
+    const response = await verifyCode(
+      parseInt(code),
+      userInfo.phone,
+      socialType
+    );
+
+    if (response.status === 200) {
+      alert('인증이 완료되었습니다.');
+      setVerifyPhoneNumber(true);
+    } else {
+      alert('인증에 실패했습니다. ');
+    }
+  };
+  const handleJoinButtonClick = async () => {
     // 약관 동의했는지 체크
     if (!isChecked) {
       alert('약관에 동의해주세요');
@@ -113,10 +137,26 @@ const SignUpPage = () => {
       return;
     }
 
-    setUserInfo((prevState) => ({
-      ...prevState,
+    const requestUserInfo = {
+      nickname: userInfo.nickname,
       role: isCustomer ? ROLE.CUSTOMER : ROLE.MANAGER,
-    }));
+      phone: userInfo.phone,
+    };
+
+    const response = await requestSignUp(requestUserInfo);
+    if (response.status === 200) {
+      alert('회원가입 성공');
+
+      if (requestUserInfo.role === ROLE.CUSTOMER) {
+        navigate('/customer');
+        setRole(ROLE.CUSTOMER);
+      } else {
+        navigate('/manager');
+        setRole(ROLE.MANAGER);
+      }
+    } else {
+      alert('회원가입 실패');
+    }
   };
   const alert = (text) => {
     setModalType('alert');
@@ -152,7 +192,7 @@ const SignUpPage = () => {
         <InputWrapper>
           <InputTitle>이메일 </InputTitle>
           <TextfieldWrapper>
-            <Textfield name="email" disabled value={userInfo.email}></Textfield>
+            <Textfield name="email" disabled value={email}></Textfield>
           </TextfieldWrapper>
         </InputWrapper>
 
@@ -175,10 +215,13 @@ const SignUpPage = () => {
         <InputWrapper>
           <InputTitle>인증번호 </InputTitle>
           <TextfieldWrapperWithButton>
-            <Textfield placeholder="인증번호를 입력해주세요"></Textfield>
-            <TextFieldWrapperButton
-              onClick={() => console.log('인증번호 확인')}
-            >
+            <Textfield
+              type="number"
+              name="code"
+              onChange={handleCodeChange}
+              placeholder="인증번호를 입력해주세요"
+            ></Textfield>
+            <TextFieldWrapperButton onClick={handleCheckCodeButtonClick}>
               확인
             </TextFieldWrapperButton>
           </TextfieldWrapperWithButton>

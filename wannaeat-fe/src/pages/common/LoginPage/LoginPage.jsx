@@ -19,23 +19,31 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { getUserRole, setRole, setEmail, setSocialType } = useCommonStore();
   const kakaoLink = process.env.REACT_APP_LOCAL_KAKAO_LOGIN_URL;
-  const googleLink = `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A//www.googleapis.com/auth/drive.metadata.readonly&include_granted_scopes=true&response_type=token&state=state_parameter_passthrough_value&redirect_uri=${process.env.REACT_APP_GOOGLE_LOGIN_URL}&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}`;
+  const googleLink = process.env.REACT_APP_LOCAL_GOOGLE_LOGIN_URL;
 
   const handleKakaoLoginButtonClick = () => {
     window.location.href = kakaoLink;
   };
 
   const handleGoogleLoginButtonClick = () => {
-    console.log(googleLink);
     window.location.href = googleLink;
   };
 
+  const setUserInfo = (email, socialType) => {
+    console.log(email.socialType);
+    setEmail(email);
+    setSocialType(socialType);
+  };
   useEffect(() => {
+    console.log('render!');
+
     const getLoginStatus = async () => {
-      const role = await getUserRole();
-      if (role === ROLE.GUEST) {
+      const userInfo = await getUserRole();
+      setUserInfo(userInfo.email, userInfo.socialType);
+      console.log(userInfo.role);
+      if (userInfo.role === ROLE.GUEST) {
         navigate('/join');
-      } else if (role === ROLE.CUSTOMER) {
+      } else if (userInfo.role === ROLE.CUSTOMER) {
         navigate('/customer');
       } else {
         navigate('/manager');

@@ -2,6 +2,9 @@ import { useEffect } from 'react';
 import { getToken } from '../../../api/common/login.js';
 import useCommonStore, { ROLE } from '../../../stores/common/useCommonStore';
 import { useNavigate } from 'react-router-dom';
+import Logo from '../../../assets/icons/header/logo-picture.svg';
+import kakaoLoginButton from '../../../assets/common/kakao_login_large_wide.png';
+import googleLoginLogo from '../../../assets/common/googleLoginLogo.svg';
 import {
   LoginPageContainer,
   LoginPageLogo,
@@ -12,35 +15,34 @@ import {
   GoogleLoginButtonImg,
   GoogleLoginTitle,
 } from './LoginPage';
-import Logo from '../../../assets/icons/header/logo-picture.svg';
-import kakaoLoginButton from '../../../assets/common/kakao_login_large_wide.png';
-import googleLoginLogo from '../../../assets/common/googleLoginLogo.svg';
+
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { getUserRole, setRole, setEmail, setSocialType } = useCommonStore();
+  const { getUserRole, setEmail, setSocialType } = useCommonStore();
   const kakaoLink = process.env.REACT_APP_KAKAO_LOGIN_URL;
   const googleLink = process.env.REACT_APP_GOOGLE_LOGIN_URL;
 
   const handleKakaoLoginButtonClick = () => {
-    window.location.href = kakaoLink;
+    window.location.replace(kakaoLink);
   };
 
   const handleGoogleLoginButtonClick = () => {
-    window.location.href = googleLink;
+    window.location.replace(googleLink);
   };
 
+  // oauth에서 받아온 회원정보 업데이트
   const setUserInfo = (email, socialType) => {
-    console.log(email.socialType);
     setEmail(email);
     setSocialType(socialType);
   };
-  useEffect(() => {
-    console.log('render!');
 
+  useEffect(() => {
     const getLoginStatus = async () => {
       const userInfo = await getUserRole();
+
+      if (userInfo === undefined) return;
+
       setUserInfo(userInfo.email, userInfo.socialType);
-      console.log(userInfo.role);
       if (userInfo.role === ROLE.GUEST) {
         navigate('/join');
       } else if (userInfo.role === ROLE.CUSTOMER) {
@@ -57,6 +59,7 @@ const LoginPage = () => {
     // 로그인 된 상태라면
     if (searchParams.has('redirectedFromSocialLogin')) {
       // Access token 발급 후, role update
+      console.log('role update');
       getLoginStatus();
     }
   }, []);

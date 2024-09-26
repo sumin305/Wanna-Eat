@@ -19,8 +19,13 @@ const useCommonStore = create((set) => ({
 
   getUserRole: async () => {
     const result = await getToken();
-    if (result.status !== 200) return;
+    if (result.status !== 200) {
+      console.log(result);
+      console.log('error발생');
+      return;
+    }
     const authToken = result.headers['authorization-wannaeat'];
+    console.log(authToken, 'authToken');
     if (authToken) {
       // 로컬 스토리지에 저장
       localStorage.setItem('Authorization-wannaeat', authToken);

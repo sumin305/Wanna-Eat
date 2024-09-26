@@ -77,7 +77,6 @@ const HeaderRight = styled.div`
 const HeaderImg = styled.img`
   width: 2rem;
   height: 1.5rem;
-  margin-top: 0.5rem;
   @media (min-width: 480px) {
     width: 3rem;
     height: 2rem;

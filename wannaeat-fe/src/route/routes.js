@@ -4,6 +4,7 @@ import Layout from '../layout/common/Layout';
 // 사업자 관련 페이지
 import ManagerMainPage from '../pages/manager/main/MainPage';
 import AdminPage from '../pages/manager/reservation/AdminPage';
+import SeatDecoratePage from '../pages/manager/restaurant/SeatDecoratePage/SeatDecoratePage.jsx';
 import RestaurantViewPage from '../pages/manager/restaurant/RestaurantViewPage';
 import StatisticsPage from '../pages/manager/statistics/StatisticsPage';
 
@@ -28,6 +29,10 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/manager" element={<ManagerMainPage />} />
         <Route path="/manager/admin" element={<AdminPage />} />
+        <Route
+          path="/manager/restaurant/seatdecorate"
+          element={<SeatDecoratePage />}
+        />
         <Route
           path="/manager/restaurantview"
           element={<RestaurantViewPage />}

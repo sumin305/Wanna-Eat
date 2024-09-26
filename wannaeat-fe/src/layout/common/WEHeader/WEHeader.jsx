@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import useHeaderStore from '../../../stores/common/useHeaderStore';
-
+import useCommonStore from '../../../stores/common/useCommonStore';
 import {
   HeaderContainer,
   HeaderWrapper,

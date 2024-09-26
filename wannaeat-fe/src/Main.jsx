@@ -36,11 +36,15 @@ const Main = () => {
       <WEBlackOutLayout />
       <WEModal />
       <AppContainer>
-        {location.pathname !== '/customer/reservation' && (
-          <WEHeader isCarrot={true} text="메인페이지" />
-        )}
+        {location.pathname !== '/customer/reservation' &&
+          location.pathname !== '/' &&
+          location.pathname !== '/join' && (
+            <WEHeader isCarrot={true} text="메인페이지" />
+          )}
         <AppRoutes />
-        <WEFooter />
+        {location.pathname !== '/' && location.pathname !== '/join' && (
+          <WEFooter />
+        )}
       </AppContainer>
     </div>
   );

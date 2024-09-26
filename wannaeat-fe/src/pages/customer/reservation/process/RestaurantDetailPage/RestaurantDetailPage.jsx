@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import useHeaderStore from '../../../../../stores/common/header/useHeaderStore';
+import useHeaderStore from '../../../../../stores/common/useHeaderStore';
 import {
   Box,
   RestaurantImageBox,

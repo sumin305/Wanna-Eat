@@ -3,11 +3,7 @@ import theme from '../../../style/common/theme';
 import { ROLE } from '../../../stores/common/useCommonStore';
 
 const FooterContainer = styled.div`
-  display: ${({ role }) => {
-    if (role === ROLE.GUEST) return 'none';
-    else return 'flex';
-  }};
-
+  display: flex;
   background-color: ${theme.color.white};
   width: 100%;
   height: 10%;

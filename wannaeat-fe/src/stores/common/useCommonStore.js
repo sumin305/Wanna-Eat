@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { getToken } from '../../api/common/login';
-import { signUp } from '../../api/common/join';
+import { getToken } from 'api/common/login';
+import { signUp } from 'api/common/join';
 export const ROLE = {
   CUSTOMER: 'CUSTOMER',
   MANAGER: 'MANAGER',
@@ -16,6 +16,7 @@ const useCommonStore = create((set) => ({
   setEmail: (value) => set(() => ({ email: value })),
   setSocialType: (value) => set(() => ({ socialType: value })),
   setCategories: (categories) => set({ categories: categories }),
+
   getUserRole: async () => {
     const result = await getToken();
     if (result.status !== 200) return;
@@ -42,6 +43,7 @@ const useCommonStore = create((set) => ({
       console.log('Authorization-wannaeat header not found');
     }
   },
+
   requestSignUp: async (requestUserInfo) => {
     const result = await signUp(requestUserInfo);
     console.log('useCommonStore requestSignUp result', result);

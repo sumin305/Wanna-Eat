@@ -1,5 +1,6 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
+import useAlert from './alert';
+import { useNavigate } from 'react-router-dom';
 
 // 로컬 변수로 accessToken 설정
 let accessToken = '';
@@ -105,6 +106,11 @@ authClientInstance.interceptors.response.use(
         config.headers['authorization-wannaeat'] = accessToken;
         return authClientInstance(config);
       } else {
+        const alert = useAlert();
+        const navigate = useNavigate();
+
+        alert('로그인 해주세요');
+        navigate('/');
       }
     }
     return Promise.reject(error);

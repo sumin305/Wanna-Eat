@@ -5,7 +5,7 @@ import {
   FooterText,
 } from './WEFooter.js';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import HomeOff from '../../../assets/icons/footer/home-off.svg';
 import HomeOn from '../../../assets/icons/footer/home-on.svg';
@@ -74,14 +74,28 @@ const tabs = {
 };
 
 const WEFooter = () => {
-  const { role } = useCommonStore();
+  const { getUserRole } = useCommonStore();
   const { activeId, handleClickTab } = useFooterStore();
   const nav = useNavigate();
   const location = useLocation();
-  const currentTabs = role === ROLE.MANAGER ? tabs.manager : tabs.customer;
+  const [currentTabs, setCurrentTabs] = useState([]);
   const currentTabId = currentTabs.find(
     (tab) => tab.path === location.pathname
   )?.id;
+
+  useEffect(() => {
+    const checkUserRole = async () => {
+      const role = await getUserRole();
+      return role;
+    };
+
+    const fetchTabs = async () => {
+      const role = await checkUserRole();
+      setCurrentTabs(role === 'MANAGER' ? tabs.manager : tabs.customer);
+    };
+
+    fetchTabs(); // Async 함수 호출
+  }, []);
 
   useEffect(() => {
     if (currentTabId !== undefined && currentTabId != activeId) {
@@ -90,7 +104,7 @@ const WEFooter = () => {
   }, [currentTabId]);
 
   return (
-    <FooterContainer role={role}>
+    <FooterContainer>
       {currentTabs.map((tab) => (
         <FooterWrapper
           key={tab.id}

@@ -17,8 +17,14 @@ import Logo from '../../../assets/icons/header/logo-picture.svg';
 import BackCarrot from '../../../assets/icons/header/back-carrot.svg';
 import BackWhite from '../../../assets/icons/header/back-white.svg';
 const WEHeader = () => {
-  const { pageName, isCarrot, activeIcons, isShowLogo, isShowBackIcon } =
-    useHeaderStore();
+  const {
+    pageName,
+    isCarrot,
+    activeIcons,
+    isShowLogo,
+    isShowBackIcon,
+    isUnderLine,
+  } = useHeaderStore();
 
   const nav = useNavigate();
 
@@ -27,9 +33,9 @@ const WEHeader = () => {
   };
 
   return (
-    <HeaderContainer isCarrot={isCarrot}>
+    <HeaderContainer isCarrot={isCarrot} isUnderLine={isUnderLine}>
       <HeaderWrapper>
-        <HeaderLeft>
+        <HeaderLeft isShowLogo={isShowLogo}>
           {isShowLogo ? (
             <>
               <HeaderImg src={Logo} alt="로고" />

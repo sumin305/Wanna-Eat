@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
-import { ToggleContainer, ToggleCircle, ToggleBackground } from './WEToggle';
+import {
+  ToggleContainer,
+  ToggleText,
+  ToggleCircle,
+  ToggleCircleText,
+  ToggleBackground,
+} from './WEToggle';
 
-const WEToggle = () => {
-  const [isOn, setIsOn] = useState(false);
+const WEToggle = ({ isOn, setIsOn }) => {
+  // const [isOn, setIsOn] = useState(false);
 
   const handleClickToggle = () => {
     setIsOn(!isOn);
@@ -10,8 +16,12 @@ const WEToggle = () => {
 
   return (
     <ToggleContainer onClick={handleClickToggle} isOn={isOn}>
-      <ToggleBackground isOn={isOn} />
-      <ToggleCircle isOn={isOn} />
+      <ToggleBackground isOn={isOn}>
+        <ToggleText isOn={isOn}>{isOn ? '사장님' : '손님'}</ToggleText>
+      </ToggleBackground>
+      <ToggleCircle isOn={isOn}>
+        <ToggleCircleText>{isOn ? '손님' : '사장님'}</ToggleCircleText>
+      </ToggleCircle>
     </ToggleContainer>
   );
 };

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import useHeaderStore from '../../../../stores/common/header/useHeaderStore';
+import useHeaderStore from '../../../../stores/common/useHeaderStore';
 import { ManagerRegistPageStyled } from './ManagerRegistPage.js';
 import WETextField from 'component/common/textfield/WETextfield/WETextfield.jsx';
 

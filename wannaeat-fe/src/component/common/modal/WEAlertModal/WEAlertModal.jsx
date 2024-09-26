@@ -2,27 +2,26 @@ import {
   ModalStyled,
   TitleStyled,
   ButtonContainerStyled,
-  OneButtonContainerStyled
+  OneButtonContainerStyled,
 } from './WEAlertModal';
 import WEButton from '../../button/WEButton/WEButton';
 import theme from '../../../../style/common/theme';
-import useModalStore from '../../../../stores/common/modal/useModalStore';
+import useModalStore from '../../../../stores/common/useModalStore';
 const WEAlertModal = () => {
-  const { alertText, cancelText, confirmText, close, isOneButton } = useModalStore();
+  const { alertText, cancelText, confirmText, close, isOneButton } =
+    useModalStore();
   return (
     <ModalStyled>
       <TitleStyled>{alertText}</TitleStyled>
-        {
-          isOneButton ? 
-          (<OneButtonContainerStyled>
-         <WEButton size="long" onClick={close}>
-              {confirmText}
+      {isOneButton ? (
+        <OneButtonContainerStyled>
+          <WEButton size="long" onClick={close}>
+            {confirmText}
           </WEButton>
-          </OneButtonContainerStyled>) 
-          :
-          (
-            <ButtonContainerStyled>
-            <WEButton
+        </OneButtonContainerStyled>
+      ) : (
+        <ButtonContainerStyled>
+          <WEButton
             size="modal"
             onClick={close}
             backgroundColor={theme.color.gray}
@@ -33,9 +32,8 @@ const WEAlertModal = () => {
           <WEButton size="modal" onClick={close}>
             {confirmText}
           </WEButton>
-          </ButtonContainerStyled>
-          )
-        }
+        </ButtonContainerStyled>
+      )}
     </ModalStyled>
   );
 };

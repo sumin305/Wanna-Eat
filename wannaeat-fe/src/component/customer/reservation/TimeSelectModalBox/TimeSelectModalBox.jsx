@@ -1,4 +1,4 @@
-import useReservationStore from '../../../../stores/customer/reservation/useReservationStore.js';
+import useReservationStore from '../../../../stores/customer/useReservationStore.js';
 import {
   TimeSelectModalBoxContainer,
   TimeSelectModalTitleStyled,
@@ -175,7 +175,7 @@ const TimeSelectModalBox = () => {
       <TimeSelectModalTitleStyled>시간을 선택하세요</TimeSelectModalTitleStyled>
       <div>
         <TimeSelectModalSubTitleWrapper>
-          <TimeSelectModalSubTitleStyled>오전</TimeSelectModalSubTitleStyled>
+          <TimeSelectModalSubTitleStyled>점심</TimeSelectModalSubTitleStyled>
         </TimeSelectModalSubTitleWrapper>
 
         <TimeSelectModalListContainer>
@@ -202,7 +202,7 @@ const TimeSelectModalBox = () => {
       </div>
       <div>
         <TimeSelectModalSubTitleWrapper>
-          <TimeSelectModalSubTitleStyled>오후</TimeSelectModalSubTitleStyled>
+          <TimeSelectModalSubTitleStyled>저녁</TimeSelectModalSubTitleStyled>
         </TimeSelectModalSubTitleWrapper>
         <TimeSelectModalListContainer>
           {dinnerTimes.map((time, index) => (

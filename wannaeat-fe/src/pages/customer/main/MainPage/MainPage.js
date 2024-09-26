@@ -16,8 +16,6 @@ const SearchWrapper = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 0
-  margin: 0.5rem auto;
 `;
 
 const SearchInput = styled.input`
@@ -37,7 +35,7 @@ const SearchInput = styled.input`
 
 const SearchIcon = styled.img`
   position: absolute;
-  right: 2rem;
+  right: 1.5rem;
   height: 3vh;
   border: none;
   border-radius: 5px;

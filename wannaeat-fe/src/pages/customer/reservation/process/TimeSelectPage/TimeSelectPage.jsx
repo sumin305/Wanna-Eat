@@ -43,7 +43,7 @@ const TimeSelectPage = () => {
   };
 
   const handleBeforeButtonClick = () => {
-    navigate('/customer/restaurant/');
+    navigate(-1);
   };
   const handleNextButtonClick = () => {
     navigate('/customer/reservation/seat-select');

@@ -17,6 +17,11 @@ const HeaderContainer = styled.div`
   background-color: ${(props) =>
     props.isCarrot ? theme.color.primary : theme.color.white};
 
+  border-bottom: ${(props) =>
+    props.isCarrot === false && props.isUnderLine
+      ? `0.5px solid ${theme.color.disabled}`
+      : 'none'};
+
   @media (min-width: 480px) {
     width: 480px;
     align-items: center;
@@ -25,7 +30,7 @@ const HeaderContainer = styled.div`
 
 const HeaderWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   width: 90%;
   height: 100%;
@@ -34,11 +39,14 @@ const HeaderWrapper = styled.div`
 
 const HeaderLeft = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: ${(props) => {
+    return props.isShowLogo ? 'column' : 'row';
+  }};
   justify-content: flex-start;
   align-items: center;
-  left: 0;
-  width: 20%;
+  width: ${(props) => {
+    return props.isShowLogo ? '20%' : '10%';
+  }};
 `;
 
 const LogoTitle = styled.h1`
@@ -62,6 +70,7 @@ const HeaderCenter = styled.div`
       ? 'center'
       : 'flex-start';
   }};
+  align-items: center;
   width: ${(props) => {
     return props.children.props.isShowBackIcon ||
       props.children.props.isShowLogo
@@ -73,15 +82,13 @@ const HeaderCenter = styled.div`
 const HeaderRight = styled.div`
   display: flex;
   justify-content: flex-end;
-  position: absolute;
-  right: 0;
+  align-items: center;
   width: 10%;
 `;
 
 const HeaderImg = styled.img`
   width: 2rem;
   height: 1.5rem;
-  margin-top: 0.5rem;
   @media (min-width: 480px) {
     width: 3rem;
     height: 2rem;

@@ -7,9 +7,11 @@ import AppRoutes from './route/routes.js';
 import WEHeader from './layout/common/WEHeader/WEHeader.jsx';
 import { useEffect } from 'react';
 import useCommonStore, { ROLE } from './stores/common/useCommonStore.js';
+import { useLocation } from 'react-router-dom';
 
 const Main = () => {
   const { setCategories } = useCommonStore();
+  const location = useLocation();
 
   useEffect(() => {
     setCategories(['고기', '족발', '찌개', '회', '돈까스']);
@@ -34,7 +36,9 @@ const Main = () => {
       <WEBlackOutLayout />
       <WEModal />
       <AppContainer>
-        <WEHeader isCarrot={true} text="메인페이지" />
+        {location.pathname !== '/customer/reservation' && (
+          <WEHeader isCarrot={true} text="메인페이지" />
+        )}
         <AppRoutes />
         <WEFooter />
       </AppContainer>

@@ -17,34 +17,27 @@ import {
 import Logo from '../../../assets/icons/header/logo-picture.svg';
 import BackCarrot from '../../../assets/icons/header/back-carrot.svg';
 import BackWhite from '../../../assets/icons/header/back-white.svg';
-import useCommonStore from '../../../stores/common/useCommonStore';
-const WEHeader = ({ isCarrot, isShowBackIcon }) => {
+const WEHeader = () => {
   const {
     pageName,
-    setIsCarrot,
-    setPageName,
+    isCarrot,
     activeIcons,
     isShowLogo,
-    setIsShowBackIcon,
+    isShowBackIcon,
+    isUnderLine,
   } = useHeaderStore();
 
   const nav = useNavigate();
   const { role } = useCommonStore();
-
-  useEffect(() => {
-    setIsCarrot(isCarrot);
-    // setPageName(text);
-    setIsShowBackIcon(isShowBackIcon);
-  }, []);
 
   const handleClickBack = () => {
     nav(-1); // 뒤로가기
   };
 
   return (
-    <HeaderContainer role={role} isCarrot={isCarrot}>
+    <HeaderContainer role={role} isCarrot={isCarrot} isUnderLine={isUnderLine}>
       <HeaderWrapper>
-        <HeaderLeft>
+        <HeaderLeft isShowLogo={isShowLogo}>
           {isShowLogo ? (
             <>
               <HeaderImg src={Logo} alt="로고" />

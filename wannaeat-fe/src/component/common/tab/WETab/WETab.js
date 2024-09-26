@@ -26,7 +26,7 @@ const Tab = styled.button`
   flex: 0 0 auto;
   padding: 0.625rem 1.25rem;
   margin: 0 0.625rem;
-  font-size: 1rem;
+  font-size: ${theme.fontSize.px11};
   font-weight: ${(props) => (props.active ? 700 : 500)};
   border: none;
   background-color: transparent;

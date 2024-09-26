@@ -6,14 +6,17 @@ import SignUpPage from '../pages/common/SignUpPage/SignUpPage.jsx';
 // 사업자 관련 페이지
 import ManagerMainPage from '../pages/manager/main/MainPage';
 import AdminPage from '../pages/manager/reservation/AdminPage';
+import SeatDecoratePage from '../pages/manager/restaurant/SeatDecoratePage/SeatDecoratePage.jsx';
 import RestaurantViewPage from '../pages/manager/restaurant/RestaurantViewPage';
 import StatisticsPage from '../pages/manager/statistics/StatisticsPage';
+import ManagerRegistPage from '../pages/manager/restaurant/ManagerRegistPage/ManagerRegistPage.jsx';
 
 // 손님 관련 페이지
 import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
 import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage.jsx';
 import ListPage from '../pages/customer/reservation/history/ListPage';
 import MyInfoPage from '../pages/customer/user/MyInfoPage';
+import RestaurantDetailPage from '../pages/customer/reservation/process/RestaurantDetailPage/RestaurantDetailPage.jsx';
 import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage/TimeSelectPage.jsx';
 import DepositPaymentPage from '../pages/customer/reservation/process/DepositPaymentPage/DepositPaymentPage.jsx';
 import SeatSelectPage from '../pages/customer/reservation/process/SeatSelectPage/SeatSelectPage.jsx';
@@ -34,12 +37,24 @@ const AppRoutes = () => {
         <Route path="/manager" element={<ManagerMainPage />} />
         <Route path="/manager/admin" element={<AdminPage />} />
         <Route
+          path="/manager/restaurant/seatdecorate"
+          element={<SeatDecoratePage />}
+        />
+        <Route
+          path="/manager/restaurant/manager-regist"
+          element={<ManagerRegistPage />}
+        />
+        <Route
           path="/manager/restaurantview"
           element={<RestaurantViewPage />}
         />
         <Route path="/manager/statistics" element={<StatisticsPage />} />
         <Route path="/customer" element={<CustomerMainPage />} />
         <Route path="/customer/reservation" element={<MapRestaurantPage />} />
+        <Route
+          path="/customer/reservation/restaurant-detail/:id"
+          element={<RestaurantDetailPage />}
+        />
         <Route
           path="/customer/reservation/time-select"
           element={<TimeSelectPage />}

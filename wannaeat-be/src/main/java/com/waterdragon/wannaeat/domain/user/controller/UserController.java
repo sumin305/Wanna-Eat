@@ -41,7 +41,7 @@ public class UserController {
 	 * @return void 가입 요청 결과
 	 */
 	@Operation(summary = "회원가입 API")
-	@PostMapping("/public/users/signup")
+	@PostMapping("/users/signup")
 	public ResponseEntity<ResponseDto<Void>> signup(
 		@Valid @RequestBody UserSignupRequestDto userSignupRequestDto) {
 

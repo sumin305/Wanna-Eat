@@ -23,7 +23,7 @@ const useHeaderStore = create((set) => ({
   isCarrot: true, // 기본탭바 배경색 기본은 주황색
   isExtraCarrot: false, // 서브탭바 배경색 기본은 흰색
   pageName: '', // 중간에 들어가는 페이지 이름
-  isShowBackIcon: false, // 뒤로가기 버튼 유무s
+  isShowBackIcon: false, // 뒤로가기 버튼 유무
   isShowLogo: false, // 로고 유무
   activeIcons: [],
   isShowExtraHeader: false, // 서브탭바 유무

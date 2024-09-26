@@ -41,7 +41,7 @@ const DepositPaymentPage = () => {
   }));
 
   const handleBeforeButtonClick = () => {
-    navigate('/customer/reservation/seat-select');
+    navigate(-1);
   };
 
   const handleNextButtonClick = () => {

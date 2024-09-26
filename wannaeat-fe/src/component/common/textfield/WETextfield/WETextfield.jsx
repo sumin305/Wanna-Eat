@@ -9,7 +9,12 @@ const {
   ErrorMessageDivStyled,
 } = components;
 
-const Textfield = ({ type = 'text', name, ...props }) => {
+const Textfield = ({
+  type = 'text',
+  name,
+  showErrorMessageSpace = false,
+  ...props
+}) => {
   const { errors, errorMessages, clearError } = useTextfieldStore();
 
   const handleFocus = () => {
@@ -29,7 +34,7 @@ const Textfield = ({ type = 'text', name, ...props }) => {
         {...props}
       />
 
-      {errorType && (
+      {(errorType || showErrorMessageSpace) && (
         <ErrorMessageDivStyled error={!!errorType}>
           {<WarningIcon />}
           <ErrorMessageStyled>

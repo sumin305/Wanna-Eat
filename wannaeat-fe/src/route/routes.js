@@ -19,6 +19,8 @@ import DepositPaymentPage from '../pages/customer/reservation/process/DepositPay
 import SeatSelectPage from '../pages/customer/reservation/process/SeatSelectPage/SeatSelectPage.jsx';
 import SuccessPage from '../pages/customer/reservation/process/SuccessPage/SuccessPage.jsx';
 import FingerprintAuthPage from '../pages/customer/reservation/process/FingerprintAuthPage/FingerprintAuthPage.jsx';
+import { useEffect } from 'react';
+import useCommonStore from '../stores/common/useCommonStore.js';
 // 비회원 관련 페이지
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';
 

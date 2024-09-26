@@ -5,9 +5,6 @@ import BlackOutLayoutStyled from './WEBlackOutLayout';
 const WEBlackOutLayout = () => {
   const { close, isModalVisible } = useModalStore();
 
-  useEffect(() => {
-    console.log('모달창 렌더링!');
-  });
   return (
     <BlackOutLayoutStyled
       isModalVisible={isModalVisible}

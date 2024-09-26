@@ -79,6 +79,7 @@ const MapRestaurantPage = () => {
   };
 
   const buttons = renderFilterButtons();
+  console.log(selectedDate);
 
   return (
     <MapRestaurantBox>
@@ -89,7 +90,7 @@ const MapRestaurantPage = () => {
         </SearchWrapper>
         <ButtonContainer>
           {buttons.length === 0 ? (
-            <FilterButton onClick={handleFilterModalButtonClick}>
+            <FilterButton onClick={handleFilterModalButtonClick} isEven={true}>
               검색 조건 설정하기
             </FilterButton>
           ) : (

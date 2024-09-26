@@ -13,6 +13,11 @@ const HeaderContainer = styled.div`
   background-color: ${(props) =>
     props.isCarrot ? theme.color.primary : theme.color.white};
 
+  border-bottom: ${(props) =>
+    props.isCarrot === false && props.isUnderLine
+      ? `0.5px solid ${theme.color.disabled}`
+      : 'none'};
+
   @media (min-width: 480px) {
     width: 480px;
     align-items: center;
@@ -30,9 +35,14 @@ const HeaderWrapper = styled.div`
 
 const HeaderLeft = styled.div`
   display: flex;
+  flex-direction: ${(props) => {
+    return props.isShowLogo ? 'column' : 'row';
+  }};
   justify-content: flex-start;
   align-items: center;
-  width: 10%;
+  width: ${(props) => {
+    return props.isShowLogo ? '20%' : '10%';
+  }};
 `;
 
 const LogoTitle = styled.h1`

@@ -39,9 +39,7 @@ const LoginPage = () => {
   useEffect(() => {
     const getLoginStatus = async () => {
       const userInfo = await getUserRole();
-
       if (userInfo === undefined) return;
-
       setUserInfo(userInfo.email, userInfo.socialType);
       if (userInfo.role === ROLE.GUEST) {
         navigate('/join');
@@ -54,12 +52,10 @@ const LoginPage = () => {
 
     const url = new URL(window.location.href);
     const searchParams = url.searchParams;
-    // const parseUrl = url.replace(`${process.env.REACT_APP_CLIENT_URL}`, '');
 
     // 로그인 된 상태라면
     if (searchParams.has('redirectedFromSocialLogin')) {
       // Access token 발급 후, role update
-      console.log('role update');
       getLoginStatus();
     }
   }, []);

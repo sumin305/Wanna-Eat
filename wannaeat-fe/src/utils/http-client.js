@@ -122,7 +122,6 @@ authWithRefreshClientInstance.interceptors.response.use(
       console.log('access token 없음');
       console.log(response.headers.get('authorization-wannaeat'));
     }
-
     return response;
   },
   (error) => {

@@ -4,6 +4,12 @@ import Textfield from '../../../component/common/textfield/WETextfield/WETextfie
 import Button from '../../../component/common/button/WEButton/WEButton.jsx';
 import useTextfieldStore from '../../../stores/common/useTextfieldStore.js';
 import useModalStore from '../../../stores/common/useModalStore.js';
+import WEToggle from '../../../component/common/toggle/WEToggle.jsx';
+import {
+  checkNickname,
+  sendCode,
+  verifyCode,
+} from '../../../api/common/join.js';
 import {
   SignUpPageContainer,
   SignUpPageHeader,
@@ -20,16 +26,11 @@ import {
   VerificationTitle,
   ButtonWrapper,
 } from './SignUpPage.js';
-import WEToggle from '../../../component/common/toggle/WEToggle.jsx';
-import {
-  checkNickname,
-  sendCode,
-  verifyCode,
-} from '../../../api/common/join.js';
 import useCommonStore, { ROLE } from '../../../stores/common/useCommonStore.js';
 import { useNavigate } from 'react-router-dom';
+
 const SignUpPage = () => {
-  const { role, setRole, email, socialType, requestSignUp } = useCommonStore();
+  const { setRole, email, socialType, requestSignUp } = useCommonStore();
   const { setError, clearError } = useTextfieldStore();
   const { open, setAlertText, setModalType } = useModalStore();
   const navigate = useNavigate();
@@ -41,8 +42,8 @@ const SignUpPage = () => {
   const [code, setCode] = useState(0);
   const [userInfo, setUserInfo] = useState({
     nickname: '',
-    email: 'gogotnals@naver.com',
-    socialType: 'KAKAO',
+    email: '',
+    socialType: '',
     role: '',
     phone: '',
   });
@@ -69,6 +70,7 @@ const SignUpPage = () => {
   // 닉네임 중복 검사 핸들러
   const handleNicknameVerifyButtonClick = async () => {
     const response = await checkNickname(userInfo.nickname);
+    console.log(response);
     if (response.status === 200) {
       alert('사용 가능한 닉네임입니다.');
       setVerifyNickname(true);
@@ -104,6 +106,7 @@ const SignUpPage = () => {
   };
 
   const handleCheckCodeButtonClick = async () => {
+    // 전화번호 인증 코드 검증
     const response = await verifyCode(
       parseInt(code),
       userInfo.phone,

@@ -18,8 +18,8 @@ import googleLoginLogo from '../../../assets/common/googleLoginLogo.svg';
 const LoginPage = () => {
   const navigate = useNavigate();
   const { getUserRole, setRole, setEmail, setSocialType } = useCommonStore();
-  const kakaoLink = process.env.REACT_APP_LOCAL_KAKAO_LOGIN_URL;
-  const googleLink = process.env.REACT_APP_LOCAL_GOOGLE_LOGIN_URL;
+  const kakaoLink = process.env.REACT_APP_KAKAO_LOGIN_URL;
+  const googleLink = process.env.REACT_APP_GOOGLE_LOGIN_URL;
 
   const handleKakaoLoginButtonClick = () => {
     window.location.href = kakaoLink;

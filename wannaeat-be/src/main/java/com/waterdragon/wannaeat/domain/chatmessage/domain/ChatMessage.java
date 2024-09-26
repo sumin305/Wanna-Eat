@@ -1,4 +1,4 @@
-package com.waterdragon.wannaeat.domain.socket.domain;
+package com.waterdragon.wannaeat.domain.chatmessage.domain;
 
 import java.time.LocalDateTime;
 
@@ -8,9 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
-@ToString
 @Getter
 @Builder
 @Document(collection = "chatmessages")
@@ -21,6 +19,7 @@ public class ChatMessage {
 
 	private Long reservationId;
 	private Long senderReservationParticipantId;
+	private String senderReservationParticipantNickname;
 	private String content;
 	private LocalDateTime registerTime;
 }

@@ -1,12 +1,12 @@
-package com.waterdragon.wannaeat.domain.socket.dto.response;
+package com.waterdragon.wannaeat.domain.chatmessage.dto.response;
 
 import java.time.LocalDateTime;
 
+import com.waterdragon.wannaeat.domain.socket.dto.response.SocketResponseDto;
+
 import lombok.Getter;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-@ToString
 @Getter
 @SuperBuilder
 public class ChatMessageRegisterResponseDto extends SocketResponseDto {

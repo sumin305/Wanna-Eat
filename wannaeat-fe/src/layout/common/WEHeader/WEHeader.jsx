@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import useHeaderStore from '../../../stores/common/header/useHeaderStore';
-
+import useHeaderStore from '../../../stores/common/useHeaderStore';
+import useCommonStore from '../../../stores/common/useCommonStore';
 import {
   HeaderContainer,
   HeaderWrapper,
@@ -17,32 +17,27 @@ import {
 import Logo from '../../../assets/icons/header/logo-picture.svg';
 import BackCarrot from '../../../assets/icons/header/back-carrot.svg';
 import BackWhite from '../../../assets/icons/header/back-white.svg';
-const WEHeader = ({ isCarrot, isShowBackIcon }) => {
+const WEHeader = () => {
   const {
     pageName,
-    setIsCarrot,
-    setPageName,
+    isCarrot,
     activeIcons,
     isShowLogo,
-    setIsShowBackIcon,
+    isShowBackIcon,
+    isUnderLine,
   } = useHeaderStore();
 
   const nav = useNavigate();
-
-  useEffect(() => {
-    setIsCarrot(isCarrot);
-    // setPageName(text);
-    setIsShowBackIcon(isShowBackIcon);
-  }, []);
+  const { role } = useCommonStore();
 
   const handleClickBack = () => {
     nav(-1); // 뒤로가기
   };
 
   return (
-    <HeaderContainer isCarrot={isCarrot}>
+    <HeaderContainer role={role} isCarrot={isCarrot} isUnderLine={isUnderLine}>
       <HeaderWrapper>
-        <HeaderLeft>
+        <HeaderLeft isShowLogo={isShowLogo}>
           {isShowLogo ? (
             <>
               <HeaderImg src={Logo} alt="로고" />

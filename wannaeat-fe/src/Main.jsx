@@ -1,16 +1,17 @@
 import styled from '@emotion/styled/macro';
 import WEFooter from './layout/common/WEFooter/WEFooter.jsx';
-import useModalStore from './stores/common/modal/useModalStore.js';
+import useModalStore from './stores/common/useModalStore.js';
 import WEBlackOutLayout from './layout/common/WEBlackOutLayout/WEBlackOutLayout.jsx';
 import WEModal from './component/common/modal/WEModal.jsx';
 import AppRoutes from './route/routes.js';
 import WEHeader from './layout/common/WEHeader/WEHeader.jsx';
 import { useEffect } from 'react';
-import useCommonStore from './stores/common/useCommonStore.js';
+import useCommonStore, { ROLE } from './stores/common/useCommonStore.js';
+import { useLocation } from 'react-router-dom';
 
 const Main = () => {
-  const { isModalVisible } = useModalStore();
   const { setCategories } = useCommonStore();
+  const location = useLocation();
 
   useEffect(() => {
     setCategories(['고기', '족발', '찌개', '회', '돈까스']);
@@ -32,12 +33,18 @@ const Main = () => {
 
   return (
     <div>
-      {isModalVisible && <WEBlackOutLayout></WEBlackOutLayout>}
-      {isModalVisible && <WEModal />}
+      <WEBlackOutLayout />
+      <WEModal />
       <AppContainer>
-        <WEHeader isCarrot={true} text="메인페이지" />
+        {location.pathname !== '/customer/reservation' &&
+          location.pathname !== '/' &&
+          location.pathname !== '/join' && (
+            <WEHeader isCarrot={true} text="메인페이지" />
+          )}
         <AppRoutes />
-        <WEFooter />
+        {location.pathname !== '/' && location.pathname !== '/join' && (
+          <WEFooter />
+        )}
       </AppContainer>
     </div>
   );

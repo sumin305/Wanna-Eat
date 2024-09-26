@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import theme from '../../../style/common/theme';
+import { ROLE } from '../../../stores/common/useCommonStore';
 
 const FooterContainer = styled.div`
   display: flex;

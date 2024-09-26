@@ -1,6 +1,6 @@
 import { ReactComponent as WarningIcon } from '../../../../assets/icons/common/warning.svg';
 import components from './WETextfield.js';
-import useTextfieldStore from '../../../../stores/common/textfield/useTextfieldStore.js';
+import useTextfieldStore from '../../../../stores/common/useTextfieldStore.js';
 
 const {
   TextfieldWrapperStyled,
@@ -9,7 +9,13 @@ const {
   ErrorMessageDivStyled,
 } = components;
 
-const Textfield = ({ type = 'text', name, ...props }) => {
+const Textfield = ({
+  placeholder = '',
+  value,
+  type = 'text',
+  name,
+  ...props
+}) => {
   const { errors, errorMessages, clearError } = useTextfieldStore();
 
   const handleFocus = () => {
@@ -24,8 +30,10 @@ const Textfield = ({ type = 'text', name, ...props }) => {
       <TextfieldStyled
         type={type}
         name={name}
+        value={value}
         error={!!errorType}
         onFocus={handleFocus}
+        placeholder={placeholder}
         {...props}
       />
 

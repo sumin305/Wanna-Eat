@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import WEHeader from '../../../layout/common/WEHeader/WEHeader.jsx';
 import WEExtraHeader from '../../../layout/common/WEHeader/WEExtraHeader.jsx';
-import useHeaderStore from '../../../stores/common/header/useHeaderStore.js';
+import useHeaderStore from '../../../stores/common/useHeaderStore.js';
 
 const MainPage = () => {
   const { icons, isShowExtraHeader, setIsShowExtraHeader } = useHeaderStore();
@@ -16,7 +16,7 @@ const MainPage = () => {
       <WEHeader
         isCarrot={false}
         text="메인페이지"
-        icon={[icons[2]]}
+        icon={[2]}
         isShowLogo={false}
         isShowBackIcon={true}
       />

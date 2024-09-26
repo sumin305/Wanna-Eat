@@ -1,4 +1,7 @@
 import { useNavigate } from 'react-router-dom';
+import theme from '../../../../../style/common/theme';
+import { ButtonWrapper } from '../TimeSelectPage/TimeSelectPage';
+import Button from '../../../../../component/common/button/WEButton/WEButton';
 const FingerprintAuthPage = () => {
   const navigate = useNavigate();
   const handleRegisterButtonClick = async () => {
@@ -43,10 +46,31 @@ const FingerprintAuthPage = () => {
       console.log(e);
     }
   };
+
+  const handleBeforeButtonClick = () => {
+    navigate('/customer/reservation/seat-select');
+  };
+
+  const handleNextButtonClick = () => {
+    navigate('/customer/reservation/success');
+  };
   return (
     <div>
       <button onClick={handleRegisterButtonClick}>지문 등록하기</button>
       <button onClick={handleCheckButtonClick}>지문 확인하기</button>
+      <ButtonWrapper>
+        <Button
+          onClick={handleBeforeButtonClick}
+          size="short"
+          color={'black'}
+          backgroundColor={theme.color.disabled}
+        >
+          이전
+        </Button>
+        <Button onClick={handleNextButtonClick} size="venti">
+          다음
+        </Button>
+      </ButtonWrapper>
     </div>
   );
 };

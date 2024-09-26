@@ -18,8 +18,8 @@ import StatisticsOn from '../../../assets/icons/footer/statistics-on.svg';
 import MyinfoOff from '../../../assets/icons/footer/myinfo-off.svg';
 import MyinfoOn from '../../../assets/icons/footer/myinfo-on.svg';
 
-import useCommonStore from '../../../stores/common/useCommonStore.js';
-import useFooterStore from '../../../stores/common/footer/useFooterStore.js';
+import useCommonStore, { ROLE } from '../../../stores/common/useCommonStore.js';
+import useFooterStore from '../../../stores/common/useFooterStore.js';
 
 const tabs = {
   manager: [
@@ -74,11 +74,11 @@ const tabs = {
 };
 
 const WEFooter = () => {
-  const { isManager } = useCommonStore();
+  const { role } = useCommonStore();
   const { activeId, handleClickTab } = useFooterStore();
   const nav = useNavigate();
   const location = useLocation();
-  const currentTabs = isManager ? tabs.manager : tabs.customer;
+  const currentTabs = role === ROLE.MANAGER ? tabs.manager : tabs.customer;
   const currentTabId = currentTabs.find(
     (tab) => tab.path === location.pathname
   )?.id;
@@ -90,7 +90,7 @@ const WEFooter = () => {
   }, [currentTabId]);
 
   return (
-    <FooterContainer>
+    <FooterContainer role={role}>
       {currentTabs.map((tab) => (
         <FooterWrapper
           key={tab.id}

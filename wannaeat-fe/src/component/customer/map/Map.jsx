@@ -1,87 +1,111 @@
-import React, { useEffect } from 'react';
-import { MapView } from './Map';
+import React, { useEffect, useState } from 'react';
+import { MapView, FindRestaurantButton } from './Map';
 import PinkMarker from '../../../assets/icons/map/pink-maker.png';
 import ArrowWhite from '../../../assets/icons/map/arrow-white.png';
 import VertexWhite from '../../../assets/icons/map/vertex-white.png';
 import useMapStore from '../../../stores/map/useMapStore';
 import { useNavigate } from 'react-router-dom';
-const MapContainer = () => {
-  const { lat, lon, setLat, setLon } = useMapStore();
-  const navigate = useNavigate();
-  useEffect(() => {
-    const handleMarkerClick = (e) => {
-      console.log('click');
-      navigate('/customer/reservation/time-select');
-    };
 
+const MapContainer = () => {
+  const { lat, lon, setLat, setLon, isInitialLoad, setIsInitialLoad } =
+    useMapStore();
+  const [centerLatLng, setCenterLatLng] = useState({ lat: lat, lon: lon });
+  const [isButtonVisible, setIsButtonVisible] = useState(false);
+  const navigate = useNavigate();
+
+  // 현재 위치 근처의 레스토랑 찾는 함수
+  const handleRestaurantFind = () => {
+    setLat(centerLatLng.lat);
+    setLon(centerLatLng.lon);
+    setIsButtonVisible(false);
+  };
+
+  const handleMarkerClick = (id) => {
+    console.log('click', id);
+    navigate(`/customer/reservation/restaurant-detail/${id}`);
+  };
+
+  useEffect(() => {
     const { kakao } = window;
     const container = document.getElementById('map'); // 지도를 표시할 div
     const options = {
       center: new kakao.maps.LatLng(lat, lon), // 지도의 중심좌표
-      level: 3, // 지도의 확대 레벨
+      level: 4, // 지도의 확대 레벨
     };
 
     const map = new kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
 
-    // // 현재 위치에 해당하는 위도, 경도값으로 변경
-    // if (navigator.geolocation) {
-    //   navigator.geolocation.getCurrentPosition(function (position) {
-    //     setLat(position.coords.latitude);
-    //     setLon(position.coords.longitude);
-    //   });
-    // }
+    // 처음에 사용자의 현재 위치로 지도를 설정
+    if (isInitialLoad && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        const currentLat = position.coords.latitude;
+        const currentLon = position.coords.longitude;
+        console.log(currentLat, currentLon);
+        setLat(currentLat);
+        setLon(currentLon);
+        setCenterLatLng({ lat: currentLat, lon: currentLon });
+        map.setCenter(new kakao.maps.LatLng(currentLat, currentLon));
+        setIsInitialLoad(false);
+      });
+    }
+
+    // 지도 드래그나 확대/축소로 중심 좌표가 변경될 때 이벤트 등록
+    kakao.maps.event.addListener(map, 'center_changed', function () {
+      const latlng = map.getCenter();
+      setCenterLatLng({ lat: latlng.getLat(), lon: latlng.getLng() });
+      setIsButtonVisible(true);
+    });
 
     var positions = [
       {
-        title: '카카오',
-        latlng: new kakao.maps.LatLng(33.450705, 126.570677),
+        id: 1,
+        title: '지역1',
+        latlng: new kakao.maps.LatLng(lat + 0.000004, lon + 0.00001),
       },
       {
-        title: '생태연못',
-        latlng: new kakao.maps.LatLng(33.450936, 126.569477),
+        id: 2,
+        title: '지역2',
+        latlng: new kakao.maps.LatLng(lat + 0.000235, lon + 0.00119),
       },
       {
-        title: '텃밭',
-        latlng: new kakao.maps.LatLng(33.450879, 126.56994),
+        id: 3,
+        title: '지역3',
+        latlng: new kakao.maps.LatLng(lat + 0.000178, lon - 0.000727),
       },
       {
-        title: '근린공원',
-        latlng: new kakao.maps.LatLng(33.451393, 126.570738),
+        id: 4,
+        title: '지역4',
+        latlng: new kakao.maps.LatLng(lat + 0.000692, lon + 0.000071),
       },
     ];
 
-    // 마커 이미지의 이미지 주소입니다
     var imageSrc = PinkMarker;
 
-    for (var i = 0; i < positions.length; i++) {
-      // 마커 이미지의 이미지 크기 입니다
+    positions.map((position) => {
       var imageSize = new kakao.maps.Size(35, 35),
         imageOption = { offset: new kakao.maps.Point(18, 50) }; // 마커이미지 옵션
 
-      // 마커 이미지를 생성합니다
       var markerImage = new kakao.maps.MarkerImage(
           imageSrc,
           imageSize,
           imageOption
         ),
-        markerPosition = positions[i].latlng; // 마커가 표시될 위치
+        markerPosition = position.latlng; // 마커가 표시될 위치
 
-      // 마커를 생성합니다
       var marker = new kakao.maps.Marker({
         position: markerPosition,
         image: markerImage, // 마커이미지 설정
       });
 
-      // 마커가 지도 위에 표시되도록 설정합니다
       marker.setMap(map);
 
-      // 마커에 클릭 이벤트를 추가합니다
-      kakao.maps.event.addListener(marker, 'click', handleMarkerClick);
+      kakao.maps.event.addListener(marker, 'click', () =>
+        handleMarkerClick(position.id)
+      );
 
-      // 커스텀 오버레이의 HTML 콘텐츠
       var content = `
        <div class="customoverlay">
-         <span class="title">${positions[i].title}</span>
+         <span class="title">${position.title}</span>
        </div>
      `;
       var customOverlay = new kakao.maps.CustomOverlay({
@@ -91,7 +115,6 @@ const MapContainer = () => {
         yAnchor: 1,
       });
 
-      // 커스텀 스타일 추가
       const styleTag = document.createElement('style');
       styleTag.textContent = `
        .customoverlay {position:relative;bottom:60px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;}
@@ -101,10 +124,19 @@ const MapContainer = () => {
        .customoverlay:after {content:'';position:absolute;margin-left:-12px;left:50%;bottom:-12px;width:22px;height:12px;background:url(${VertexWhite})}
      `;
       document.head.appendChild(styleTag);
-    }
-  }, [lat, lon]);
+    });
+  }, [lat, lon]); // lat, lon이 변경될 때만 다시 실행됨
 
-  return <MapView id="map"></MapView>;
+  return (
+    <>
+      {isButtonVisible && (
+        <FindRestaurantButton onClick={handleRestaurantFind}>
+          중심 위치로 주변 식당 찾기
+        </FindRestaurantButton>
+      )}
+      <MapView id="map"></MapView>
+    </>
+  );
 };
 
 export default MapContainer;

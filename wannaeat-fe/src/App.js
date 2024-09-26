@@ -4,6 +4,12 @@ import { BrowserRouter } from 'react-router-dom';
 import { Global, css } from '@emotion/react';
 import Main from './Main';
 
+import {
+  requestPermission,
+  onForegroundMessage,
+} from './firebase/firebaseCloudMessaging';
+import { getFcmToken } from './firebase/firebaseCloudMessaging';
+
 const globalStyles = css`
   @font-face {
     font-family: 'Paperlogy-5Regular';
@@ -28,12 +34,21 @@ const globalStyles = css`
   }
   * {
     font-family: 'Paperlogy-5Regular', sans-serif;
-    letter-spacing: 1px;
+    // letter-spacing: 1px;
     font-weight: 500;
     margin: 0;
     padding: 0;
   }
 `;
+
+// FCM permission & token
+if (Notification.permission !== 'granted') {
+  requestPermission();
+} else {
+  // Save FCM token
+  getFcmToken();
+  onForegroundMessage();
+}
 
 function App() {
   return (

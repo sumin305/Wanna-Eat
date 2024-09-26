@@ -24,12 +24,17 @@ const InformationContainer = styled.div`
 
 const InformationWrapper = styled.div`
   display: flex;
+  align-items: center;
 `;
 
 const InformationText = styled.p`
-  font-size: ${theme.fontSize.px9};
+  font-size: ${theme.fontSize.px10};
   color: ${theme.color.white};
-  margin: 2% 0;
+  margin: 1% 0;
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px11};
+  }
 `;
 
 const IconImg = styled.img`
@@ -68,8 +73,8 @@ const MenuBox = styled.div`
 const ImageBox = styled.div`
   overflow: hidden;
   left: 0;
-  width: 32vw;
-  height: 15vh;
+  width: 7rem;
+  height: 7rem;
   border-radius: ${theme.borderRadius.px15};
 `;
 
@@ -110,6 +115,10 @@ const ButtonBox = styled.div`
   background-color: ${theme.color.white};
   width: 100%;
   padding: 1rem 0;
+
+  @media (min-width: 480px) {
+    width: 480px;
+  }
 `;
 
 export {

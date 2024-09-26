@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.waterdragon.wannaeat.domain.chatmessage.dto.response.ChatMessageDetailResponseDto;
+import com.waterdragon.wannaeat.domain.chatmessage.dto.response.ChatMessageListResponseDto;
 import com.waterdragon.wannaeat.domain.chatmessage.service.ChatMessageService;
 import com.waterdragon.wannaeat.domain.socket.dto.response.ShareDataResponseDto;
 
@@ -26,12 +27,12 @@ public class SocketServiceImpl implements SocketService {
 	@Override
 	public ShareDataResponseDto getShareData(String reservationUrl, Long chatSize, Long chatPage) {
 
-		// 페9이징 처리된 채팅 메시지 가져오기
-		Page<ChatMessageDetailResponseDto> chatMessageDetailResponseDtos = chatMessageService.getListChatMessage(
+		// 페이징 처리된 채팅 메시지 가져오기
+		ChatMessageListResponseDto chatMessageListResponseDto = chatMessageService.getListChatMessage(
 			reservationUrl, chatSize, chatPage);
 
 		return ShareDataResponseDto.builder()
-			.chatMessageDetailResponseDtos(chatMessageDetailResponseDtos)
+			.chatMessageDetailResponseDtos(chatMessageListResponseDto)
 			.build();
 	}
 }

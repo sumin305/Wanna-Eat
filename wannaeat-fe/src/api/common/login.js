@@ -1,8 +1,7 @@
-import { createAuthWithRefreshClientInstance } from '../../utils/http-client';
+import { authClientInstance } from '../../utils/http-client';
 
-export const getToken = async (accessToken, refreshToken) => {
-  const instance = createAuthWithRefreshClientInstance(accessToken);
-  return await instance
+export const getToken = async () => {
+  return await authClientInstance
     .get('/api/users/reissue')
     .then((result) => result)
     .catch((error) => error);

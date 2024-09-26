@@ -32,7 +32,7 @@ const AppRoutes = () => {
         <Route path="/manager" element={<ManagerMainPage />} />
         <Route path="/manager/admin" element={<AdminPage />} />
         <Route
-          path="/manager/restaurant/seatdecorate"
+          path="/manager/restaurant/seat-decorate"
           element={<SeatDecoratePage />}
         />
         <Route

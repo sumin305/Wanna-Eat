@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.waterdragon.wannaeat.domain.user.domain.UserToken;
+import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
 import com.waterdragon.wannaeat.domain.user.domain.enums.SocialType;
 import com.waterdragon.wannaeat.domain.user.repository.UserRepository;
 import com.waterdragon.wannaeat.domain.user.repository.UserTokenRepository;
@@ -49,6 +50,7 @@ public class JwtService {
 	private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
 	private static final String EMAIL_CLAIM = "email";
 	private static final String SOCIAL_TYPE_CLAIM = "socialType";
+	private static final String ROLE_CLAIM = "role";
 	private static final String BEARER = "Bearer ";
 
 	private final UserRepository userRepository;
@@ -57,15 +59,16 @@ public class JwtService {
 	/**
 	 * AccessToken 생성 메소드
 	 */
-	public String createAccessToken(String email, SocialType socialType) {
+	public String createAccessToken(String email, SocialType socialType, Role role) {
 		Date now = new Date();
 		return JWT.create() // JWT 토큰을 생성하는 빌더 반환
 			.withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
 			.withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod)) // 토큰 만료 시간 설정
 
-			//클레임으로는 저희는 email, socialType 2가지 사용합니다.
+			//클레임으로는 저희는 email, socialType, role 3가지 사용합니다.
 			.withClaim(EMAIL_CLAIM, email)
 			.withClaim(SOCIAL_TYPE_CLAIM, socialType.name())
+			.withClaim(ROLE_CLAIM, role.toString())
 			.sign(Algorithm.HMAC512(secretKey)); // HMAC512 알고리즘 사용, application-jwt.yml에서 지정한 secret 키로 암호화
 	}
 
@@ -92,7 +95,7 @@ public class JwtService {
 		refreshTokenCookie.setHttpOnly(true); // 보안을 위해 JavaScript에서 접근 불가
 		// refreshTokenCookie.setSecure(true); // HTTPS에서만 전송되도록 설정
 		refreshTokenCookie.setPath("/"); // 도메인 전체에서 사용 가능하게 설정
-		refreshTokenCookie.setMaxAge(Math.toIntExact(refreshTokenExpirationPeriod / 1000)); // 쿠키 만료 시간 설정
+		refreshTokenCookie.setMaxAge(Math.toIntExact(refreshTokenExpirationPeriod)); // 쿠키 만료 시간 설정
 		response.addCookie(refreshTokenCookie);
 
 		log.info(accessToken);
@@ -180,15 +183,14 @@ public class JwtService {
 	 */
 	public void updateRefreshToken(String email, SocialType socialType, String refreshToken) {
 		userRepository.findByEmailAndSocialType(email, socialType)
-			.ifPresent(
+			.ifPresentOrElse(
 				user -> {
 					UserToken userToken = user.getUserToken();
-					if (userToken != null) {
-						userToken.editRefreshToken(refreshToken);
-						userTokenRepository.save(userToken); // 업데이트 후 저장
-					} else {
-						throw new IllegalStateException("해당 유저에 대한 UserToken이 존재하지 않습니다.");
-					}
+					userToken.editRefreshToken(refreshToken);
+					userTokenRepository.save(userToken); // 업데이트 후 저장
+				},
+				() -> {
+					throw new IllegalStateException("해당 유저가 존재하지 않습니다.");
 				}
 			);
 	}

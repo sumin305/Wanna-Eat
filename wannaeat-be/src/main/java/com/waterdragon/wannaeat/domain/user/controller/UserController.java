@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waterdragon.wannaeat.domain.user.dto.request.FcmTokenEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.NicknameDuplicateCheckRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
@@ -54,6 +55,13 @@ public class UserController {
 		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 	}
 
+	/**
+	 * 로그아웃 API
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@Operation(summary = "로그아웃 API")
 	@PostMapping("/users/signout")
 	public ResponseEntity<ResponseDto<Void>> signout(HttpServletRequest request, HttpServletResponse response) {
@@ -70,6 +78,11 @@ public class UserController {
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
+	/**
+	 * 내 정보 조회 API
+	 *
+	 * @return 로그인 유저 정보
+	 */
 	@Operation(summary = "내 정보 조회 API")
 	@GetMapping("/users")
 	public ResponseEntity<ResponseDto<UserDetailResponseDto>> getDetailMyUser() {
@@ -82,6 +95,12 @@ public class UserController {
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
+	/**
+	 * 회원 정보 수정 API
+	 *
+	 * @param userEditRequestDto 수정할 회원 정보
+	 * @return
+	 */
 	@Operation(summary = "회원 정보 수정 API")
 	@PatchMapping("/users")
 	public ResponseEntity<ResponseDto<Void>> editUser(
@@ -155,6 +174,39 @@ public class UserController {
 		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
 			.status(HttpStatus.OK.value())
 			.message("인증이 완료되었습니다.")
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	@Operation(summary = "FcmToken 갱신 API")
+	@PostMapping("/users/alarms")
+	public ResponseEntity<ResponseDto<Void>> EditFcmToken(
+		@Valid @RequestBody FcmTokenEditRequestDto fcmTokenEditRequestDto) {
+
+		userService.editFcmToken(fcmTokenEditRequestDto);
+		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+			.status(HttpStatus.OK.value())
+			.message("FcmToken이 갱신되었습니다.")
+			.data(null)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	/**
+	 * 토큰 재발급 요청 API
+	 *
+	 * @return
+	 */
+	@Operation(summary = "토큰 재발급 요청 API")
+	@GetMapping("/users/reissue")
+	public ResponseEntity<ResponseDto<Void>> reissueToken() {
+
+		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+			.status(HttpStatus.OK.value())
+			.message("Token이 발급되었습니다.")
+			.data(null)
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);

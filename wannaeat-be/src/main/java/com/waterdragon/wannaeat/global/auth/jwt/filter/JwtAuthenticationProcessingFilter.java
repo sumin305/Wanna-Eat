@@ -106,7 +106,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 			.ifPresent(userToken -> {
 				String reIssuedRefreshToken = reIssueRefreshToken(userToken);
 				jwtService.sendAccessAndRefreshToken(response,
-					jwtService.createAccessToken(userToken.getUser().getEmail(), userToken.getUser().getSocialType()),
+					jwtService.createAccessToken(userToken.getUser().getEmail(), userToken.getUser().getSocialType(),
+						userToken.getUser().getRole()),
 					reIssuedRefreshToken);
 			});
 	}

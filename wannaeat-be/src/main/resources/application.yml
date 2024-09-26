@@ -48,5 +48,9 @@ file:
 pay:
   secret-key: ${KAKAOPAY_SECRET_KEY}
 
+# FCM Secret Key 파일 경로
+firebase:
+  path: ${FCM_SECRET_KEY_PATH}
+
 # Redirect URL
 redirectURL : ${REDIRECT_URL}

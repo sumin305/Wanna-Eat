@@ -28,6 +28,7 @@ const useHeaderStore = create((set) => ({
   activeIcons: [],
   isShowExtraHeader: false, // 서브탭바 유무
   extraHeaderText: '', // 서브탭바의 텍스트
+  isUnderLine: false, // 밑줄 유무
   setIsCarrot: (isCarrot) => set({ isCarrot: isCarrot }),
   setPageName: (text) => set({ pageName: text }),
   setIsShowLogo: (isShowLogo) => set({ isShowLogo: isShowLogo }),
@@ -44,6 +45,7 @@ const useHeaderStore = create((set) => ({
   setIsShowExtraHeader: (isShowExtraHeader) =>
     set({ isShowExtraHeader: isShowExtraHeader }),
   setExtraHeaderText: (text) => set({ extraHeaderText: text }),
+  setIsUnderLine: (isUnderLine) => set({ isUnderLine: isUnderLine }),
 }));
 
 export default useHeaderStore;

@@ -13,6 +13,11 @@ const HeaderContainer = styled.div`
   background-color: ${(props) =>
     props.isCarrot ? theme.color.primary : theme.color.white};
 
+  border-bottom: ${(props) =>
+    props.isCarrot === false && props.isUnderLine
+      ? `0.5px solid ${theme.color.disabled}`
+      : 'none'};
+
   @media (min-width: 480px) {
     width: 480px;
     align-items: center;

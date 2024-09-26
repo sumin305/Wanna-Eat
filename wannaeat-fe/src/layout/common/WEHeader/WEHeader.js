@@ -35,9 +35,14 @@ const HeaderWrapper = styled.div`
 
 const HeaderLeft = styled.div`
   display: flex;
+  flex-direction: ${(props) => {
+    return props.isShowLogo ? 'column' : 'row';
+  }};
   justify-content: flex-start;
   align-items: center;
-  width: 10%;
+  width: ${(props) => {
+    return props.isShowLogo ? '20%' : '10%';
+  }};
 `;
 
 const LogoTitle = styled.h1`

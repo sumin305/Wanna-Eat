@@ -35,7 +35,7 @@ const WEHeader = () => {
   return (
     <HeaderContainer isCarrot={isCarrot} isUnderLine={isUnderLine}>
       <HeaderWrapper>
-        <HeaderLeft>
+        <HeaderLeft isShowLogo={isShowLogo}>
           {isShowLogo ? (
             <>
               <HeaderImg src={Logo} alt="로고" />

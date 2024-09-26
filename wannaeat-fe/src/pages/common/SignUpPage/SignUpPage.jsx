@@ -27,13 +27,14 @@ import {
   ButtonWrapper,
 } from './SignUpPage.js';
 import useCommonStore, { ROLE } from '../../../stores/common/useCommonStore.js';
+import useAlert from 'utils/alert';
 import { useNavigate } from 'react-router-dom';
-
 const SignUpPage = () => {
   const { setRole, email, socialType, requestSignUp } = useCommonStore();
   const { setError, clearError } = useTextfieldStore();
   const { open, setAlertText, setModalType } = useModalStore();
   const navigate = useNavigate();
+  const alert = useAlert();
   const [isChecked, setIsChecked] = useState(false);
   const [isCustomer, setIsCustomer] = useState(false);
   const [verifyNickname, setVerifyNickname] = useState(false);
@@ -97,7 +98,7 @@ const SignUpPage = () => {
       alert('인증번호가 전송되었습니다.');
       setIsVerificationCodeSent(true);
     } else {
-      alert('인증번호가 전송에 실패했습니다.');
+      alert('인증번호 전송에 실패했습니다.');
     }
   };
 
@@ -159,12 +160,6 @@ const SignUpPage = () => {
     } else {
       alert('회원가입 실패');
     }
-  };
-
-  const alert = (text) => {
-    setModalType('alert');
-    setAlertText(text);
-    open();
   };
 
   return (

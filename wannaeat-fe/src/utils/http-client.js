@@ -104,6 +104,7 @@ authClientInstance.interceptors.response.use(
         setAccessToken(accessToken);
         config.headers['authorization-wannaeat'] = accessToken;
         return authClientInstance(config);
+      } else {
       }
     }
     return Promise.reject(error);

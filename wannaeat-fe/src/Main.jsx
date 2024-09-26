@@ -18,11 +18,11 @@ const Main = () => {
 
   // 헤더 렌더링할 조건
   const shouldRenderHeader = () => {
-    return !['/', 'join', '/customer/reservation'].includes(location.pathname);
+    return !['/', '/join', '/customer/reservation'].includes(location.pathname);
   };
   // 푸터 렌더링할 조건
   const shouldRenderFooter = () => {
-    return !['/', 'join'].includes(location.pathname);
+    return !['/', '/join'].includes(location.pathname);
   };
 
   return (

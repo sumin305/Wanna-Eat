@@ -18,7 +18,7 @@ import {
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { getUserRole, setEmail, setSocialType } = useCommonStore();
+  const { getUserInfo, setEmail, setSocialType } = useCommonStore();
   const kakaoLink = process.env.REACT_APP_KAKAO_LOGIN_URL;
   const googleLink = process.env.REACT_APP_GOOGLE_LOGIN_URL;
 
@@ -38,7 +38,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     const getLoginStatus = async () => {
-      const userInfo = await getUserRole();
+      const userInfo = await getUserInfo();
       if (userInfo === undefined) return;
       setUserInfo(userInfo.email, userInfo.socialType);
       if (userInfo.role === ROLE.GUEST) {

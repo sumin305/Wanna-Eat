@@ -18,7 +18,8 @@ const useCommonStore = create((set) => ({
   setSocialType: (value) => set(() => ({ socialType: value })),
   setCategories: (categories) => set({ categories: categories }),
 
-  getUserRole: async () => {
+  getUserInfo: async () => {
+    // refresh -> access 재발급
     const result = await getToken();
     if (result.status !== 200) {
       console.log(result);
@@ -30,6 +31,23 @@ const useCommonStore = create((set) => ({
       // JWT 토큰 decode
       const decodedJWT = decodeJWT(authToken);
       return decodedJWT;
+    } else {
+      console.log('Authorization-wannaeat header not found');
+    }
+  },
+  getUserRole: async () => {
+    // refresh -> access 재발급
+    const result = await getToken();
+    if (result.status !== 200) {
+      console.log(result);
+      return;
+    }
+    // 헤더의 토큰 받아온다
+    const authToken = result.headers['authorization-wannaeat'];
+    if (authToken) {
+      // JWT 토큰 decode
+      const decodedJWT = decodeJWT(authToken);
+      return decodedJWT.role;
     } else {
       console.log('Authorization-wannaeat header not found');
     }

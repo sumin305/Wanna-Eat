@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
 import useHeaderStore from '../../../stores/common/header/useHeaderStore';
 
 import {
@@ -17,7 +16,6 @@ import {
 import Logo from '../../../assets/icons/header/logo-picture.svg';
 import BackCarrot from '../../../assets/icons/header/back-carrot.svg';
 import BackWhite from '../../../assets/icons/header/back-white.svg';
-// import Logos from '../../../assets/icons/header/logo.png'
 const WEHeader = () => {
   const { pageName, isCarrot, activeIcons, isShowLogo, isShowBackIcon } =
     useHeaderStore();
@@ -34,7 +32,6 @@ const WEHeader = () => {
         <HeaderLeft>
           {isShowLogo ? (
             <>
-              {/* <HeaderImg src={Logos} alt="로고" /> */}
               <HeaderImg src={Logo} alt="로고" />
               <LogoTitle isCarrot={isCarrot}>머 물래?</LogoTitle>
             </>

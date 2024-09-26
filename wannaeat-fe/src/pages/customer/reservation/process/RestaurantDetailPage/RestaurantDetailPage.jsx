@@ -167,7 +167,7 @@ const RestaurantDetailPage = () => {
       <RestaurantImageBox src={RestaurantImg} />
       <InformationContainer>
         <InformationText>
-          &emsp;&emsp;{informations.restaurantDescription}
+          &emsp;{informations.restaurantDescription}
         </InformationText>
         <InformationWrapper>
           <IconImg src={Location} alt="주소" />
@@ -208,7 +208,9 @@ const RestaurantDetailPage = () => {
         ))}
       </MenuContainer>
       <ButtonBox>
-        <Button onClick={handleReservationButtonClick}>예약하기</Button>
+        <Button size={'long'} onClick={handleReservationButtonClick}>
+          예약하기
+        </Button>
       </ButtonBox>
     </Box>
   );

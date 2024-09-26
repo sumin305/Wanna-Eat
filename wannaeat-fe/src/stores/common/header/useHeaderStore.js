@@ -2,10 +2,22 @@ import { create } from 'zustand';
 import AlarmOff from '../../../assets/icons/header/alarm-off.svg';
 import AlarmOn from '../../../assets/icons/header/alarm-on.svg';
 import AlarmStack from '../../../assets/icons/header/alarm-stack.svg';
+import AlarmOffWhite from '../../../assets/icons/header/alarm-off-white.svg';
+import AlarmOnWhite from '../../../assets/icons/header/alarm-on-white.svg';
+import AlarmStackWhite from '../../../assets/icons/header/alarm-stack-white.svg';
 import ZzimOff from '../../../assets/icons/header/zzim-off.svg';
 import ZzimOn from '../../../assets/icons/header/zzim-on.svg';
 
-const icons = [AlarmOff, AlarmOn, AlarmStack, ZzimOff, ZzimOn];
+const icons = [
+  AlarmOff,
+  AlarmOn,
+  AlarmStack,
+  AlarmOffWhite,
+  AlarmOnWhite,
+  AlarmStackWhite,
+  ZzimOff,
+  ZzimOn,
+];
 
 const useHeaderStore = create((set) => ({
   isCarrot: true, // 기본탭바 배경색 기본은 주황색

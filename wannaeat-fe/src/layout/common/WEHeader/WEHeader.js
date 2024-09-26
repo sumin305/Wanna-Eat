@@ -3,10 +3,7 @@ import theme from '../../../style/common/theme';
 import { ROLE } from '../../../stores/common/useCommonStore';
 
 const HeaderContainer = styled.div`
-  display: ${({ role }) => {
-    if (role === 'GUEST') return 'none';
-    else return 'flex';
-  }};
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;

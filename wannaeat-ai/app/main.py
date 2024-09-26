@@ -12,7 +12,7 @@ import cv2
 
 app = FastAPI()
 
-@app.post("/api/edit-image/")
+@app.post("/edit-image")
 async def process_uploaded_image(file: UploadFile = File(...)):
     contents = await file.read()
     processed_image = process_image(contents)

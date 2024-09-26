@@ -1,18 +1,23 @@
 import { useEffect } from 'react';
 import useHeaderStore from '../../../../stores/common/header/useHeaderStore';
+import { ManagerRegistPageStyled } from './ManagerRegistPage.js';
+import WETextField from 'component/common/textfield/WETextfield/WETextfield.jsx';
 
 const ManagerRegistPage = () => {
-  const { setIsCarrot, setActiveIcons, setPageName, setIsUnderLine } =
-    useHeaderStore();
+  const { setIsCarrot, setPageName, setIsUnderLine } = useHeaderStore();
 
   useEffect(() => {
     setIsCarrot(false);
-    setActiveIcons([0]);
     setIsUnderLine(true);
     setPageName('매장 정보 입력');
   }, []);
 
-  return <div>안녕하세용</div>;
+  return (
+    <ManagerRegistPageStyled>
+      안녕하세용
+      <WETextField />
+    </ManagerRegistPageStyled>
+  );
 };
 
 export default ManagerRegistPage;

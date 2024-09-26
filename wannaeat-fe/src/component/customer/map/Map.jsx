@@ -11,22 +11,21 @@ const MapContainer = () => {
     useMapStore();
   const [centerLatLng, setCenterLatLng] = useState({ lat: lat, lon: lon });
   const [isButtonVisible, setIsButtonVisible] = useState(false);
-  // const [isInitialLoad, setIsInitialLoad] = useState(true); // 처음 로드인지 확인하는 상태
   const navigate = useNavigate();
 
   // 현재 위치 근처의 레스토랑 찾는 함수
   const handleRestaurantFind = () => {
-    setLat(centerLatLng.lat); // 드래그 후의 중심 좌표로 상태 업데이트
+    setLat(centerLatLng.lat);
     setLon(centerLatLng.lon);
-    setIsButtonVisible(false); // 버튼 숨김
+    setIsButtonVisible(false);
+  };
+
+  const handleMarkerClick = (id) => {
+    console.log('click', id);
+    navigate(`/customer/reservation/restaurant-detail/${id}`);
   };
 
   useEffect(() => {
-    const handleMarkerClick = (e) => {
-      console.log('click');
-      navigate('/customer/reservation/time-select');
-    };
-
     const { kakao } = window;
     const container = document.getElementById('map'); // 지도를 표시할 div
     const options = {
@@ -43,9 +42,9 @@ const MapContainer = () => {
         const currentLon = position.coords.longitude;
         setLat(currentLat);
         setLon(currentLon);
-        setCenterLatLng({ lat: currentLat, lon: currentLon }); // 현재 위치로 중심 좌표 설정
-        map.setCenter(new kakao.maps.LatLng(currentLat, currentLon)); // 지도의 중심을 현재 위치로 설정
-        setIsInitialLoad(false); // 처음 로드 상태를 false로 설정
+        setCenterLatLng({ lat: currentLat, lon: currentLon });
+        map.setCenter(new kakao.maps.LatLng(currentLat, currentLon));
+        setIsInitialLoad(false);
       });
     }
 
@@ -53,23 +52,27 @@ const MapContainer = () => {
     kakao.maps.event.addListener(map, 'center_changed', function () {
       const latlng = map.getCenter();
       setCenterLatLng({ lat: latlng.getLat(), lon: latlng.getLng() });
-      setIsButtonVisible(true); // 드래그 후 버튼을 보이게 설정
+      setIsButtonVisible(true);
     });
 
     var positions = [
       {
+        id: 1,
         title: '지역1',
         latlng: new kakao.maps.LatLng(lat + 0.000004, lon + 0.00001),
       },
       {
+        id: 2,
         title: '지역2',
         latlng: new kakao.maps.LatLng(lat + 0.000235, lon + 0.00119),
       },
       {
+        id: 3,
         title: '지역3',
         latlng: new kakao.maps.LatLng(lat + 0.000178, lon - 0.000727),
       },
       {
+        id: 4,
         title: '지역4',
         latlng: new kakao.maps.LatLng(lat + 0.000692, lon + 0.000071),
       },
@@ -77,7 +80,7 @@ const MapContainer = () => {
 
     var imageSrc = PinkMarker;
 
-    for (var i = 0; i < positions.length; i++) {
+    positions.map((position) => {
       var imageSize = new kakao.maps.Size(35, 35),
         imageOption = { offset: new kakao.maps.Point(18, 50) }; // 마커이미지 옵션
 
@@ -86,7 +89,7 @@ const MapContainer = () => {
           imageSize,
           imageOption
         ),
-        markerPosition = positions[i].latlng; // 마커가 표시될 위치
+        markerPosition = position.latlng; // 마커가 표시될 위치
 
       var marker = new kakao.maps.Marker({
         position: markerPosition,
@@ -95,11 +98,13 @@ const MapContainer = () => {
 
       marker.setMap(map);
 
-      kakao.maps.event.addListener(marker, 'click', handleMarkerClick);
+      kakao.maps.event.addListener(marker, 'click', () =>
+        handleMarkerClick(position.id)
+      );
 
       var content = `
        <div class="customoverlay">
-         <span class="title">${positions[i].title}</span>
+         <span class="title">${position.title}</span>
        </div>
      `;
       var customOverlay = new kakao.maps.CustomOverlay({
@@ -118,7 +123,7 @@ const MapContainer = () => {
        .customoverlay:after {content:'';position:absolute;margin-left:-12px;left:50%;bottom:-12px;width:22px;height:12px;background:url(${VertexWhite})}
      `;
       document.head.appendChild(styleTag);
-    }
+    });
   }, [lat, lon]); // lat, lon이 변경될 때만 다시 실행됨
 
   return (

@@ -16,7 +16,6 @@ import {
 import Logo from '../../../assets/icons/header/logo-picture.svg';
 import BackCarrot from '../../../assets/icons/header/back-carrot.svg';
 import BackWhite from '../../../assets/icons/header/back-white.svg';
-
 const WEHeader = () => {
   const {
     pageName,

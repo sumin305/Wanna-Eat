@@ -26,7 +26,7 @@ const HeaderContainer = styled.div`
 
 const HeaderWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   width: 90%;
   height: 100%;
@@ -35,11 +35,9 @@ const HeaderWrapper = styled.div`
 
 const HeaderLeft = styled.div`
   display: flex;
-  flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  left: 0;
-  width: 20%;
+  width: 10%;
 `;
 
 const LogoTitle = styled.h1`
@@ -63,6 +61,7 @@ const HeaderCenter = styled.div`
       ? 'center'
       : 'flex-start';
   }};
+  align-items: center;
   width: ${(props) => {
     return props.children.props.isShowBackIcon ||
       props.children.props.isShowLogo
@@ -74,8 +73,7 @@ const HeaderCenter = styled.div`
 const HeaderRight = styled.div`
   display: flex;
   justify-content: flex-end;
-  position: absolute;
-  right: 0;
+  align-items: center;
   width: 10%;
 `;
 

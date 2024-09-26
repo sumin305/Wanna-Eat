@@ -14,7 +14,6 @@ const ManagerRegistPage = () => {
 
   return (
     <ManagerRegistPageStyled>
-      안녕하세용
       <WETextField />
     </ManagerRegistPageStyled>
   );

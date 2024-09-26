@@ -19,6 +19,7 @@ const InformationContainer = styled.div`
   background-color: ${theme.color.primary};
   height: 15vh;
   padding: 0 3%;
+  border-radius: 0 0 7px 7px;
 `;
 
 const InformationWrapper = styled.div`
@@ -26,7 +27,7 @@ const InformationWrapper = styled.div`
 `;
 
 const InformationText = styled.p`
-  font-size: ${theme.fontSize.px11};
+  font-size: ${theme.fontSize.px9};
   color: ${theme.color.white};
   margin: 2% 0;
 `;
@@ -83,7 +84,7 @@ const MenuContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-left: 10%;
+  padding-left: 4%;
 `;
 
 const MenuName = styled.p`
@@ -101,6 +102,7 @@ const MenuDescription = styled.p`
 `;
 
 const ButtonBox = styled.div`
+  display: flex;
   position: fixed;
   bottom: 10%;
   left: 50%;

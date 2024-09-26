@@ -31,8 +31,8 @@ const useStore = create((set) => ({
 }));
 
 const GridCanvas = () => {
-  const gridColumns = 5; // 가로
-  const gridRows = 5; // 세로
+  const gridColumns = 10; // 가로
+  const gridRows = 10; // 세로
   const [gridSize, setGridSize] = useState(50);
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
@@ -194,11 +194,11 @@ const GridCanvas = () => {
             ))}
           </GridBackgroundStyled>
         </ZoomableGridWrapperStyled>
-      </GridWrapperStyled>
       <ButtonWrapperStyled>
         <SaveButtonStyled onClick={handleCanvasSave}>저장</SaveButtonStyled>
         <CancelButtonStyled>취소</CancelButtonStyled>
       </ButtonWrapperStyled>
+      </GridWrapperStyled>
     </div>
   );
 };

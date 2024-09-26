@@ -63,12 +63,12 @@ const paletteItems = [
 
 const ItemPaletteStyled = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
   height: 9vh;
   display: flex;
-  overflow-x: scroll;
+  overflow-x: auto;
   overflow-y: hidden;
   padding: 10px;
   background-color: transparent;
@@ -76,6 +76,7 @@ const ItemPaletteStyled = styled.div`
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  flex-wrap: nowrap;
 `;
 
 const PaletteItemStyled = styled.div`
@@ -127,11 +128,13 @@ const PaletteItemLabelStyled = styled.div`
 
 const ArrowLeftIconStyled = styled(ArrowLeftIcon)`
   position: absolute;
-  left: 34%;
+  left: 0;
+  visibility: hidden; // 임시로 제거
 `;
 const ArrowRightIconStyled = styled(ArrowRIghtIcon)`
   position: absolute;
-  right: 34%;
+  right: 0;
+  visibility: hidden; // 임시로 제거
 `;
 
 export {

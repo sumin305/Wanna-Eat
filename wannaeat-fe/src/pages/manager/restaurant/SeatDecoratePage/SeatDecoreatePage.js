@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 const SeatDecoratePageStyled = styled.div`
-  /* overflow: hidden; */
+  overflow: hidden;
 `;
 
 export { SeatDecoratePageStyled };

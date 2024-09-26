@@ -19,13 +19,12 @@ const GridItemStyled = styled.div`
 `;
 
 const ButtonWrapperStyled = styled.div`
-  position: fixed;
-  bottom: 12%;
-  right: 1%;
+  position: absolute;
+  right: 0;
+  bottom: 0;
 
   @media (min-width: 480px) {
     justify-self: center;
-    right: 34%;
   }
 `;
 
@@ -40,6 +39,7 @@ const CancelButtonStyled = styled(CancelButton)`
 
 const GridWrapperStyled = styled.div`
   display: flex;
+  position: relative;
   justify-content: center;
   align-items: center;
   overflow: auto;

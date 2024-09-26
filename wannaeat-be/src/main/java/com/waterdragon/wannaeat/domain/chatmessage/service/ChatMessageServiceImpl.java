@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.waterdragon.wannaeat.domain.chatmessage.domain.ChatMessage;
 import com.waterdragon.wannaeat.domain.chatmessage.dto.request.ChatMessageRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.chatmessage.dto.response.ChatMessageDetailResponseDto;
+import com.waterdragon.wannaeat.domain.chatmessage.dto.response.ChatMessageListResponseDto;
 import com.waterdragon.wannaeat.domain.chatmessage.dto.response.ChatMessageRegisterResponseDto;
 import com.waterdragon.wannaeat.domain.chatmessage.exception.error.ChatMessageParameterException;
 import com.waterdragon.wannaeat.domain.chatmessage.repository.ChatMessageRepository;
@@ -91,7 +92,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 	 * @return 채팅 목록
 	 */
 	@Override
-	public Page<ChatMessageDetailResponseDto> getListChatMessage(String reservationUrl, Long chatPage, Long chatSize) {
+	public ChatMessageListResponseDto getListChatMessage(String reservationUrl, Long chatPage, Long chatSize) {
 
 		if (chatSize == null || chatPage == null || chatSize <= 0 || chatPage < 0) {
 			throw new ChatMessageParameterException("chatSize는 0보다 커야 하고, chatPage는 0 이상이어야 합니다.");
@@ -105,13 +106,20 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 		Page<ChatMessage> chatMessagesPage = chatMessageRepository.findAllByReservationIdOrderByRegisterTimeDesc(
 			reservation.getReservationId(), pageable);
 
-		return chatMessagesPage.map(chatMessage -> ChatMessageDetailResponseDto.builder()
-			.reservationId(reservation.getReservationId())
-			.senderReservationParticipantId(chatMessage.getSenderReservationParticipantId())
-			.senderReservationParticipantNickname(chatMessage.getSenderReservationParticipantNickname())
-			.content(chatMessage.getContent())
-			.registerTime(chatMessage.getRegisterTime())
-			.build());
+		Page<ChatMessageDetailResponseDto> chatMessageDetailResponseDtos = chatMessagesPage.map(chatMessage ->
+			ChatMessageDetailResponseDto.builder()
+				.reservationId(chatMessage.getReservationId())
+				.senderReservationParticipantId(chatMessage.getSenderReservationParticipantId())
+				.senderReservationParticipantNickname(chatMessage.getSenderReservationParticipantNickname())
+				.content(chatMessage.getContent())
+				.registerTime(chatMessage.getRegisterTime())
+				.build()
+		);
+
+		// ChatMessageListResponseDto로 반환
+		return ChatMessageListResponseDto.builder()
+			.chatMessageDetailResponseDtos(chatMessageDetailResponseDtos)
+			.build();
 	}
 }
 

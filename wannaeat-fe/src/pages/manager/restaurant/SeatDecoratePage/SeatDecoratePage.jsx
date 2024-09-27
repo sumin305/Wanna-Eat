@@ -19,6 +19,12 @@ const SeatDecoratePage = () => {
     setPageName('매장 꾸미기');
   }, []);
 
+  if (isMobile) {
+    window.alert('모바일입니다.');
+  } else {
+    window.alert('PC입니다.');
+  }
+
   return (
     <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
       {/* <DndProvider backend={HTML5Backend}> */}

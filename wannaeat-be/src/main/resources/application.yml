@@ -12,6 +12,12 @@ spring:
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB      # 최대 파일 크기 설정
+      max-request-size: 10MB   # 최대 요청 크기 설정
+
   profiles:
     include:
       - jwt
@@ -54,3 +60,11 @@ firebase:
 
 # Redirect URL
 redirectURL : ${REDIRECT_URL}
+
+aws:
+  region: ${AWS_REGION}  # AWS S3 리전 설정 (서울 리전 예시)
+  credentials:
+    accessKey: ${AWS_ACCESS_KEY}  # 실제 AWS 액세스 키로 대체
+    secretKey: ${AWS_SECRET_KEY}  # 실제 AWS 시크릿 키로 대체
+  s3:
+    bucket: ${AWS_S3_BUCKET}  # 실제 S3 버킷 이름으로 대체

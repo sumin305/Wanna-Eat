@@ -65,7 +65,7 @@ const LoginPage = () => {
       // Access token 발급 후, role update
       getLoginStatus();
     }
-  }, [fcmToken]);
+  }, []);
 
   return (
     <LoginPageContainer>

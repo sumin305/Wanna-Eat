@@ -15,6 +15,7 @@ import {
   GoogleLoginButtonImg,
   GoogleLoginTitle,
 } from './LoginPage';
+import { getFcmToken } from '../../../firebase/firebaseCloudMessaging.js';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -44,8 +45,10 @@ const LoginPage = () => {
       if (userInfo.role === ROLE.GUEST) {
         navigate('/join');
       } else if (userInfo.role === ROLE.CUSTOMER) {
+        await getFcmToken();
         navigate('/customer');
       } else {
+        await getFcmToken();
         navigate('/manager');
       }
     };

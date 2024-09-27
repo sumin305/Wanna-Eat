@@ -44,10 +44,6 @@ const globalStyles = css`
 // FCM permission & token
 if (Notification.permission !== 'granted') {
   requestPermission();
-} else {
-  // Save FCM token
-  getFcmToken();
-  onForegroundMessage();
 }
 
 function App() {

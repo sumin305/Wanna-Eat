@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
 import useHeaderStore from 'stores/common/useHeaderStore.js';
 import useTextfieldStore from 'stores/common/useTextfieldStore.js';
+// import useDropdownStore from 'stores/common/useDropdownStore.js';
 import validateName from 'utils/manager/restaurantRegistValidation.js';
 import {
   RestaurantRegistPageStyled,
   TabWithButtonStyled,
   TabWrapperStyled,
-  TextfieldsStyled,
-  TextfieldWithLabelStyled,
-  TextfieldWrapperStyled,
+  ContentWrapperStyled,
+  InputWithLabelStyled,
+  InputWrapperStyled,
 } from './RestaurantRegistPage.js';
 import WETextField from 'component/common/textfield/WETextfield/WETextfield.jsx';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
+import WEDropdown from 'component/common/dropdown/WEDropdown.jsx';
 
 const RestaurantRegistPage = () => {
   const tabs = ['사업자', '매장'];
@@ -45,9 +47,9 @@ const RestaurantRegistPage = () => {
     switch (activeTab) {
       case 0:
         return (
-          <TextfieldsStyled>
-            <TextfieldWrapperStyled>
-              <TextfieldWithLabelStyled>
+          <ContentWrapperStyled>
+            <InputWrapperStyled>
+              <InputWithLabelStyled>
                 <label>대표자</label>
                 <WETextField
                   name="restaurantRegist-name"
@@ -57,11 +59,11 @@ const RestaurantRegistPage = () => {
                   onChange={(e) => setName(e.target.value)}
                   onBlur={handleValidateNickname}
                 />
-              </TextfieldWithLabelStyled>
-            </TextfieldWrapperStyled>
+              </InputWithLabelStyled>
+            </InputWrapperStyled>
 
-            <TextfieldWrapperStyled>
-              <TextfieldWithLabelStyled>
+            <InputWrapperStyled>
+              <InputWithLabelStyled>
                 <label>사업장 주소</label>
                 <WETextField
                   name="restaurantRegist-address"
@@ -70,11 +72,11 @@ const RestaurantRegistPage = () => {
                   showErrorMessageSpace={true}
                   onChange={(e) => setName(e.target.value)}
                 />
-              </TextfieldWithLabelStyled>
-            </TextfieldWrapperStyled>
+              </InputWithLabelStyled>
+            </InputWrapperStyled>
 
-            <TextfieldWrapperStyled>
-              <TextfieldWithLabelStyled>
+            <InputWrapperStyled>
+              <InputWithLabelStyled>
                 <label>전화번호</label>
                 <WETextField
                   name="restaurantRegist-phone"
@@ -83,11 +85,11 @@ const RestaurantRegistPage = () => {
                   showErrorMessageSpace={true}
                   onChange={(e) => setName(e.target.value)}
                 />
-              </TextfieldWithLabelStyled>
-            </TextfieldWrapperStyled>
+              </InputWithLabelStyled>
+            </InputWrapperStyled>
 
-            <TextfieldWrapperStyled>
-              <TextfieldWithLabelStyled>
+            <InputWrapperStyled>
+              <InputWithLabelStyled>
                 <label>매장명</label>
                 <WETextField
                   name="restaurantRegist-restaurantName"
@@ -96,11 +98,11 @@ const RestaurantRegistPage = () => {
                   showErrorMessageSpace={true}
                   onChange={(e) => setName(e.target.value)}
                 />
-              </TextfieldWithLabelStyled>
-            </TextfieldWrapperStyled>
+              </InputWithLabelStyled>
+            </InputWrapperStyled>
 
-            <TextfieldWrapperStyled>
-              <TextfieldWithLabelStyled>
+            <InputWrapperStyled>
+              <InputWithLabelStyled>
                 <label>업종</label>
                 <WETextField
                   name="restaurantRegist-businessType"
@@ -109,12 +111,72 @@ const RestaurantRegistPage = () => {
                   showErrorMessageSpace={true}
                   onChange={(e) => setName(e.target.value)}
                 />
-              </TextfieldWithLabelStyled>
-            </TextfieldWrapperStyled>
-          </TextfieldsStyled>
+              </InputWithLabelStyled>
+            </InputWrapperStyled>
+          </ContentWrapperStyled>
         );
       case 1:
-        return <></>;
+        return (
+          <ContentWrapperStyled>
+            <InputWrapperStyled>
+              <InputWithLabelStyled>
+                <label>대표자</label>
+              </InputWithLabelStyled>
+            </InputWrapperStyled>
+
+            <InputWrapperStyled>
+              <InputWithLabelStyled>
+                <label>사업장 주소</label>
+                <WETextField
+                  name="restaurantRegist-address"
+                  placeholder="사업장 주소를 입력하세요."
+                  value={address}
+                  showErrorMessageSpace={true}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </InputWithLabelStyled>
+            </InputWrapperStyled>
+
+            <InputWrapperStyled>
+              <InputWithLabelStyled>
+                <label>전화번호</label>
+                <WETextField
+                  name="restaurantRegist-phone"
+                  placeholder="전화번호를 입력하세요."
+                  value={phone}
+                  showErrorMessageSpace={true}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </InputWithLabelStyled>
+            </InputWrapperStyled>
+
+            <InputWrapperStyled>
+              <InputWithLabelStyled>
+                <label>매장명</label>
+                <WETextField
+                  name="restaurantRegist-restaurantName"
+                  placeholder="매장명을 입력하세요."
+                  value={restaurantName}
+                  showErrorMessageSpace={true}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </InputWithLabelStyled>
+            </InputWrapperStyled>
+
+            <InputWrapperStyled>
+              <InputWithLabelStyled>
+                <label>업종</label>
+                <WETextField
+                  name="restaurantRegist-businessType"
+                  placeholder="업종을 입력하세요."
+                  value={businessType}
+                  showErrorMessageSpace={true}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </InputWithLabelStyled>
+            </InputWrapperStyled>
+          </ContentWrapperStyled>
+        );
       default:
         return null;
     }
@@ -135,12 +197,12 @@ const RestaurantRegistPage = () => {
         </WEButton>
       </TabWithButtonStyled>
 
-      <TextfieldsStyled>{renderContent(activeTab)}</TextfieldsStyled>
+      <ContentWrapperStyled>{renderContent(activeTab)}</ContentWrapperStyled>
 
       <WEButton
         className="testButton"
         onClick={handleValidateNickname}
-        size={'modal'}
+        size={'long'}
       >
         확인
       </WEButton>

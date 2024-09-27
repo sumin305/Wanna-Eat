@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 const RestaurantRegistPageStyled = styled.div`
-  min-height: 100vh;
+  min-height: calc(100vh + 3.125rem);
   overflow-y: auto;
 
   @media (min-width: 480px) {
@@ -21,7 +21,7 @@ const TabWrapperStyled = styled.div`
   width: 64%;
 `;
 
-const TextfieldsStyled = styled.div`
+const ContentWrapperStyled = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -30,9 +30,9 @@ const TextfieldsStyled = styled.div`
   width: 100%;
 `;
 
-const TextfieldWithLabelStyled = styled.div``;
+const InputWithLabelStyled = styled.div``;
 
-const TextfieldWrapperStyled = styled.div`
+const InputWrapperStyled = styled.div`
   display: flex;
   flex-direction: column;
 
@@ -60,7 +60,7 @@ export {
   RestaurantRegistPageStyled,
   TabWithButtonStyled,
   TabWrapperStyled,
-  TextfieldsStyled,
-  TextfieldWithLabelStyled,
-  TextfieldWrapperStyled,
+  ContentWrapperStyled,
+  InputWithLabelStyled,
+  InputWrapperStyled,
 };

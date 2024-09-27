@@ -5,7 +5,7 @@ const MapRestaurantBox = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  height: 100vh;
 `;
 
 const HeaderContainer = styled.div`
@@ -66,6 +66,7 @@ const FilterButton = styled.span`
     props.isEven ? theme.color.white : theme.color.primary};
   color: ${(props) => (props.isEven ? theme.color.primary : theme.color.white)};
   font-size: ${theme.fontSize.px9};
+  width: 5rem;
   height: 1.375rem;
   padding: 0 0.5rem;
   margin-top: 1rem;
@@ -77,8 +78,16 @@ const FilterButton = styled.span`
 const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
-  width: 90vw;
+  width: 90%;
   gap: 0.5rem;
+
+  @media (min-width: 480px) {
+    > * {
+      width: 480px;
+      display: flex;
+      align-items: row;
+    }
+  }
 `;
 export {
   MapRestaurantBox,

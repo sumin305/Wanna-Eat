@@ -162,7 +162,7 @@ const MapFilterModalBox = () => {
               <CalendarStyled
                 showNeighboringMonth={false}
                 onChange={handleDateChange}
-                value={moment(selectedDate, 'YYYY-MM-DD').toDate()}
+                value={moment(new Date(), 'YYYY-MM-DD').toDate()}
                 formatDay={(locale, date) => moment(date).format('DD')}
               />
             </CalendarWrapper>

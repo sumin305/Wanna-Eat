@@ -16,8 +16,10 @@ import {
   GoogleLoginTitle,
 } from './LoginPage';
 import { getFcmToken } from '../../../firebase/firebaseCloudMessaging.js';
+import { giveFcmToken } from '../../../api/common/login.js';
 
 const LoginPage = () => {
+  const { fcmToken } = useCommonStore();
   const navigate = useNavigate();
   const { getUserInfo, setEmail, setSocialType } = useCommonStore();
   const kakaoLink = process.env.REACT_APP_KAKAO_LOGIN_URL;
@@ -45,10 +47,12 @@ const LoginPage = () => {
       if (userInfo.role === ROLE.GUEST) {
         navigate('/join');
       } else if (userInfo.role === ROLE.CUSTOMER) {
-        await getFcmToken();
+        const fcmToken = await getFcmToken();
+        await giveFcmToken(fcmToken);
         navigate('/customer');
       } else {
-        await getFcmToken();
+        const fcmToken = await getFcmToken();
+        await giveFcmToken(fcmToken);
         navigate('/manager');
       }
     };
@@ -61,7 +65,7 @@ const LoginPage = () => {
       // Access token 발급 후, role update
       getLoginStatus();
     }
-  }, []);
+  }, [fcmToken]);
 
   return (
     <LoginPageContainer>

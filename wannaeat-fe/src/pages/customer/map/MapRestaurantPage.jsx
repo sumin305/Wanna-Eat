@@ -79,6 +79,7 @@ const MapRestaurantPage = () => {
   };
 
   const buttons = renderFilterButtons();
+  console.log(selectedDate);
 
   return (
     <MapRestaurantBox>

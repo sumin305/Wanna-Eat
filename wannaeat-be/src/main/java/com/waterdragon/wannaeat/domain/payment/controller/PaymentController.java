@@ -46,7 +46,7 @@ public class PaymentController {
 	 * 음식비 결제준비 요청 API(카카오페이)
 	 * TODO: paymentId에 대해서 tid,KakaoPaymentReadyResponseDto를 redis에 저장하지 말고 MySQL?
 	 *
-	 * @param kakaoPaymentRequestDto 음식비 결제 요청 정보
+	 * @param kakaoPaymentMenuRequestDto 음식비 결제 요청 정보
 	 * @return KakaoPaymentReadyResponseDto tid, redirect_uri(카카오페이측 제공)
 	 */
 	@Operation(summary = "음식비 결제준비 요청 API(카카오페이)")

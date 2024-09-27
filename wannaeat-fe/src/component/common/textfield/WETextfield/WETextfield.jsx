@@ -10,10 +10,11 @@ const {
 } = components;
 
 const Textfield = ({
-  placeholder = '',
-  value,
   type = 'text',
   name,
+  showErrorMessageSpace = false,
+  placeholder = '',
+  value,
   ...props
 }) => {
   const { errors, errorMessages, clearError } = useTextfieldStore();
@@ -37,7 +38,7 @@ const Textfield = ({
         {...props}
       />
 
-      {errorType && (
+      {(errorType || showErrorMessageSpace) && (
         <ErrorMessageDivStyled error={!!errorType}>
           {<WarningIcon />}
           <ErrorMessageStyled>

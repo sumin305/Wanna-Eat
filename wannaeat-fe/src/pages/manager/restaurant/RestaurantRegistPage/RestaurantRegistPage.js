@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 
 const RestaurantRegistPageStyled = styled.div`
   /* margin-left: 100px; */
+  height: 200vh;
+  overflow-y: auto;
 
   @media (min-width: 480px) {
     width: 480px;
@@ -9,14 +11,19 @@ const RestaurantRegistPageStyled = styled.div`
 `;
 
 const TabWrapperStyled = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 10px;
 `;
 
 const TextfieldsStyled = styled.div`
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-top: 2.44rem;
 `;
 
 const TextfieldWrapperStyled = styled.div`

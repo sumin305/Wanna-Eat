@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import useHeaderStore from 'stores/common/useHeaderStore.js';
 import useTextfieldStore from 'stores/common/useTextfieldStore.js';
-import validateNickname from 'utils/manager/restaurantRegistValidation.js';
+import validateName from 'utils/manager/restaurantRegistValidation.js';
 import {
   RestaurantRegistPageStyled,
   TabWrapperStyled,
@@ -10,13 +10,18 @@ import {
 } from './RestaurantRegistPage.js';
 import WETextField from 'component/common/textfield/WETextfield/WETextfield.jsx';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
+import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 
 const RestaurantRegistPage = () => {
   const tabs = ['사업자', '매장'];
   const { setIsCarrot, setPageName, setIsUnderLine } = useHeaderStore();
   const { setError, clearError } = useTextfieldStore();
 
-  const [nickname, setNickname] = useState('');
+  const [name, setName] = useState('');
+  const [address, setAddress] = useState('');
+  const [phone, setPhone] = useState('');
+  const [restaurantName, setRestaurantName] = useState('');
+  const [businessType, setBusinessType] = useState('');
   const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
@@ -26,11 +31,11 @@ const RestaurantRegistPage = () => {
   }, [setIsCarrot, setIsUnderLine, setPageName]);
 
   const handleValidateNickname = () => {
-    const result = validateNickname(nickname);
+    const result = validateName(name);
     if (!result.isValid) {
-      setError('nickname', result.type, result.message);
+      setError('name', result.type, result.message);
     } else {
-      clearError('nickname');
+      clearError('name');
     }
   };
 
@@ -44,9 +49,10 @@ const RestaurantRegistPage = () => {
               <WETextField
                 name="restaurantRegist-name"
                 placeholder="대표자 이름을 입력하세요."
-                value={nickname}
+                value={name}
                 showErrorMessageSpace={true}
-                onChange={(e) => setNickname(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
+                onBlur={handleValidateNickname}
               />
             </TextfieldWrapperStyled>
 
@@ -55,9 +61,9 @@ const RestaurantRegistPage = () => {
               <WETextField
                 name="restaurantRegist-address"
                 placeholder="사업장 주소를 입력하세요."
-                value={nickname}
+                value={address}
                 showErrorMessageSpace={true}
-                onChange={(e) => setNickname(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
               />
             </TextfieldWrapperStyled>
 
@@ -66,9 +72,9 @@ const RestaurantRegistPage = () => {
               <WETextField
                 name="restaurantRegist-phone"
                 placeholder="전화번호를 입력하세요."
-                value={nickname}
+                value={phone}
                 showErrorMessageSpace={true}
-                onChange={(e) => setNickname(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
               />
             </TextfieldWrapperStyled>
 
@@ -77,9 +83,9 @@ const RestaurantRegistPage = () => {
               <WETextField
                 name="restaurantRegist-restaurantName"
                 placeholder="매장명을 입력하세요."
-                value={nickname}
+                value={restaurantName}
                 showErrorMessageSpace={true}
-                onChange={(e) => setNickname(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
               />
             </TextfieldWrapperStyled>
 
@@ -88,9 +94,9 @@ const RestaurantRegistPage = () => {
               <WETextField
                 name="restaurantRegist-businessType"
                 placeholder="업종을 입력하세요."
-                value={nickname}
+                value={businessType}
                 showErrorMessageSpace={true}
-                onChange={(e) => setNickname(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
               />
             </TextfieldWrapperStyled>
           </>
@@ -106,13 +112,20 @@ const RestaurantRegistPage = () => {
     <RestaurantRegistPageStyled>
       <TabWrapperStyled>
         <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+        <WEButton className="testButton" size={'menu'}>
+          메뉴
+        </WEButton>
       </TabWrapperStyled>
 
       <TextfieldsStyled>{renderContent(activeTab)}</TextfieldsStyled>
 
-      <button className="testButton" onClick={handleValidateNickname}>
+      <WEButton
+        className="testButton"
+        onClick={handleValidateNickname}
+        size={'modal'}
+      >
         확인
-      </button>
+      </WEButton>
     </RestaurantRegistPageStyled>
   );
 };

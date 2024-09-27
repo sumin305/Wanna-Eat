@@ -121,6 +121,11 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 		return responseEntity.getBody();
 	}
 
+	/**
+	 * 카카오페이 승인 요청 전 메뉴 유효성 검증 메소드
+	 *
+	 * @param kakaoPaymentMenuRequestDto 결제 메뉴 요청 정보
+	 */
 	@Override
 	public void menuPaymentValidCheck(KakaoPaymentMenuRequestDto kakaoPaymentMenuRequestDto) {
 		for (PaymentMenuRequestDto menuRequestDto : kakaoPaymentMenuRequestDto.getPaymentMenuRequestDtos()) {

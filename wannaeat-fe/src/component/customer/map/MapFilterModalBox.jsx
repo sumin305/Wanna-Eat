@@ -85,15 +85,30 @@ const MapFilterModalBox = () => {
     isShowOption: isShowDurationOption,
   } = useDurationDropdownStore();
 
-  const { categories } = useCommonStore();
-
-  const { setItems, isShowOption } = useDropdownStore();
+  const { setItems, isShowOption, items } = useDropdownStore();
 
   const allTimes = [...lunchTimes, ...dinnerTimes]; // 오전 오후 포함한 모든 시간
 
-  // 시작 시간 드롭다운 목록생성
   useEffect(() => {
+    // 시작 시간 드롭다운 목록생성
     setVisitTimeItems(allTimes);
+
+    // 머무는 시간 드롭다운 목록생성
+    setDurationItems(durationTimes);
+    console.log(
+      JSON.parse(localStorage.getItem('categories')).map((index, category) => ({
+        item: category.restaurantCategoryName,
+        index: category.restaurantCategoryId,
+      }))
+    );
+    setItems(
+      JSON.parse(localStorage.getItem('categories')).map((category) => ({
+        item: category.restaurantCategoryName,
+        index: category.restaurantCategoryId,
+      })) || []
+    );
+
+    console.log(items);
   }, []);
 
   // 시작 시간 선택
@@ -105,21 +120,12 @@ const MapFilterModalBox = () => {
     }
   }, [selectedVisitTimeId]);
 
-  // 머무는 시간 드롭다운 목록생성
-  useEffect(() => {
-    setDurationItems(durationTimes);
-  }, []);
-
   // 머무는 시간 선택
   useEffect(() => {
     if (selectedDurationId !== -1) {
       setSelectedDurationTime(durationTimes[selectedDurationId]);
     }
   }, [selectedDurationId]);
-
-  useEffect(() => {
-    setItems(categories);
-  }, []);
 
   console.log(selectedHeadCount);
   console.log(selectedDate);

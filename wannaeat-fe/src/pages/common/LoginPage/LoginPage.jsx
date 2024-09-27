@@ -39,6 +39,7 @@ const LoginPage = () => {
   useEffect(() => {
     const getLoginStatus = async () => {
       const userInfo = await getUserInfo();
+      console.log(userInfo);
       if (userInfo === undefined) return;
       setUserInfo(userInfo.email, userInfo.socialType);
       if (userInfo.role === ROLE.GUEST) {

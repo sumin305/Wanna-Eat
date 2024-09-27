@@ -21,6 +21,7 @@ const useCommonStore = create((set) => ({
   getUserInfo: async () => {
     // refresh -> access 재발급
     const result = await getToken();
+    console.log(result);
     if (result.status !== 200) {
       console.log(result);
       return;

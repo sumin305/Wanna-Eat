@@ -78,6 +78,7 @@ authClientInstance.interceptors.request.use(
 authClientInstance.interceptors.response.use(
   // 성공 시, 정상적으로 결과 반환
   (response) => {
+    console.log('authClientInstance 응답 성공');
     if (response.headers.get('authorization-wannaeat')) {
       console.log(response.headers.get('authorization-wannaeat'));
       setAccessToken(response.headers.get('authorization-wannaeat'));
@@ -91,10 +92,12 @@ authClientInstance.interceptors.response.use(
   // 실패  (401 에러)
   async (error) => {
     const { response, config } = error;
+    console.log('authClientInstance 응답 실패');
 
     // 인증 실패 시
     if (response.status === 401) {
       console.log('interceptor에서 reissue 재요청');
+      console.log(config);
 
       // RefreshToken으로 AccessToken Reissue 요청
       const reissueResponse =

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useHeaderStore from '../../../../stores/common/useHeaderStore.js';
 import {
   MainPageContainer,
@@ -39,27 +39,9 @@ import useCommonStore, {
 } from '../../../../stores/common/useCommonStore.js';
 
 const MainPage = () => {
-  const { setIsShowLogo, setActiveIcons } = useHeaderStore();
-  const { role, setRole } = useCommonStore();
+  const { setIsShowLogo, setActiveIcons, setPageName } = useHeaderStore();
   const navigate = useNavigate();
-  const foodCategories = [
-    { index: 1, category: '보쌈·족발', image: bossamIcon },
-    { index: 2, category: '찜·탕·찌개', image: bossamIcon },
-    { index: 3, category: '회·일식', image: bossamIcon },
-    { index: 4, category: '돈까스', image: bossamIcon },
-    { index: 5, category: '피자', image: bossamIcon },
-    { index: 6, category: '치킨', image: bossamIcon },
-    { index: 7, category: '고기', image: bossamIcon },
-    { index: 8, category: '양식', image: bossamIcon },
-    { index: 9, category: '중식', image: bossamIcon },
-    { index: 10, category: '아시안', image: bossamIcon },
-    { index: 11, category: '백반', image: bossamIcon },
-    { index: 12, category: '혼밥', image: bossamIcon },
-    { index: 13, category: '분식', image: bossamIcon },
-    { index: 14, category: '디저트', image: bossamIcon },
-    { index: 15, category: '패스트푸드', image: bossamIcon },
-  ];
-
+  const [restaurantCategories, setRestaurantCategories] = useState([]);
   const recentlyReservedRestaurants = [
     {
       index: 0,
@@ -85,8 +67,18 @@ const MainPage = () => {
   ];
 
   useEffect(() => {
+    setPageName('');
     setIsShowLogo(true);
     setActiveIcons([3]);
+    setRestaurantCategories(JSON.parse(localStorage.getItem('categories')));
+    console.log(JSON.parse(localStorage.getItem('categories')));
+
+    console.log(
+      JSON.parse(localStorage.getItem('categories')).map((index, category) => ({
+        item: category.restaurantCategoryName,
+        index: category.restaurantCategoryId,
+      }))
+    );
   }, []);
 
   const handleReservationButtonClick = (e) => {
@@ -122,10 +114,10 @@ const MainPage = () => {
       <CategoryWrapper>
         <CategoryTitle>무엇을 드시고 싶으세요?</CategoryTitle>
         <CategoryContainer>
-          {foodCategories.map((category) => (
-            <div key={category.index}>
-              <CategoryImage src={category.image} />
-              <CategoryName>{category.category}</CategoryName>
+          {restaurantCategories.map((category) => (
+            <div key={category.restaurantCategoryId}>
+              <CategoryImage src={bossamIcon} />
+              <CategoryName>{category.restaurantCategoryName}</CategoryName>
             </div>
           ))}
         </CategoryContainer>

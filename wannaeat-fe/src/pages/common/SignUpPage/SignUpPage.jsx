@@ -93,6 +93,7 @@ const SignUpPage = () => {
   // 휴대번호 인증 버튼 핸들러
   const handlePhoneNumberVerifyButtonClick = async () => {
     const response = await sendCode(userInfo.phone, socialType);
+    console.log(response);
     if (response.status === 201) {
       // 휴대번호 인증 문자 요청
       alert('인증번호가 전송되었습니다.');
@@ -148,6 +149,7 @@ const SignUpPage = () => {
     };
 
     const response = await requestSignUp(requestUserInfo);
+    console.log(response);
     if (response.status === 201) {
       alert('회원가입 성공');
       if (requestUserInfo.role === ROLE.CUSTOMER) {

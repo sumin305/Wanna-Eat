@@ -7,12 +7,26 @@ import WEHeader from './layout/common/WEHeader/WEHeader.jsx';
 import { useEffect } from 'react';
 import useCommonStore from './stores/common/useCommonStore.js';
 import { useLocation } from 'react-router-dom';
-
+import { getRestaurantCategories } from 'api/customer/restaurant.js';
 const Main = () => {
   const { setCategories } = useCommonStore();
   const location = useLocation();
 
   useEffect(() => {
+    const getCategories = async () => {
+      const response = await getRestaurantCategories();
+      if (response.status === 200) {
+        // setCategories(response.data.data.restaurantCategories);
+        console.log(JSON.stringify(response.data.data.restaurantCategories));
+        localStorage.setItem(
+          'categories',
+          JSON.stringify(response.data.data.restaurantCategories)
+        );
+      }
+      console.log(localStorage.getItem('categories'));
+      // setCategories(data.categories);
+    };
+    getCategories();
     setCategories(['고기', '족발', '찌개', '회', '돈까스']);
   }, []);
 

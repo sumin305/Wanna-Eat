@@ -8,7 +8,6 @@ import {
 } from './WEDropdown';
 import ArrowUp from '../../../assets/icons/common/arrow-up.svg';
 import ArrowDown from '../../../assets/icons/common/arrow-down.svg';
-
 const WEDropdown = ({ useDropdownStore, placeholder, onSelect }) => {
   const dropdownRef = useRef(null);
   const {

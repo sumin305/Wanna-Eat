@@ -30,7 +30,7 @@ const MapContainer = () => {
     const container = document.getElementById('map'); // 지도를 표시할 div
     const options = {
       center: new kakao.maps.LatLng(lat, lon), // 지도의 중심좌표
-      level: 5, // 지도의 확대 레벨
+      level: 4, // 지도의 확대 레벨
     };
 
     const map = new kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
@@ -40,6 +40,7 @@ const MapContainer = () => {
       navigator.geolocation.getCurrentPosition(function (position) {
         const currentLat = position.coords.latitude;
         const currentLon = position.coords.longitude;
+        console.log(currentLat, currentLon);
         setLat(currentLat);
         setLon(currentLon);
         setCenterLatLng({ lat: currentLat, lon: currentLon });

@@ -1,12 +1,62 @@
 import { create } from 'zustand';
-
+import { getToken } from 'api/common/login';
+import { signUp } from 'api/common/join';
+import { decodeJWT } from 'utils/decode-token';
+export const ROLE = {
+  CUSTOMER: 'CUSTOMER',
+  MANAGER: 'MANAGER',
+  GUEST: 'GUEST',
+};
 const useCommonStore = create((set) => ({
-  isManager: false, //기본값은 true로 사장님
+  role: ROLE.GUEST, //기본값은 customer
+  email: '',
+  socialType: '',
   categories: [], // 음식 카테고리
 
-  // isManager의 값을 변경시키는 함수 (추후 유저의 role이 "MANAGER"인지 "CUSTOMER"인지에 따라 바꾸면 될듯)
-  setIsManager: (value) => set(() => ({ isManager: value })),
+  setRole: (value) => set(() => ({ role: value })),
+  setEmail: (value) => set(() => ({ email: value })),
+  setSocialType: (value) => set(() => ({ socialType: value })),
   setCategories: (categories) => set({ categories: categories }),
+
+  getUserInfo: async () => {
+    // refresh -> access 재발급
+    const result = await getToken();
+    if (result.status !== 200) {
+      console.log(result);
+      return;
+    }
+    // 헤더의 토큰 받아온다
+    const authToken = result.headers['authorization-wannaeat'];
+    if (authToken) {
+      // JWT 토큰 decode
+      const decodedJWT = decodeJWT(authToken);
+      return decodedJWT;
+    } else {
+      console.log('Authorization-wannaeat header not found');
+    }
+  },
+  getUserRole: async () => {
+    // refresh -> access 재발급
+    const result = await getToken();
+    if (result.status !== 200) {
+      console.log(result);
+      return;
+    }
+    // 헤더의 토큰 받아온다
+    const authToken = result.headers['authorization-wannaeat'];
+    if (authToken) {
+      // JWT 토큰 decode
+      const decodedJWT = decodeJWT(authToken);
+      return decodedJWT.role;
+    } else {
+      console.log('Authorization-wannaeat header not found');
+    }
+  },
+
+  requestSignUp: async (requestUserInfo) => {
+    const result = await signUp(requestUserInfo);
+    return result;
+  },
 }));
 
 export default useCommonStore;

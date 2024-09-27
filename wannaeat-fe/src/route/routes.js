@@ -1,6 +1,10 @@
 import { Route, Routes } from 'react-router-dom';
-import useCommonStore from '../stores/common/useCommonStore';
 import Layout from '../layout/common/Layout';
+
+// 공통 페이지
+import LoginPage from '../pages/common/LoginPage/LoginPage.jsx';
+import SignUpPage from '../pages/common/SignUpPage/SignUpPage.jsx';
+
 // 사업자 관련 페이지
 import ManagerMainPage from '../pages/manager/main/MainPage';
 import AdminPage from '../pages/manager/reservation/AdminPage';
@@ -20,15 +24,17 @@ import DepositPaymentPage from '../pages/customer/reservation/process/DepositPay
 import SeatSelectPage from '../pages/customer/reservation/process/SeatSelectPage/SeatSelectPage.jsx';
 import SuccessPage from '../pages/customer/reservation/process/SuccessPage/SuccessPage.jsx';
 import FingerprintAuthPage from '../pages/customer/reservation/process/FingerprintAuthPage/FingerprintAuthPage.jsx';
+
 // 비회원 관련 페이지
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';
 
 const AppRoutes = () => {
-  const { isManager } = useCommonStore();
-
   return (
     <Layout>
       <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/join" element={<SignUpPage />} />
+
         <Route path="/manager" element={<ManagerMainPage />} />
         <Route path="/manager/admin" element={<AdminPage />} />
         <Route
@@ -44,7 +50,6 @@ const AppRoutes = () => {
           element={<RestaurantViewPage />}
         />
         <Route path="/manager/statistics" element={<StatisticsPage />} />
-        <Route path="/" element={<CustomerMainPage />} />
         <Route path="/customer" element={<CustomerMainPage />} />
         <Route path="/customer/reservation" element={<MapRestaurantPage />} />
         <Route

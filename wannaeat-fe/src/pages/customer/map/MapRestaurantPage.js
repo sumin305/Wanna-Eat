@@ -4,7 +4,8 @@ import theme from '../../../style/common/theme';
 const MapRestaurantBox = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 `;
 
 const HeaderContainer = styled.div`
@@ -53,6 +54,7 @@ const SearchIcon = styled.img`
 const MapBox = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: 75%;
 `;
 

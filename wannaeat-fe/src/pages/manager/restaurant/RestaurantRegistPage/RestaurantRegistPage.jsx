@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import useHeaderStore from 'stores/common/header/useHeaderStore.js';
-import useTextfieldStore from 'stores/common/textfield/useTextfieldStore.js';
+import useHeaderStore from 'stores/common/useHeaderStore.js';
+import useTextfieldStore from 'stores/common/useTextfieldStore.js';
 import validateNickname from 'utils/manager/restaurantRegistValidation.js';
 import {
   RestaurantRegistPageStyled,

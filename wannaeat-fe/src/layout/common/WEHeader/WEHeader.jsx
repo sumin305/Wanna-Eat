@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import useHeaderStore from '../../../stores/common/header/useHeaderStore';
-
+import { useEffect } from 'react';
+import useHeaderStore from '../../../stores/common/useHeaderStore';
+import useCommonStore from '../../../stores/common/useCommonStore';
 import {
   HeaderContainer,
   HeaderWrapper,
@@ -27,13 +28,14 @@ const WEHeader = () => {
   } = useHeaderStore();
 
   const nav = useNavigate();
+  const { role } = useCommonStore();
 
   const handleClickBack = () => {
     nav(-1); // 뒤로가기
   };
 
   return (
-    <HeaderContainer isCarrot={isCarrot} isUnderLine={isUnderLine}>
+    <HeaderContainer role={role} isCarrot={isCarrot} isUnderLine={isUnderLine}>
       <HeaderWrapper>
         <HeaderLeft isShowLogo={isShowLogo}>
           {isShowLogo ? (

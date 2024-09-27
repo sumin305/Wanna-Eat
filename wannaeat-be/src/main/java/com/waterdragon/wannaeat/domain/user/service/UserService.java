@@ -22,4 +22,6 @@ public interface UserService {
 	boolean verifyPhoneAuthenticationCode(PhoneCodeVerifyRequestDto phoneCodeSendRequestDto);
 
 	void editFcmToken(FcmTokenEditRequestDto fcmTokenEditRequestDto);
+
+	void removeFcmToken(FcmTokenEditRequestDto fcmTokenEditRequestDto);
 }

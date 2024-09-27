@@ -182,14 +182,35 @@ public class UserServiceImpl implements UserService {
 		return true;
 	}
 
+	/**
+	 * FcmToken 갱신 메소드
+	 *
+	 * @param fcmTokenEditRequestDto FcmToken 정보
+	 */
 	@Override
 	public void editFcmToken(FcmTokenEditRequestDto fcmTokenEditRequestDto) {
 		UserToken userToken = authUtil.getAuthenticatedUser().getUserToken();
 		String fcmToken = fcmTokenEditRequestDto.getFcmToken();
+		// DB에 저장된 토큰과 일치하지 않는 경우(새로운 토큰인 경우)에만 갱신
 		if (userToken.getFcmToken() == null || !userToken.getFcmToken().equals(fcmToken)) {
 			userToken.editFcmToken(fcmToken);
 			userTokenRepository.save(userToken);
 		}
 
+	}
+
+	/**
+	 * FcmToken 삭제 메소드
+	 *
+	 * @param fcmTokenEditRequestDto FcmToken 정보
+	 */
+	@Override
+	public void removeFcmToken(FcmTokenEditRequestDto fcmTokenEditRequestDto) {
+		UserToken userToken = authUtil.getAuthenticatedUser().getUserToken();
+		// DB에 저장된 토큰과 일치하는 경우에만 삭제
+		if(userToken.getFcmToken().equals(fcmTokenEditRequestDto.getFcmToken())) {
+			userToken.removeFcmToken();
+			userTokenRepository.save(userToken);
+		}
 	}
 }

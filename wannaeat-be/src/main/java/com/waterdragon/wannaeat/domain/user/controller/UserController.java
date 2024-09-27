@@ -166,7 +166,7 @@ public class UserController {
 	 * @return void 인증 결과
 	 */
 	@Operation(summary = "SMS 인증코드 검증 API")
-	@GetMapping("/public/users/verify-code")
+	@PostMapping("/public/users/verify-code")
 	public ResponseEntity<ResponseDto<Void>> verifyEmailAuthenticationCode(
 		@Valid @RequestBody PhoneCodeVerifyRequestDto phoneCodeVerifyRequestDto) {
 
@@ -179,6 +179,12 @@ public class UserController {
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
+	/**
+	 * FcmToken 갱신 API
+	 *
+	 * @param fcmTokenEditRequestDto
+	 * @return 토큰 갱신 결과
+	 */
 	@Operation(summary = "FcmToken 갱신 API")
 	@PostMapping("/users/alarms")
 	public ResponseEntity<ResponseDto<Void>> EditFcmToken(
@@ -195,11 +201,32 @@ public class UserController {
 	}
 
 	/**
+	 * FcmToken 삭제 API
+	 *
+	 * @param fcmTokenEditRequestDto
+	 * @return 토큰 삭제 결과
+	 */
+	@Operation(summary = "FcmToken 삭제 API")
+	@PatchMapping("/users/alarms")
+	public ResponseEntity<ResponseDto<Void>> RemoveFcmToken(
+		@Valid @RequestBody FcmTokenEditRequestDto fcmTokenEditRequestDto) {
+
+		userService.removeFcmToken(fcmTokenEditRequestDto);
+		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+			.status(HttpStatus.OK.value())
+			.message("해당 기기의 FcmToken이 삭제되었습니다.")
+			.data(null)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	/**
 	 * 토큰 재발급 요청 API
 	 *
 	 * @return
 	 */
-	@Operation(summary = "토큰 재발급 요청 API")
+	@Operation(summary = "사용자 토큰 재발급 요청 API")
 	@GetMapping("/users/reissue")
 	public ResponseEntity<ResponseDto<Void>> reissueToken() {
 

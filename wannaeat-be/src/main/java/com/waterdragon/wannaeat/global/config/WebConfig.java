@@ -11,6 +11,9 @@ public class WebConfig implements WebMvcConfigurer {
 	@Value("${redirectURL}")
 	private String URL;
 
+	@Value("${JWT_ACCESS_HEADER}")
+	private String JWT_ACCESS_HEADER;
+
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
@@ -18,6 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
 			.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
 			.allowedHeaders("*")
 			.exposedHeaders("*")
+			.exposedHeaders(JWT_ACCESS_HEADER)
 			.allowCredentials(true)
 			.maxAge(3600);
 	}

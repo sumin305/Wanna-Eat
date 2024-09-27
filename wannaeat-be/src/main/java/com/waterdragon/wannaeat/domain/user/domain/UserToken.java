@@ -38,7 +38,11 @@ public class UserToken {
 		this.refreshToken = refreshToken;
 	}
 
-	public void editFcmToken(String fcnToken) {
-		this.fcmToken = fcnToken;
+	public void editFcmToken(String fcmToken) {
+		this.fcmToken = fcmToken;
+	}
+
+	public void removeFcmToken(){
+		this.fcmToken = null;
 	}
 }

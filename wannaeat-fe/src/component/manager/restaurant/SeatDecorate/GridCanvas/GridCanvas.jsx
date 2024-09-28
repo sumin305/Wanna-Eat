@@ -14,20 +14,33 @@ import {
 } from './GridCanvas';
 import { create } from 'zustand';
 
-const useStore = create((set) => ({
+const useStore = create((set, get) => ({
   items: [],
+  gridStatus: {},
   addItem: (item) =>
     set((state) => ({
       items: [...state.items, item],
+      gridStatus: {
+        ...state.gridStatus,
+        [`${item.x},${item.y}`]: item.id,
+      },
     })),
   updateItemPosition: (id, newX, newY) =>
     set((state) => ({
       items: state.items.map((item) =>
         item.id === id ? { ...item, x: newX, y: newY } : item
       ),
+      gridStatus: {
+        ...state.gridStatus,
+        [`${newX},${newY}`]: id,
+      },
     })),
   setItems: (items) => set({ items }),
   clearItems: () => set({ items: [] }),
+  isCellOccupied: (x, y) => {
+    const gridStatus = get().gridStatus; 
+    return !!gridStatus[`${x},${y}`];
+  },
 }));
 
 const GridCanvas = () => {
@@ -122,6 +135,11 @@ const GridCanvas = () => {
 
       const x = Math.floor(adjustedX / gridSize) * gridSize;
       const y = Math.floor(adjustedY / gridSize) * gridSize;
+
+     if (useStore.getState().isCellOccupied(x, y)) {
+      window.alert('중복 방지!!!!!!!!!!!!!!');
+      return;
+     }
 
       if (item.type === 'PALETTE_ITEM') {
         const selectedItem = paletteItems.find(

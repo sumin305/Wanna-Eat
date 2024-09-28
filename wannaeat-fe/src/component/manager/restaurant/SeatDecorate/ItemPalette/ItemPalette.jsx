@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useDrag } from 'react-dnd';
 import { paletteItems } from './ItemPalette.js';
 import {

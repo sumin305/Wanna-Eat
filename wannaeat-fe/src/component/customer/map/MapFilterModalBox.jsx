@@ -96,19 +96,17 @@ const MapFilterModalBox = () => {
     // 머무는 시간 드롭다운 목록생성
     setDurationItems(durationTimes);
     console.log(
-      JSON.parse(localStorage.getItem('categories')).map((index, category) => ({
+      typeof JSON.parse(localStorage.getItem('categories')).map((category) => ({
         item: category.restaurantCategoryName,
         index: category.restaurantCategoryId,
       }))
     );
-    setItems(
-      JSON.parse(localStorage.getItem('categories')).map((category) => ({
-        item: category.restaurantCategoryName,
-        index: category.restaurantCategoryId,
-      })) || []
-    );
 
-    console.log(items);
+    setItems(
+      JSON.parse(localStorage.getItem('categories')).map(
+        (category) => category.restaurantCategoryName
+      )
+    );
   }, []);
 
   // 시작 시간 선택
@@ -126,12 +124,6 @@ const MapFilterModalBox = () => {
       setSelectedDurationTime(durationTimes[selectedDurationId]);
     }
   }, [selectedDurationId]);
-
-  console.log(selectedHeadCount);
-  console.log(selectedDate);
-  console.log(selectedStartTime);
-  console.log(selectedDurationTime);
-  console.log(selectedCategory);
 
   return (
     <>

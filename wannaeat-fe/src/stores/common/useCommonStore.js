@@ -33,6 +33,7 @@ const useCommonStore = create((set) => ({
     if (authToken) {
       // JWT 토큰 decode
       const decodedJWT = decodeJWT(authToken);
+      localStorage.setItem('role', decodedJWT.role);
       return decodedJWT;
     } else {
       console.log('Authorization-wannaeat header not found');
@@ -40,20 +41,7 @@ const useCommonStore = create((set) => ({
   },
   getUserRole: async () => {
     // refresh -> access 재발급
-    const result = await getToken();
-    if (result.status !== 200) {
-      console.log(result);
-      return;
-    }
-    // 헤더의 토큰 받아온다
-    const authToken = result.headers['authorization-wannaeat'];
-    if (authToken) {
-      // JWT 토큰 decode
-      const decodedJWT = decodeJWT(authToken);
-      return decodedJWT.role;
-    } else {
-      console.log('Authorization-wannaeat header not found');
-    }
+    return localStorage.getItem('role');
   },
 
   requestSignUp: async (requestUserInfo) => {

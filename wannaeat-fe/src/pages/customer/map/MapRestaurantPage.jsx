@@ -16,8 +16,14 @@ import useReservationStore from '../../../stores/customer/useReservationStore.js
 import useMapStore from '../../../stores/map/useMapStore.js';
 
 const MapRestaurantPage = () => {
-  const { open, setModalType, setTitle, setConfirmText, setChildren } =
-    useModalStore();
+  const {
+    open,
+    setModalType,
+    setTitle,
+    setConfirmText,
+    setChildren,
+    setHandleButtonClick,
+  } = useModalStore();
 
   const { selectedDate, selectedHeadCount, selectedCategory } =
     useReservationStore();
@@ -26,14 +32,17 @@ const MapRestaurantPage = () => {
 
   const handleFilterModalButtonClick = () => {
     setIsInitialLoad(false);
-
     setModalType('sheet');
     setTitle('식당 필터링');
     setConfirmText('필터링');
+    setHandleButtonClick(() => {
+      console.log('hello');
+    });
     setChildren(<MapFilterModalBox />);
     open();
   };
 
+  const filterRestaurants = () => {};
   // 버튼을 동적으로 생성하는 함수
   const renderFilterButtons = () => {
     const buttons = [];

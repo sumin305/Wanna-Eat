@@ -91,6 +91,7 @@ authClientInstance.interceptors.response.use(
 
   // 실패  (401 에러)
   async (error) => {
+    console.log(error);
     const { response, config } = error;
     console.log('authClientInstance 응답 실패');
 
@@ -107,14 +108,18 @@ authClientInstance.interceptors.response.use(
       if (reissueResponse.status === 200) {
         setAccessToken(accessToken);
         config.headers['authorization-wannaeat'] = accessToken;
+        console.log('AccessToken Reissue 성공');
         return authClientInstance(config);
       } else {
+        console.log('AccessToken Reissue 실패');
         const alert = useAlert();
         const navigate = useNavigate();
 
         alert('로그인 해주세요');
         navigate('/');
       }
+    } else {
+      console.log('인증 성공');
     }
     return Promise.reject(error);
   }

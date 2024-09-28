@@ -17,7 +17,7 @@ const SeatDecoratePage = () => {
     setIsShowBackIcon(true);
     setActiveIcons([3]);
     setPageName('매장 꾸미기');
-  }, []);
+  }, [setIsCarrot, setIsShowBackIcon, setActiveIcons, setPageName]);
 
   if (isMobile) {
     window.alert('모바일입니다.');
@@ -25,8 +25,15 @@ const SeatDecoratePage = () => {
     window.alert('PC입니다.');
   }
 
+  const touchbackendOptions = {
+    enableMouseEvents: true,
+  };
+
   return (
-    <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
+    <DndProvider
+      backend={isMobile ? TouchBackend : HTML5Backend}
+      options={isMobile ? touchbackendOptions : {}}
+    >
       {/* <DndProvider backend={HTML5Backend}> */}
       {/* <DndProvider backend={TouchBackend}> */}
       <SeatDecoratePageStyled>

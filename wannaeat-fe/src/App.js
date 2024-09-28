@@ -4,11 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Global, css } from '@emotion/react';
 import Main from './Main';
 
-import {
-  requestPermission,
-  onForegroundMessage,
-} from './firebase/firebaseCloudMessaging';
-import { getFcmToken } from './firebase/firebaseCloudMessaging';
+import { requestPermission } from './firebase/firebaseCloudMessaging';
 
 const globalStyles = css`
   @font-face {
@@ -44,10 +40,6 @@ const globalStyles = css`
 // FCM permission & token
 if (Notification.permission !== 'granted') {
   requestPermission();
-} else {
-  // Save FCM token
-  getFcmToken();
-  onForegroundMessage();
 }
 
 function App() {

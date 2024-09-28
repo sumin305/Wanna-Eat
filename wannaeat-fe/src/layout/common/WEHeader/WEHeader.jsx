@@ -49,7 +49,9 @@ const WEHeader = () => {
               alt="뒤로가기"
               onClick={handleClickBack}
             />
-          ) : null}
+          ) : (
+            <div></div>
+          )}
         </HeaderLeft>
         <HeaderCenter>
           <HeaderTitle

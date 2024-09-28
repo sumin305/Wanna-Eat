@@ -20,56 +20,23 @@ import WEDropdown from '../../common/dropdown/WEDropdown.jsx';
 import moment from 'moment';
 import CalendarImg from '../../../assets/icons/common/calendar.svg';
 import useCommonStore from '../../../stores/common/useCommonStore.js';
-
+import useMapFilterStore from 'stores/map/useMapFilterStore';
 const MapFilterModalBox = () => {
   const {
-    selectedHeadCount,
-    setSelectedHeadCount,
     lunchTimes,
     dinnerTimes,
-    selectedDate,
-    setSelectedDate,
-    selectedStartTime,
-    setSelectedStartTime,
     durationTimes,
-    selectedDurationTime,
     setSelectedDurationTime,
-    selectedCategory,
-    setSelectedCategory,
   } = useReservationStore();
 
-  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
-
-  const calendarRef = useRef(null);
-
-  const handleDateChange = (date) => {
-    setSelectedDate(moment(date).format('YYYY-MM-DD'));
-    setIsCalendarVisible(false);
-  };
-
-  const toggleCalendar = () => {
-    setIsCalendarVisible(!isCalendarVisible);
-  };
-
-  // 달력 외부 클릭 시 달력을 닫는 함수
-  const handleClickOutside = (e) => {
-    if (calendarRef.current && !calendarRef.current.contains(e.target)) {
-      setIsCalendarVisible(false);
-    }
-  };
-
-  // 외부 클릭 감지
-  useEffect(() => {
-    if (isCalendarVisible) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isCalendarVisible]);
+  const {
+reservationDate,
+memberCount,
+setCategoryId,
+setReservationDate,
+setStartTime,
+setMemberCount,
+  } = useMapFilterStore();
 
   const {
     visitTimePlaceholder,
@@ -85,9 +52,68 @@ const MapFilterModalBox = () => {
     isShowOption: isShowDurationOption,
   } = useDurationDropdownStore();
 
-  const { setItems, isShowOption, items } = useDropdownStore();
+  const { setItems, isShowOption, selectedId } = useDropdownStore();
 
   const allTimes = [...lunchTimes, ...dinnerTimes]; // 오전 오후 포함한 모든 시간
+
+  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
+
+  const calendarRef = useRef(null);
+
+  const handleDateChange = (date) => {
+    setReservationDate(moment(date).format('YYYY-MM-DD'));
+    setIsCalendarVisible(false);
+  };
+
+  const toggleCalendar = () => {
+    setIsCalendarVisible(!isCalendarVisible);
+  };
+
+  // 달력 외부 클릭 시 달력을 닫는 함수
+  const handleClickOutside = (e) => {
+    if (calendarRef.current && !calendarRef.current.contains(e.target)) {
+      setIsCalendarVisible(false);
+    }
+  };
+
+  // 인원 수가 변경될때마다 호출되는 함수
+  const handleMemberCountChange = (e) => {
+    setMemberCount(parseInt(e.target.value));
+  }
+
+  // 카테고리가 선택되면 호출되는 함수
+  const handleCategoryOnSelect = (e) => {
+    const categories = JSON.parse(localStorage.getItem('categories'));
+    const categoryId = categories.filter((category) => category.restaurantCategoryName === e)[0].restaurantCategoryId
+    setCategoryId(categoryId)
+  }
+
+  // 시작 시간이 선택되면 호출되는 함수
+  const handleStartTimeOnSelect = (e) => {
+    console.log(e + ':00')
+    setStartTime(e + ':00');
+  }
+  
+  // 머무는 시간이 선택되면 호출되는 함수
+  const handleDurationTimeOnSelect = (e) => {
+    setSelectedDurationTime(e);
+    console.log('selectedDurationId,',selectedDurationId)
+    }
+
+
+  // 외부 클릭 감지
+  useEffect(() => {
+    if (isCalendarVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isCalendarVisible]);
+
 
   useEffect(() => {
     // 시작 시간 드롭다운 목록생성
@@ -109,22 +135,6 @@ const MapFilterModalBox = () => {
     );
   }, []);
 
-  // 시작 시간 선택
-  useEffect(() => {
-    if (selectedVisitTimeId !== -1) {
-      {
-        setSelectedStartTime(allTimes[selectedVisitTimeId]);
-      }
-    }
-  }, [selectedVisitTimeId]);
-
-  // 머무는 시간 선택
-  useEffect(() => {
-    if (selectedDurationId !== -1) {
-      setSelectedDurationTime(durationTimes[selectedDurationId]);
-    }
-  }, [selectedDurationId]);
-
   return (
     <>
       <InputFieldContainer>
@@ -132,11 +142,10 @@ const MapFilterModalBox = () => {
         <InputFieldContent>
           <WETextfield
             name="personnel"
-            placeholder="최대가능인원 6"
-            value={selectedHeadCount}
-            onChange={(e) => {
-              setSelectedHeadCount(e.target.value);
-            }}
+            placeholder="인원수를 선택해주세요"
+            value={memberCount === -1 ? 0 : memberCount}
+            type="number"
+            onChange={handleMemberCountChange}
           />
           <div>명</div>
         </InputFieldContent>
@@ -153,7 +162,7 @@ const MapFilterModalBox = () => {
               backgroundPosition: 'left 10px center',
             }}
           >
-            {selectedDate || '날짜를 선택하세요'}
+            {reservationDate || '날짜를 선택하세요'}
           </BoxStyled>
           {isCalendarVisible && (
             <CalendarWrapper ref={calendarRef}>
@@ -177,11 +186,13 @@ const MapFilterModalBox = () => {
         >
           {/* 시작시간 드롭다운 */}
           <WEDropdown
+            onSelect={handleStartTimeOnSelect}
             useDropdownStore={useVisitTimeDropdownStore}
             placeholder={visitTimePlaceholder}
           />
           {/* 머무는 시간 드롭다운 */}
           <WEDropdown
+            onSelect={handleDurationTimeOnSelect}
             useDropdownStore={useDurationDropdownStore}
             placeholder={durationPlaceholder}
           />
@@ -194,7 +205,7 @@ const MapFilterModalBox = () => {
           <WEDropdown
             useDropdownStore={useDropdownStore}
             placeholder="카테고리를 선택하세요"
-            onSelect={setSelectedCategory}
+            onSelect={handleCategoryOnSelect}
           />
         </InputFieldContent>
       </InputFieldContainer>

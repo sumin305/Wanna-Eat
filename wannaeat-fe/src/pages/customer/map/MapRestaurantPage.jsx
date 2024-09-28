@@ -14,7 +14,7 @@ import MapFilterModalBox from '../../../component/customer/map/MapFilterModalBox
 import searchIcon from '../../../assets/icons/common/search.svg';
 import useReservationStore from '../../../stores/customer/useReservationStore.js';
 import useMapStore from '../../../stores/map/useMapStore.js';
-import { getRestaurants } from 'api/customer/restaurant.js';
+import useMapFilterStore from 'stores/map/useMapFilterStore.js';
 const MapRestaurantPage = () => {
   const {
     open,
@@ -28,8 +28,9 @@ const MapRestaurantPage = () => {
 
   const { selectedDate, selectedHeadCount, selectedCategory } =
     useReservationStore();
+  const {categoryId, keyword, reservationDate, startTime, endTime, memberCount, setKeyword} = useMapFilterStore();
 
-  const { setIsInitialLoad, lat, lon } = useMapStore();
+  const { setIsInitialLoad, lat, lon, getRestaurantPositions, setMarkerPositions} = useMapStore();
 
   const handleFilterModalButtonClick = () => {
     setIsInitialLoad(false);
@@ -37,58 +38,78 @@ const MapRestaurantPage = () => {
     setTitle('식당 필터링');
     setConfirmText('필터링');
     setHandleButtonClick(() => {
-      filterRestaurants();
+      setfilterRestaurantsMarker();
       close();
     });
     setChildren(<MapFilterModalBox />);
     open();
   };
 
-  const filterRestaurants = async () => {
-    const result = await getRestaurants({
+  const setfilterRestaurantsMarker = async () => {
+    await setMarkerPositions(getRestaurantPositions({
       latitude: lat,
       longitude: lon,
-    });
-    console.log(result);
+      ...(categoryId !== -1 && {categoryId: categoryId}),
+      ...(keyword !== '' && {keyword: keyword}),
+      ...(reservationDate !== ''  && {reservationDate: reservationDate}),
+      ...(startTime !== ''  && {startTime: startTime}),
+      ...(endTime !== '' && {endTime: endTime}),
+      ...(memberCount !== -1 && {memberCount: memberCount}),
+    }));
   };
 
+  const handleSearchInputChange = (e) => {
+    setKeyword(e.target.value);
+  };
+
+  const handleSearchIconClick = () => {
+    setfilterRestaurantsMarker()
+  }
+
+  const getRestaurantCategoryName = (categoryId) => {
+    const categories = JSON.parse(localStorage.getItem('categories'));
+    const categoryName = categories.filter((c) => (c.restaurantCategoryId === categoryId))[0].restaurantCategoryName;
+    console.log(categoryName);
+
+    return categoryName
+  }
   // 버튼을 동적으로 생성하는 함수
   const renderFilterButtons = () => {
     const buttons = [];
 
     // selectedDate가 있을 때 버튼 생성
-    if (selectedDate) {
+    if (reservationDate !== '') {
       buttons.push(
         <FilterButton
           onClick={handleFilterModalButtonClick}
           key="date"
           isEven={buttons.length % 2 === 0}
         >
-          {selectedDate}
+          {reservationDate}
         </FilterButton>
       );
     }
 
-    if (selectedHeadCount) {
+    if (memberCount !== -1) {
       buttons.push(
         <FilterButton
           onClick={handleFilterModalButtonClick}
           key="headCount"
           isEven={buttons.length % 2 === 0}
         >
-          {selectedHeadCount}명
+          {memberCount}명
         </FilterButton>
       );
     }
 
-    if (selectedCategory) {
+    if (categoryId !== -1) {
       buttons.push(
         <FilterButton
           onClick={handleFilterModalButtonClick}
           key="category"
           isEven={buttons.length % 2 === 0}
         >
-          {selectedCategory}
+          {getRestaurantCategoryName(categoryId)}
         </FilterButton>
       );
     }
@@ -102,8 +123,8 @@ const MapRestaurantPage = () => {
     <MapRestaurantBox>
       <HeaderContainer>
         <SearchWrapper>
-          <SearchInput placeholder="메뉴, 식당, 지역 검색" />
-          <SearchIcon src={searchIcon}></SearchIcon>
+          <SearchInput onChange={handleSearchInputChange} placeholder="메뉴, 식당, 지역 검색" />
+          <SearchIcon onClick={handleSearchIconClick} src={searchIcon}></SearchIcon>
         </SearchWrapper>
         <ButtonContainer>
           {buttons.length === 0 ? (

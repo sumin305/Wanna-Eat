@@ -17,17 +17,14 @@ const Main = () => {
       const response = await getRestaurantCategories();
       if (response.status === 200) {
         // setCategories(response.data.data.restaurantCategories);
-        console.log(JSON.stringify(response.data.data.restaurantCategories));
         localStorage.setItem(
           'categories',
           JSON.stringify(response.data.data.restaurantCategories)
         );
       }
-      console.log(localStorage.getItem('categories'));
       // setCategories(data.categories);
     };
     getCategories();
-    setCategories(['고기', '족발', '찌개', '회', '돈까스']);
   }, []);
 
   // 헤더 렌더링할 조건

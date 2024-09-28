@@ -20,7 +20,7 @@ const createClientInstance = () => {
       'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
       'Access-Control-Allow-Credentials': 'true',
     },
-    withCredentials: true,
+    withCredentials: false,
   });
   return instance;
 };

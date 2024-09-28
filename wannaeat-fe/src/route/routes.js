@@ -25,7 +25,7 @@ import SeatSelectPage from '../pages/customer/reservation/process/SeatSelectPage
 import SuccessPage from '../pages/customer/reservation/process/SuccessPage/SuccessPage.jsx';
 import FingerprintAuthPage from '../pages/customer/reservation/process/FingerprintAuthPage/FingerprintAuthPage.jsx';
 import ChatPage from 'pages/customer/chat/ChatPage.jsx';
-import OrderDetailPage from 'pages/customer/order/OrderDetailPage';
+import OrderMainPage from 'pages/customer/order/OrderMainPage';
 
 // 비회원 관련 페이지
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';
@@ -77,7 +77,7 @@ const AppRoutes = () => {
         <Route path="/customer/reservation/success" element={<SuccessPage />} />
         <Route path="/customer/reservationlist" element={<ListPage />} />
         <Route path="/customer/chat" element={<ChatPage />} />
-        <Route path="/customer/order" element={<OrderDetailPage />} />
+        <Route path="/customer/OrderMainPage" element={<OrderMainPage />} />
         <Route path="/customer/myinfo" element={<MyInfoPage />} />
       </Routes>
     </Layout>

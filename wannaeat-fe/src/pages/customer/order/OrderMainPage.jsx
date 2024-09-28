@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import useWebSocketStore from 'stores/common/useWebSocketStore';
 
-const OrderDetailPage = () => {
+const OrderMainPage = () => {
   const { connectWebSoket, disconnectWebSocket } = useWebSocketStore();
 
   // 웹소켓 연결
@@ -17,4 +17,4 @@ const OrderDetailPage = () => {
   return <div>주문하기 메인페이지</div>;
 };
 
-export default OrderDetailPage;
+export default OrderMainPage;

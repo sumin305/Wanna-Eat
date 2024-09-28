@@ -14,10 +14,11 @@ import MapFilterModalBox from '../../../component/customer/map/MapFilterModalBox
 import searchIcon from '../../../assets/icons/common/search.svg';
 import useReservationStore from '../../../stores/customer/useReservationStore.js';
 import useMapStore from '../../../stores/map/useMapStore.js';
-
+import { getRestaurants } from 'api/customer/restaurant.js';
 const MapRestaurantPage = () => {
   const {
     open,
+    close,
     setModalType,
     setTitle,
     setConfirmText,
@@ -28,7 +29,7 @@ const MapRestaurantPage = () => {
   const { selectedDate, selectedHeadCount, selectedCategory } =
     useReservationStore();
 
-  const { setIsInitialLoad } = useMapStore();
+  const { setIsInitialLoad, lat, lon } = useMapStore();
 
   const handleFilterModalButtonClick = () => {
     setIsInitialLoad(false);
@@ -36,13 +37,21 @@ const MapRestaurantPage = () => {
     setTitle('식당 필터링');
     setConfirmText('필터링');
     setHandleButtonClick(() => {
-      console.log('hello');
+      filterRestaurants();
+      close();
     });
     setChildren(<MapFilterModalBox />);
     open();
   };
 
-  const filterRestaurants = () => {};
+  const filterRestaurants = async () => {
+    const result = await getRestaurants({
+      latitude: lat,
+      longitude: lon,
+    });
+    console.log(result);
+  };
+
   // 버튼을 동적으로 생성하는 함수
   const renderFilterButtons = () => {
     const buttons = [];
@@ -88,7 +97,6 @@ const MapRestaurantPage = () => {
   };
 
   const buttons = renderFilterButtons();
-  console.log(selectedDate);
 
   return (
     <MapRestaurantBox>

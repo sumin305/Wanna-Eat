@@ -5,7 +5,7 @@ export const getRestaurants = async (searchCondition) => {
   // 객체 형식의 searchCondition을 queryString으로 변환
   const queryString = new URLSearchParams(searchCondition);
   return await authClientInstance
-    .get('/api/public/restaurants/' + queryString)
+    .get('/api/public/restaurants?' + queryString)
     .then((result) => result.data)
     .catch((error) => error);
 };

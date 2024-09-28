@@ -13,7 +13,6 @@ const useCommonStore = create((set) => ({
   socialType: '',
   categories: [], // 음식 카테고리
   fcmToken: '',
-
   setRole: (value) => set(() => ({ role: value })),
   setEmail: (value) => set(() => ({ email: value })),
   setSocialType: (value) => set(() => ({ socialType: value })),
@@ -39,6 +38,7 @@ const useCommonStore = create((set) => ({
       console.log('Authorization-wannaeat header not found');
     }
   },
+
   getUserRole: async () => {
     // refresh -> access 재발급
     return localStorage.getItem('role');

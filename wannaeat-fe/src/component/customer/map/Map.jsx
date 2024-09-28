@@ -5,25 +5,54 @@ import ArrowWhite from '../../../assets/icons/map/arrow-white.png';
 import VertexWhite from '../../../assets/icons/map/vertex-white.png';
 import useMapStore from '../../../stores/map/useMapStore';
 import { useNavigate } from 'react-router-dom';
+import { getRestaurants } from 'api/customer/restaurant.js';
 
 const MapContainer = () => {
-  const { lat, lon, setLat, setLon, isInitialLoad, setIsInitialLoad } =
-    useMapStore();
+  const { kakao } = window;
+  const {
+    lat,
+    lon,
+    setLat,
+    setLon,
+    isInitialLoad,
+    setIsInitialLoad,
+    setMarkerPositions,
+    markerPositions,
+  } = useMapStore();
   const [centerLatLng, setCenterLatLng] = useState({ lat: lat, lon: lon });
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const navigate = useNavigate();
 
-  // 현재 위치 근처의 레스토랑 찾는 함수
-  const handleRestaurantFind = () => {
-    setLat(centerLatLng.lat);
-    setLon(centerLatLng.lon);
-    setIsButtonVisible(false);
+  // 현재 위치 기반 식당 검색하는 함수
+  const fetchRestaurants = async () => {
+
+    const result = await getRestaurants({
+      latitude: lat,
+      longitude: lon,
+    });
+
+    // 검색 성공 시 마커 위치들 세팅
+    if (result.status === 200) {
+      const restaurants = result.data.restaurantMapDetailResponseDtos.map((restaurant) => ({
+        id: restaurant.restaurantId,
+        title: restaurant.restaurantName,
+        latlng: new kakao.maps.LatLng(
+          restaurant.latitude,
+          restaurant.longitude
+        ),
+      }));
+      
+      setMarkerPositions(restaurants);
+
+    } else {
+      console.log('근처 식당 정보 조회 실패');
+    }
   };
 
-  const handleMarkerClick = (id) => {
-    console.log('click', id);
-    navigate(`/customer/reservation/restaurant-detail/${id}`);
-  };
+  // 초기 렌더링 시 사용자 현재 위치 기반 식당 검색
+  useEffect(() => {
+    fetchRestaurants();
+  }, [lat, lon, setMarkerPositions]);
 
   useEffect(() => {
     const { kakao } = window;
@@ -56,28 +85,7 @@ const MapContainer = () => {
       setIsButtonVisible(true);
     });
 
-    var positions = [
-      {
-        id: 1,
-        title: '지역1',
-        latlng: new kakao.maps.LatLng(lat + 0.000004, lon + 0.00001),
-      },
-      {
-        id: 2,
-        title: '지역2',
-        latlng: new kakao.maps.LatLng(lat + 0.000235, lon + 0.00119),
-      },
-      {
-        id: 3,
-        title: '지역3',
-        latlng: new kakao.maps.LatLng(lat + 0.000178, lon - 0.000727),
-      },
-      {
-        id: 4,
-        title: '지역4',
-        latlng: new kakao.maps.LatLng(lat + 0.000692, lon + 0.000071),
-      },
-    ];
+    var positions = markerPositions;
 
     var imageSrc = PinkMarker;
 
@@ -127,10 +135,24 @@ const MapContainer = () => {
     });
   }, [lat, lon]); // lat, lon이 변경될 때만 다시 실행됨
 
+  
+  // 현재 위치 근처의 레스토랑 찾는 함수
+  const handleRestaurantFindButtonClick = () => {
+    setLat(centerLatLng.lat);
+    setLon(centerLatLng.lon);
+    fetchRestaurants();
+    setIsButtonVisible(false);
+  };
+
+  // 마커 클릭 시 해당 레스토랑 정보 상세보기로 이동
+  const handleMarkerClick = (id) => {
+    navigate(`/customer/reservation/restaurant-detail/${id}`);
+  };
+
   return (
     <>
       {isButtonVisible && (
-        <FindRestaurantButton onClick={handleRestaurantFind}>
+        <FindRestaurantButton onClick={handleRestaurantFindButtonClick}>
           중심 위치로 주변 식당 찾기
         </FindRestaurantButton>
       )}

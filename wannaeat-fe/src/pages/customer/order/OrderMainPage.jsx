@@ -1,8 +1,14 @@
 import { useEffect } from 'react';
 import useWebSocketStore from 'stores/common/useWebSocketStore';
+import { useNavigate } from 'react-router-dom';
 
-const OrderMainPage = () => {
+const OrderDetailPage = () => {
   const { connectWebSoket, disconnectWebSocket } = useWebSocketStore();
+  const nav = useNavigate();
+
+  const clickGotoChat = () => {
+    nav('/customer/chat');
+  };
 
   // 웹소켓 연결
   useEffect(() => {
@@ -14,7 +20,14 @@ const OrderMainPage = () => {
     };
   }, []);
 
-  return <div>주문하기 메인페이지</div>;
+  return (
+    <>
+      <div>주문하기 메인페이지</div>
+      <button onClick={clickGotoChat}>채팅으로 이동</button>
+      <div>버튼아 보여라</div>
+      <div>버튼</div>
+    </>
+  );
 };
 
-export default OrderMainPage;
+export default OrderDetailPage;

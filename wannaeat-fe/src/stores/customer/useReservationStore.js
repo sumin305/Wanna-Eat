@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import moment from 'moment';
 const useReservationStore = create((set) => ({
   isLunch: true,
-  selectedDate: '',
+  selectedDate: new Date(), // 현재 날짜 및 시간으로 초기화
   selectedStartTime: '',
   selectedEndTime: '',
   selectedHeadCount: '',

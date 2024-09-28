@@ -12,7 +12,7 @@ import TimeSelectModalBox from '../../../../../component/customer/reservation/Ti
 import useReservationStore from '../../../../../stores/customer/useReservationStore.js';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
-
+import {useEffect} from 'react';
 const TimeSelectPage = () => {
   const { open, setModalType, setConfirmText, setTitle, setChildren } =
     useModalStore();
@@ -26,6 +26,10 @@ const TimeSelectPage = () => {
     setSelectedEndTime,
   } = useReservationStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log(moment(selectedDate, 'YYYY-MM-DD').toDate())
+  }, [])
   const handleTimeSelectButtonClick = () => {
     setModalType('sheet');
     setConfirmText('확인');
@@ -49,7 +53,6 @@ const TimeSelectPage = () => {
     navigate('/customer/reservation/seat-select');
   };
 
-  var showDate = selectedDate.slice(5).replace('-', '.');
 
   return (
     <TimeSelectPageContainer>
@@ -61,7 +64,7 @@ const TimeSelectPage = () => {
           onClick={handleTimeSelectButtonClick}
           fontWeight={900}
         >
-          {showDate} {selectedStartTime} ~ {selectedEndTime} {selectedHeadCount}
+          {moment(selectedDate).format('YYYY-MM-DD')} {selectedStartTime} ~ {selectedEndTime} {selectedHeadCount}
           명
         </Button>
         <CalendarWrapper>

@@ -10,6 +10,16 @@ const setAccessToken = (newAccessToken) => {
   accessToken = newAccessToken;
 };
 
+// ssafy 금융 API 요청
+const createSsafyClientInstance = () => {
+  const instance = axios.create({
+    baseURL: process.env.REACT_APP_SSAFY_PAY_URL,
+    timeout: 5000,
+    withCredentials: false,
+  });
+  return instance;
+};
+
 // 일반 요청
 const createClientInstance = () => {
   const instance = axios.create({
@@ -57,6 +67,7 @@ const createAuthWithRefreshClientInstance = () => {
   return instance;
 };
 
+export const ssafyClient = createSsafyClientInstance();
 export const clientInstance = createClientInstance();
 export const authClientInstance = createAuthClientInstance();
 export const authWithRefreshClientInstance =

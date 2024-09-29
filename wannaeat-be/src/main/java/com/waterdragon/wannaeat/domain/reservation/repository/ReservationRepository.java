@@ -1,5 +1,6 @@
 package com.waterdragon.wannaeat.domain.reservation.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,4 +44,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	List<ReservationCountResponseDto> countReservationsByDay(@Param("restaurant") Restaurant restaurant,
 		@Param("year") int year,
 		@Param("month") int month);
+
+	@Query("SELECT r FROM Reservation r WHERE r.restaurant = :restaurant AND r.reservationDate = :reservationDate")
+	List<Reservation> findByRestaurantAndReservationDate(@Param("restaurant") Restaurant restaurant,
+		@Param("reservationDate") LocalDate reservationDate);
+
 }

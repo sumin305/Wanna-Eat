@@ -12,4 +12,5 @@ public interface ReservationService {
 
 	void registerReservationTable(Reservation reservation, List<Integer> tableNumbers);
 
+	String generateRandomString();
 }

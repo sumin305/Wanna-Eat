@@ -1,5 +1,6 @@
 package com.waterdragon.wannaeat.domain.reservation.service;
 
+import java.security.SecureRandom;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -69,4 +70,25 @@ public class ReservationServiceImpl implements ReservationService {
 		}
 	}
 
+	/**
+	 * 숫자와 문자를 섞은 랜덤 문자열 생성
+	 *
+	 * @return 10자리 문자열
+	 */
+	@Override
+	public String generateRandomString() {
+		final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		final int STRING_LENGTH = 10;  // 원하는 문자열 길이
+		final SecureRandom random = new SecureRandom();
+
+		StringBuilder sb = new StringBuilder(STRING_LENGTH);
+
+		for (int i = 0; i < STRING_LENGTH; i++) {
+			int randomIndex = random.nextInt(CHARACTERS.length());
+			sb.append(CHARACTERS.charAt(randomIndex));
+		}
+
+		return sb.toString();
+
+	}
 }

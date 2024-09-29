@@ -61,6 +61,7 @@ public class Reservation {
 	@Column(name = "reservation_url")
 	private String reservationUrl;
 
+	@Builder.Default
 	@Column(name = "regist_time", nullable = false)
 	private LocalDateTime registTime = LocalDateTime.now();
 

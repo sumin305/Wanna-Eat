@@ -1,5 +1,6 @@
 package com.waterdragon.wannaeat.domain.payment.controller;
 
+import java.security.InvalidParameterException;
 import java.time.Duration;
 import java.util.UUID;
 
@@ -132,6 +133,10 @@ public class PaymentController {
 		@RequestParam("payment_id") String paymentId,
 		@RequestParam("pg_token") String pgToken,
 		@RequestParam("type") String type) {
+
+		if (!type.equals("menu") && !type.equals("deposit")) {
+			throw new InvalidParameterException("결제 타입이 올바르지 않습니다.");
+		}
 
 		// LinkedHashMap을 KakaoPaymentRequestDto로 변환하기 위한 ObjectMapper 객체 생성
 		ObjectMapper objectMapper = CustomObjectMapper.createObjectMapper();

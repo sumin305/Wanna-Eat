@@ -25,7 +25,14 @@ const useStore = create((set, get) => ({
         [`${item.x},${item.y}`]: item.id,
       },
     })),
-  updateItemPosition: (id, newX, newY) =>
+  updateItemPosition: (id, newX, newY) => {
+    const { items, gridStatus } = get();
+    const item = items.find((item) => item.id === id);
+
+    if (item) {
+      delete gridStatus[`${item.x},${item.y}`];
+    }
+
     set((state) => ({
       items: state.items.map((item) =>
         item.id === id ? { ...item, x: newX, y: newY } : item
@@ -34,11 +41,12 @@ const useStore = create((set, get) => ({
         ...state.gridStatus,
         [`${newX},${newY}`]: id,
       },
-    })),
+    }));
+  },
   setItems: (items) => set({ items }),
   clearItems: () => set({ items: [] }),
   isCellOccupied: (x, y) => {
-    const gridStatus = get().gridStatus; 
+    const gridStatus = get().gridStatus;
     return !!gridStatus[`${x},${y}`];
   },
 }));
@@ -136,10 +144,10 @@ const GridCanvas = () => {
       const x = Math.floor(adjustedX / gridSize) * gridSize;
       const y = Math.floor(adjustedY / gridSize) * gridSize;
 
-     if (useStore.getState().isCellOccupied(x, y)) {
-      window.alert('중복 방지!!!!!!!!!!!!!!');
-      return;
-     }
+      if (useStore.getState().isCellOccupied(x, y)) {
+        window.alert('중복 방지!!!!!!!!!!!!!!');
+        return;
+      }
 
       if (item.type === 'PALETTE_ITEM') {
         const selectedItem = paletteItems.find(
@@ -212,10 +220,10 @@ const GridCanvas = () => {
             ))}
           </GridBackgroundStyled>
         </ZoomableGridWrapperStyled>
-      <ButtonWrapperStyled>
-        <SaveButtonStyled onClick={handleCanvasSave}>저장</SaveButtonStyled>
-        <CancelButtonStyled>취소</CancelButtonStyled>
-      </ButtonWrapperStyled>
+        <ButtonWrapperStyled>
+          <SaveButtonStyled onClick={handleCanvasSave}>저장</SaveButtonStyled>
+          <CancelButtonStyled>취소</CancelButtonStyled>
+        </ButtonWrapperStyled>
       </GridWrapperStyled>
     </div>
   );

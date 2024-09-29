@@ -69,18 +69,18 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 			.content(chatMessageRegisterRequestDto.getContent())
 			.registerTime(LocalDateTime.now()) // 현재 등록 시간으로 작성
 			.build();
-		chatMessageRepository.save(chatMessage);
+		ChatMessage savedChatMessage = chatMessageRepository.save(chatMessage);
 
 		// 채팅 메시지 응답객체 생성
 		ChatMessageRegisterResponseDto chatMessageRegisterResponseDto = ChatMessageRegisterResponseDto.builder()
 			.socketType(SocketType.CHAT)
+			.reservationId(chatMessage.getReservationId())
 			.senderReservationParticipantId(chatMessage.getSenderReservationParticipantId())
 			.senderReservationParticipantNickname(reservationParticipant.getReservationParticipantNickName())
 			.content(chatMessage.getContent())
 			.registerTime(chatMessage.getRegisterTime())
 			.build();
 
-		// /topic/reservations/{reservationUrl}을 구독 중인 모든 사용자에게 뿌려줌.
 		sendingOperations.convertAndSend("/topic/reservations/" + reservation.getReservationUrl(),
 			chatMessageRegisterResponseDto);
 	}

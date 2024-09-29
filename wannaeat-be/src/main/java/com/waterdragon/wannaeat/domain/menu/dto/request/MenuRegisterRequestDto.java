@@ -10,7 +10,7 @@ public class MenuRegisterRequestDto {
 	@NotNull(message = "식당은 필수 입력값입니다.")
 	private Long restaurantId;
 
-	@NotNull(message = "메뉴 카테고리는 필수 입력값입니다.")
+	@NotNull(message = "메뉴 카테고리 id는 필수 입력값입니다.")
 	private Long menuCategoryId;
 
 	@NotEmpty(message = "메뉴명은 필수 입력값입니다.")

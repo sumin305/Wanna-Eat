@@ -1,5 +1,7 @@
 package com.waterdragon.wannaeat.domain.reservation.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationEditRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.service.ReservationService;
@@ -84,6 +87,27 @@ public class ReservationController {
 			.status(HttpStatus.OK.value())
 			.message("예약 리스트 조회 성공")
 			.data(reservations)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	/**
+	 * 월별 예약 카운트 조회 API
+	 *
+	 * @param year 검색 연도
+	 * @param month 검색 월
+	 * @return 월별 예약 카운트 정보
+	 */
+	@Operation(summary = "월별 예약 카운트 조회 API")
+	@GetMapping("/restaurants/{restaurantId}/reservation-counts")
+	public ResponseEntity<ResponseDto<List<ReservationCountResponseDto>>> getListReservationCount(int year, int month) {
+		List<ReservationCountResponseDto> reservationCounts = reservationService.getListReservationCount(year, month);
+
+		ResponseDto<List<ReservationCountResponseDto>> responseDto = ResponseDto.<List<ReservationCountResponseDto>>builder()
+			.status(HttpStatus.OK.value())
+			.message("월별 예약 카운트 조회 성공")
+			.data(reservationCounts)
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);

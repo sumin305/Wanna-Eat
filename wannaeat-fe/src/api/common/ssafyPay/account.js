@@ -31,3 +31,22 @@ export const getAccountList = async () => {
     }
   );
 };
+
+// 계좌 생성
+export const createAccount = async () => {
+  if (!localStorage.getItem('userKey')) {
+    alert('유저 키가 없습니다.');
+    return;
+  }
+
+  return await ssafyClient.post(
+    '/api/v1/edu/demandDeposit/createDemandDepositAccount',
+    {
+      Header: Header(
+        'createDemandDepositAccount',
+        localStorage.getItem('userKey')
+      ),
+      accountTypeUniqueNo: '',
+    }
+  );
+};

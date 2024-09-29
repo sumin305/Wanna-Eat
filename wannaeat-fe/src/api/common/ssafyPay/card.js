@@ -36,3 +36,12 @@ export const getMerchantCategories = async () => {
     })
     .catch((error) => error);
 };
+
+// 가맹점 등록
+export const registerMerchant = async (merchantName) => {
+  return await ssafyClient.post('/api/v1/edu/creditCard/createMerchant', {
+    Header: Header('createMerchant'),
+    categoryId: localStorage.getItem('restaurantMerchantCategoryId'),
+    merchantName: merchantName,
+  });
+};

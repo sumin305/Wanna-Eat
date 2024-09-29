@@ -9,6 +9,7 @@ import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationEditRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
 
@@ -19,6 +20,8 @@ public interface ReservationService {
 	ReservationDetailResponseDto registerReservation(ReservationRegisterRequestDto reservationRegisterRequestDto);
 
 	Page<ReservationDetailResponseDto> getListReservation(Pageable pageable);
+
+	List<ReservationCountResponseDto> getListReservationCount(int year, int month);
 
 	void editReservation(ReservationEditRequestDto reservationEditRequestDto);
 

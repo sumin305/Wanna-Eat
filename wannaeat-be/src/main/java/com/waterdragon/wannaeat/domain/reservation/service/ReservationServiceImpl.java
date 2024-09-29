@@ -16,6 +16,7 @@ import com.waterdragon.wannaeat.domain.reservation.domain.ReservationTable;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationEditRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.AlreadyCancelledReservationException;
@@ -184,6 +185,24 @@ public class ReservationServiceImpl implements ReservationService {
 
 		// Page<Reservation>을 Page<ReservationDetailResponseDto>로 변환
 		return reservations.map(ReservationDetailResponseDto::transferToReservationDetailResponseDto);
+	}
+
+	/**
+	 * 각 월의 일별 예약 카운트를 받아오는 메소드
+	 *
+	 * @param year 검색 연도
+	 * @param month 검색 월
+	 * @return 월별 예약 카운트 정보
+	 */
+	@Override
+	public List<ReservationCountResponseDto> getListReservationCount(int year, int month) {
+		User user = authUtil.getAuthenticatedUser();
+		Restaurant restaurant = restaurantRepository.findByUser(user)
+			.orElseThrow(() -> new RestaurantNotFoundException(
+				"식당이 존재하지 않습니다."));
+
+		return reservationRepository.countReservationsByDay(restaurant, year, month);
+
 	}
 
 	/**

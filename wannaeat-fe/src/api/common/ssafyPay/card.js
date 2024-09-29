@@ -45,3 +45,13 @@ export const registerMerchant = async (merchantName) => {
     merchantName: merchantName,
   });
 };
+
+// 카드 상품 조회
+export const getCreditCardList = async () => {
+  return await ssafyClient
+    .post('/api/v1/edu/creditCard/inquireCreditCardList', {
+      Header: Header('inquireCreditCardList'),
+    })
+    .then((result) => result)
+    .catch((error) => error);
+};

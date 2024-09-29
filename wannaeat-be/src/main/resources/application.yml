@@ -24,6 +24,9 @@ spring:
       - oauth
 
   phone-authcode-expiration-millis: ${PHONE_AUTHCODE_EXPIRATION}
+
+  # 장바구니 유효기간
+  cart-expiration-millis: ${CART_EXPIRATION}
   
   # Redis 카카오페이 tid 유효 기간
   kakaopay-tid-expiration-millis: ${KAKAOPAY_TID_EXPIRATION}

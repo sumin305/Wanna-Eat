@@ -11,8 +11,9 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class ChatMessageRegisterResponseDto extends SocketResponseDto {
 
-	private Long senderReservationParticipantId; // 보낸 사람 id
-	private String senderReservationParticipantNickname; // 보낸 사람 닉네임
-	private String content; // 내용
-	private LocalDateTime registerTime; // 등록 시간
+	private Long reservationId;
+	private Long senderReservationParticipantId;
+	private String senderReservationParticipantNickname;
+	private String content;
+	private LocalDateTime registerTime;
 }

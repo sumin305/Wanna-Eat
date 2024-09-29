@@ -1,9 +1,19 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const NotExistOrderPage = () => {
   const location = useLocation();
-  console.log(location.state.message);
-  return <div>{location.state.message}</div>;
+  const nav = useNavigate();
+
+  const clickGotoReservation = () => {
+    nav('/customer/reservation');
+  };
+
+  return (
+    <>
+      <div>{location.state.message}</div>
+      <button onClick={clickGotoReservation}>예약하기 페이지로 이동</button>
+    </>
+  );
 };
 
 export default NotExistOrderPage;

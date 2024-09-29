@@ -12,13 +12,6 @@ const useWebSocketStore = create((set, get) => ({
     stompClient.connect({}, () => {
       set({ stompClient });
       console.log('웹소켓 연결 성공');
-      // stompClient.subscribe(
-      //   `${process.env.REACT_APP_REST_API_URL}/topic/reservations`,
-      //   (response) => {
-      //     console.log(response);
-      //     console.log(JSON.parse(response.body));
-      //   }
-      // );
     });
   },
 

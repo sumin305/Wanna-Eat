@@ -36,8 +36,11 @@ const OrderMainPage = () => {
             }
           );
         }, 500);
-        // } else {
-        //   console.log(response.response.data.message);
+      } else {
+        console.log(response.response.data.message);
+        nav('/customer/order/notexist', {
+          state: { message: response.response.data.message },
+        });
       }
     };
 

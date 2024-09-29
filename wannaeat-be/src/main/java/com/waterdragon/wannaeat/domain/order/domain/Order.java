@@ -44,11 +44,11 @@ public class Order {
 	@JoinColumn(name = "reservation_participant_id", nullable = false)
 	private ReservationParticipant reservationParticipant;
 
-	@Column(name = "prepare_request", nullable = false)
-	private boolean prepareRequest = false;
+	@Column(name = "prepare_request_cnt", nullable = false)
+	private int prepareRequestCnt;
 
-	@Column(name = "served", nullable = false)
-	private boolean served = false;
+	@Column(name = "served_cnt", nullable = false)
+	private int servedCnt;
 
 	@Column(name = "total_cnt", nullable = false)
 	private int totalCnt;
@@ -56,7 +56,7 @@ public class Order {
 	@Column(name = "paid_cnt", nullable = false)
 	private int paidCnt;
 
-	public void update(int paidMenuCnt) {
+	public void updatePaidCnt(int paidMenuCnt) {
 		this.paidCnt += paidMenuCnt;
 	}
 }

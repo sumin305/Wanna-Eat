@@ -1,9 +1,7 @@
 package com.waterdragon.wannaeat.domain.socket.service;
 
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import com.waterdragon.wannaeat.domain.chatmessage.dto.response.ChatMessageDetailResponseDto;
 import com.waterdragon.wannaeat.domain.chatmessage.dto.response.ChatMessageListResponseDto;
 import com.waterdragon.wannaeat.domain.chatmessage.service.ChatMessageService;
 import com.waterdragon.wannaeat.domain.socket.dto.response.ShareDataResponseDto;

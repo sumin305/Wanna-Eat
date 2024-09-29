@@ -15,10 +15,12 @@ import com.waterdragon.wannaeat.domain.menu.domain.Menu;
 import com.waterdragon.wannaeat.domain.menu.exception.error.MenuNotFoundException;
 import com.waterdragon.wannaeat.domain.menu.repository.MenuRepository;
 import com.waterdragon.wannaeat.domain.order.domain.Order;
+import com.waterdragon.wannaeat.domain.order.dto.request.OrderPaidCntEditRequestDto;
 import com.waterdragon.wannaeat.domain.order.exception.error.OrderNotFoundException;
 import com.waterdragon.wannaeat.domain.order.repository.OrderRepository;
+import com.waterdragon.wannaeat.domain.order.service.OrderService;
 import com.waterdragon.wannaeat.domain.payment.dto.request.KakaoPaymentMenuRequestDto;
-import com.waterdragon.wannaeat.domain.payment.dto.request.KakaoPaymentRequestDto;
+import com.waterdragon.wannaeat.domain.payment.dto.request.PaymentMenuRequestDto;
 import com.waterdragon.wannaeat.domain.payment.dto.response.KakaoPaymentApproveResponseDto;
 import com.waterdragon.wannaeat.domain.payment.dto.response.KakaoPaymentReadyResponseDto;
 import com.waterdragon.wannaeat.domain.payment.exception.error.MenuCountRequestMoreThanUnpaidException;
@@ -41,6 +43,7 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 	@Value("${redirectURL}")
 	private String REDIRECT_URL;
 
+	private final OrderService orderService;
 	private final OrderRepository orderRepository;
 	private final MenuRepository menuRepository;
 	private final ReservationRepository reservationRepository;
@@ -48,17 +51,18 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 	/**
 	 * 카카오페이 최초 요청 및 결제창 연결 메소드
 	 *
-	 * @param kakaoPaymentRequestDto 카카오페이 메뉴 결제 요청 정보
+	 * @param kakaoPaymentMenuRequestDto 카카오페이 메뉴 결제 요청 정보
 	 * @return KakaoPaymentReadyResponseDto 결제 고유번호 및 redirect 주소
 	 */
 	@Override
-	public KakaoPaymentReadyResponseDto kakaoPayReady(KakaoPaymentRequestDto kakaoPaymentRequestDto, String paymentId) {
+	public KakaoPaymentReadyResponseDto kakaoPayReady(KakaoPaymentMenuRequestDto kakaoPaymentMenuRequestDto,
+		String paymentId) {
 
 		// 결제 금액 계산
 		int totalPrice = 0;
-		List<KakaoPaymentMenuRequestDto> menuItems = kakaoPaymentRequestDto.getKakaoPaymentMenuRequestDtos();
+		List<PaymentMenuRequestDto> menuItems = kakaoPaymentMenuRequestDto.getPaymentMenuRequestDtos();
 
-		for (KakaoPaymentMenuRequestDto menuItem : menuItems) {
+		for (PaymentMenuRequestDto menuItem : menuItems) {
 			// Order 존재여부 확인 (락 없이 조회)
 			Order order = orderRepository.findByOrderId(menuItem.getOrderId())
 				.orElseThrow(
@@ -84,9 +88,10 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 		log.info("totalPrice : " + totalPrice);
 
 		// 카카오페이 결제 준비
-		Reservation reservation = reservationRepository.findByReservationId(kakaoPaymentRequestDto.getReservationId())
+		Reservation reservation = reservationRepository.findByReservationId(
+				kakaoPaymentMenuRequestDto.getReservationId())
 			.orElseThrow(() -> new ReservationNotFoundException(
-				"해당 번호의 예약은 존재하지 않습니다. reservationId : " + kakaoPaymentRequestDto.getReservationId()));
+				"해당 번호의 예약은 존재하지 않습니다. reservationId : " + kakaoPaymentMenuRequestDto.getReservationId()));
 		Restaurant restaurant = reservation.getRestaurant();
 
 		Map<String, String> parameters = new HashMap<>();
@@ -98,7 +103,8 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 		parameters.put("total_amount", String.valueOf(totalPrice));             // 상품 총액
 		parameters.put("tax_free_amount", "0");                                 // 상품 비과세 금액
 		parameters.put("approval_url",
-			REDIRECT_URL + "/api/payments/completed/kakao?payment_id=" + paymentId); // 결제 성공 시 URL
+			REDIRECT_URL + "/api/payments/completed/kakao?payment_id=" + paymentId
+				+ "&type=menu"); // 결제 성공 시 URL
 		parameters.put("cancel_url", REDIRECT_URL + "/api/payments/cancel/kakao");      // 결제 취소 시 URL
 		parameters.put("fail_url", REDIRECT_URL + "/api/payments/fail/kakao");          // 결제 실패 시 URL
 
@@ -113,6 +119,42 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 			KakaoPaymentReadyResponseDto.class);
 
 		return responseEntity.getBody();
+	}
+
+	/**
+	 * 카카오페이 승인 요청 전 메뉴 유효성 검증 메소드
+	 *
+	 * @param kakaoPaymentMenuRequestDto 결제 메뉴 요청 정보
+	 */
+	@Override
+	public void menuPaymentValidCheck(KakaoPaymentMenuRequestDto kakaoPaymentMenuRequestDto) {
+		for (PaymentMenuRequestDto menuRequestDto : kakaoPaymentMenuRequestDto.getPaymentMenuRequestDtos()) {
+
+			// 비관적 락을 활용한 (PESSIMISTIC_WRITE) 주문 Order 읽어오기
+			// 가장 상위 @Transactional 단위인 Controller의 kakayPayApprove 메소드 단위로 읽기,쓰기가 모두 불가능해진다.
+			// PESSIMISTIC_READ는 읽기는 가능함. 하지만 우리는 재고가 실시간으로 바뀌므로 읽기도 못하게 막아야 한다.
+			Order order = orderRepository.findByOrderIdWithLock(menuRequestDto.getOrderId())
+				.orElseThrow(() -> new IllegalArgumentException("해당 주문을 찾을 수 없습니다."));
+
+			// 결제 수량 확인 (남은 재고보다 더 많은 결제 요청이라면 결제로 안 넘어가게 함.)
+			int remainingCount = order.getTotalCnt() - order.getPaidCnt();
+			if (remainingCount < menuRequestDto.getMenuCount()) {
+				throw new MenuCountRequestMoreThanUnpaidException(
+					order.getMenu().getName() + "의 남은 미결제 수량보다 결제 수량이 많습니다.");
+				// HttpHeaders headers = new HttpHeaders();
+				// headers.setLocation(URI.create("/api/payments/fail/kakao"));  // fail URL로 리디렉션
+				// return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);  // 303 SEE_OTHER 리디렉션
+			}
+
+			// OrderPaidCntEditRequestDto 생성
+			OrderPaidCntEditRequestDto orderPaidCntEditRequestDto = OrderPaidCntEditRequestDto.builder()
+				.orderId(menuRequestDto.getOrderId())
+				.paidMenuCnt(menuRequestDto.getMenuCount())
+				.build();
+
+			// 각 orderId의 paidCnt 수정
+			orderService.editOrderPaidCnt(orderPaidCntEditRequestDto);
+		}
 	}
 
 	// 카카오페이 측에 요청 시 헤더부에 필요한 값

@@ -208,7 +208,7 @@ public class UserServiceImpl implements UserService {
 	public void removeFcmToken(FcmTokenEditRequestDto fcmTokenEditRequestDto) {
 		UserToken userToken = authUtil.getAuthenticatedUser().getUserToken();
 		// DB에 저장된 토큰과 일치하는 경우에만 삭제
-		if(userToken.getFcmToken().equals(fcmTokenEditRequestDto.getFcmToken())) {
+		if (userToken.getFcmToken().equals(fcmTokenEditRequestDto.getFcmToken())) {
 			userToken.removeFcmToken();
 			userTokenRepository.save(userToken);
 		}

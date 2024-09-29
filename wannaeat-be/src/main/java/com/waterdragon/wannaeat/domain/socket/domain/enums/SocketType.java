@@ -5,5 +5,5 @@ import lombok.Getter;
 @Getter
 public enum SocketType {
 
-	CHAT, ORDER, PAYMENT, ID
+	CHAT, CART, ORDER, PAYMENT, ID
 }

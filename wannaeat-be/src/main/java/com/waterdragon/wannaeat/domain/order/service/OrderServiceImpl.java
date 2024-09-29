@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 		// 결제 수량 paid_cnt 업데이트
-		order.update(orderPaidCntEditRequestDto.getPaidMenuCnt());
+		order.updatePaidCnt(orderPaidCntEditRequestDto.getPaidMenuCnt());
 		orderRepository.save(order);
 	}
 }

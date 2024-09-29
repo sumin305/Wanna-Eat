@@ -11,6 +11,7 @@ import {
   sendCode,
   verifyCode,
 } from '../../../api/common/join.js';
+import { createAccount } from 'api/common/ssafyPay/account.js';
 import {
   SignUpPageContainer,
   SignUpPageHeader,
@@ -125,8 +126,18 @@ const SignUpPage = () => {
   };
 
   const joinSsafyAccount = async () => {
-    const result = await createSsafyPayAccount(email);
-    console.log(result);
+    const createAccountResult = await createSsafyPayAccount(email);
+
+    const createDepositAccountResult = await createAccount();
+
+    if (
+      createAccountResult.status === 201 &&
+      createDepositAccountResult.status === 201
+    ) {
+      console.log('SSAFY Pay 계정 및 계좌 생성 성공');
+    } else {
+      console.log('SSAFY Pay 계정 및 계좌 생성 실패');
+    }
   };
   const handleJoinButtonClick = async () => {
     // 약관 동의했는지 체크
@@ -161,8 +172,9 @@ const SignUpPage = () => {
       alert('회원가입 성공');
 
       if (requestUserInfo.role === ROLE.CUSTOMER) {
-        // 손님인 경우에는 싸피 페이 사용자 계정 생성
+        // 손님인 경우에는 싸피 페이 사용자 계정 생성 및 계좌 생성
         joinSsafyAccount();
+
         navigate('/customer');
         setRole(ROLE.CUSTOMER);
       } else {

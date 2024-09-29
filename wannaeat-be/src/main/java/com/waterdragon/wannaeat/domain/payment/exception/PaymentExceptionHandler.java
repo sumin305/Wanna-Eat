@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.waterdragon.wannaeat.domain.payment.exception.error.InvalidPaymentException;
+import com.waterdragon.wannaeat.domain.payment.exception.error.InvalidPriceException;
 import com.waterdragon.wannaeat.domain.payment.exception.error.MenuCountRequestMoreThanUnpaidException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
@@ -19,6 +20,15 @@ public class PaymentExceptionHandler {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Payment", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+	}
+
+	// 유효하지 않은 결제금액
+	@ExceptionHandler(InvalidPriceException.class)
+	public final ResponseEntity<ErrorResponseDto> handleInvalidPriceException(
+		InvalidPriceException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Invalid Price", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 	}
 
 	// 결제 요청 수량 > 미결제 수량

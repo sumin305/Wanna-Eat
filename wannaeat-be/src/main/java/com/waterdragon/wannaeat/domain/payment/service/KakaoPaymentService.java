@@ -1,5 +1,6 @@
 package com.waterdragon.wannaeat.domain.payment.service;
 
+import com.waterdragon.wannaeat.domain.payment.dto.request.KakaoPaymentDepositRequestDto;
 import com.waterdragon.wannaeat.domain.payment.dto.request.KakaoPaymentMenuRequestDto;
 import com.waterdragon.wannaeat.domain.payment.dto.response.KakaoPaymentApproveResponseDto;
 import com.waterdragon.wannaeat.domain.payment.dto.response.KakaoPaymentReadyResponseDto;
@@ -7,6 +8,9 @@ import com.waterdragon.wannaeat.domain.payment.dto.response.KakaoPaymentReadyRes
 public interface KakaoPaymentService {
 
 	KakaoPaymentReadyResponseDto kakaoPayReady(KakaoPaymentMenuRequestDto kakaoPaymentMenuRequestDto, String paymentId);
+
+	KakaoPaymentReadyResponseDto kakaoPayReady(KakaoPaymentDepositRequestDto kakaoPaymentDepositRequestDto,
+		String paymentId);
 
 	void menuPaymentValidCheck(KakaoPaymentMenuRequestDto kakaoPaymentMenuRequestDto);
 

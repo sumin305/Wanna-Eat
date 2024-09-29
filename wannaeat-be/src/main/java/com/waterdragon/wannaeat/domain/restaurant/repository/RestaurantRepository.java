@@ -16,6 +16,8 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long>, R
 
 	Optional<Restaurant> findByRestaurantId(Long restaurantId);
 
+	Optional<Restaurant> findByUser(User user);
+
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("SELECT r FROM Restaurant r WHERE r.restaurantId = :restaurantId")
 	Optional<Restaurant> findByRestaurantIdWithLock(@Param("restaurantId") Long restaurantId);

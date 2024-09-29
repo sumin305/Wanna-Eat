@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
@@ -12,6 +13,7 @@ import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 
 import io.lettuce.core.dynamic.annotation.Param;
+import jakarta.persistence.LockModeType;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
@@ -19,7 +21,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
 	int countByUserAndRestaurant(User user, Restaurant restaurant);
 
-	Optional<Reservation> findByReservationId(Long id);
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	@Query("SELECT r FROM Reservation r WHERE r.reservationId = :reservationId")
+	Optional<Reservation> findByReservationIdWithLock(@Param("reservationId") Long reservationId);
 
 	Optional<Reservation> findByReservationUrl(String url);
 

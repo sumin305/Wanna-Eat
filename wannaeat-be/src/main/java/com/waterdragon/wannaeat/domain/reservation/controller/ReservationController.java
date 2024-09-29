@@ -2,12 +2,15 @@ package com.waterdragon.wannaeat.domain.reservation.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.service.ReservationService;
 import com.waterdragon.wannaeat.global.response.ResponseDto;
@@ -36,5 +39,28 @@ public class ReservationController {
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	/**
+	 * 비회원 예약 API
+	 *
+	 * @param reservationRegisterRequestDto 예약 등록 정보
+	 * @return 등록 예약 상세 정보
+	 */
+	@Operation(summary = "비회원 예약 API")
+	@PostMapping("/public/restaurants/{restaurantId}/reservations")
+	@Transactional
+	public ResponseEntity<ResponseDto<ReservationDetailResponseDto>> registerReservation(@Valid @RequestBody
+	ReservationRegisterRequestDto reservationRegisterRequestDto) {
+
+		ReservationDetailResponseDto reservationDetailResponseDto = reservationService.registerReservation(
+			reservationRegisterRequestDto);
+		ResponseDto<ReservationDetailResponseDto> responseDto = ResponseDto.<ReservationDetailResponseDto>builder()
+			.status(HttpStatus.CREATED.value())
+			.message("예약이 완료되었습니다.")
+			.data(reservationDetailResponseDto)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 	}
 }

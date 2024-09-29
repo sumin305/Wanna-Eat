@@ -1,9 +1,11 @@
 package com.waterdragon.wannaeat.domain.reservation.service;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -185,6 +187,21 @@ public class ReservationServiceImpl implements ReservationService {
 
 		// Page<Reservation>을 Page<ReservationDetailResponseDto>로 변환
 		return reservations.map(ReservationDetailResponseDto::transferToReservationDetailResponseDto);
+	}
+
+	@Override
+	public List<ReservationDetailResponseDto> getListReservationByDate(LocalDate date) {
+		User user = authUtil.getAuthenticatedUser();
+		Restaurant restaurant = restaurantRepository.findByUser(user)
+			.orElseThrow(() -> new RestaurantNotFoundException(
+				"식당이 존재하지 않습니다."));
+
+		List<Reservation> reservations = reservationRepository.findByRestaurantAndReservationDate(restaurant, date);
+
+		// Reservation 리스트를 ReservationDetailResponseDto 리스트로 변환
+		return reservations.stream()
+			.map(ReservationDetailResponseDto::transferToReservationDetailResponseDto)  // 각 Reservation 객체를 DTO로 변환
+			.collect(Collectors.toList());  // List로 변환 후 리턴
 	}
 
 	/**

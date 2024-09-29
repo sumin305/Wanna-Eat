@@ -4,9 +4,9 @@ const useMyInfoStore = create((set) => ({
   nickname: '',
   email: '',
   phone: '',
-  setNickname: (nickname) => set((nickname) => ({ nickname: nickname })),
-  setEmail: (email) => set((email) => ({ email: email })),
-  setPhone: (phone) => set((phone) => ({ phone: phone })),
+  setNickname: (nickname) => set(() => ({ nickname: nickname })),
+  setEmail: (email) => set(() => ({ email: email })),
+  setPhone: (phone) => set(() => ({ phone: phone })),
 }));
 
 export default useMyInfoStore;

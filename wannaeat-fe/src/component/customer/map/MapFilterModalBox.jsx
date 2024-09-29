@@ -27,16 +27,14 @@ const MapFilterModalBox = () => {
     dinnerTimes,
     durationTimes,
     setSelectedDurationTime,
+    reservationDate,
+    memberCount,
+    setReservationDate,
+    setStartTime,
+    setMemberCount,
   } = useReservationStore();
 
-  const {
-reservationDate,
-memberCount,
-setCategoryId,
-setReservationDate,
-setStartTime,
-setMemberCount,
-  } = useMapFilterStore();
+  const { setCategoryId } = useMapFilterStore();
 
   const {
     visitTimePlaceholder,
@@ -78,28 +76,31 @@ setMemberCount,
 
   // 인원 수가 변경될때마다 호출되는 함수
   const handleMemberCountChange = (e) => {
+    console.log(e.target.value);
     setMemberCount(parseInt(e.target.value));
-  }
+    console.log(memberCount);
+  };
 
   // 카테고리가 선택되면 호출되는 함수
   const handleCategoryOnSelect = (e) => {
     const categories = JSON.parse(localStorage.getItem('categories'));
-    const categoryId = categories.filter((category) => category.restaurantCategoryName === e)[0].restaurantCategoryId
-    setCategoryId(categoryId)
-  }
+    const categoryId = categories.filter(
+      (category) => category.restaurantCategoryName === e
+    )[0].restaurantCategoryId;
+    setCategoryId(categoryId);
+  };
 
   // 시작 시간이 선택되면 호출되는 함수
   const handleStartTimeOnSelect = (e) => {
-    console.log(e + ':00')
+    console.log(e + ':00');
     setStartTime(e + ':00');
-  }
-  
+  };
+
   // 머무는 시간이 선택되면 호출되는 함수
   const handleDurationTimeOnSelect = (e) => {
     setSelectedDurationTime(e);
-    console.log('selectedDurationId,',selectedDurationId)
-    }
-
+    console.log('selectedDurationId,', selectedDurationId);
+  };
 
   // 외부 클릭 감지
   useEffect(() => {
@@ -113,7 +114,6 @@ setMemberCount,
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isCalendarVisible]);
-
 
   useEffect(() => {
     // 시작 시간 드롭다운 목록생성
@@ -143,7 +143,7 @@ setMemberCount,
           <WETextfield
             name="personnel"
             placeholder="인원수를 선택해주세요"
-            value={memberCount === -1 ? 0 : memberCount}
+            value={memberCount === -1 ? '' : memberCount}
             type="number"
             onChange={handleMemberCountChange}
           />

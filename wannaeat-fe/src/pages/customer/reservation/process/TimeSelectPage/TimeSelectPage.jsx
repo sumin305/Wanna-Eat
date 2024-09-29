@@ -12,24 +12,35 @@ import TimeSelectModalBox from '../../../../../component/customer/reservation/Ti
 import useReservationStore from '../../../../../stores/customer/useReservationStore.js';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
-import {useEffect} from 'react';
+import { useEffect } from 'react';
+
 const TimeSelectPage = () => {
   const { open, setModalType, setConfirmText, setTitle, setChildren } =
     useModalStore();
   const {
-    selectedDate,
-    selectedStartTime,
-    selectedEndTime,
-    selectedHeadCount,
-    setSelectedDate,
-    setSelectedStartTime,
-    setSelectedEndTime,
+    reservationDate,
+    startTime,
+    endTime,
+    memberCount,
+    setReservationDate,
+    setStartTime,
+    setEndTime,
   } = useReservationStore();
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(moment(selectedDate, 'YYYY-MM-DD').toDate())
-  }, [])
+    const setDate = async () => {
+      console.log(reservationDate);
+      await setReservationDate(
+        reservationDate !== ''
+          ? reservationDate
+          : moment(new Date()).format('YYYY-MM-DD')
+      );
+    };
+    setDate();
+  }, []);
+
   const handleTimeSelectButtonClick = () => {
     setModalType('sheet');
     setConfirmText('확인');
@@ -40,9 +51,9 @@ const TimeSelectPage = () => {
 
   const handleDateChange = (date) => {
     console.log(date);
-    setSelectedDate(moment(date).format('YYYY-MM-DD'));
-    setSelectedStartTime('00:00');
-    setSelectedEndTime('00:00');
+    setReservationDate(moment(date).format('YYYY-MM-DD'));
+    setStartTime('00:00');
+    setEndTime('00:00');
     handleTimeSelectButtonClick();
   };
 
@@ -52,7 +63,6 @@ const TimeSelectPage = () => {
   const handleNextButtonClick = () => {
     navigate('/customer/reservation/seat-select');
   };
-
 
   return (
     <TimeSelectPageContainer>
@@ -64,14 +74,14 @@ const TimeSelectPage = () => {
           onClick={handleTimeSelectButtonClick}
           fontWeight={900}
         >
-          {moment(selectedDate).format('YYYY-MM-DD')} {selectedStartTime} ~ {selectedEndTime} {selectedHeadCount}
-          명
+          {moment(reservationDate).format('YYYY-MM-DD')} {startTime} ~ {endTime}{' '}
+          {memberCount === -1 ? 0 : memberCount}명
         </Button>
         <CalendarWrapper>
           <CalendarStyled
             showNeighboringMonth={false}
             onChange={handleDateChange}
-            value={moment(selectedDate, 'YYYY-MM-DD').toDate()}
+            value={reservationDate}
             formatDay={(locale, date) => moment(date).format('DD')}
           />
         </CalendarWrapper>

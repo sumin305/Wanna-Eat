@@ -26,11 +26,17 @@ const MapRestaurantPage = () => {
     setHandleButtonClick,
   } = useModalStore();
 
-  const { selectedDate, selectedHeadCount, selectedCategory } =
+  const { reservationDate, startTime, endTime, memberCount, setKeyword } =
     useReservationStore();
-  const {categoryId, keyword, reservationDate, startTime, endTime, memberCount, setKeyword} = useMapFilterStore();
+  const { categoryId, keyword } = useMapFilterStore();
 
-  const { setIsInitialLoad, lat, lon, getRestaurantPositions, setMarkerPositions} = useMapStore();
+  const {
+    setIsInitialLoad,
+    lat,
+    lon,
+    getRestaurantPositions,
+    setMarkerPositions,
+  } = useMapStore();
 
   const handleFilterModalButtonClick = () => {
     setIsInitialLoad(false);
@@ -46,16 +52,18 @@ const MapRestaurantPage = () => {
   };
 
   const setfilterRestaurantsMarker = async () => {
-    await setMarkerPositions(getRestaurantPositions({
-      latitude: lat,
-      longitude: lon,
-      ...(categoryId !== -1 && {categoryId: categoryId}),
-      ...(keyword !== '' && {keyword: keyword}),
-      ...(reservationDate !== ''  && {reservationDate: reservationDate}),
-      ...(startTime !== ''  && {startTime: startTime}),
-      ...(endTime !== '' && {endTime: endTime}),
-      ...(memberCount !== -1 && {memberCount: memberCount}),
-    }));
+    await setMarkerPositions(
+      getRestaurantPositions({
+        latitude: lat,
+        longitude: lon,
+        ...(categoryId !== -1 && { categoryId: categoryId }),
+        ...(keyword !== '' && { keyword: keyword }),
+        ...(reservationDate !== '' && { reservationDate: reservationDate }),
+        ...(startTime !== '' && { startTime: startTime }),
+        ...(endTime !== '' && { endTime: endTime }),
+        ...(memberCount !== -1 && { memberCount: memberCount }),
+      })
+    );
   };
 
   const handleSearchInputChange = (e) => {
@@ -63,16 +71,18 @@ const MapRestaurantPage = () => {
   };
 
   const handleSearchIconClick = () => {
-    setfilterRestaurantsMarker()
-  }
+    setfilterRestaurantsMarker();
+  };
 
   const getRestaurantCategoryName = (categoryId) => {
     const categories = JSON.parse(localStorage.getItem('categories'));
-    const categoryName = categories.filter((c) => (c.restaurantCategoryId === categoryId))[0].restaurantCategoryName;
+    const categoryName = categories.filter(
+      (c) => c.restaurantCategoryId === categoryId
+    )[0].restaurantCategoryName;
     console.log(categoryName);
 
-    return categoryName
-  }
+    return categoryName;
+  };
   // 버튼을 동적으로 생성하는 함수
   const renderFilterButtons = () => {
     const buttons = [];
@@ -123,8 +133,14 @@ const MapRestaurantPage = () => {
     <MapRestaurantBox>
       <HeaderContainer>
         <SearchWrapper>
-          <SearchInput onChange={handleSearchInputChange} placeholder="메뉴, 식당, 지역 검색" />
-          <SearchIcon onClick={handleSearchIconClick} src={searchIcon}></SearchIcon>
+          <SearchInput
+            onChange={handleSearchInputChange}
+            placeholder="메뉴, 식당, 지역 검색"
+          />
+          <SearchIcon
+            onClick={handleSearchIconClick}
+            src={searchIcon}
+          ></SearchIcon>
         </SearchWrapper>
         <ButtonContainer>
           {buttons.length === 0 ? (

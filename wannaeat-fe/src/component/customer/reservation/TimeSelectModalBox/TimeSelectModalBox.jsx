@@ -18,9 +18,9 @@ const TimeSelectModalBox = () => {
     lunchTimes,
     dinnerTimes,
     setIsLunch,
-    setSelectedStartTime,
-    setSelectedEndTime,
-    setSelectedHeadCount,
+    setStartTime,
+    setEndTime,
+    setMemberCount,
     setSelectedTimes,
     selectedTimes,
   } = useReservationStore();
@@ -32,16 +32,16 @@ const TimeSelectModalBox = () => {
 
   const handleHeadCountChange = (e) => {
     if (e.target.value === '') {
-      setSelectedHeadCount(0);
+      setMemberCount(0);
       return;
     }
 
     if (e.target.value <= 0) {
       alert('0명 이하는 불가능합니다.');
-      setSelectedHeadCount(0);
+      setMemberCount(0);
       return;
     }
-    setSelectedHeadCount(parseInt(e.target.value));
+    setMemberCount(parseInt(e.target.value));
   };
 
   const handleLunchTimeClick = (index) => {
@@ -151,22 +151,22 @@ const TimeSelectModalBox = () => {
 
   const setStartEndTime = (selectedTimes) => {
     if (selectedTimes.length === 0) {
-      setSelectedStartTime('00:00');
-      setSelectedEndTime('00:00');
+      setStartTime('00:00');
+      setEndTime('00:00');
       return;
     }
     selectedTimes = selectedTimes.sort();
     const startTime = selectedTimes[0];
-    setSelectedStartTime(startTime);
+    setStartTime(startTime);
     const endTime = selectedTimes[selectedTimes.length - 1];
     console.log(selectedTimes, startTime, endTime);
     if (endTime && endTime.split(':')[1] == '00') {
-      setSelectedEndTime(endTime.split(':')[0] + ':30');
+      setEndTime(endTime.split(':')[0] + ':30');
     } else if (endTime && endTime.split(':')[1] == '30') {
-      setSelectedEndTime(parseInt(endTime.split(':')[0]) + 1 + ':00');
+      setEndTime(parseInt(endTime.split(':')[0]) + 1 + ':00');
     } else {
-      setSelectedStartTime('00:00');
-      setSelectedEndTime('00:00');
+      setStartTime('00:00');
+      setEndTime('00:00');
     }
   };
 

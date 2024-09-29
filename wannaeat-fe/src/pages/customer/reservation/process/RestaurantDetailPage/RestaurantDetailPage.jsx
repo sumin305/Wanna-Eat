@@ -30,7 +30,6 @@ import useRestaurantStore from 'stores/customer/useRestaurantStore';
 const RestaurantDetailPage = () => {
   const params = useParams();
   const nav = useNavigate();
-
   const handleReservationButtonClick = () => {
     nav('/customer/reservation/time-select');
   };
@@ -44,32 +43,20 @@ const RestaurantDetailPage = () => {
   } = useHeaderStore();
 
   const {
-    restaurant,
-    restaurantId,
     breakEndTime,
     breakStartTime,
-    depositPerMember,
-    latitude,
-    longitude,
-    maxMemberCount,
-    minMemberCount,
-    maxReservationTime,
     menus,
     restaurantAddress,
-    restaurantBusinessNumber,
-    restaurantCategoryName,
     restaurantCloseTime,
     restaurantDescription,
     restaurantName,
     restaurantOpenTime,
-    restaurantOwnerName,
     restaurantPhone,
-    restaurantImage
   } = useRestaurantStore();
-  
+
   useEffect(() => {
     setIsCarrot(true);
-    setPageName(restaurantName); // 나중에 가게이름
+    setPageName(restaurantName ? restaurantName : '맛있는 식당'); // 나중에 가게이름
     setIsShowLogo(false);
     setIsShowBackIcon(true);
     setActiveIcons([3]);
@@ -77,11 +64,10 @@ const RestaurantDetailPage = () => {
 
   const [activeTab, setActiveTab] = useState(0);
 
-
   const categories = Object.keys(menus);
-  console.log(categories)
+  console.log(categories);
   const activeMenus =
-  categories.length === 0 ? [] : menus[categories[activeTab]];
+    categories.length === 0 ? [] : menus[categories[activeTab]];
 
   return (
     <Box>
@@ -89,23 +75,28 @@ const RestaurantDetailPage = () => {
       <RestaurantImageBox src={RestaurantImg} />
       <InformationContainer>
         <InformationText>
-          &emsp;{restaurantDescription}
+          &emsp;
+          {restaurantDescription ? restaurantDescription : '맛있는 식당입니다.'}
         </InformationText>
         <InformationWrapper>
           <IconImg src={Location} alt="주소" />
-          <InformationText>{restaurantAddress}</InformationText>
+          <InformationText>
+            {restaurantAddress ? restaurantAddress : '정보없음'}
+          </InformationText>
         </InformationWrapper>
         <InformationWrapper>
           <IconImg src={Clock} alt="영업시간" />
           <InformationText>
-            {restaurantOpenTime}~{restaurantCloseTime}
-            &nbsp;(브레이크타임 {breakStartTime}~
-            {breakEndTime})
+            {restaurantOpenTime ? restaurantOpenTime : '00:00'}~
+            {restaurantCloseTime ? restaurantCloseTime : '00:00'}
+            &nbsp;(브레이크타임 {breakStartTime}~{breakEndTime})
           </InformationText>
         </InformationWrapper>
         <InformationWrapper>
           <IconImg src={Phone} alt="전화번호" />
-          <InformationText>{restaurantPhone}</InformationText>
+          <InformationText>
+            {restaurantPhone ? restaurantPhone : '정보 없음'}
+          </InformationText>
         </InformationWrapper>
       </InformationContainer>
       <WETabContainer>

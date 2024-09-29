@@ -5,7 +5,7 @@ import Button from '../../../component/common/button/WEButton/WEButton.jsx';
 import useTextfieldStore from '../../../stores/common/useTextfieldStore.js';
 import useModalStore from '../../../stores/common/useModalStore.js';
 import WEToggle from '../../../component/common/toggle/WEToggle.jsx';
-import { createSsafyPayAccount } from 'api/common/ssafyPay.js';
+import { createSsafyPayAccount } from 'api/common/ssafyPay/user.js';
 import {
   checkNickname,
   sendCode,

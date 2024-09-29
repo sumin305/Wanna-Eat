@@ -13,9 +13,12 @@ import {
   DepositPriceText,
   CardSelectBoxStyled,
 } from './DepositPaymentPage.js';
-import CardImage1 from '../../../../../assets/customer/card.png';
-import CardImage2 from '../../../../../assets/customer/card2.png';
-import CardImage3 from '../../../../../assets/customer/card3.png';
+import CardImage1 from '../../../../../assets/customer/카카오페이카드.png';
+import CardImage2 from '../../../../../assets/customer/농협카드.png';
+import CardImage3 from '../../../../../assets/customer/신한카드.png';
+import CardImage4 from '../../../../../assets/customer/우리카드.png';
+import CardImage5 from '../../../../../assets/customer/국민카드.png';
+
 import {
   getMerchantCategories,
   registerMerchant,
@@ -30,6 +33,7 @@ import {
   getSsafyPayAccount,
 } from 'api/common/ssafyPay/user.js';
 
+import { getAccountList, createAccount } from 'api/common/ssafyPay/account.js';
 import Carousel from 'react-spring-3d-carousel';
 import { config } from 'react-spring';
 import { useState, useEffect } from 'react';
@@ -40,29 +44,45 @@ const DepositPaymentPage = () => {
   const { depositPerMember, restaurantName } = useRestaurantStore();
   const { memberCount } = useReservationStore();
   const [depositPrice, setDepositPrice] = useState(0);
-  const cardImages = [
-    { index: 0, image: CardImage1 },
-    { index: 1, image: CardImage2 },
-    { index: 2, image: CardImage3 },
-  ];
+
+  const [cards, setCards] = useState([]);
+  const [selectedCard, setSelectedCard] = useState(null);
+  const cardImages = {
+    카카오페이카드: CardImage1,
+    농협카드: CardImage2,
+    신협카드: CardImage3,
+    우리카드: CardImage4,
+    KB국민카드: CardImage5,
+  };
   const [goToSlide, setGoToSlide] = useState(null);
 
   useEffect(() => {
+    // 회원 카드 정보 조회
+    const fetchCards = async () => {
+      const result = await getMyCreditCardList();
+      const cards = result.data.REC;
+      console.log(cards);
+      setCards([...cards, { cardIssuerName: '카카오페이카드', cardNo: '0' }]);
+    };
     setDepositPrice(
       depositPerMember * memberCount === 0
         ? 50000
         : depositPerMember * memberCount
     );
-
-    // 회원 카드 정보 조회
+    fetchCards();
   }, []);
-  const slides = cardImages.map((card) => ({
-    key: card.index,
+  const slides = cards.map((card, index) => ({
+    key: index,
     content: (
       <img
-        src={card.image}
-        onClick={() => setGoToSlide(card.index)}
-        alt={`Card ${card.index}`}
+        onClick={() => {
+          setGoToSlide(index);
+          setSelectedCard(card);
+        }}
+        width="144px"
+        height="229px"
+        src={cardImages[card.cardIssuerName]}
+        alt={`Card ${card.cardNo}`}
       />
     ),
   }));
@@ -118,7 +138,30 @@ const DepositPaymentPage = () => {
     const result = await createCreditCard();
     console.log(result);
   };
-  const test9 = async () => {};
+
+  // 카드 결제
+  const test9 = async () => {
+    const result = await payByCreditCard(
+      selectedCard.cardNo,
+      selectedCard.cvc,
+      2022,
+      depositPrice
+    );
+    console.log(result);
+  };
+
+  // 계좌 상품 목록 조회
+  const test10 = async () => {
+    const result = await getAccountList();
+    console.log(result);
+  };
+
+  // 계좌 등록
+  const test11 = async () => {
+    const result = await createAccount();
+    console.log(result);
+  };
+
   const joinSsafyAccount = async () => {
     const result = await createSsafyPayAccount(email);
     console.log(result);
@@ -164,13 +207,19 @@ const DepositPaymentPage = () => {
           카드 상품 등록 테스트
         </button>
         <button size="short" onClick={test7}>
-          카드 상품 조회 테스트
+          내 카드 상품 조회 테스트
         </button>
         <button size="short" onClick={test8}>
           카드 생성 테스트
         </button>
         <button size="short" onClick={test9}>
           카드 결제 테스트
+        </button>
+        <button size="short" onClick={test10}>
+          계좌 리스트 조회 테스트
+        </button>
+        <button size="short" onClick={test11}>
+          계좌 생성 테스트
         </button>
 
         <Button

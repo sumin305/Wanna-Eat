@@ -1,18 +1,15 @@
 import { ssafyClient } from '../../../utils/http-client';
 import moment from 'moment';
 
-const currentDate = moment(new Date()).format('YYYYMMDD');
-const currentTime = moment(new Date()).format('HHmmss');
-
 const Header = (apiName, userKey = '') => {
   const randomTempSevenNumber = '000' + (Math.random(999999) + 1);
   const randomFourNumber = randomTempSevenNumber.slice(-6);
   const institutionTransactionUniqueNo =
-    moment(new Date()).format('YYYYMMDDHHmmss') + randomFourNumber;
+    moment(new Date()).format('YYYYMMDDHHMMSS') + randomFourNumber;
   return {
     apiName: apiName,
-    transmissionDate: currentDate,
-    transmissionTime: currentTime,
+    transmissionDate: moment().format('YYYYMMDD'), // 현재 날짜를 'YYYYMMDD' 형식으로 변환
+    transmissionTime: moment().format('HHmmss'), // 현재 시간을 'HHmmss' 형식으로 변환 (24시간 형식)
     institutionCode: '00100',
     fintechAppNo: '001',
     apiServiceCode: apiName,
@@ -59,7 +56,6 @@ export const getCreditCardList = async () => {
 // 카드 생성
 export const createCreditCard = async (
   cardUniqueNo = '1001-fc77272400f44a6',
-  withdrawalAccountNo = '3333-3333-3333-3333',
   withdrawalDate = 1
 ) => {
   if (!localStorage.getItem('userKey')) {
@@ -71,7 +67,7 @@ export const createCreditCard = async (
     .post('/api/v1/edu/creditCard/createCreditCard', {
       Header: Header('createCreditCard', localStorage.getItem('userKey')),
       cardUniqueNo: cardUniqueNo,
-      withdrawalAccountNo: withdrawalAccountNo,
+      withdrawalAccountNo: localStorage.getItem('accountNo'),
       withdrawalDate: withdrawalDate,
     })
     .then((result) => result)
@@ -99,7 +95,7 @@ export const getMyCreditCardList = async () => {
 // 카드 결제
 export const payByCreditCard = async (
   cardNo,
-  eve,
+  cvc,
   merchantId,
   paymentBalance
 ) => {
@@ -115,7 +111,7 @@ export const payByCreditCard = async (
         localStorage.getItem('userKey')
       ),
       cardNo: cardNo,
-      eve: eve,
+      cvc: cvc,
       merchantId: merchantId,
       paymentBalance: paymentBalance,
     })

@@ -24,6 +24,10 @@ public class ReservationDetailResponseDto {
 
 	private String restaurantImage;
 
+	private Long userId;
+
+	private String userName;
+
 	private LocalDate reservationDate;
 
 	private LocalTime reservationStartTime;
@@ -50,6 +54,8 @@ public class ReservationDetailResponseDto {
 				(reservation.getRestaurant().getImages() != null && !reservation.getRestaurant().getImages().isEmpty())
 					? reservation.getRestaurant().getImages().get(0).getImageUrl()  // 첫 번째 이미지를 사용
 					: null)  // 이미지가 없으면 null 반환
+			.userId(reservation.getUser() != null ? reservation.getUser().getUserId() : null)
+			.userName(reservation.getUser() != null ? reservation.getUser().getNickname() : "비회원")
 			.reservationDate(reservation.getReservationDate())
 			.reservationStartTime(reservation.getStartTime())
 			.reservationEndTime(reservation.getEndTime())
@@ -74,6 +80,8 @@ public class ReservationDetailResponseDto {
 				(reservation.getRestaurant().getImages() != null && !reservation.getRestaurant().getImages().isEmpty())
 					? reservation.getRestaurant().getImages().get(0).getImageUrl()  // 첫 번째 이미지를 사용
 					: null)  // 이미지가 없으면 null 반환
+			.userId(reservation.getUser() != null ? reservation.getUser().getUserId() : null)
+			.userName(reservation.getUser() != null ? reservation.getUser().getNickname() : "비회원")
 			.reservationDate(reservation.getReservationDate())
 			.reservationStartTime(reservation.getStartTime())
 			.reservationEndTime(reservation.getEndTime())

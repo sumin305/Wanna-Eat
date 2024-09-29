@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,7 @@ import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepositor
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructureRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 import com.waterdragon.wannaeat.domain.user.repository.UserRepository;
+import com.waterdragon.wannaeat.global.util.AuthUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ReservationServiceImpl implements ReservationService {
 
 	private final RestaurantStructureRepository restaurantStructureRepository;
+	private final AuthUtil authUtil;
 	@Value("${redirectURL}")
 	private String REDIRECT_URL;
 
@@ -157,6 +161,24 @@ public class ReservationServiceImpl implements ReservationService {
 				.build());
 			log.info("테이블등록" + tableNumber);
 		}
+	}
+
+	/**
+	 * 로그인한 고객의 예약 내역을 받아오는 메소드
+	 *
+	 * @param pageable 페이징 정보
+	 * @return 예약 리스트 정보
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public Page<ReservationDetailResponseDto> getListReservation(Pageable pageable) {
+		User user = authUtil.getAuthenticatedUser();
+
+		// Repository에서 페이징된 Reservation 객체들을 가져옴
+		Page<Reservation> reservations = reservationRepository.findByUser(user, pageable);
+
+		// Page<Reservation>을 Page<ReservationDetailResponseDto>로 변환
+		return reservations.map(ReservationDetailResponseDto::transferToReservationDetailResponseDto);
 	}
 
 	/**

@@ -22,6 +22,8 @@ public class ReservationDetailResponseDto {
 
 	private String restaurantName;
 
+	private String restaurantImage;
+
 	private LocalDate reservationDate;
 
 	private LocalTime reservationStartTime;
@@ -43,14 +45,18 @@ public class ReservationDetailResponseDto {
 		return ReservationDetailResponseDto.builder()
 			.reservationId(reservation.getReservationId())
 			.restaurantId(reservation.getRestaurant().getRestaurantId())
-			.restaurantName(builder().restaurantName)
+			.restaurantName(reservation.getRestaurant().getName())
+			.restaurantImage(
+				(reservation.getRestaurant().getImages() != null && !reservation.getRestaurant().getImages().isEmpty())
+					? reservation.getRestaurant().getImages().get(0).getImageUrl()  // 첫 번째 이미지를 사용
+					: null)  // 이미지가 없으면 null 반환
 			.reservationDate(reservation.getReservationDate())
 			.reservationStartTime(reservation.getStartTime())
 			.reservationEndTime(reservation.getEndTime())
 			.memberCnt(reservation.getMemberCnt())
 			.tableList(reservation.getReservationTables().stream()
 				.map(ReservationTable::getTableId)  // 각 ReservationTable의 tableId를 추출
-				.collect(Collectors.toList()))  // List<Integer>로 변환)
+				.collect(Collectors.toList()))  // List<Integer>로 변환
 			.registTime(reservation.getRegistTime())
 			.cancelled(reservation.isCancelled())
 			.reservationUrl(reservation.getReservationUrl())
@@ -63,7 +69,11 @@ public class ReservationDetailResponseDto {
 		return ReservationDetailResponseDto.builder()
 			.reservationId(reservation.getReservationId())
 			.restaurantId(reservation.getRestaurant().getRestaurantId())
-			.restaurantName(builder().restaurantName)
+			.restaurantName(reservation.getRestaurant().getName())
+			.restaurantImage(
+				(reservation.getRestaurant().getImages() != null && !reservation.getRestaurant().getImages().isEmpty())
+					? reservation.getRestaurant().getImages().get(0).getImageUrl()  // 첫 번째 이미지를 사용
+					: null)  // 이미지가 없으면 null 반환
 			.reservationDate(reservation.getReservationDate())
 			.reservationStartTime(reservation.getStartTime())
 			.reservationEndTime(reservation.getEndTime())

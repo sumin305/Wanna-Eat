@@ -1,8 +1,11 @@
 package com.waterdragon.wannaeat.domain.reservation.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,5 +65,24 @@ public class ReservationController {
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+	}
+
+	/**
+	 * 로그인한 고객의 예약 내역을 받아오는 API
+	 *
+	 * @param pageable 페이징 정보
+	 * @return 예약 리스트 정보
+	 */
+	@GetMapping("/users/reservations")
+	public ResponseEntity<ResponseDto<Page<ReservationDetailResponseDto>>> getReservations(Pageable pageable) {
+		Page<ReservationDetailResponseDto> reservations = reservationService.getListReservation(pageable);
+
+		ResponseDto<Page<ReservationDetailResponseDto>> responseDto = ResponseDto.<Page<ReservationDetailResponseDto>>builder()
+			.status(HttpStatus.OK.value())
+			.message("예약 리스트 조회 성공")
+			.data(reservations)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 }

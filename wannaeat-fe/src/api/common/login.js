@@ -5,7 +5,7 @@ import {
 
 export const getToken = async () => {
   return await authWithRefreshClientInstance
-    .get('/users/reissue')
+    .get('/api/users/reissue')
     .then((result) => result)
     .catch((error) => error);
 };

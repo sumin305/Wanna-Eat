@@ -7,13 +7,24 @@ import WEHeader from './layout/common/WEHeader/WEHeader.jsx';
 import { useEffect } from 'react';
 import useCommonStore from './stores/common/useCommonStore.js';
 import { useLocation } from 'react-router-dom';
-
+import { getRestaurantCategories } from 'api/customer/restaurant.js';
 const Main = () => {
   const { setCategories } = useCommonStore();
   const location = useLocation();
 
   useEffect(() => {
-    setCategories(['고기', '족발', '찌개', '회', '돈까스']);
+    const getCategories = async () => {
+      const response = await getRestaurantCategories();
+      if (response.status === 200) {
+        // setCategories(response.data.data.restaurantCategories);
+        localStorage.setItem(
+          'categories',
+          JSON.stringify(response.data.data.restaurantCategories)
+        );
+      }
+      // setCategories(data.categories);
+    };
+    getCategories();
   }, []);
 
   // 헤더 렌더링할 조건

@@ -12,7 +12,7 @@ const useTextfieldStore = create((set) => ({
 
   clearError: (name) =>
     set((state) => ({
-      errors: { ...state.errors, [name]: null },
+      errors: { ...state.errors, [name]: '' },
       errorMessages: { ...state.errorMessages, [name]: '' },
     })),
 }));

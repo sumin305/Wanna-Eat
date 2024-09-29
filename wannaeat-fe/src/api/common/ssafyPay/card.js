@@ -77,3 +77,21 @@ export const createCreditCard = async (
     .then((result) => result)
     .catch((error) => error);
 };
+
+// 내 카드 목록 조회
+export const getMyCreditCardList = async () => {
+  if (!localStorage.getItem('userKey')) {
+    alert('유저 키가 없습니다.');
+    return;
+  }
+
+  return await ssafyClient
+    .post('/api/v1/edu/creditCard/inquireSignUpCreditCardList', {
+      Header: Header(
+        'inquireSignUpCreditCardList',
+        localStorage.getItem('userKey')
+      ),
+    })
+    .then((result) => result)
+    .catch((error) => error);
+};

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waterdragon.wannaeat.domain.chatmessage.dto.request.ChatMessageRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.chatmessage.dto.response.ChatMessageListResponseDto;
 import com.waterdragon.wannaeat.domain.chatmessage.service.ChatMessageService;
-import com.waterdragon.wannaeat.domain.socket.dto.response.ShareDataResponseDto;
 import com.waterdragon.wannaeat.global.response.ResponseDto;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,31 +25,33 @@ public class ChatMessageController {
 	/**
 	 * 채팅 메시지 등록 API
 	 *
-	 * @param chatMessageRegisterRequestDto
-	 * @return
+	 * @param chatMessageRegisterRequestDto 채팅 메시지 정보
+	 * @return void
 	 */
 	@MessageMapping("/chats/register")
-	public ResponseEntity<ResponseDto<Void>> registerChatMessage(
+	public void registerChatMessage(
 		ChatMessageRegisterRequestDto chatMessageRegisterRequestDto) {
 
 		chatMessageService.registerChatMessage(chatMessageRegisterRequestDto);
-		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
-			.status(HttpStatus.CREATED.value())
-			.message("채팅이 성공적으로 등록되었습니다.")
-			.data(null)
-			.build();
-
-		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 	}
 
+	/**
+	 * 채팅 목록 조회 API
+	 *
+	 * @param reservationUrl 예약 url
+	 * @param chatPage 페이지 (0,1,...)
+	 * @param chatSize 크기 (1 이상)
+	 * @return
+	 */
 	@Operation(summary = "채팅 목록 조회 API")
-	@GetMapping("/api/public/chatmessages/{reservationUrl}")
+	@GetMapping("/api/public/chats/{reservationUrl}")
 	public ResponseEntity<ResponseDto<ChatMessageListResponseDto>> getListChatMessage(
 		@PathVariable(name = "reservationUrl") String reservationUrl,
 		@RequestParam(name = "chatPage", required = false) Long chatPage,
 		@RequestParam(name = "chatSize", required = false) Long chatSize) {
 
-		ChatMessageListResponseDto chatMessageListResponseDto = chatMessageService.getListChatMessage(reservationUrl, chatPage, chatSize);
+		ChatMessageListResponseDto chatMessageListResponseDto = chatMessageService.getListChatMessage(reservationUrl,
+			chatPage, chatSize);
 		ResponseDto<ChatMessageListResponseDto> responseDto = ResponseDto.<ChatMessageListResponseDto>builder()
 			.status(HttpStatus.OK.value())
 			.message("해당 공유예약 url의 채팅 페이징 목록이 성공적으로 조회되었습니다.")

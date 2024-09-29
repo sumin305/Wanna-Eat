@@ -1,10 +1,15 @@
 package com.waterdragon.wannaeat.domain.payment.dto.response;
 
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
+
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Builder
+
 public class KakaoPaymentApproveResponseDto {
 
 	private String aid;                 // 요청 고유 번호
@@ -19,4 +24,5 @@ public class KakaoPaymentApproveResponseDto {
 	private String created_at;          // 결제 준비 요청 시각
 	private String approved_at;         // 결제 승인 시각
 	private String payload;             // 결제 승인 요청에 대해 저장한 값, 요청 시 전달된 내용
+	private ReservationDetailResponseDto reservation_info;
 }

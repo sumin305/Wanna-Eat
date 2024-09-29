@@ -4,6 +4,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import com.waterdragon.wannaeat.domain.menu.domain.Menu;
+import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.restaurantlike.domain.RestaurantLike;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 
@@ -100,6 +101,9 @@ public class Restaurant {
 
 	@OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
 	private List<RestaurantLike> restaurantLikes;
+
+	@OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
+	private List<Reservation> reservations;
 
 	public void update(RestaurantCategory category, String businessNumber, String ownerName,
 		String name, String address, String phone, LocalTime openTime, LocalTime closeTime,

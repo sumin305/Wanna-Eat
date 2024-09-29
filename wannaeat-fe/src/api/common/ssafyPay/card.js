@@ -21,3 +21,18 @@ const Header = (apiName, userKey = '') => {
     ...(userKey !== '' && { userKey: userKey }),
   };
 };
+
+// 가맹점 등록 위한 카테고리 조회
+export const getMerchantCategories = async () => {
+  return await ssafyClient
+    .post('/api/v1/edu/creditCard/inquireCategoryList', {
+      Header: Header('inquireCategoryList'),
+    })
+    .then((result) => {
+      const categoryId = result.data['REC'].filter(
+        (category) => category.categoryName === '생활'
+      )[0].categoryId;
+      localStorage.setItem('restaurantMerchantCategoryId', categoryId);
+    })
+    .catch((error) => error);
+};

@@ -95,3 +95,30 @@ export const getMyCreditCardList = async () => {
     .then((result) => result)
     .catch((error) => error);
 };
+
+// 카드 결제
+export const payByCreditCard = async (
+  cardNo,
+  eve,
+  merchantId,
+  paymentBalance
+) => {
+  if (!localStorage.getItem('userKey')) {
+    alert('유저 키가 없습니다.');
+    return;
+  }
+
+  return await ssafyClient
+    .post('/api/v1/edu/creditCard/createCreditCardTransaction', {
+      Header: Header(
+        'createCreditCardTransaction',
+        localStorage.getItem('userKey')
+      ),
+      cardNo: cardNo,
+      eve: eve,
+      merchantId: merchantId,
+      paymentBalance: paymentBalance,
+    })
+    .then((result) => result)
+    .catch((error) => error);
+};

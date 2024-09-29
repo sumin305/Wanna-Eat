@@ -55,3 +55,25 @@ export const getCreditCardList = async () => {
     .then((result) => result)
     .catch((error) => error);
 };
+
+// 카드 생성
+export const createCreditCard = async (
+  cardUniqueNo = '1001-fc77272400f44a6',
+  withdrawalAccountNo = '3333-3333-3333-3333',
+  withdrawalDate = 1
+) => {
+  if (!localStorage.getItem('userKey')) {
+    alert('유저 키가 없습니다.');
+    return;
+  }
+
+  return await ssafyClient
+    .post('/api/v1/edu/creditCard/createCreditCard', {
+      Header: Header('createCreditCard', localStorage.getItem('userKey')),
+      cardUniqueNo: cardUniqueNo,
+      withdrawalAccountNo: withdrawalAccountNo,
+      withdrawalDate: withdrawalDate,
+    })
+    .then((result) => result)
+    .catch((error) => error);
+};

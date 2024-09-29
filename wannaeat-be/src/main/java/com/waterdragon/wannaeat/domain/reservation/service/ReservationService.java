@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
+import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationEditRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
@@ -18,6 +19,8 @@ public interface ReservationService {
 	ReservationDetailResponseDto registerReservation(ReservationRegisterRequestDto reservationRegisterRequestDto);
 
 	Page<ReservationDetailResponseDto> getListReservation(Pageable pageable);
+
+	void editReservation(ReservationEditRequestDto reservationEditRequestDto);
 
 	void registerReservationTable(Reservation reservation, List<Integer> tableNumbers);
 

@@ -13,10 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.domain.ReservationTable;
+import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationEditRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.AlreadyCancelledReservationException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.DuplicateReservationTableException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
@@ -29,7 +31,9 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantStru
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructureRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
+import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
 import com.waterdragon.wannaeat.domain.user.repository.UserRepository;
+import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -54,6 +58,7 @@ public class ReservationServiceImpl implements ReservationService {
 	private final ReservationTableRepository reservationTableRepository;
 
 	@Override
+	@Transactional
 	public UrlValidationResponseDto validateUrl(UrlValidationRequestDto urlValidationRequestDto) {
 
 		log.info("예약 url : " + urlValidationRequestDto.getReservationUrl());
@@ -179,6 +184,46 @@ public class ReservationServiceImpl implements ReservationService {
 
 		// Page<Reservation>을 Page<ReservationDetailResponseDto>로 변환
 		return reservations.map(ReservationDetailResponseDto::transferToReservationDetailResponseDto);
+	}
+
+	/**
+	 * 예약을 취소하는 메소드
+	 *
+	 * @param reservationEditRequestDto 취소 예약 정보
+	 */
+	@Override
+	public void editReservation(ReservationEditRequestDto reservationEditRequestDto) {
+		User user = authUtil.getAuthenticatedUser();
+
+		Reservation reservation = reservationRepository.findByReservationIdWithLock(
+				reservationEditRequestDto.getReservationId())
+			.orElseThrow(() -> new ReservationNotFoundException(
+				"해당 예약이 존재하지 않습니다."));
+
+		if (reservation.isCancelled()) {
+			throw new AlreadyCancelledReservationException("이미 취소된 예약입니다.");
+		}
+
+		if (user.getRole() == Role.CUSTOMER && !user.equals(reservation.getUser())) {
+			throw new NotAuthorizedException("권한이 없습니다.");
+		}
+
+		if (user.getRole() == Role.MANAGER && !user.equals(reservation.getRestaurant().getUser())) {
+			throw new NotAuthorizedException("권한이 없습니다.");
+		}
+
+		List<ReservationTable> reservationTables = reservation.getReservationTables();
+		log.info(reservationTables.toString());
+		// 예약 객체에서 테이블 리스트를 비움
+		reservation.getReservationTables().clear();
+
+		// 예약 테이블 삭제
+		reservationTableRepository.deleteAll(reservationTables);
+
+		// 예약 정보 수정 후 저장
+		reservation.edit();
+		log.info(reservation.toString());
+		reservationRepository.save(reservation);
 	}
 
 	/**

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.waterdragon.wannaeat.domain.reservation.exception.error.AlreadyCancelledReservationException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.DuplicateReservationTableException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationParticipantNotFoundException;
@@ -37,6 +38,15 @@ public class ReservationExceptionHandler {
 		DuplicateReservationTableException ex) {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Duplicate Reservation Table", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+	}
+
+	// 이미 취소된 예약
+	@ExceptionHandler(AlreadyCancelledReservationException.class)
+	public final ResponseEntity<ErrorResponseDto> handleAlreadyCancelledReservationException(
+		AlreadyCancelledReservationException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Already Cancelled Reservation", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
 	}
 }

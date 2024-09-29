@@ -93,7 +93,7 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 		log.info("totalPrice : " + totalPrice);
 
 		// 카카오페이 결제 준비
-		Reservation reservation = reservationRepository.findByReservationId(
+		Reservation reservation = reservationRepository.findByReservationIdWithLock(
 				kakaoPaymentMenuRequestDto.getReservationId())
 			.orElseThrow(() -> new ReservationNotFoundException(
 				"해당 번호의 예약은 존재하지 않습니다. reservationId : " + kakaoPaymentMenuRequestDto.getReservationId()));

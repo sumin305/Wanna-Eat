@@ -9,6 +9,7 @@ import com.waterdragon.wannaeat.domain.order.domain.Order;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -68,7 +69,7 @@ public class Reservation {
 	@Column(name = "cancelled", nullable = false)
 	private boolean cancelled = false;
 
-	@OneToMany(mappedBy = "reservation", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<ReservationTable> reservationTables;
 
 	@OneToMany(mappedBy = "reservation", fetch = FetchType.LAZY)
@@ -76,5 +77,9 @@ public class Reservation {
 
 	@OneToMany(mappedBy = "reservation", fetch = FetchType.LAZY)
 	private List<Order> orders;
+
+	public void edit() {
+		this.cancelled = true;
+	}
 
 }

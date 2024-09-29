@@ -38,8 +38,6 @@ public class ReservationDetailResponseDto {
 
 	private String reservationUrl;
 
-
-
 	public static ReservationDetailResponseDto transferToReservationDetailResponseDto(Reservation reservation) {
 
 		return ReservationDetailResponseDto.builder()
@@ -59,7 +57,8 @@ public class ReservationDetailResponseDto {
 			.build();
 	}
 
-	public static ReservationDetailResponseDto transferToReservationDetailResponseDto(Reservation reservation, List<Integer> tableList) {
+	public static ReservationDetailResponseDto transferToReservationDetailResponseDto(Reservation reservation,
+		List<Integer> tableList) {
 
 		return ReservationDetailResponseDto.builder()
 			.reservationId(reservation.getReservationId())

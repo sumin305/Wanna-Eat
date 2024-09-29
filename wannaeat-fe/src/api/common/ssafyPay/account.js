@@ -24,12 +24,12 @@ const Header = (apiName, userKey = '') => {
 
 // 계좌 리스트 조회
 export const getAccountList = async () => {
-  return await ssafyClient.post(
-    '/api/v1/edu/demandDeposit/inquireDemandDepositList',
-    {
+  return await ssafyClient
+    .post('/api/v1/edu/demandDeposit/inquireDemandDepositList', {
       Header: Header('inquireDemandDepositList'),
-    }
-  );
+    })
+    .then((result) => result)
+    .catch((error) => error);
 };
 
 // 계좌 생성
@@ -39,14 +39,17 @@ export const createAccount = async () => {
     return;
   }
 
-  return await ssafyClient.post(
-    '/api/v1/edu/demandDeposit/createDemandDepositAccount',
-    {
+  return await ssafyClient
+    .post('/api/v1/edu/demandDeposit/createDemandDepositAccount', {
       Header: Header(
         'createDemandDepositAccount',
         localStorage.getItem('userKey')
       ),
-      accountTypeUniqueNo: '',
-    }
-  );
+      accountTypeUniqueNo: '001-1-83d07e35606342',
+    })
+    .then((result) => {
+      localStorage.setItem('accountNo', result.data.accountNo);
+      return result;
+    })
+    .catch((error) => error);
 };

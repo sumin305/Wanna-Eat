@@ -56,7 +56,7 @@ public class Order {
 	@Column(name = "paid_cnt", nullable = false)
 	private int paidCnt;
 
-	public void update(int paidMenuCnt) {
+	public void updatePaidCnt(int paidMenuCnt) {
 		this.paidCnt += paidMenuCnt;
 	}
 }

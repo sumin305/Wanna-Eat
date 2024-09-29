@@ -9,6 +9,7 @@ export const createSsafyPayAccount = async (userId) => {
     })
     .then((result) => {
       const userKey = result.data.userKey;
+      localStorage.setItem('userId', userId);
       localStorage.setItem('userKey', userKey);
       console.log('userKey: ', userKey);
       return result;

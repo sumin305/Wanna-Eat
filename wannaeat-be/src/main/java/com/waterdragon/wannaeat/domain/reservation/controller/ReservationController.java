@@ -6,11 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationEditRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
@@ -73,6 +75,7 @@ public class ReservationController {
 	 * @param pageable 페이징 정보
 	 * @return 예약 리스트 정보
 	 */
+	@Operation(summary = "예약 정보 조회 API")
 	@GetMapping("/users/reservations")
 	public ResponseEntity<ResponseDto<Page<ReservationDetailResponseDto>>> getReservations(Pageable pageable) {
 		Page<ReservationDetailResponseDto> reservations = reservationService.getListReservation(pageable);
@@ -85,4 +88,21 @@ public class ReservationController {
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
+
+	@Operation(summary = "예약 취소 API")
+	@PatchMapping("/users/reservations")
+	@Transactional
+	public ResponseEntity<ResponseDto<Void>> editReservation(@Valid @RequestBody
+	ReservationEditRequestDto reservationEditRequestDto) {
+
+		reservationService.editReservation(reservationEditRequestDto);
+		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+			.status(HttpStatus.OK.value())
+			.message("예약이 취소되었습니다.")
+			.data(null)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
 }

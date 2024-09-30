@@ -9,7 +9,6 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.DuplicateBusin
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidBreakStartEndTimeException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidFilterReservationDateException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidFilterTimeSequenceException;
-import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantCategoryException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantOpenCloseTimeException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidUserLocationException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantCategoryNotFoundException;
@@ -20,15 +19,6 @@ import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
 @RestControllerAdvice
 public class RestaurantExceptionHandler {
-
-	// 유효하지 않은 식당 카테고리
-	@ExceptionHandler(InvalidRestaurantCategoryException.class)
-	public final ResponseEntity<ErrorResponseDto> handleInvalidRestaurantCategoryException(
-		InvalidRestaurantCategoryException ex) {
-		ex.printStackTrace();
-		ErrorResponseDto error = new ErrorResponseDto("Invalid Restaurant Category", ex.getMessage());
-		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-	}
 
 	// 사업자 등록번호 중복
 	@ExceptionHandler(DuplicateBusinessNumberException.class)

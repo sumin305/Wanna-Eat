@@ -69,16 +69,8 @@ const MainPage = () => {
   useEffect(() => {
     setPageName('');
     setIsShowLogo(true);
-    setActiveIcons([3]);
+    setActiveIcons([0]);
     setRestaurantCategories(JSON.parse(localStorage.getItem('categories')));
-    console.log(JSON.parse(localStorage.getItem('categories')));
-
-    console.log(
-      JSON.parse(localStorage.getItem('categories')).map((index, category) => ({
-        item: category.restaurantCategoryName,
-        index: category.restaurantCategoryId,
-      }))
-    );
   }, []);
 
   const handleReservationButtonClick = (e) => {

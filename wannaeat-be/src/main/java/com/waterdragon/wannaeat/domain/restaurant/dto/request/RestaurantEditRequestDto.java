@@ -22,13 +22,13 @@ public class RestaurantEditRequestDto {
 	private String restaurantAddress;
 
 	@NotEmpty(message = "매장 번호는 필수 입력값입니다.")
-	@Size(min = 11, max = 11, message = "매장 번호는 11자리여야 합니다.")
+	@Size(min = 9, max = 11, message = "매장 번호는 9자리 이상, 11자리 이하여야 합니다.")
 	private String restaurantPhone;
 
 	@NotEmpty(message = "매장 이름은 필수 입력값입니다.")
 	private String restaurantName;
 
-	@NotNull(message = "매장 카테고리는 필수 입력값입니다.")
+	@NotNull(message = "매장 카테고리 id는 필수 입력값입니다.")
 	private Long restaurantCategoryId;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")

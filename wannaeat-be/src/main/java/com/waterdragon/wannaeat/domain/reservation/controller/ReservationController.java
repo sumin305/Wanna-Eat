@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationEditRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
@@ -156,9 +158,10 @@ public class ReservationController {
 		@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
 		@RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
 		@RequestParam("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime
-		) {
+	) {
 
-		List<Integer> tableNumbers = reservationService.getListNotReservedTableNumber(restaurantId, date, startTime, endTime);
+		List<Integer> tableNumbers = reservationService.getListNotReservedTableNumber(restaurantId, date, startTime,
+			endTime);
 		ResponseDto<List<Integer>> responseDto = ResponseDto.<List<Integer>>builder()
 			.status(HttpStatus.OK.value())
 			.message("예약 가능 테이블 번호 목록")
@@ -182,6 +185,17 @@ public class ReservationController {
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	@Operation(summary = "비회원 매장 입장 QR 생성 API")
+	@PostMapping("/public/restaurant/qr")
+	public Object generateEnterQrcode(
+		@Valid @RequestBody QrGenerateRequestDto qrGenerateRequestDto) {
+
+		Object qr = reservationService.generateEnterQrcode(qrGenerateRequestDto);
+		return ResponseEntity.ok()
+			.contentType(MediaType.IMAGE_PNG)
+			.body(qr);
 	}
 
 }

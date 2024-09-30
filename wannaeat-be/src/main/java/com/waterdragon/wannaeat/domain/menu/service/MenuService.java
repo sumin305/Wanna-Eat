@@ -4,13 +4,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.waterdragon.wannaeat.domain.menu.dto.request.MenuEditRequestDto;
 import com.waterdragon.wannaeat.domain.menu.dto.request.MenuRegisterRequestDto;
-import com.waterdragon.wannaeat.domain.menu.dto.response.MenuCategoryListResponseDto;
+import com.waterdragon.wannaeat.domain.menu.dto.response.MenuListResponseDto;
 
 public interface MenuService {
 
 	void registerMenu(MenuRegisterRequestDto menuRegisterRequestDto, MultipartFile multipartFile);
 
-	MenuCategoryListResponseDto getListMenuCategoriesByRestaurantCategoryId(Long restaurantCategoryId);
+	MenuListResponseDto getListMenuByRestaurantId(Long restaurantId);
 
 	void editMenu(Long menuId, MenuEditRequestDto menuEditRequestDto, MultipartFile multipartFile);
 

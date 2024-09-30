@@ -2,7 +2,7 @@ package com.waterdragon.wannaeat.domain.menu.domain;
 
 import java.util.List;
 
-import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantCategory;
+import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,15 +33,18 @@ public class MenuCategory {
 	@Column(name = "menu_cagtegory_id")
 	private Long categoryId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "restaurant_category_id", nullable = false)
-	private RestaurantCategory restaurantCategory;
-
 	@Column(name = "menu_category_name", nullable = false)
 	private String categoryName;
 
 	@OneToMany(mappedBy = "menuCategory", fetch = FetchType.LAZY)
 	private List<Menu> menus;
 
-	// Getters and setters
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "restaurant_id", nullable = false)
+	private Restaurant restaurant;
+
+	public void updateCategoryName(String newCategoryName) {
+		this.categoryName = newCategoryName;
+	}
+
 }

@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.waterdragon.wannaeat.domain.menu.dto.response.MenuListResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantEditRequestDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantCategoryListResponseDto;
@@ -21,8 +20,6 @@ public interface RestaurantService {
 		LocalTime startTime, LocalTime endTime, Integer memberCount, Double latitude, Double longitude);
 
 	RestaurantDetailResponseDto getDetailRestaurantByRestaurantId(Long restaurantId);
-
-	MenuListResponseDto getListMenusByRestaurantId(Long restaurantId);
 
 	RestaurantCategoryListResponseDto getListRestaurantCategories();
 

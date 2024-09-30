@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.waterdragon.wannaeat.domain.menu.dto.request.MenuEditRequestDto;
 import com.waterdragon.wannaeat.domain.menu.dto.request.MenuRegisterRequestDto;
-import com.waterdragon.wannaeat.domain.menu.dto.response.MenuCategoryListResponseDto;
+import com.waterdragon.wannaeat.domain.menu.dto.response.MenuListResponseDto;
 import com.waterdragon.wannaeat.domain.menu.service.MenuService;
 import com.waterdragon.wannaeat.global.response.ResponseDto;
 
@@ -53,22 +53,21 @@ public class MenuController {
 	}
 
 	/**
-	 * 매장 카테고리별 메뉴 카테고리 목록 조회 API
+	 * 식당별 메뉴 목록 조회 API
 	 *
-	 * @param restaurantCategoryId 매장 카테고리 id
-	 * @return MenuCategoryListResponseDto 매장 카테고리별 메뉴 카테고리 목록
+	 * @param restaurantId 식당 id
+	 * @return MenuListResponseDto 메뉴 목록
 	 */
-	@Operation(summary = "매장 카테고리별 메뉴 카테고리 목록 조회 API")
-	@GetMapping("/public/menus/categories/{restaurantCategoryId}")
-	public ResponseEntity<ResponseDto<MenuCategoryListResponseDto>> getListMenuCategoriesByRestaurantCategoryId(
-		@PathVariable(name = "restaurantCategoryId") Long restaurantCategoryId) {
+	@Operation(summary = "식당별 메뉴 목록 조회 API")
+	@GetMapping("/public/restaurants/{restaurantId}/menus")
+	public ResponseEntity<ResponseDto<MenuListResponseDto>> getListMenuByRestaurantId(
+		@PathVariable(name = "restaurantId") Long restaurantId) {
 
-		MenuCategoryListResponseDto menuCategoryListResponseDto = menuService.getListMenuCategoriesByRestaurantCategoryId(
-			restaurantCategoryId);
-		ResponseDto<MenuCategoryListResponseDto> responseDto = ResponseDto.<MenuCategoryListResponseDto>builder()
+		MenuListResponseDto menuListResponseDto = menuService.getListMenuByRestaurantId(restaurantId);
+		ResponseDto<MenuListResponseDto> responseDto = ResponseDto.<MenuListResponseDto>builder()
 			.status(HttpStatus.OK.value())
-			.message("메뉴 카테고리 목록이 성공적으로 조회되었습니다.")
-			.data(menuCategoryListResponseDto)
+			.message("메뉴 목록이 성공적으로 조회되었습니다.")
+			.data(menuListResponseDto)
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -112,12 +111,12 @@ public class MenuController {
 
 		menuService.removeMenu(menuId);
 		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
-			.status(HttpStatus.NO_CONTENT.value())
+			.status(HttpStatus.OK.value())
 			.message("메뉴가 성공적으로 삭제되었습니다.")
 			.data(null)
 			.build();
 
-		return new ResponseEntity<>(responseDto, HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 }

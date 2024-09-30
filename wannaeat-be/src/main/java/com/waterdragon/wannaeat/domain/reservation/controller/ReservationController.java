@@ -124,9 +124,11 @@ public class ReservationController {
 	 */
 	@Operation(summary = "일별 예약 조회 API")
 	@GetMapping("/restaurants/{restaurantId}/reservation")
-	public ResponseEntity<ResponseDto<List<ReservationDetailResponseDto>>> getListReservation(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+	public ResponseEntity<ResponseDto<List<ReservationDetailResponseDto>>> getListReservation(
+		@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
 
-		List<ReservationDetailResponseDto> reservationDetailResponseDtos = reservationService.getListReservationByDate(date);
+		List<ReservationDetailResponseDto> reservationDetailResponseDtos = reservationService.getListReservationByDate(
+			date);
 		ResponseDto<List<ReservationDetailResponseDto>> responseDto = ResponseDto.<List<ReservationDetailResponseDto>>builder()
 			.status(HttpStatus.OK.value())
 			.message("일별 예약 조회 목록")

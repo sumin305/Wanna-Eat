@@ -35,6 +35,17 @@ public class RestaurantCustomRepositoryImpl implements RestaurantCustomRepositor
 				.or(restaurant.menus.any().name.contains(filter.getKeyword())));
 		}
 
+		// memberCount 필터링 추가 (restaurant.minMemberCount 이상, restaurant.maxMemberCount 이하
+		if (filter.getMemberCount() != null) {
+			// minMemberCount가 null이 아닌 경우에만 필터링
+			builder.and(restaurant.minMemberCount.isNull()
+				.or(restaurant.minMemberCount.loe(filter.getMemberCount())));
+
+			// maxMemberCount가 null이 아닌 경우에만 필터링
+			builder.and(restaurant.maxMemberCount.isNull()
+				.or(restaurant.maxMemberCount.goe(filter.getMemberCount())));
+		}
+
 		return jpaQueryFactory
 			.selectFrom(restaurant)
 			.where(builder)

@@ -4,7 +4,6 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +27,7 @@ import com.waterdragon.wannaeat.domain.reservation.repository.ReservationReposit
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationTableRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantStructure;
+import com.waterdragon.wannaeat.domain.restaurant.domain.Table;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidFilterTimeSequenceException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantStructureNotFoundException;
@@ -114,11 +114,8 @@ public class ReservationServiceImpl implements ReservationService {
 		}
 
 		// 식당 테이블 체크 : 유효한 테이블인지 확인
-		Optional<RestaurantStructure> restaurantStructure = restaurantStructureRepository.findByRestaurantId(
-			restaurant.getRestaurantId());
-		if (restaurantStructure.isEmpty()) {
-			throw new RestaurantStructureNotFoundException("매장 구조 정보가 존재하지 않습니다.");
-		}
+		RestaurantStructure restaurantStructure = restaurantStructureRepository.findByRestaurantId(restaurant.getRestaurantId())
+			.orElseThrow(() -> new RestaurantStructureNotFoundException("매장 구조 정보가 존재하지 않습니다."));
 
 		// 예약 테이블을 필터링하는 쿼리 실행
 		List<ReservationTable> reservatedTables = reservationTableRepository.findReservedTables(
@@ -172,6 +169,72 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	/**
+	 * 예약 가능한 테이블 번호 목록을 조회하는 메소드
+	 *
+	 * @param restaurantId 식당 아이디
+	 * @param localDate 예약일
+	 * @param startTime 이용 시작 시간
+	 * @param endTime 이용 종료 시간
+	 * @return 예약 가능한 테이블 번호 목록
+	 */
+	@Override
+	public List<Integer> getListNotReservedTableNumber(Long restaurantId, LocalDate localDate, LocalTime startTime,
+		LocalTime endTime) {
+		Restaurant restaurant = restaurantRepository.findByRestaurantId(restaurantId)
+			.orElseThrow(() -> new RestaurantNotFoundException("해당 식당이 존재하지 않습니다."));
+
+		// 예약 날짜가 과거일 경우 예외 처리
+		if (localDate.isBefore(LocalDate.now())) {
+			throw new InvalidFilterTimeSequenceException("예약 날짜는 과거일 수 없습니다.");
+		}
+
+		// 예약 날짜가 오늘인 경우, 시작 시간이 현재 시간 이전일 경우 예외 처리
+		if (localDate.isEqual(LocalDate.now()) && startTime.isBefore(LocalTime.now())) {
+			throw new InvalidFilterTimeSequenceException("예약 시작 시간은 현재 시간보다 이전일 수 없습니다.");
+		}
+
+		// 예약 종료 시간이 시작 시간보다 빠른 경우 예외 처리
+		if (endTime.isBefore(restaurant.getOpenTime())) {
+			throw new InvalidFilterTimeSequenceException("요청 시간 순서가 잘못되었습니다.");
+		}
+
+		// 식당 영업 시간 체크
+		if (startTime.isBefore(restaurant.getOpenTime()) || endTime.isAfter(restaurant.getCloseTime())) {
+			throw new InvalidFilterTimeSequenceException("식당 영업시간이 아닙니다.");
+		}
+
+		// 브레이크타임 체크: 예약 시간이 브레이크타임과 겹치는지 확인
+		LocalTime breakStartTime = restaurant.getBreakStartTime();
+		LocalTime breakEndTime = restaurant.getBreakEndTime();
+
+		// 예약 시간이 브레이크타임에 포함되는 경우 예외 발생
+		if ((startTime.isBefore(breakEndTime) && endTime.isAfter(breakStartTime)) ||
+			(startTime.isAfter(breakStartTime) && startTime.isBefore(breakEndTime))) {
+			throw new InvalidFilterTimeSequenceException("브레이크타임 중에는 예약할 수 없습니다.");
+		}
+
+		List<ReservationTable> reservedTables = reservationTableRepository.findReservedTables(
+			restaurant.getRestaurantId(),
+			localDate,
+			startTime,
+			endTime);
+
+		RestaurantStructure restaurantStructure = restaurantStructureRepository.findByRestaurantId(restaurantId)
+			.orElseThrow(() -> new RestaurantStructureNotFoundException("매장 구조 정보가 존재하지 않습니다."));
+		List<Table> tableList = restaurantStructure.getTables();
+
+		List<Integer> tableNumbers = new java.util.ArrayList<>(tableList.stream()
+			.map(Table::getTableId)  // 각 Table 객체에서 tableId 추출
+			.toList());  // List<Integer>로 변환
+
+		for (ReservationTable table : reservedTables) {
+			tableNumbers.remove((Integer) table.getTableId());  // tableId를 객체로 처리하여 값으로 리스트에서 제거
+		}
+
+		return tableNumbers;
+	}
+
+	/**
 	 * 로그인한 고객의 예약 내역을 받아오는 메소드
 	 *
 	 * @param pageable 페이징 정보
@@ -189,6 +252,12 @@ public class ReservationServiceImpl implements ReservationService {
 		return reservations.map(ReservationDetailResponseDto::transferToReservationDetailResponseDto);
 	}
 
+	/**
+	 * 일자별 예약 현황 조회 메소드
+	 *
+	 * @param date 검색 일자
+	 * @return 예약 목록 정보
+	 */
 	@Override
 	public List<ReservationDetailResponseDto> getListReservationByDate(LocalDate date) {
 		User user = authUtil.getAuthenticatedUser();

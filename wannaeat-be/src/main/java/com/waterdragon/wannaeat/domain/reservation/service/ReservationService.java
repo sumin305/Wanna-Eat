@@ -1,6 +1,7 @@
 package com.waterdragon.wannaeat.domain.reservation.service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -29,6 +30,8 @@ public interface ReservationService {
 	void editReservation(ReservationEditRequestDto reservationEditRequestDto);
 
 	void registerReservationTable(Reservation reservation, List<Integer> tableNumbers);
+
+	List<Integer> getListNotReservedTableNumber(Long restaurantId, LocalDate localDate, LocalTime startTime, LocalTime endTime);
 
 	String generateRandomString();
 }

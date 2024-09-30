@@ -1,6 +1,7 @@
 package com.waterdragon.wannaeat.domain.reservation.controller;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -133,6 +135,34 @@ public class ReservationController {
 			.status(HttpStatus.OK.value())
 			.message("일별 예약 조회 목록")
 			.data(reservationDetailResponseDtos)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	/**
+	 * 예약 가능한 테이블 번호 목록 조회 API
+	 *
+	 * @param restaurantId 식당 아이디
+	 * @param date 예약일
+	 * @param startTime 이용 시작 시간
+	 * @param endTime 이용 종료 시간
+	 * @return 예약 가능한 테이블 번호 목록
+	 */
+	@Operation(summary = "예약 가능 테이블 목록 조회 API")
+	@GetMapping("/public/restaurants/{restaurantId}/reservations/available-tables")
+	public ResponseEntity<ResponseDto<List<Integer>>> getListNotReservedTableNumber(
+		@PathVariable("restaurantId") Long restaurantId,
+		@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+		@RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
+		@RequestParam("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime
+		) {
+
+		List<Integer> tableNumbers = reservationService.getListNotReservedTableNumber(restaurantId, date, startTime, endTime);
+		ResponseDto<List<Integer>> responseDto = ResponseDto.<List<Integer>>builder()
+			.status(HttpStatus.OK.value())
+			.message("예약 가능 테이블 번호 목록")
+			.data(tableNumbers)
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);

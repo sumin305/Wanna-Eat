@@ -32,7 +32,8 @@ public interface ReservationService {
 
 	void registerReservationTable(Reservation reservation, List<Integer> tableNumbers);
 
-	List<Integer> getListNotReservedTableNumber(Long restaurantId, LocalDate localDate, LocalTime startTime, LocalTime endTime);
+	List<Integer> getListNotReservedTableNumber(Long restaurantId, LocalDate localDate, LocalTime startTime,
+		LocalTime endTime);
 
 	Object generateEnterQrcode(QrGenerateRequestDto qrGenerateRequestDto);
 

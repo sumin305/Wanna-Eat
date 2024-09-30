@@ -189,6 +189,12 @@ public class ReservationServiceImpl implements ReservationService {
 		return reservations.map(ReservationDetailResponseDto::transferToReservationDetailResponseDto);
 	}
 
+	/**
+	 * 일자별 예약 현황 조회 메소드
+	 *
+	 * @param date 검색 일자
+	 * @return 예약 목록 정보
+	 */
 	@Override
 	public List<ReservationDetailResponseDto> getListReservationByDate(LocalDate date) {
 		User user = authUtil.getAuthenticatedUser();

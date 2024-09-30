@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
 import { useDrop, useDrag } from 'react-dnd';
+import { authClientInstance } from 'utils/http-client.js';
+import { v4 as uuid } from 'uuid';
+import { create } from 'zustand';
 import { paletteItems } from '../ItemPalette/ItemPalette';
 import {
   GridWrapperStyled,
@@ -12,19 +14,20 @@ import {
   SaveButtonStyled,
   ButtonWrapperStyled,
 } from './GridCanvas';
-import { create } from 'zustand';
 
 const useStore = create((set, get) => ({
   items: [],
   gridStatus: {},
-  addItem: (item) =>
+  addItem: (item) => {
+    const itemId = uuid();
     set((state) => ({
-      items: [...state.items, item],
+      items: [...state.items, { ...item, id: itemId }],
       gridStatus: {
         ...state.gridStatus,
-        [`${item.x},${item.y}`]: item.id,
+        [`${item.x},${item.y}`]: itemId,
       },
-    })),
+    }));
+  },
   updateItemPosition: (id, newX, newY) => {
     const { items, gridStatus } = get();
     const item = items.find((item) => item.id === id);
@@ -60,7 +63,7 @@ const GridCanvas = () => {
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
   const { items, addItem, setItems, updateItemPosition } = useStore();
 
-  const containerRef = useRef(null);
+  const containerRef = useRef();
 
   const calculateGridSize = () => {
     const width = window.innerWidth;
@@ -83,8 +86,9 @@ const GridCanvas = () => {
   }, []);
 
   useEffect(() => {
-    axios
-      .get('/api/restaurants/{restaurantId}structure')
+    const restaurantId = '일단임시식당ID';
+    authClientInstance
+      .get(`/api/restaurants/${restaurantId}/structure`)
       .then((response) => {
         setItems(response.data);
       })
@@ -173,12 +177,16 @@ const GridCanvas = () => {
   });
 
   const handleCanvasSave = () => {
-    axios
-      .post('/api/save', items, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+    authClientInstance
+      .post(
+        '/api/restaurants/{restaurantId}structure',
+        { items },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
       .then((response) => {
         console.log('꾸미기 저장 성공:', response);
       })

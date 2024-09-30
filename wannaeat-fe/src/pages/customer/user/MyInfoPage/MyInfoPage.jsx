@@ -16,6 +16,7 @@ import {
 import UserInfo from 'assets/icons/common/user-info.png';
 import Card from 'assets/icons/common/Card.png';
 import Edit from 'assets/icons/common/Edit.png';
+import Zzim from 'assets/icons/header/zzim-off.svg';
 import Setting from 'assets/icons/common/Setting.png';
 import useMyInfoStore from 'stores/customer/useMyInfoStore.js';
 import useHeaderStore from 'stores/common/useHeaderStore.js';
@@ -24,7 +25,8 @@ const MyInfoPage = () => {
   const { nickname, email, phone, setNickname, setEmail, setPhone } =
     useMyInfoStore();
   const navigate = useNavigate();
-  const { setPageName } = useHeaderStore();
+  const { setPageName, setIsShowLogo, setIsShowBackIcon, setActiveIcons } =
+    useHeaderStore();
   useEffect(() => {
     const fetchMyInfo = async () => {
       const response = await getMyInfo();
@@ -40,6 +42,9 @@ const MyInfoPage = () => {
     };
     fetchMyInfo();
     setPageName('내 정보');
+    setIsShowLogo(false);
+    setIsShowBackIcon(false);
+    setActiveIcons([]);
   }, []);
 
   const handleCardManageButtonClick = () => {
@@ -49,12 +54,13 @@ const MyInfoPage = () => {
     navigate('/customer/nickname-edit');
   };
 
-  const handlePasswordChangeButtonClick = () => {
-    navigate('/customer/password-edit');
+  const handleMyZzimButtonClick = () => {
+    navigate('/customer/myzzim');
   };
   const handleLogoutButtonClick = async () => {
     const result = await logout();
     console.log(result);
+    navigate('/');
   };
   return (
     <UserInfoContainer>
@@ -81,9 +87,9 @@ const MyInfoPage = () => {
           <UserButtonItemText>닉네임 변경</UserButtonItemText>
         </UserButtonItem>
 
-        <UserButtonItem onClick={handlePasswordChangeButtonClick}>
-          <UserButtonItemImg src={Setting} />
-          <UserButtonItemText>비밀번호 변경</UserButtonItemText>
+        <UserButtonItem onClick={handleMyZzimButtonClick}>
+          <UserButtonItemImg src={Zzim} />
+          <UserButtonItemText>내가 찜한 식당</UserButtonItemText>
         </UserButtonItem>
       </UserButtonBox>
 

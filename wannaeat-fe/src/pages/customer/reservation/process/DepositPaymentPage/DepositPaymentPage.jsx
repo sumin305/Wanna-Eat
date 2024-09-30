@@ -34,6 +34,7 @@ import {
 } from 'api/common/ssafyPay/user.js';
 
 import { getAccountList, createAccount } from 'api/common/ssafyPay/account.js';
+import { payDepositPaymentByKakaoPay } from 'api/common/payment.js';
 import Carousel from 'react-spring-3d-carousel';
 import { config } from 'react-spring';
 import { useState, useEffect } from 'react';
@@ -61,7 +62,6 @@ const DepositPaymentPage = () => {
     const fetchCards = async () => {
       const result = await getMyCreditCardList();
       const cards = result.data.REC;
-      console.log(cards);
       setCards([...cards, { cardIssuerName: '카카오페이카드', cardNo: '0' }]);
     };
     setDepositPrice(
@@ -91,80 +91,30 @@ const DepositPaymentPage = () => {
     navigate(-1);
   };
 
-  const handleNextButtonClick = () => {
-    navigate('/customer/reservation/fingerprint-auth');
-  };
+  const handleNextButtonClick = async () => {
+    if (!selectedCard) {
+      setSelectedCard(cards[0]);
+    }
 
-  const test1 = () => {
-    joinSsafyAccount();
-  };
+    // 카카오페이 결제
+    if (selectedCard.cardNo === '0') {
+      await payDepositPaymentByKakaoPay({});
+      return;
+    }
 
-  const test2 = async () => {
-    const result = await getSsafyPayAccount(email);
-    console.log(result);
-  };
-
-  const test3 = async () => {
-    const result = await getMerchantCategories();
-    console.log(result);
-  };
-
-  // 가맹점 등록
-  const test4 = async () => {
-    const result = await registerMerchant('수마니가맹점');
-    console.log(result);
-  };
-
-  // 카드 상품 조회
-  const test5 = async () => {
-    const result = await getCreditCardList();
-    console.log(result);
-  };
-
-  // 카드 생성
-  const test6 = async () => {
-    const result = await createCreditCard();
-    console.log(result);
-  };
-
-  // 내 카드 목록 조회
-  const test7 = async () => {
-    const result = await getMyCreditCardList();
-    console.log(result);
-  };
-
-  // 카드 생성
-  const test8 = async () => {
-    const result = await createCreditCard();
-    console.log(result);
-  };
-
-  // 카드 결제
-  const test9 = async () => {
+    // 싸피페이 결제
     const result = await payByCreditCard(
       selectedCard.cardNo,
       selectedCard.cvc,
       2022,
       depositPrice
     );
-    console.log(result);
-  };
 
-  // 계좌 상품 목록 조회
-  const test10 = async () => {
-    const result = await getAccountList();
-    console.log(result);
-  };
+    if (result.status === 200) {
+      alert('결제 성공');
+    }
 
-  // 계좌 등록
-  const test11 = async () => {
-    const result = await createAccount();
-    console.log(result);
-  };
-
-  const joinSsafyAccount = async () => {
-    const result = await createSsafyPayAccount(email);
-    console.log(result);
+    navigate('/customer/reservation/fingerprint-auth');
   };
   return (
     <DepositPaymentPageContainer>
@@ -188,40 +138,6 @@ const DepositPaymentPage = () => {
         </CardSelectBoxStyled>
       </div>
       <ButtonWrapper>
-        <button size="short" onClick={test1}>
-          가입 테스트
-        </button>
-        <button size="short" onClick={test2}>
-          유저 조회 테스트
-        </button>
-        <button size="short" onClick={test3}>
-          카테고리 조회 테스트
-        </button>
-        <button size="short" onClick={test4}>
-          가맹점 등록 테스트
-        </button>
-        <button size="short" onClick={test5}>
-          카드사 조회 테스트
-        </button>
-        <button size="short" onClick={test6}>
-          카드 상품 등록 테스트
-        </button>
-        <button size="short" onClick={test7}>
-          내 카드 상품 조회 테스트
-        </button>
-        <button size="short" onClick={test8}>
-          카드 생성 테스트
-        </button>
-        <button size="short" onClick={test9}>
-          카드 결제 테스트
-        </button>
-        <button size="short" onClick={test10}>
-          계좌 리스트 조회 테스트
-        </button>
-        <button size="short" onClick={test11}>
-          계좌 생성 테스트
-        </button>
-
         <Button
           onClick={handleBeforeButtonClick}
           size="short"

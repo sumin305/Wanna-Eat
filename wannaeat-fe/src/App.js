@@ -5,6 +5,7 @@ import { Global, css } from '@emotion/react';
 import Main from './Main';
 
 import { requestPermission } from './firebase/firebaseCloudMessaging';
+import { getRestaurantCategories } from 'api/customer/restaurant.js';
 
 const globalStyles = css`
   @font-face {
@@ -42,6 +43,18 @@ if (Notification.permission !== 'granted') {
   requestPermission();
 }
 
+const getCategories = async () => {
+  const response = await getRestaurantCategories();
+  if (response.status === 200) {
+    // setCategories(response.data.data.restaurantCategories);
+    localStorage.setItem(
+      'categories',
+      JSON.stringify(response.data.data.restaurantCategories)
+    );
+  }
+  // setCategories(data.categories);
+};
+getCategories();
 function App() {
   return (
     <BrowserRouter>

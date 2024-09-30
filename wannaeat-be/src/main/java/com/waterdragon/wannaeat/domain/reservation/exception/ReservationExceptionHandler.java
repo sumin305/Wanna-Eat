@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.waterdragon.wannaeat.domain.reservation.exception.error.AlreadyCancelledReservationException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.DuplicateReservationTableException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.FailureGenerateQrCodeException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationParticipantNotFoundException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
@@ -48,5 +49,14 @@ public class ReservationExceptionHandler {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Already Cancelled Reservation", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+	}
+
+	// QR 코드 생성 실패
+	@ExceptionHandler(FailureGenerateQrCodeException.class)
+	public final ResponseEntity<ErrorResponseDto> handleFailureGenerateQrCodeException(
+		FailureGenerateQrCodeException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Failure Generate Qr Code", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

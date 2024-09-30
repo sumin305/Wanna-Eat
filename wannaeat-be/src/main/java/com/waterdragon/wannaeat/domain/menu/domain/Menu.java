@@ -67,4 +67,8 @@ public class Menu {
 		this.image = image;
 		this.description = description;
 	}
+
+	public void delete() {
+		this.deleted = true;
+	}
 }

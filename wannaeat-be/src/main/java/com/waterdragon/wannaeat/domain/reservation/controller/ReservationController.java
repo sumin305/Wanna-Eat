@@ -42,7 +42,7 @@ public class ReservationController {
 	private final ReservationService reservationService;
 
 	@Operation(summary = "예약 URL 유효성 검증 API")
-	@PostMapping("/reservations/validation")
+	@PostMapping("/public/reservations/validation")
 	public ResponseEntity<ResponseDto<UrlValidationResponseDto>> validateReservationUrl(@Valid @RequestBody
 	UrlValidationRequestDto urlValidationRequestDto) {
 

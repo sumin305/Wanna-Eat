@@ -204,7 +204,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 	private boolean checkAvailableTables(RestaurantFilter filter, Restaurant restaurant) {
 
 		// MongoDB에서 해당 식당의 모든 테이블 가져오기 (인원 수 크거나 같은 애들만)
-		List<Table> tables = getTablesFromMongoDB(restaurant.getRestaurantId(), filter.getMemberCount());
+		List<Table> tables = getTablesFromMongoDB(restaurant.getRestaurantId());
 
 		// startTime, endTime 가공 작업
 		LocalTime startTime = filter.getStartTime();
@@ -319,18 +319,11 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 
 	// MongoDB에서 해당 식당의 테이블 목록 조회 메소드 (인원 수 크거나 같은 테이블만)
-	private List<Table> getTablesFromMongoDB(Long restaurantId, Integer memberCount) {
+	private List<Table> getTablesFromMongoDB(Long restaurantId) {
 		// 우선 모든 테이블을 불러옴
 		List<Table> tables = restaurantStructureRepository.findByRestaurantId(restaurantId)
 			.map(RestaurantStructure::getTables)
 			.orElse(Collections.emptyList());
-
-		// memberCount가 있는 경우에만 필터링
-		if (memberCount != null) {
-			tables = tables.stream()
-				.filter(table -> table.getAssignedSeats() >= memberCount)
-				.collect(Collectors.toList());
-		}
 
 		return tables;
 	}

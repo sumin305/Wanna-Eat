@@ -27,7 +27,7 @@ import FingerprintAuthPage from '../pages/customer/reservation/process/Fingerpri
 import CardManagePage from '../pages/customer/user/CardManagePage/CardManagePage.jsx';
 import CardRegistPage from '../pages/customer/user/CardRegistPage/CardRegistPage.jsx';
 import NicknameEditPage from '../pages/customer/user/NicknameEditPage/NicknameEditPage.jsx';
-import PasswordEditPage from '../pages/customer/user/PasswordEditPage/PasswordEditPage.jsx';
+import MyZzimPage from '../pages/customer/user/MyZzimPage/MyZzimPage.jsx';
 
 // 비회원 관련 페이지
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';
@@ -79,10 +79,10 @@ const AppRoutes = () => {
         <Route path="/customer/reservation/success" element={<SuccessPage />} />
         <Route path="/customer/reservationlist" element={<ListPage />} />
         <Route path="/customer/myinfo" element={<MyInfoPage />} />
-        <Route path="/custoer/card-manage" element={<CardManagePage />} />
-        <Route path="/custoer/card-regist" element={<CardRegistPage />} />
-        <Route path="/custoer/nickname-edit" element={<NicknameEditPage />} />
-        <Route path="/custoer/password-edit" element={<PasswordEditPage />} />
+        <Route path="/customer/card-manage" element={<CardManagePage />} />
+        <Route path="/customer/card-regist" element={<CardRegistPage />} />
+        <Route path="/customer/nickname-edit" element={<NicknameEditPage />} />
+        <Route path="/customer/myzzim" element={<MyZzimPage />} />
       </Routes>
     </Layout>
   );

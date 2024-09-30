@@ -120,6 +120,7 @@ authClientInstance.interceptors.response.use(
         setAccessToken(accessToken);
         config.headers['authorization-wannaeat'] = accessToken;
         console.log('AccessToken Reissue 성공');
+        console.dir(authClientInstance(config));
         return authClientInstance(config);
       } else {
         console.log('AccessToken Reissue 실패');

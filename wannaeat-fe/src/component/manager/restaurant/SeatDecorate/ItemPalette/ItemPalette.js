@@ -61,8 +61,16 @@ const paletteItems = [
   },
 ];
 
+const ItemPaletteContainerStyled = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+`;
+
 const ItemPaletteStyled = styled.div`
   display: flex;
+  position: relative;
   justify-content: flex-start;
   align-items: center;
   width: 100%;
@@ -70,13 +78,13 @@ const ItemPaletteStyled = styled.div`
   display: flex;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 10px;
   background-color: transparent;
   border-bottom: 1px solid #ccc;
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
   scrollbar-width: none;
   flex-wrap: nowrap;
+  padding-block: 10px;
 `;
 
 const PaletteItemStyled = styled.div`
@@ -128,13 +136,23 @@ const PaletteItemLabelStyled = styled.div`
 
 const ArrowLeftIconStyled = styled(ArrowLeftIcon)`
   position: absolute;
-  left: 0;
-  visibility: hidden; // 임시로 제거
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 1;
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+  pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
 `;
 const ArrowRightIconStyled = styled(ArrowRIghtIcon)`
   position: absolute;
-  right: 0;
-  visibility: hidden; // 임시로 제거
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 1;
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+  pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
 `;
 
 export {
@@ -145,4 +163,5 @@ export {
   PaletteItemLabelStyled,
   ArrowLeftIconStyled,
   ArrowRightIconStyled,
+  ItemPaletteContainerStyled,
 };

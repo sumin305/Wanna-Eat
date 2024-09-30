@@ -26,11 +26,10 @@ import FoodImg from '../../../../../assets/icons/common/food.png';
 import Location from '../../../../../assets/icons/reservation/location.svg';
 import Clock from '../../../../../assets/icons/reservation/clock.svg';
 import Phone from '../../../../../assets/icons/reservation/phone.svg';
-
+import useRestaurantStore from 'stores/customer/useRestaurantStore';
 const RestaurantDetailPage = () => {
   const params = useParams();
   const nav = useNavigate();
-
   const handleReservationButtonClick = () => {
     nav('/customer/reservation/time-select');
   };
@@ -43,9 +42,21 @@ const RestaurantDetailPage = () => {
     setIsShowBackIcon,
   } = useHeaderStore();
 
+  const {
+    breakEndTime,
+    breakStartTime,
+    menus,
+    restaurantAddress,
+    restaurantCloseTime,
+    restaurantDescription,
+    restaurantName,
+    restaurantOpenTime,
+    restaurantPhone,
+  } = useRestaurantStore();
+
   useEffect(() => {
     setIsCarrot(true);
-    setPageName('서래갈매기 한밭대점'); // 나중에 가게이름
+    setPageName(restaurantName ? restaurantName : '맛있는 식당'); // 나중에 가게이름
     setIsShowLogo(false);
     setIsShowBackIcon(true);
     setActiveIcons([3]);
@@ -53,113 +64,10 @@ const RestaurantDetailPage = () => {
 
   const [activeTab, setActiveTab] = useState(0);
 
-  const informations = {
-    restaurantBusinessNumber: '수정-수정',
-    restaurantOwnerName: '이경곤수정222',
-    restaurantAddress: '포항',
-    restaurantPhone: '01011112222',
-    restaurantName: '경곤수정식당',
-    restaurantCategoryName: '보쌈족발',
-    restaurantOpenTime: '09:00',
-    restaurantCloseTime: '23:59',
-    breakStartTime: '12:00',
-    breakEndTime: '13:30',
-    maxReservationTime: 120,
-    minMemberCount: 2,
-    maxMemberCount: 5,
-    depositPerMember: 10000,
-    restaurantDescription: '음식 지림',
-    latitude: 12.25,
-    longitude: 35.0,
-    menuListResponseDto: {
-      menusMap: {
-        고기: [
-          {
-            menuId: 1,
-            menuName: '갈매기살',
-            menuPrice: 10000,
-            menuImage: FoodImg,
-            menuDescription: '뒤지게 맛있음',
-          },
-          {
-            menuId: 2,
-            menuName: '개매운족발',
-            menuPrice: 10000,
-            menuImage: FoodImg,
-            menuDescription: '뒤지게 맛있음,뒤지게 맛있음',
-          },
-          {
-            menuId: 3,
-            menuName: '개매운족발',
-            menuPrice: 10000,
-            menuImage: FoodImg,
-            menuDescription: '뒤지게 맛있음',
-          },
-          {
-            menuId: 4,
-            menuName: '개매운족발',
-            menuPrice: 10000,
-            menuImage: FoodImg,
-            menuDescription: '뒤지게 맛있음',
-          },
-          {
-            menuId: 5,
-            menuName: '개매운족발',
-            menuPrice: 10000,
-            menuImage: FoodImg,
-            menuDescription: '뒤지게 맛있음',
-          },
-          {
-            menuId: 6,
-            menuName: '개매운족발',
-            menuPrice: 10000,
-            menuImage: FoodImg,
-            menuDescription: '뒤지게 맛있음',
-          },
-          {
-            menuId: 7,
-            menuName: '개매운족발',
-            menuPrice: 10000,
-            menuImage: FoodImg,
-            menuDescription: '뒤지게 맛있음',
-          },
-          {
-            menuId: 8,
-            menuName: '개매운족발',
-            menuPrice: 10000,
-            menuImage: FoodImg,
-            menuDescription: '뒤지게 맛있음',
-          },
-          {
-            menuId: 9,
-            menuName: 'ABC 초코',
-            menuPrice: 10,
-            menuImage: FoodImg,
-            menuDescription: '많이달다',
-          },
-        ],
-        주류: [
-          {
-            menuId: 2,
-            menuName: '맥주',
-            menuPrice: 10000,
-            menuImage: FoodImg,
-            menuDescription: '뒤지게 맛있음',
-          },
-        ],
-      },
-    },
-  };
-
-  // const categories = [
-  //   { id: 1, Name: '메인메뉴' },
-  //   { id: 2, Name: '사이드' },
-  //   { id: 3, Name: '음료/주류' },
-  // ];
-
-  const categories = Object.keys(informations.menuListResponseDto.menusMap);
+  const categories = Object.keys(menus);
+  console.log(categories);
   const activeMenus =
-    informations.menuListResponseDto.menusMap[categories[activeTab]];
+    categories.length === 0 ? [] : menus[categories[activeTab]];
 
   return (
     <Box>
@@ -167,23 +75,28 @@ const RestaurantDetailPage = () => {
       <RestaurantImageBox src={RestaurantImg} />
       <InformationContainer>
         <InformationText>
-          &emsp;{informations.restaurantDescription}
+          &emsp;
+          {restaurantDescription ? restaurantDescription : '맛있는 식당입니다.'}
         </InformationText>
         <InformationWrapper>
           <IconImg src={Location} alt="주소" />
-          <InformationText>{informations.restaurantAddress}</InformationText>
+          <InformationText>
+            {restaurantAddress ? restaurantAddress : '정보없음'}
+          </InformationText>
         </InformationWrapper>
         <InformationWrapper>
           <IconImg src={Clock} alt="영업시간" />
           <InformationText>
-            {informations.restaurantOpenTime}~{informations.restaurantCloseTime}
-            &nbsp;(브레이크타임 {informations.breakStartTime}~
-            {informations.breakEndTime})
+            {restaurantOpenTime ? restaurantOpenTime : '00:00'}~
+            {restaurantCloseTime ? restaurantCloseTime : '00:00'}
+            &nbsp;(브레이크타임 {breakStartTime}~{breakEndTime})
           </InformationText>
         </InformationWrapper>
         <InformationWrapper>
           <IconImg src={Phone} alt="전화번호" />
-          <InformationText>{informations.restaurantPhone}</InformationText>
+          <InformationText>
+            {restaurantPhone ? restaurantPhone : '정보 없음'}
+          </InformationText>
         </InformationWrapper>
       </InformationContainer>
       <WETabContainer>

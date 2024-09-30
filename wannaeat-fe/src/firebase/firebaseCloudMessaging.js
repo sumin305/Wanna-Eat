@@ -1,21 +1,18 @@
-import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import {
+  getMessaging,
+  getToken,
+  deleteToken,
+  onMessage,
+} from 'firebase/messaging';
 import { app as firebaseApp } from './firebase';
 
 const messaging = getMessaging(firebaseApp);
 
 // Request notification permission & FCM token
 export function requestPermission() {
+  console.log('요청 확인 할게요');
   Notification.requestPermission().then((permission) => {
-    if (permission === 'granted') {
-      getToken(messaging, {
-        vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY,
-      }).then((currentToken) => {
-        if (currentToken) {
-          console.log('fcm토큰발급', currentToken);
-          document.cookie = `fcmToken=${currentToken}; path=/; SameSite=Lax`;
-        }
-      });
-    }
+    console.log('권한 요청 완료');
   });
 }
 
@@ -29,14 +26,18 @@ export function onForegroundMessage() {
 }
 
 // Get FCM token
-export function getFcmToken() {
-  getToken(getMessaging(firebaseApp), {
-    vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY,
-  }).then((currentToken) => {
-    if (currentToken) {
-      document.cookie = `fcmToken=${currentToken}; path=/; SameSite=Lax`;
+export async function getFcmToken() {
+  try {
+    const currentToken = await getToken(messaging, {
+      vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY,
+    });
 
+    if (currentToken) {
+      onForegroundMessage(); // 토큰 사용
+      console.log('토큰발급완료');
       return currentToken;
     }
-  });
+  } catch (error) {
+    console.error('FCM 토큰 갱신 실패:', error);
+  }
 }

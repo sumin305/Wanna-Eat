@@ -7,14 +7,9 @@ import WEHeader from './layout/common/WEHeader/WEHeader.jsx';
 import { useEffect } from 'react';
 import useCommonStore from './stores/common/useCommonStore.js';
 import { useLocation } from 'react-router-dom';
-
 const Main = () => {
   const { setCategories } = useCommonStore();
   const location = useLocation();
-
-  useEffect(() => {
-    setCategories(['고기', '족발', '찌개', '회', '돈까스']);
-  }, []);
 
   // 헤더 렌더링할 조건
   const shouldRenderHeader = () => {

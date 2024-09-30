@@ -4,11 +4,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { Global, css } from '@emotion/react';
 import Main from './Main';
 
-import {
-  requestPermission,
-  onForegroundMessage,
-} from './firebase/firebaseCloudMessaging';
-import { getFcmToken } from './firebase/firebaseCloudMessaging';
+import { requestPermission } from './firebase/firebaseCloudMessaging';
+import { getRestaurantCategories } from 'api/customer/restaurant.js';
 
 const globalStyles = css`
   @font-face {
@@ -44,12 +41,20 @@ const globalStyles = css`
 // FCM permission & token
 if (Notification.permission !== 'granted') {
   requestPermission();
-} else {
-  // Save FCM token
-  getFcmToken();
-  onForegroundMessage();
 }
 
+const getCategories = async () => {
+  const response = await getRestaurantCategories();
+  if (response.status === 200) {
+    // setCategories(response.data.data.restaurantCategories);
+    localStorage.setItem(
+      'categories',
+      JSON.stringify(response.data.data.restaurantCategories)
+    );
+  }
+  // setCategories(data.categories);
+};
+getCategories();
 function App() {
   return (
     <BrowserRouter>

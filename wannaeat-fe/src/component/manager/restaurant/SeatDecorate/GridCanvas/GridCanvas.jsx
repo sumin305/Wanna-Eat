@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
 import { useDrop, useDrag } from 'react-dnd';
+import { authClientInstance } from 'utils/http-client.js';
+import { v4 as uuid } from 'uuid';
+import { create } from 'zustand';
 import { paletteItems } from '../ItemPalette/ItemPalette';
 import {
   GridWrapperStyled,
@@ -12,22 +14,44 @@ import {
   SaveButtonStyled,
   ButtonWrapperStyled,
 } from './GridCanvas';
-import { create } from 'zustand';
 
-const useStore = create((set) => ({
+const useStore = create((set, get) => ({
   items: [],
-  addItem: (item) =>
+  gridStatus: {},
+  addItem: (item) => {
+    const itemId = uuid();
     set((state) => ({
-      items: [...state.items, item],
-    })),
-  updateItemPosition: (id, newX, newY) =>
+      items: [...state.items, { ...item, id: itemId }],
+      gridStatus: {
+        ...state.gridStatus,
+        [`${item.x},${item.y}`]: itemId,
+      },
+    }));
+  },
+  updateItemPosition: (id, newX, newY) => {
+    const { items, gridStatus } = get();
+    const item = items.find((item) => item.id === id);
+
+    if (item) {
+      delete gridStatus[`${item.x},${item.y}`];
+    }
+
     set((state) => ({
       items: state.items.map((item) =>
         item.id === id ? { ...item, x: newX, y: newY } : item
       ),
-    })),
+      gridStatus: {
+        ...state.gridStatus,
+        [`${newX},${newY}`]: id,
+      },
+    }));
+  },
   setItems: (items) => set({ items }),
   clearItems: () => set({ items: [] }),
+  isCellOccupied: (x, y) => {
+    const gridStatus = get().gridStatus;
+    return !!gridStatus[`${x},${y}`];
+  },
 }));
 
 const GridCanvas = () => {
@@ -39,7 +63,7 @@ const GridCanvas = () => {
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
   const { items, addItem, setItems, updateItemPosition } = useStore();
 
-  const containerRef = useRef(null);
+  const containerRef = useRef();
 
   const calculateGridSize = () => {
     const width = window.innerWidth;
@@ -62,8 +86,9 @@ const GridCanvas = () => {
   }, []);
 
   useEffect(() => {
-    axios
-      .get('/api/restaurants/{restaurantId}structure')
+    const restaurantId = '일단임시식당ID';
+    authClientInstance
+      .get(`/api/restaurants/${restaurantId}/structure`)
       .then((response) => {
         setItems(response.data);
       })
@@ -123,6 +148,11 @@ const GridCanvas = () => {
       const x = Math.floor(adjustedX / gridSize) * gridSize;
       const y = Math.floor(adjustedY / gridSize) * gridSize;
 
+      if (useStore.getState().isCellOccupied(x, y)) {
+        window.alert('중복 방지!!!!!!!!!!!!!!');
+        return;
+      }
+
       if (item.type === 'PALETTE_ITEM') {
         const selectedItem = paletteItems.find(
           (paletteItem) => paletteItem.id === item.id
@@ -147,12 +177,16 @@ const GridCanvas = () => {
   });
 
   const handleCanvasSave = () => {
-    axios
-      .post('/api/save', items, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+    authClientInstance
+      .post(
+        '/api/restaurants/{restaurantId}structure',
+        { items },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
       .then((response) => {
         console.log('꾸미기 저장 성공:', response);
       })
@@ -194,10 +228,10 @@ const GridCanvas = () => {
             ))}
           </GridBackgroundStyled>
         </ZoomableGridWrapperStyled>
-      <ButtonWrapperStyled>
-        <SaveButtonStyled onClick={handleCanvasSave}>저장</SaveButtonStyled>
-        <CancelButtonStyled>취소</CancelButtonStyled>
-      </ButtonWrapperStyled>
+        <ButtonWrapperStyled>
+          <SaveButtonStyled onClick={handleCanvasSave}>저장</SaveButtonStyled>
+          <CancelButtonStyled>취소</CancelButtonStyled>
+        </ButtonWrapperStyled>
       </GridWrapperStyled>
     </div>
   );

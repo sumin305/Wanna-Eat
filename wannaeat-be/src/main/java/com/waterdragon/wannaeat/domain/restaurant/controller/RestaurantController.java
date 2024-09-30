@@ -95,7 +95,7 @@ public class RestaurantController {
 	}
 
 	/**
-	 * 매장 정보 상세 조회 API
+	 * 매장 정보 상세 조회 API(메뉴 포함)
 	 *
 	 * @param restaurantId 매장 id
 	 * @return RestaurantDetailResponseDto 매장 정보

@@ -29,7 +29,11 @@ spring:
       - jwt
       - oauth
 
+  # SMS 인증코드 유효기간
   phone-authcode-expiration-millis: ${PHONE_AUTHCODE_EXPIRATION}
+
+  #비회원 식당 QRCode 유효기간
+  qr-expiration-millis: ${QR_EXPIRATION}
 
   # 장바구니 유효기간
   cart-expiration-millis: ${CART_EXPIRATION}

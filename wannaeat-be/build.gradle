@@ -56,6 +56,10 @@ dependencies {
 	// Jackson
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
+	// QR Code - zxing
+	implementation group: 'com.google.zxing', name: 'javase', version: '3.5.2'
+	implementation group: 'com.google.zxing', name: 'core', version: '3.5.2'
+
 	// Socket
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'

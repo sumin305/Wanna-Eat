@@ -1,6 +1,7 @@
 package com.waterdragon.wannaeat.domain.reservation.service;
 
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.domain.ReservationTable;
+import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationEditRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
@@ -22,6 +24,7 @@ import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetai
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.AlreadyCancelledReservationException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.DuplicateReservationTableException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.FailureGenerateQrCodeException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationTableRepository;
@@ -37,8 +40,11 @@ import com.waterdragon.wannaeat.domain.user.domain.User;
 import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
 import com.waterdragon.wannaeat.domain.user.repository.UserRepository;
 import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
+import com.waterdragon.wannaeat.global.redis.service.RedisService;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
+import com.waterdragon.wannaeat.global.util.QrUtil;
 
+import io.grpc.internal.InternalServer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,11 +55,19 @@ public class ReservationServiceImpl implements ReservationService {
 
 	private final RestaurantStructureRepository restaurantStructureRepository;
 	private final AuthUtil authUtil;
+	private final QrUtil qrUtil;
+	private final RedisService redisService;
 	@Value("${redirectURL}")
 	private String REDIRECT_URL;
 
 	@Value("${RESERVATION_URL}")
 	private String RESERVATION_URL;
+
+	@Value("${ENTER_RESTAURANT_URL}")
+	private String ENTER_RESTAURANT_URL;
+
+	@Value("${spring.qr-expiration-millis}")
+	private int qrCodeExpirationMillis;
 
 	private final ReservationRepository reservationRepository;
 	private final RestaurantRepository restaurantRepository;
@@ -114,7 +128,8 @@ public class ReservationServiceImpl implements ReservationService {
 		}
 
 		// 식당 테이블 체크 : 유효한 테이블인지 확인
-		RestaurantStructure restaurantStructure = restaurantStructureRepository.findByRestaurantId(restaurant.getRestaurantId())
+		RestaurantStructure restaurantStructure = restaurantStructureRepository.findByRestaurantId(
+				restaurant.getRestaurantId())
 			.orElseThrow(() -> new RestaurantStructureNotFoundException("매장 구조 정보가 존재하지 않습니다."));
 
 		// 예약 테이블을 필터링하는 쿼리 실행
@@ -228,10 +243,36 @@ public class ReservationServiceImpl implements ReservationService {
 			.toList());  // List<Integer>로 변환
 
 		for (ReservationTable table : reservedTables) {
-			tableNumbers.remove((Integer) table.getTableId());  // tableId를 객체로 처리하여 값으로 리스트에서 제거
+			tableNumbers.remove((Integer)table.getTableId());  // tableId를 객체로 처리하여 값으로 리스트에서 제거
 		}
 
 		return tableNumbers;
+	}
+
+	/**
+	 * 비회원 식당 예약 페이지 입장을 위한 QR코드를 생성하는 메소드
+	 *
+	 * @param qrGenerateRequestDto 식당 아이디 정보
+	 * @return 난수값 token이 저장된 QR코드
+	 */
+	@Override
+	public Object generateEnterQrcode(QrGenerateRequestDto qrGenerateRequestDto) {
+		Restaurant restaurant = restaurantRepository.findByRestaurantId(qrGenerateRequestDto.getRestaurantId())
+			.orElseThrow(() -> new RestaurantNotFoundException("해당 식당이 존재하지 않습니다."));
+
+		final String randomString = generateRandomString();
+		// Url 유효성 검사에 사용할 난수값을 Redis에 저장( key = randomString / value = restaurantId )
+		redisService.setValues(randomString, restaurant.getRestaurantId(), Duration.ofDays(qrCodeExpirationMillis));
+		Object qr;
+		try {
+			qr = qrUtil.generateQR(REDIRECT_URL + ENTER_RESTAURANT_URL + "?token=" + randomString);
+
+		} catch (Exception e) {
+			log.info("QR 생성 에러: {}", e.getMessage());
+			throw new FailureGenerateQrCodeException("QR 생성 에러: {}\", e.getMessage()");
+		}
+
+		return qr;
 	}
 
 	/**

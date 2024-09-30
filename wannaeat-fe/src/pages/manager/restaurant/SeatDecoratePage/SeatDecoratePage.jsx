@@ -10,8 +10,12 @@ import { SeatDecoratePageStyled } from './SeatDecoreatePage.js';
 
 const SeatDecoratePage = () => {
   const { setIsCarrot, setIsShowBackIcon, setActiveIcons, setPageName } =
-    useHeaderStore();
-
+  useHeaderStore();
+  
+  const touchbackendOptions = {
+    enableMouseEvents: true,
+  };
+    
   useEffect(() => {
     setIsCarrot(true);
     setIsShowBackIcon(true);
@@ -19,23 +23,12 @@ const SeatDecoratePage = () => {
     setPageName('매장 꾸미기');
   }, [setIsCarrot, setIsShowBackIcon, setActiveIcons, setPageName]);
 
-  if (isMobile) {
-    window.alert('모바일입니다.');
-  } else {
-    window.alert('PC입니다.');
-  }
-
-  const touchbackendOptions = {
-    enableMouseEvents: true,
-  };
 
   return (
     <DndProvider
       backend={isMobile ? TouchBackend : HTML5Backend}
       options={isMobile ? touchbackendOptions : {}}
     >
-      {/* <DndProvider backend={HTML5Backend}> */}
-      {/* <DndProvider backend={TouchBackend}> */}
       <SeatDecoratePageStyled>
         <ItemPalette />
         <GridCanvas />

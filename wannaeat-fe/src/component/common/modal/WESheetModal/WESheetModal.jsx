@@ -10,7 +10,8 @@ import useModalStore from '../../../../stores/common/useModalStore.js';
 import theme from '../../../../style/common/theme.js';
 
 const WESheetModal = () => {
-  const { close, title, confirmText, children } = useModalStore();
+  const { close, title, confirmText, children, handleButtonClick } =
+    useModalStore();
   return (
     <SheetModalContainer>
       <ModalContentWrapper>
@@ -20,7 +21,10 @@ const WESheetModal = () => {
         <HrStyled></HrStyled>
         <div>{children || <div>내용이 없습니다.</div>}</div>
       </ModalContentWrapper>
-      <Button size="long" onClick={close}>
+      <Button
+        size="long"
+        onClick={handleButtonClick ? handleButtonClick : close}
+      >
         {confirmText}
       </Button>
     </SheetModalContainer>

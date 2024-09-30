@@ -44,6 +44,7 @@ const BoxStyled = styled.div`
 
 const CalendarContainer = styled.div`
   flex: 3; // 나머지 3/4를 차지하도록 설정
+  padding: 0 1.7rem;
   display: flex;
   flex-direction: column;
   align-items: center;

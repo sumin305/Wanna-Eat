@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class MenuDetailReponseDto {
+public class MenuDetailResponseDto {
 
 	private Long menuId;
 	private String menuName;

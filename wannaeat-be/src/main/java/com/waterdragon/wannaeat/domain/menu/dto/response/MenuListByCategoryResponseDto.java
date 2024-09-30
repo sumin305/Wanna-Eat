@@ -7,7 +7,8 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class MenuListResponseDto {
+public class MenuListByCategoryResponseDto {
 
-	private List<MenuListByCategoryResponseDto> menuListByCategoryResponseDtos;
+	private String menuCategoryName;
+	private List<MenuDetailResponseDto> menuDetailResponseDtos;
 }

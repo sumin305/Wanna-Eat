@@ -14,6 +14,7 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaur
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidUserLocationException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantCategoryNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotFoundException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantStructureNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.TimeRequestWithoutDateException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
@@ -62,6 +63,15 @@ public class RestaurantExceptionHandler {
 		RestaurantNotFoundException ex) {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Restaurant Not Found", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+	}
+
+	// 매장 구조도 존재 안함
+	@ExceptionHandler(RestaurantStructureNotFoundException.class)
+	public final ResponseEntity<ErrorResponseDto> handleRestaurantStructureNotFoundException(
+		RestaurantStructureNotFoundException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Restaurant Structure Not Found", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 	}
 

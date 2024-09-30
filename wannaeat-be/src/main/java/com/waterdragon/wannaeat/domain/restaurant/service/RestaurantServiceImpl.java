@@ -14,10 +14,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.waterdragon.wannaeat.domain.menu.domain.Menu;
-import com.waterdragon.wannaeat.domain.menu.dto.response.MenuDetailReponseDto;
 import com.waterdragon.wannaeat.domain.menu.dto.response.MenuListResponseDto;
 import com.waterdragon.wannaeat.domain.menu.repository.MenuRepository;
+import com.waterdragon.wannaeat.domain.menu.service.MenuService;
 import com.waterdragon.wannaeat.domain.reservation.domain.ReservationTable;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationTableRepository;
@@ -74,6 +73,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 	private final ReservationTableRepository reservationTableRepository;
 	private final RestaurantStructureRepository restaurantStructureRepository;
 	private final ReservationRepository reservationRepository;
+	private final MenuService menuService;
 
 	/**
 	 * 매장 등록 메소드
@@ -204,7 +204,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 	private boolean checkAvailableTables(RestaurantFilter filter, Restaurant restaurant) {
 
 		// MongoDB에서 해당 식당의 모든 테이블 가져오기 (인원 수 크거나 같은 애들만)
-		List<Table> tables = getTablesFromMongoDB(restaurant.getRestaurantId(), filter.getMemberCount());
+		List<Table> tables = getTablesFromMongoDB(restaurant.getRestaurantId());
 
 		// startTime, endTime 가공 작업
 		LocalTime startTime = filter.getStartTime();
@@ -319,18 +319,11 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 
 	// MongoDB에서 해당 식당의 테이블 목록 조회 메소드 (인원 수 크거나 같은 테이블만)
-	private List<Table> getTablesFromMongoDB(Long restaurantId, Integer memberCount) {
+	private List<Table> getTablesFromMongoDB(Long restaurantId) {
 		// 우선 모든 테이블을 불러옴
 		List<Table> tables = restaurantStructureRepository.findByRestaurantId(restaurantId)
 			.map(RestaurantStructure::getTables)
 			.orElse(Collections.emptyList());
-
-		// memberCount가 있는 경우에만 필터링
-		if (memberCount != null) {
-			tables = tables.stream()
-				.filter(table -> table.getAssignedSeats() >= memberCount)
-				.collect(Collectors.toList());
-		}
 
 		return tables;
 	}
@@ -364,7 +357,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.orElseThrow(() -> new RestaurantNotFoundException("해당 매장 찾을 수 없음. restaurantId : " + restaurantId));
 
 		// 식당 메뉴 목록 불러오기
-		MenuListResponseDto menuListResponseDto = getRestaurantMenuList(restaurant);
+		MenuListResponseDto menuListResponseDto = menuService.getListMenuByRestaurantId(restaurantId);
 
 		return RestaurantDetailResponseDto.builder()
 			.restaurantBusinessNumber(restaurant.getBusinessNumber())
@@ -386,22 +379,6 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.longitude(restaurant.getLongitude())
 			.menuListResponseDto(menuListResponseDto)
 			.build();
-	}
-
-	/**
-	 * 매장별 메뉴 목록 조회 메소드
-	 *
-	 * @param restaurantId 매장 id
-	 * @return MenuListResponseDto 카테고리별 메뉴 리스트 반환
-	 */
-	@Override
-	public MenuListResponseDto getListMenusByRestaurantId(Long restaurantId) {
-
-		// 식당 존재여부 확인
-		Restaurant restaurant = restaurantRepository.findByRestaurantId(restaurantId)
-			.orElseThrow(() -> new RestaurantNotFoundException("해당 매장 찾을 수 없음. restaurantId : " + restaurantId));
-
-		return getRestaurantMenuList(restaurant);
 	}
 
 	/**
@@ -544,38 +521,5 @@ public class RestaurantServiceImpl implements RestaurantService {
 			}
 			throw new FileUploadFailureException("파일 업로드 실패 : " + e.getMessage());
 		}
-	}
-
-	// 매장별 메뉴 목록 조회 메소드
-	private MenuListResponseDto getRestaurantMenuList(Restaurant restaurant) {
-
-		// restaurant에 해당하는 모든 메뉴 불러오기
-		List<Menu> menus = menuRepository.findAllByRestaurantAndDeletedFalse(restaurant);
-
-		// 카테고리별 메뉴 그룹화
-		Map<String, List<MenuDetailReponseDto>> map = new HashMap<>();
-		for (Menu menu : menus) {
-			// 해당 메뉴 카테고리 추출
-			String menuCategoryName = menu.getMenuCategory().getCategoryName();
-
-			// 반환 객체 MenuDetailResponseDto 생성
-			MenuDetailReponseDto menuDetailReponseDto = MenuDetailReponseDto.builder()
-				.menuId(menu.getMenuId())
-				.menuName(menu.getName())
-				.menuPrice(menu.getPrice())
-				.menuImage(menu.getImage())
-				.menuDescription(menu.getDescription())
-				.build();
-
-			// 카테고리 Key 있는지 여부 확인해서 처리
-			if (!map.containsKey(menuCategoryName)) {
-				map.put(menuCategoryName, new ArrayList<>());
-			}
-			map.get(menuCategoryName).add(menuDetailReponseDto);
-		}
-
-		return MenuListResponseDto.builder()
-			.menusMap(map)
-			.build();
 	}
 }

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.waterdragon.wannaeat.domain.menu.dto.response.MenuListResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantEditRequestDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantCategoryListResponseDto;
@@ -112,27 +111,6 @@ public class RestaurantController {
 			.status(HttpStatus.OK.value())
 			.message("매장 상세가 성공적으로 조회되었습니다.")
 			.data(restaurantDetailResponseDto)
-			.build();
-
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
-	}
-
-	/**
-	 * 매장별 메뉴 목록 조회 API
-	 *
-	 * @param restaurantId 매장 id
-	 * @return Map<String, List < MenuDetailReponseDto>> 카테고리별 메뉴 목록 반환
-	 */
-	@Operation(summary = "매장별 메뉴 목록 조회 API")
-	@GetMapping("/public/restaurants/{restaurantId}/menus")
-	public ResponseEntity<ResponseDto<MenuListResponseDto>> getListMenusByRestaurantId(
-		@PathVariable(name = "restaurantId") Long restaurantId) {
-
-		MenuListResponseDto menuListResponseDto = restaurantService.getListMenusByRestaurantId(restaurantId);
-		ResponseDto<MenuListResponseDto> responseDto = ResponseDto.<MenuListResponseDto>builder()
-			.status(HttpStatus.OK.value())
-			.message("메뉴 목록이 성공적으로 조회되었습니다.")
-			.data(menuListResponseDto)
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);

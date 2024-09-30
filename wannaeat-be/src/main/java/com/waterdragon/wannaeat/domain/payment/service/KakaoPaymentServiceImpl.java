@@ -19,15 +19,19 @@ import com.waterdragon.wannaeat.domain.order.dto.request.OrderPaidCntEditRequest
 import com.waterdragon.wannaeat.domain.order.exception.error.OrderNotFoundException;
 import com.waterdragon.wannaeat.domain.order.repository.OrderRepository;
 import com.waterdragon.wannaeat.domain.order.service.OrderService;
+import com.waterdragon.wannaeat.domain.payment.dto.request.KakaoPaymentDepositRequestDto;
 import com.waterdragon.wannaeat.domain.payment.dto.request.KakaoPaymentMenuRequestDto;
 import com.waterdragon.wannaeat.domain.payment.dto.request.PaymentMenuRequestDto;
 import com.waterdragon.wannaeat.domain.payment.dto.response.KakaoPaymentApproveResponseDto;
 import com.waterdragon.wannaeat.domain.payment.dto.response.KakaoPaymentReadyResponseDto;
+import com.waterdragon.wannaeat.domain.payment.exception.error.InvalidPriceException;
 import com.waterdragon.wannaeat.domain.payment.exception.error.MenuCountRequestMoreThanUnpaidException;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotFoundException;
+import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 
+	private final RestaurantRepository restaurantRepository;
 	@Value("${pay.secret-key}")
 	private String SECRET_KEY;
 
@@ -88,7 +93,7 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 		log.info("totalPrice : " + totalPrice);
 
 		// 카카오페이 결제 준비
-		Reservation reservation = reservationRepository.findByReservationId(
+		Reservation reservation = reservationRepository.findByReservationIdWithLock(
 				kakaoPaymentMenuRequestDto.getReservationId())
 			.orElseThrow(() -> new ReservationNotFoundException(
 				"해당 번호의 예약은 존재하지 않습니다. reservationId : " + kakaoPaymentMenuRequestDto.getReservationId()));
@@ -98,7 +103,7 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 		parameters.put("cid", "TC0ONETIME");                                    // 가맹점 코드(테스트용)
 		parameters.put("partner_order_id", paymentId);                       // 주문번호 (paymentId)
 		parameters.put("partner_user_id", "roommake");                          // 회원 아이디
-		parameters.put("item_name", "머물래?(" + restaurant.getName() + " 예약)");        // 상품명
+		parameters.put("item_name", "머물래?(" + restaurant.getName() + " 결제)");        // 상품명
 		parameters.put("quantity", "1");                                        // 상품 수량
 		parameters.put("total_amount", String.valueOf(totalPrice));             // 상품 총액
 		parameters.put("tax_free_amount", "0");                                 // 상품 비과세 금액
@@ -119,6 +124,60 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 			KakaoPaymentReadyResponseDto.class);
 
 		return responseEntity.getBody();
+	}
+
+	/**
+	 * 카카오페이 최초 요청 및 결제창 연결 메소드
+	 *
+	 * @param kakaoPaymentDepositRequestDto 카카오페이 보증금 결제 요청 정보
+	 * @return KakaoPaymentReadyResponseDto 결제 고유번호 및 redirect 주소
+	 */
+	@Override
+	public KakaoPaymentReadyResponseDto kakaoPayReady(KakaoPaymentDepositRequestDto kakaoPaymentDepositRequestDto,
+		String paymentId) {
+
+		// 결제 금액 유효성 검사
+
+		// 식당 존재여부 확인
+		Restaurant restaurant = restaurantRepository.findByRestaurantId(kakaoPaymentDepositRequestDto.getRestaurantId())
+			.orElseThrow(
+				() -> new RestaurantNotFoundException("해당 식당이 존재하지 않습니다."));
+
+		int totalPrice =
+			restaurant.getDepositPerMember() * kakaoPaymentDepositRequestDto.getReservationRegisterRequestDto()
+				.getMemberCnt();
+		if (kakaoPaymentDepositRequestDto.getPrice() != totalPrice) {
+			log.info(String.valueOf(totalPrice));
+			log.info(kakaoPaymentDepositRequestDto.getPrice().toString());
+			throw new InvalidPriceException("보증금이 서버 정보와 일치하지 않습니다.");
+		}
+
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("cid", "TC0ONETIME");                                    // 가맹점 코드(테스트용)
+		parameters.put("partner_order_id", paymentId);                       // 주문번호 (paymentId)
+		parameters.put("partner_user_id", "roommake");                          // 회원 아이디
+		parameters.put("item_name", "머물래?(" + restaurant.getName() + " 예약)");        // 상품명
+		parameters.put("quantity", "1");                                        // 상품 수량
+		parameters.put("total_amount", String.valueOf(totalPrice));             // 상품 총액
+		parameters.put("tax_free_amount", "0");                                 // 상품 비과세 금액
+		parameters.put("approval_url",
+			REDIRECT_URL + "/api/payments/completed/kakao?payment_id=" + paymentId
+				+ "&type=deposit"); // 결제 성공 시 URL
+		parameters.put("cancel_url", REDIRECT_URL + "/api/payments/cancel/kakao");      // 결제 취소 시 URL
+		parameters.put("fail_url", REDIRECT_URL + "/api/payments/fail/kakao");          // 결제 실패 시 URL
+
+		// HttpEntity : HTTP 요청 또는 응답에 해당하는 Http Header와 Http Body를 포함하는 클래스
+		HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
+
+		// RestTemplate
+		// Rest 방식 API를 호출할 수 있는 Spring 내장 클래스
+		RestTemplate template = new RestTemplate();
+		String url = "https://open-api.kakaopay.com/online/v1/payment/ready";
+		ResponseEntity<KakaoPaymentReadyResponseDto> responseEntity = template.postForEntity(url, requestEntity,
+			KakaoPaymentReadyResponseDto.class);
+
+		return responseEntity.getBody();
+
 	}
 
 	/**
@@ -172,7 +231,7 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 	 * @param tid 카카오페이측 결제 고유번호
 	 * @param pgToken pgToken
 	 * @param paymentId 우리 서버측 결제 고유번호
-	 * @return
+	 * @return 결제 승인 정보
 	 */
 	@Override
 	public KakaoPaymentApproveResponseDto kakaoPayApprove(String tid, String pgToken, String paymentId) {

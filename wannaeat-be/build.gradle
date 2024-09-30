@@ -27,6 +27,8 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+
 	// Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	testImplementation 'org.springframework.security:spring-security-test'
@@ -50,6 +52,13 @@ dependencies {
 
 	// Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// Jackson
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+	// QR Code - zxing
+	implementation group: 'com.google.zxing', name: 'javase', version: '3.5.2'
+	implementation group: 'com.google.zxing', name: 'core', version: '3.5.2'
 
 	// Socket
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'

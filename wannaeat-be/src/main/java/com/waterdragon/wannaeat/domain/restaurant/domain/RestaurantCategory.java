@@ -32,7 +32,9 @@ public class RestaurantCategory {
 	@Column(name = "restaurant_category_name", nullable = false)
 	private String categoryName;
 
+	@Column(name = "restaurant_category_image", nullable = false)
+	private String categoryImage;
+
 	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
 	private List<Restaurant> restaurants;
-
 }

@@ -10,6 +10,8 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -38,6 +40,10 @@ public class RedisConfig {
 
 		// Value는 JSON으로 직렬화
 		Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+
+		ObjectMapper objectMapper = CustomObjectMapper.createObjectMapper();  // Custom ObjectMapper 설정
+		serializer.setObjectMapper(objectMapper);
+
 		redisTemplate.setValueSerializer(serializer);
 
 		// HashValue도 JSON 직렬화

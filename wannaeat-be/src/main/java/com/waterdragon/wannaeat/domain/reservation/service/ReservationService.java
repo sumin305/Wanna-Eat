@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
+import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationEditRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
@@ -32,6 +33,8 @@ public interface ReservationService {
 	void registerReservationTable(Reservation reservation, List<Integer> tableNumbers);
 
 	List<Integer> getListNotReservedTableNumber(Long restaurantId, LocalDate localDate, LocalTime startTime, LocalTime endTime);
+
+	Object generateEnterQrcode(QrGenerateRequestDto qrGenerateRequestDto);
 
 	String generateRandomString();
 }

@@ -140,8 +140,16 @@ public class ReservationController {
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
-
-	@Operation(summary = "날짜, 시간별 예약 가능 테이블 목록 조회 API")
+	/**
+	 * 예약 가능한 테이블 번호 목록 조회 API
+	 *
+	 * @param restaurantId 식당 아이디
+	 * @param date 예약일
+	 * @param startTime 이용 시작 시간
+	 * @param endTime 이용 종료 시간
+	 * @return 예약 가능한 테이블 번호 목록
+	 */
+	@Operation(summary = "예약 가능 테이블 목록 조회 API")
 	@GetMapping("/public/restaurants/{restaurantId}/reservations/available-tables")
 	public ResponseEntity<ResponseDto<List<Integer>>> getListNotReservedTableNumber(
 		@PathVariable("restaurantId") Long restaurantId,

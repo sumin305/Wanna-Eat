@@ -165,6 +165,64 @@ const ChatPage = () => {
     }
   };
 
+  // 스크롤 위치 감지
+  const handleScroll = (e) => {
+    const { scrollTop } = e.target;
+
+    // 스크롤이 상단에 도달했을 때
+    if (scrollTop === 0) {
+      // 이전 채팅 데이터 불러오기
+      fetchPrevChatData();
+    }
+  };
+
+  const fetchPrevChatData = async () => {
+    const chatContainer = document.getElementById('chat-container');
+    const prevPage = chatPage + 1;
+    const chatdata = await getChatlist(reservationUrl, prevPage, chatSize);
+    const prevScrollHeight = chatContainer.scrollHeight; // 이전 스크롤 높이 저장
+    const prevScrollTop = chatContainer.scrollTop; // 현재 스크롤 위치 저장
+
+    if (chatdata && chatdata.data.chatMessageDetailResponseDtos) {
+      // 새로 불러온 데이터를 기존 메시지 앞에 추가
+      const prevMessages =
+        chatdata.data.chatMessageDetailResponseDtos.chatMessageDetailResponseDtos.content
+          .slice()
+          .reverse();
+      console.log('조회된 메세지', prevMessages);
+      if (prevMessages.length === 0) {
+        chatContainer.removeEventListener('scroll', handleScroll);
+        return;
+      }
+      setPrevChatPlusMessages(prevMessages);
+      setChatPage(prevPage); // 페이지 번호 증가
+      console.log('새로운 페이지', prevPage);
+      // 새로운 메시지를 추가한 후 스크롤 위치를 유지
+      setTimeout(() => {
+        const newScrollHeight = chatContainer.scrollHeight;
+        chatContainer.scrollTop =
+          newScrollHeight - (prevScrollHeight - prevScrollTop);
+      }, 0);
+    }
+  };
+
+  useEffect(() => {
+    const chatContainer = document.getElementById('chat-container');
+
+    if (chatContainer) {
+      chatContainer.addEventListener('scroll', handleScroll);
+      // 처음 렌더링 시 스크롤을 맨 아래로 이동
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // 컴포넌트 언마운트 시 스크롤 이벤트 제거
+    return () => {
+      if (chatContainer) {
+        chatContainer.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [chatPage]); // chatMessages가 업데이트될 때마다 실행
+
   // 주문하기 메인페이지로 이동
   const clickGotoOrder = () => {
     nav(`/customer/order/${reservationUrl}`);
@@ -177,7 +235,7 @@ const ChatPage = () => {
         style={{ height: '500px', overflowY: 'scroll' }}
       >
         {chatMessages &&
-          chatMessages.map((chat, index) => {
+          chatMessages.map((chat) => {
             return (
               <>
                 <ChatWrapper

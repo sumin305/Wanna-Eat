@@ -5,6 +5,8 @@ import { validateReservationUrl } from 'api/customer/order';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import useChatStore from 'stores/customer/useChatStore';
+import WEButton from 'component/common/button/WEButton/WEButton.jsx';
+import MenuSelectBox from 'component/customer/order/MenuSelectBox';
 
 const MenuSelectPage = () => {
   const nav = useNavigate();
@@ -80,7 +82,17 @@ const MenuSelectPage = () => {
     );
   };
 
-  return <div>메뉴 선택 페이지</div>;
+  const clickGotoOrder = () => {
+    nav(`/customer/order/${reservationUrl}`);
+  };
+
+  return (
+    <>
+      <div>메뉴 선택 페이지</div>
+      <MenuSelectBox />
+      <WEButton onClick={clickGotoOrder}>주문내역보기</WEButton>
+    </>
+  );
 };
 
 export default MenuSelectPage;

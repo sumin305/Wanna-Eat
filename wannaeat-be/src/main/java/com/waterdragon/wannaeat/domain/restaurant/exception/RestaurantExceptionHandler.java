@@ -12,8 +12,10 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidFilterT
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantOpenCloseTimeException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidUserLocationException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantCategoryNotFoundException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantElementOutOfRangeException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantStructureNotFoundException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.TableIdDuplicateException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.TimeRequestWithoutDateException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
@@ -108,5 +110,23 @@ public class RestaurantExceptionHandler {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Filter Reservation Date", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+	}
+
+	// 매장 구조도 요소 범위 벗어남
+	@ExceptionHandler(RestaurantElementOutOfRangeException.class)
+	public final ResponseEntity<ErrorResponseDto> handleRestaurantElementOutOfRangeException(
+		RestaurantElementOutOfRangeException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Restaurant Element Out Of Range", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+	}
+
+	// 매장 구조도 요소 범위 벗어남
+	@ExceptionHandler(TableIdDuplicateException.class)
+	public final ResponseEntity<ErrorResponseDto> handleTableIdDuplicateException(
+		TableIdDuplicateException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Table Id Duplicate", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
 	}
 }

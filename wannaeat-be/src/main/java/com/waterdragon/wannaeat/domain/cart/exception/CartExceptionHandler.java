@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.waterdragon.wannaeat.domain.cart.exception.error.CartMenuCntMinusException;
 import com.waterdragon.wannaeat.domain.cart.exception.error.CartMenuPlusMinusException;
 import com.waterdragon.wannaeat.domain.cart.exception.error.CartNotFoundException;
+import com.waterdragon.wannaeat.domain.cart.exception.error.ReservationParticipantNotMatchReservationException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
 @RestControllerAdvice
@@ -38,5 +39,14 @@ public class CartExceptionHandler {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Cart Menu Cnt Minus Exception", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+	}
+
+	// 예약 참가자가 해당 예약의 참가자가 아님.
+	@ExceptionHandler(ReservationParticipantNotMatchReservationException.class)
+	public final ResponseEntity<ErrorResponseDto> handleReservationParticipantNotMatchReservationException(
+		ReservationParticipantNotMatchReservationException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Reservation Participant Not Match Reservation", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
 	}
 }

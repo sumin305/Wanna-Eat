@@ -17,7 +17,7 @@ import RestaurantRegistPage from '../pages/manager/restaurant/RestaurantRegistPa
 import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
 import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage.jsx';
 import ListPage from '../pages/customer/reservation/history/ListPage';
-import MyInfoPage from '../pages/customer/user/MyInfoPage';
+import MyInfoPage from '../pages/customer/user/MyInfoPage/MyInfoPage.jsx';
 import RestaurantDetailPage from '../pages/customer/reservation/process/RestaurantDetailPage/RestaurantDetailPage.jsx';
 import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage/TimeSelectPage.jsx';
 import DepositPaymentPage from '../pages/customer/reservation/process/DepositPaymentPage/DepositPaymentPage.jsx';
@@ -27,6 +27,10 @@ import FingerprintAuthPage from '../pages/customer/reservation/process/Fingerpri
 import ChatPage from 'pages/customer/chat/ChatPage.jsx';
 import OrderMainPage from 'pages/customer/order/OrderMainPage';
 import NotExistOrderPage from 'pages/customer/order/NotExistOrderPage';
+import CardManagePage from '../pages/customer/user/CardManagePage/CardManagePage.jsx';
+import CardRegistPage from '../pages/customer/user/CardRegistPage/CardRegistPage.jsx';
+import NicknameEditPage from '../pages/customer/user/NicknameEditPage/NicknameEditPage.jsx';
+import MyZzimPage from '../pages/customer/user/MyZzimPage/MyZzimPage.jsx';
 
 // 비회원 관련 페이지
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';
@@ -84,6 +88,10 @@ const AppRoutes = () => {
           element={<NotExistOrderPage />}
         />
         <Route path="/customer/myinfo" element={<MyInfoPage />} />
+        <Route path="/customer/card-manage" element={<CardManagePage />} />
+        <Route path="/customer/card-regist" element={<CardRegistPage />} />
+        <Route path="/customer/nickname-edit" element={<NicknameEditPage />} />
+        <Route path="/customer/myzzim" element={<MyZzimPage />} />
       </Routes>
     </Layout>
   );

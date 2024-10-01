@@ -12,7 +12,7 @@ const useCommonStore = create((set) => ({
   email: '',
   socialType: '',
   categories: [], // 음식 카테고리
-
+  fcmToken: '',
   setRole: (value) => set(() => ({ role: value })),
   setEmail: (value) => set(() => ({ email: value })),
   setSocialType: (value) => set(() => ({ socialType: value })),
@@ -21,6 +21,7 @@ const useCommonStore = create((set) => ({
   getUserInfo: async () => {
     // refresh -> access 재발급
     const result = await getToken();
+    console.log(result);
     if (result.status !== 200) {
       console.log(result);
       return;
@@ -30,27 +31,16 @@ const useCommonStore = create((set) => ({
     if (authToken) {
       // JWT 토큰 decode
       const decodedJWT = decodeJWT(authToken);
+      localStorage.setItem('role', decodedJWT.role);
       return decodedJWT;
     } else {
       console.log('Authorization-wannaeat header not found');
     }
   },
+
   getUserRole: async () => {
     // refresh -> access 재발급
-    // const result = await getToken();
-    // if (result.status !== 200) {
-    //   console.log(result);
-    //   return;
-    // }
-    // 헤더의 토큰 받아온다
-    // const authToken = result.headers['authorization-wannaeat'];
-    // if (authToken) {
-    //   // JWT 토큰 decode
-    //   const decodedJWT = decodeJWT(authToken);
-    //   return decodedJWT.role;
-    // } else {
-    //   console.log('Authorization-wannaeat header not found');
-    // }
+    return localStorage.getItem('role');
   },
 
   requestSignUp: async (requestUserInfo) => {

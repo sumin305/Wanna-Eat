@@ -5,11 +5,13 @@ import Button from '../../../component/common/button/WEButton/WEButton.jsx';
 import useTextfieldStore from '../../../stores/common/useTextfieldStore.js';
 import useModalStore from '../../../stores/common/useModalStore.js';
 import WEToggle from '../../../component/common/toggle/WEToggle.jsx';
+import { createSsafyPayAccount } from 'api/common/ssafyPay/user.js';
 import {
   checkNickname,
   sendCode,
   verifyCode,
 } from '../../../api/common/join.js';
+import { createAccount } from 'api/common/ssafyPay/account.js';
 import {
   SignUpPageContainer,
   SignUpPageHeader,
@@ -93,6 +95,7 @@ const SignUpPage = () => {
   // 휴대번호 인증 버튼 핸들러
   const handlePhoneNumberVerifyButtonClick = async () => {
     const response = await sendCode(userInfo.phone, socialType);
+    console.log(response);
     if (response.status === 201) {
       // 휴대번호 인증 문자 요청
       alert('인증번호가 전송되었습니다.');
@@ -121,6 +124,21 @@ const SignUpPage = () => {
       alert('인증에 실패했습니다. ');
     }
   };
+
+  const joinSsafyAccount = async () => {
+    const createAccountResult = await createSsafyPayAccount(email);
+
+    const createDepositAccountResult = await createAccount();
+
+    if (
+      createAccountResult.status === 201 &&
+      createDepositAccountResult.status === 201
+    ) {
+      console.log('SSAFY Pay 계정 및 계좌 생성 성공');
+    } else {
+      console.log('SSAFY Pay 계정 및 계좌 생성 실패');
+    }
+  };
   const handleJoinButtonClick = async () => {
     // 약관 동의했는지 체크
     if (!isChecked) {
@@ -135,10 +153,10 @@ const SignUpPage = () => {
     }
 
     // 휴대번호 인증했는지 체크
-    if (!verifyPhoneNumber) {
-      alert('휴대번호 인증해주세요');
-      return;
-    }
+    // if (!verifyPhoneNumber) {
+    //   alert('휴대번호 인증해주세요');
+    //   return;
+    // }
 
     // 회원가입 요청할 request form
     const requestUserInfo = {
@@ -147,10 +165,16 @@ const SignUpPage = () => {
       phone: userInfo.phone,
     };
 
+    // 회원가입 요청
     const response = await requestSignUp(requestUserInfo);
+
     if (response.status === 201) {
       alert('회원가입 성공');
+
       if (requestUserInfo.role === ROLE.CUSTOMER) {
+        // 손님인 경우에는 싸피 페이 사용자 계정 생성 및 계좌 생성
+        joinSsafyAccount();
+
         navigate('/customer');
         setRole(ROLE.CUSTOMER);
       } else {

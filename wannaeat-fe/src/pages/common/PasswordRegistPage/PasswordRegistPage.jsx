@@ -1,9 +1,16 @@
 import { useEffect } from 'react';
-import styled from '@emotion/styled/macro';
-import theme from '../../../style/common/theme';
 import { useState } from 'react';
 import FingerPrint from 'assets/icons/common/fingerprint.svg';
 import useCommonStore, { ROLE } from '../../../stores/common/useCommonStore';
+import {
+  BlackOutLayout,
+  PasswordInputContainer,
+  PasswordTitle,
+  PasswordInputBox,
+  PasswordCircle,
+  PasswordKeypadWrapper,
+  PasswordKey,
+} from './PasswordRegistPage';
 const PasswordRegistPage = () => {
   const { setRole } = useCommonStore();
   const [title, setTitle] = useState('결제 비밀번호를 등록해주세요');

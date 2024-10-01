@@ -27,6 +27,7 @@ const theme = {
     px13: '0.813rem',
     px15: '0.938rem',
     px17: '1.063rem',
+    px21: '1.313rem',
   },
 
   fontWeight: {
@@ -48,6 +49,7 @@ const theme = {
     modal: 1000,
     blackLayout: 900,
     stepLine: -1,
+    password: 10000,
   },
 };
 

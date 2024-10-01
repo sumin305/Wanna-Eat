@@ -174,9 +174,7 @@ const SignUpPage = () => {
       if (requestUserInfo.role === ROLE.CUSTOMER) {
         // 손님인 경우에는 싸피 페이 사용자 계정 생성 및 계좌 생성
         joinSsafyAccount();
-
-        navigate('/customer');
-        setRole(ROLE.CUSTOMER);
+        navigate('/password-regist');
       } else {
         navigate('/manager');
         setRole(ROLE.MANAGER);

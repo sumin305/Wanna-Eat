@@ -4,7 +4,7 @@ import Layout from '../layout/common/Layout';
 // 공통 페이지
 import LoginPage from '../pages/common/LoginPage/LoginPage.jsx';
 import SignUpPage from '../pages/common/SignUpPage/SignUpPage.jsx';
-
+import PasswordRegistPage from 'pages/common/PasswordRegistPage/PasswordRegistPage.jsx';
 // 사업자 관련 페이지
 import ManagerMainPage from '../pages/manager/main/MainPage';
 import AdminPage from '../pages/manager/reservation/AdminPage';
@@ -38,7 +38,7 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/join" element={<SignUpPage />} />
-
+        <Route path="/password-regist" element={<PasswordRegistPage />} />
         <Route path="/manager" element={<ManagerMainPage />} />
         <Route path="/manager/admin" element={<AdminPage />} />
         <Route

@@ -73,11 +73,11 @@ const MainPage = () => {
     setRestaurantCategories(JSON.parse(localStorage.getItem('categories')));
   }, []);
 
-  const handleReservationButtonClick = (e) => {
+  const handleReservationButtonClick = () => {
     navigate('/customer/reservation');
   };
 
-  const handleReservationListButtonClick = (e) => {
+  const handleReservationListButtonClick = () => {
     navigate('/customer/reservationlist');
   };
 
@@ -108,7 +108,7 @@ const MainPage = () => {
         <CategoryContainer>
           {restaurantCategories.map((category) => (
             <div key={category.restaurantCategoryId}>
-              <CategoryImage src={bossamIcon} />
+              <CategoryImage src={category.restaurantCategoryImage} />
               <CategoryName>{category.restaurantCategoryName}</CategoryName>
             </div>
           ))}

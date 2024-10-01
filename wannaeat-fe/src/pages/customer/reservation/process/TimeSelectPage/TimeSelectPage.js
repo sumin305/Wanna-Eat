@@ -5,7 +5,7 @@ import theme from '../../../../../style/common/theme';
 const TimeSelectPageContainer = styled.div`
   display: grid;
   grid-template-rows: 1fr 56vh 1fr;
-  `;
+`;
 
 const ButtonWrapper = styled.div`
   display: flex;

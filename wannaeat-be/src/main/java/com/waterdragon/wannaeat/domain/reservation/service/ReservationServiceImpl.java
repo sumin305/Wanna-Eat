@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.domain.ReservationTable;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
-import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationEditRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
@@ -375,14 +374,16 @@ public class ReservationServiceImpl implements ReservationService {
 	/**
 	 * 예약을 취소하는 메소드
 	 *
-	 * @param reservationEditRequestDto 취소 예약 정보
+	 * @param reservationId 취소 예약 아이디
 	 */
 	@Override
-	public void editReservation(ReservationEditRequestDto reservationEditRequestDto) {
+	public void removeReservation(Long reservationId) {
+		if (reservationId == null) {
+			throw new ReservationNotFoundException("해당 예약이 존재하지 않습니다.");
+		}
 		User user = authUtil.getAuthenticatedUser();
 
-		Reservation reservation = reservationRepository.findByReservationIdWithLock(
-				reservationEditRequestDto.getReservationId())
+		Reservation reservation = reservationRepository.findByReservationIdWithLock(reservationId)
 			.orElseThrow(() -> new ReservationNotFoundException(
 				"해당 예약이 존재하지 않습니다."));
 
@@ -407,7 +408,7 @@ public class ReservationServiceImpl implements ReservationService {
 		reservationTableRepository.deleteAll(reservationTables);
 
 		// 예약 정보 수정 후 저장
-		reservation.edit();
+		reservation.remove();
 		log.info(reservation.toString());
 		reservationRepository.save(reservation);
 	}

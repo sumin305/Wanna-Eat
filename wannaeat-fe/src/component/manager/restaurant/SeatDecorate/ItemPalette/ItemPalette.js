@@ -86,7 +86,7 @@ const PaletteItemStyled = styled.div`
   flex: 0 0 auto;
   scroll-snap-align: start;
   opacity: ${(props) => (props.isDragging ? 0.5 : 1)};
-  touch-action: none;
+  /* touch-action: none; */
 
   @media (min-width: 480px) {
     width: 80px;

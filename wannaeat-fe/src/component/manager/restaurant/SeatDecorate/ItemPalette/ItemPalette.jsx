@@ -59,7 +59,7 @@ const PaletteItem = ({ item }) => {
   return (
     <PaletteItemStyled
       isDragging={isDragging}
-      onTouchStart={(e) => e.stopPropagation()}
+      // onTouchStart={(e) => e.stopPropagation()}
     >
       <PaletteItemIconStyled ref={drag}>
         <item.icon />

@@ -1,19 +1,19 @@
-import { FloorSelectorStyled } from './FloorSelector.js';
+import {
+  FloorSelectorStyled,
+  FloorSelectorButtonStyled,
+} from './FloorSelector.js';
 
 const FloorSelector = ({ floors, currentFloor, onFloorChange }) => {
   return (
     <FloorSelectorStyled>
       {floors.map((floor) => (
-        <button
+        <FloorSelectorButtonStyled
           key={floor}
           onClick={() => onFloorChange(floor)}
-          style={{
-            backgroundColor: currentFloor === floor ? '#ff6528' : '#f0f0f0',
-            color: currentFloor === floor ? '#fff' : '#000',
-          }}
+          isActive={currentFloor === floor}
         >
           {floor}층
-        </button>
+        </FloorSelectorButtonStyled>
       ))}
     </FloorSelectorStyled>
   );

@@ -13,7 +13,7 @@ const SeatDecoratePage = () => {
   const { setIsCarrot, setIsShowBackIcon, setActiveIcons, setPageName } =
     useHeaderStore();
   const [currentFloor, setCurrentFloor] = useState(1);
-  const floors = [1, 2, 3];
+  const floors = [1, 2, 3, 4, 5];
 
   const touchbackendOptions = {
     enableMouseEvents: true,

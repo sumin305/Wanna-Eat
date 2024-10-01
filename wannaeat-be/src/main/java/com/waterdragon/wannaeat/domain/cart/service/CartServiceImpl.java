@@ -14,11 +14,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.waterdragon.wannaeat.domain.cart.domain.Cart;
 import com.waterdragon.wannaeat.domain.cart.domain.CartMenu;
 import com.waterdragon.wannaeat.domain.cart.dto.request.CartRegisterRequestDto;
-import com.waterdragon.wannaeat.domain.cart.dto.response.CartElementRegisterResponseDto;
-import com.waterdragon.wannaeat.domain.cart.dto.response.CartMenuRegisterResponseDto;
-import com.waterdragon.wannaeat.domain.cart.dto.response.CartRegisterResponseDto;
+import com.waterdragon.wannaeat.domain.cart.dto.response.CartDetailResponseDto;
+import com.waterdragon.wannaeat.domain.cart.dto.response.CartElementResponseDto;
+import com.waterdragon.wannaeat.domain.cart.dto.response.CartMenuResponseDto;
+import com.waterdragon.wannaeat.domain.cart.dto.response.CartResponseDto;
 import com.waterdragon.wannaeat.domain.cart.exception.error.CartMenuCntMinusException;
 import com.waterdragon.wannaeat.domain.cart.exception.error.CartMenuPlusMinusException;
+import com.waterdragon.wannaeat.domain.cart.exception.error.CartNotFoundException;
 import com.waterdragon.wannaeat.domain.menu.domain.Menu;
 import com.waterdragon.wannaeat.domain.menu.exception.error.MenuNotBelongToRestaurantException;
 import com.waterdragon.wannaeat.domain.menu.exception.error.MenuNotFoundException;
@@ -138,7 +140,7 @@ public class CartServiceImpl implements CartService {
 			Duration.ofMillis(cartExpirationMillis)); // 추후에 주문하기 눌렀을 때 존재하는지 확인하고 삭제 필수
 
 		// CartElementResponseDto 응답 구성 (각자닉네임(String), 뭐시켰는지(Map<Long, menuRegisterResponseDto>)
-		List<CartElementRegisterResponseDto> cartElementRegisterResponseDtos = new ArrayList<>();
+		List<CartElementResponseDto> cartElementResponseDtos = new ArrayList<>();
 
 		for (Map.Entry<Long, Map<Long, CartMenu>> entry : cartElements.entrySet()) {
 			Long orderParticipantId = entry.getKey();
@@ -149,12 +151,12 @@ public class CartServiceImpl implements CartService {
 
 			// Map<Long, CartMenu> -> Map<Long, CartMenuRegisterReponseDto>
 			Map<Long, CartMenu> cartMenuMap = entry.getValue();
-			Map<Long, CartMenuRegisterResponseDto> dtoMenuMap = new HashMap<>();
+			Map<Long, CartMenuResponseDto> dtoMenuMap = new HashMap<>();
 			int participantTotalPrice = 0;
 
 			for (Map.Entry<Long, CartMenu> menuEntry : cartMenuMap.entrySet()) {
 				CartMenu cartMenuItem = menuEntry.getValue();
-				CartMenuRegisterResponseDto cartMenuRegisterResponseDto = CartMenuRegisterResponseDto.builder()
+				CartMenuResponseDto cartMenuResponseDto = CartMenuResponseDto.builder()
 					.menuName(cartMenuItem.getMenuName())
 					.menuImage(cartMenuItem.getMenuImage())
 					.menuPrice(cartMenuItem.getMenuPrice())
@@ -164,30 +166,99 @@ public class CartServiceImpl implements CartService {
 
 				participantTotalPrice += cartMenuItem.getMenuTotalPrice();
 
-				dtoMenuMap.put(menuEntry.getKey(), cartMenuRegisterResponseDto);
+				dtoMenuMap.put(menuEntry.getKey(), cartMenuResponseDto);
 			}
 
 			// CartElementRegisterResponseDto 생성
-			CartElementRegisterResponseDto cartElementRegisterResponseDto = CartElementRegisterResponseDto.builder()
+			CartElementResponseDto cartElementResponseDto = CartElementResponseDto.builder()
 				.reservationParticipantNickname(orderParticipant.getReservationParticipantNickName())
 				.menuInfo(dtoMenuMap)
 				.participantTotalPrice(participantTotalPrice)
 				.build();
 
 			// List<CartElementRegisterResponseDto>에 추가
-			cartElementRegisterResponseDtos.add(cartElementRegisterResponseDto);
+			cartElementResponseDtos.add(cartElementResponseDto);
 		}
 
-		CartRegisterResponseDto cartRegisterResponseDto = CartRegisterResponseDto.builder()
+		CartResponseDto cartResponseDto = CartResponseDto.builder()
 			.socketType(SocketType.CART)
 			.reservationId(cart.getReservationId())
-			.cartElements(cartElementRegisterResponseDtos)
+			.cartElements(cartElementResponseDtos)
 			.cartTotalPrice(cart.getCartTotalPrice())
 			.build();
 
 		// 현재 구독 중인 모든 유저에게 증감 정보 전송
 		sendingOperations.convertAndSend("/topic/reservations/" + reservation.getReservationUrl(),
-			cartRegisterResponseDto);
+			cartResponseDto);
+	}
+
+	/**
+	 * 장바구니 조회
+	 *
+	 * @param reservationUrl 예약 url
+	 * @return CartResponseDto 장바구니
+	 */
+	@Override
+	public CartDetailResponseDto getDetailCartByReservationUrl(String reservationUrl) {
+
+		String cartKey = CART_KEY_PREFIX + reservationUrl;
+		Object cachedObject = redisService.getValues(cartKey);
+		ObjectMapper objectMapper = new ObjectMapper();
+		Cart cart = objectMapper.convertValue(cachedObject, Cart.class);
+
+		// Cart 존재 안함
+		if (cart == null) {
+			throw new CartNotFoundException("해당 예약 url의 장바구니가 존재하지 않습니다. 예약 url : " + reservationUrl);
+		}
+
+		List<CartElementResponseDto> cartElementResponseDtos = new ArrayList<>();
+
+		for (Map.Entry<Long, Map<Long, CartMenu>> entry : cart.getCartElements().entrySet()) {
+			// 참가자 정보 조회
+			Long orderParticipantId = entry.getKey();
+
+			ReservationParticipant orderParticipant = reservationParticipantRepository.findByReservationParticipantId(
+					orderParticipantId)
+				.orElseThrow(() -> new ReservationParticipantNotFoundException(
+					"장바구니의 참가자 id의 참가자가 존재하지 않습니다. reservationParticipantId : " + orderParticipantId));
+
+			// 각 참가자의 메뉴 목록을 Dto로 반환
+			Map<Long, CartMenu> cartMenuMap = entry.getValue();
+			Map<Long, CartMenuResponseDto> dtoMenuMap = new HashMap<>();
+			int participantTotalPrice = 0;
+
+			// CartMenu -> CartMenuResponseDto
+			for (Map.Entry<Long, CartMenu> menuEntry : cartMenuMap.entrySet()) {
+				CartMenu cartMenuItem = menuEntry.getValue();
+				CartMenuResponseDto cartMenuResponseDto = CartMenuResponseDto.builder()
+					.menuName(cartMenuItem.getMenuName())
+					.menuImage(cartMenuItem.getMenuImage())
+					.menuPrice(cartMenuItem.getMenuPrice())
+					.menuCnt(cartMenuItem.getMenuCnt())
+					.menuTotalPrice(cartMenuItem.getMenuTotalPrice())
+					.build();
+
+				participantTotalPrice += cartMenuItem.getMenuTotalPrice();
+
+				dtoMenuMap.put(menuEntry.getKey(), cartMenuResponseDto);
+			}
+
+			// CartElementResponseDto 생성
+			CartElementResponseDto cartElementResponseDto = CartElementResponseDto.builder()
+				.reservationParticipantNickname(orderParticipant.getReservationParticipantNickName())
+				.menuInfo(dtoMenuMap)
+				.participantTotalPrice(participantTotalPrice)
+				.build();
+
+			cartElementResponseDtos.add(cartElementResponseDto);
+		}
+
+		// 최종 CartDetailResponseDto 반환
+		return CartDetailResponseDto.builder()
+			.reservationId(cart.getReservationId())
+			.cartElements(cartElementResponseDtos)
+			.cartTotalPrice(cart.getCartTotalPrice())
+			.build();
 	}
 
 	private Reservation validateReservationUrl(CartRegisterRequestDto cartRegisterRequestDto) {

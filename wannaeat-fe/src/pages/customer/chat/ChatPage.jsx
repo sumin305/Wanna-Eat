@@ -116,12 +116,15 @@ const ChatPage = () => {
         console.log('소켓연결');
 
         // 구독
-        client.subscribe('/topic/reservations/random2', (response) => {
-          const content = JSON.parse(response.body);
-          console.log('Received message: ', content);
-          setChatPlusMessages(content);
-          console.log(chatMessages);
-        });
+        client.subscribe(
+          `/topic/reservations/${reservationUrl}`,
+          (response) => {
+            const content = JSON.parse(response.body);
+            console.log('Received message: ', content);
+            setChatPlusMessages(content);
+            console.log(chatMessages);
+          }
+        );
 
         setStompClient(client);
         setIsConnected(true);
@@ -166,6 +169,18 @@ const ChatPage = () => {
     }
   };
 
+  // 엔터키로 전송
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleChatMessageSendButtonClick();
+    }
+  };
+
+  // 주문하기 메인페이지로 이동
+  const clickGotoOrder = () => {
+    nav(`/customer/order/${reservationUrl}`);
+  };
+
   // 스크롤 위치 감지
   const handleScroll = (e) => {
     const { scrollTop } = e.target;
@@ -184,10 +199,10 @@ const ChatPage = () => {
     const prevScrollHeight = chatContainer.scrollHeight; // 이전 스크롤 높이 저장
     const prevScrollTop = chatContainer.scrollTop; // 현재 스크롤 위치 저장
 
-    if (chatdata && chatdata.data.chatMessageDetailResponseDtos) {
+    if (chatdata && chatdata.data.chatMessageListResponseDto) {
       // 새로 불러온 데이터를 기존 메시지 앞에 추가
       const prevMessages =
-        chatdata.data.chatMessageDetailResponseDtos.chatMessageDetailResponseDtos.content
+        chatdata.data.chatMessageListResponseDto.chatMessageDetailResponseDtos.content
           .slice()
           .reverse();
       console.log('조회된 메세지', prevMessages);
@@ -224,18 +239,6 @@ const ChatPage = () => {
     };
   }, [chatPage]); // chatMessages가 업데이트될 때마다 실행
 
-  // 주문하기 메인페이지로 이동
-  const clickGotoOrder = () => {
-    nav(`/customer/order/${reservationUrl}`);
-  };
-
-  // 엔터키로 전송
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      handleChatMessageSendButtonClick();
-    }
-  };
-
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('ko-KR', options);
@@ -247,6 +250,9 @@ const ChatPage = () => {
       chatTime.indexOf('T') + 6
     );
   };
+
+  console.log('웹소켓연결확인:', stompClient);
+  console.log('웹소켓연결확인:', isConnected);
 
   return (
     <>
@@ -273,11 +279,13 @@ const ChatPage = () => {
                     </div>
                   )}
                 </DateBox>
+
                 <ChatWrapper
                   isMyMessage={
                     chat.senderReservationParticipantId ===
                     myReservationParticipantId
                   }
+                  key={chat.id}
                 >
                   <ChatNickname
                     isMyMessage={

@@ -30,6 +30,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
 	Optional<Reservation> findByReservationUrl(String url);
 
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	@Query("SELECT r FROM Reservation r WHERE r.reservationUrl = :reservationUrl")
+	Optional<Reservation> findByReservationUrlWithLock(@Param("reservationUrl") String reservationUrl);
+
 	@Query("SELECT r FROM Reservation r JOIN FETCH r.restaurant WHERE r.reservationUrl = :reservationUrl")
 	Optional<Reservation> findByReservationUrlWithRestaurant(@Param("reservationUrl") String reservationUrl);
 

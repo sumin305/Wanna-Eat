@@ -7,6 +7,7 @@ const SettingModalContainer = styled.div`
   top: 25%;
   height: 40%;
   width: 80%;
+  justify-self: center;
 
   border-radius: ${theme.borderRadius.default};
   padding: 0.5rem 0;

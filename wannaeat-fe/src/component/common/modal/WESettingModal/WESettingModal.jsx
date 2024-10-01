@@ -10,7 +10,7 @@ import {
 import theme from '../../../../style/common/theme.js';
 
 const WESettingModal = () => {
-  const { title, children } = useModalStore();
+  const { title, children, handleButtonClick } = useModalStore();
 
   return (
     <SettingModalContainer>
@@ -22,7 +22,9 @@ const WESettingModal = () => {
         <div>{children || <div>내용이 없습니다.</div>}</div>
       </ModalContentWrapper>
       <ButtonWrapper>
-        <Button size="long">확인</Button>
+        <Button size="long" onClick={handleButtonClick}>
+          확인
+        </Button>
       </ButtonWrapper>
     </SettingModalContainer>
   );

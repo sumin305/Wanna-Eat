@@ -228,6 +228,13 @@ const ChatPage = () => {
     nav(`/customer/order/${reservationUrl}`);
   };
 
+  // 엔터키로 전송
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleChatMessageSendButtonClick();
+    }
+  };
+
   return (
     <>
       <ChatContainer
@@ -287,6 +294,7 @@ const ChatPage = () => {
           value={chatMessageInput}
           onChange={handleChatMessageInputChange}
           placeholder="메시지를 입력하세요"
+          onKeyDown={handleKeyPress}
         />
         <WEButton onClick={handleChatMessageSendButtonClick}>
           <img src={SendIcon} alt="전송아이콘" />

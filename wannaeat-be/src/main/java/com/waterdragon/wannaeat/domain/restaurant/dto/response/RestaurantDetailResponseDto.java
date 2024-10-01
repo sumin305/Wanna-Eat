@@ -1,7 +1,5 @@
 package com.waterdragon.wannaeat.domain.restaurant.dto.response;
 
-import java.time.LocalTime;
-
 import com.waterdragon.wannaeat.domain.menu.dto.response.MenuListResponseDto;
 
 import lombok.Builder;

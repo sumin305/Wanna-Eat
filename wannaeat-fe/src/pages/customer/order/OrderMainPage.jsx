@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { validateReservationUrl } from 'api/customer/order';
 import useChatStore from 'stores/customer/useChatStore';
 import { Stomp } from '@stomp/stompjs';

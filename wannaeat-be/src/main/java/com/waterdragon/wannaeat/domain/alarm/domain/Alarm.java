@@ -2,24 +2,18 @@ package com.waterdragon.wannaeat.domain.alarm.domain;
 
 import com.waterdragon.wannaeat.domain.alarm.domain.enums.AlarmType;
 import com.waterdragon.wannaeat.domain.alarm.domain.enums.MoveCategory;
+import com.waterdragon.wannaeat.domain.menu.domain.Menu;
+import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -29,29 +23,29 @@ import lombok.NoArgsConstructor;
 @Table(name = "alarms")
 public class Alarm {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "alarm_id")
-	private Long alarmId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "alarm_id")
+    private Long alarmId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "alarm_type", nullable = false)
-	private AlarmType type;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id", nullable = true)
+    private Menu menu;
 
-	@Column(name = "alarm_message", nullable = false)
-	private String message;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_id", nullable = false)
+    private Reservation reservation;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "move_category", nullable = false)
-	private MoveCategory moveCategory;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "alarm_type", nullable = false)
+    private AlarmType type;
 
-	@Column(name = "move_category_id", nullable = false)
-	private Long moveCategoryId;
-
-	// 생성자, getter, setter
+    @Builder.Default
+    @Column(name = "regist_time", nullable = false)
+    private LocalDateTime registTime = LocalDateTime.now();
 
 }

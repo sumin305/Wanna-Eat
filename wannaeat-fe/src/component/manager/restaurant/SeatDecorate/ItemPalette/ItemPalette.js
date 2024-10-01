@@ -4,65 +4,60 @@ import { ReactComponent as RoundTableIcon } from '../../../../../assets/icons/ma
 import { ReactComponent as RestroomIcon } from '../../../../../assets/icons/manager/restaurant/restroom.svg';
 import { ReactComponent as CounterIcon } from '../../../../../assets/icons/manager/restaurant/cashier.svg';
 import { ReactComponent as EntranceIcon } from '../../../../../assets/icons/manager/restaurant/door.svg';
+import { ReactComponent as KitchenIcon } from '../../../../../assets/icons/manager/restaurant/kitchen.svg';
 
 import { ReactComponent as ArrowLeftIcon } from '../../../../../assets/icons/manager/restaurant/arrow-left.svg';
 import { ReactComponent as ArrowRIghtIcon } from '../../../../../assets/icons/manager/restaurant/arrow-right.svg';
 
 const paletteItems = [
   {
-    id: 1,
+    itemId: 1,
+    itemType: 'square',
     label: '사각 테이블',
     icon: SquareTableIcon,
   },
   {
-    id: 2,
+    itemId: 2,
+    itemType: 'rounded',
     label: '원형 테이블',
     icon: RoundTableIcon,
   },
   {
-    id: 3,
+    itemId: 3,
+    itemType: 'restroom',
     label: '화장실',
     icon: RestroomIcon,
   },
   {
-    id: 4,
+    itemId: 4,
+    itemType: 'counter',
     label: '계산대',
     icon: CounterIcon,
   },
   {
-    id: 5,
+    itemId: 5,
+    itemType: 'entrance',
     label: '출입구',
     icon: EntranceIcon,
   },
   {
-    id: 1,
-    label: '사각 테이블',
-    icon: SquareTableIcon,
-  },
-  {
-    id: 2,
-    label: '원형 테이블',
-    icon: RoundTableIcon,
-  },
-  {
-    id: 3,
-    label: '화장실',
-    icon: RestroomIcon,
-  },
-  {
-    id: 4,
-    label: '계산대',
-    icon: CounterIcon,
-  },
-  {
-    id: 5,
-    label: '출입구',
-    icon: EntranceIcon,
+    itemId: 6,
+    itemType: 'kitchen',
+    label: '주방',
+    icon: KitchenIcon,
   },
 ];
 
+const ItemPaletteContainerStyled = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+`;
+
 const ItemPaletteStyled = styled.div`
   display: flex;
+  position: relative;
   justify-content: flex-start;
   align-items: center;
   width: 100%;
@@ -70,13 +65,13 @@ const ItemPaletteStyled = styled.div`
   display: flex;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 10px;
   background-color: transparent;
   border-bottom: 1px solid #ccc;
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
   scrollbar-width: none;
   flex-wrap: nowrap;
+  padding-block: 10px;
 `;
 
 const PaletteItemStyled = styled.div`
@@ -91,7 +86,7 @@ const PaletteItemStyled = styled.div`
   flex: 0 0 auto;
   scroll-snap-align: start;
   opacity: ${(props) => (props.isDragging ? 0.5 : 1)};
-  touch-action: none;
+  /* touch-action: none; */
 
   @media (min-width: 480px) {
     width: 80px;
@@ -128,13 +123,23 @@ const PaletteItemLabelStyled = styled.div`
 
 const ArrowLeftIconStyled = styled(ArrowLeftIcon)`
   position: absolute;
-  left: 0;
-  visibility: hidden; // 임시로 제거
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 1;
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+  pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
 `;
 const ArrowRightIconStyled = styled(ArrowRIghtIcon)`
   position: absolute;
-  right: 0;
-  visibility: hidden; // 임시로 제거
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 1;
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+  pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
 `;
 
 export {
@@ -145,4 +150,5 @@ export {
   PaletteItemLabelStyled,
   ArrowLeftIconStyled,
   ArrowRightIconStyled,
+  ItemPaletteContainerStyled,
 };

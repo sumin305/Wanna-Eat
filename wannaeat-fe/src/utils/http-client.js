@@ -10,6 +10,16 @@ const setAccessToken = (newAccessToken) => {
   accessToken = newAccessToken;
 };
 
+// ssafy 금융 API 요청
+const createSsafyClientInstance = () => {
+  const instance = axios.create({
+    baseURL: process.env.REACT_APP_SSAFY_PAY_URL,
+    timeout: 5000,
+    withCredentials: false,
+  });
+  return instance;
+};
+
 // 일반 요청
 const createClientInstance = () => {
   const instance = axios.create({
@@ -20,7 +30,7 @@ const createClientInstance = () => {
       'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
       'Access-Control-Allow-Credentials': 'true',
     },
-    withCredentials: true,
+    withCredentials: false,
   });
   return instance;
 };
@@ -57,6 +67,7 @@ const createAuthWithRefreshClientInstance = () => {
   return instance;
 };
 
+export const ssafyClient = createSsafyClientInstance();
 export const clientInstance = createClientInstance();
 export const authClientInstance = createAuthClientInstance();
 export const authWithRefreshClientInstance =
@@ -78,6 +89,7 @@ authClientInstance.interceptors.request.use(
 authClientInstance.interceptors.response.use(
   // 성공 시, 정상적으로 결과 반환
   (response) => {
+    console.log('authClientInstance 응답 성공');
     if (response.headers.get('authorization-wannaeat')) {
       console.log(response.headers.get('authorization-wannaeat'));
       setAccessToken(response.headers.get('authorization-wannaeat'));
@@ -90,11 +102,14 @@ authClientInstance.interceptors.response.use(
 
   // 실패  (401 에러)
   async (error) => {
+    console.log(error);
     const { response, config } = error;
+    console.log('authClientInstance 응답 실패');
 
     // 인증 실패 시
     if (response.status === 401) {
       console.log('interceptor에서 reissue 재요청');
+      console.log(config);
 
       // RefreshToken으로 AccessToken Reissue 요청
       const reissueResponse =
@@ -104,14 +119,19 @@ authClientInstance.interceptors.response.use(
       if (reissueResponse.status === 200) {
         setAccessToken(accessToken);
         config.headers['authorization-wannaeat'] = accessToken;
+        console.log('AccessToken Reissue 성공');
+        console.dir(authClientInstance(config));
         return authClientInstance(config);
       } else {
+        console.log('AccessToken Reissue 실패');
         const alert = useAlert();
         const navigate = useNavigate();
 
         alert('로그인 해주세요');
         navigate('/');
       }
+    } else {
+      console.log('인증 성공');
     }
     return Promise.reject(error);
   }

@@ -1,4 +1,5 @@
 import { clientInstance, authClientInstance } from '../../utils/http-client';
+
 export const checkNickname = async (nickname) => {
   return await authClientInstance
     .post('/api/public/users/check-nickname', { nickname: nickname })

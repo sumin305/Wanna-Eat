@@ -3,39 +3,86 @@ import WEStep from '../../../../../component/customer/reservation/WEStep/WEStep.
 import { ButtonWrapper } from '../TimeSelectPage/TimeSelectPage.js';
 import theme from '../../../../../style/common/theme.js';
 import Button from '../../../../../component/common/button/WEButton/WEButton.jsx';
+import useRestaurantStore from 'stores/customer/useRestaurantStore';
+import useReservationStore from '../../../../../stores/customer/useReservationStore.js';
 import {
   DepositPaymentPageContainer,
   DepositInfoContainer,
   DepositPriceInfoWrapper,
   DepositPriceInfo,
   DepositPriceText,
-  DepositCardWrapper,
   CardSelectBoxStyled,
 } from './DepositPaymentPage.js';
-import CardImage1 from '../../../../../assets/customer/card.png';
-import CardImage2 from '../../../../../assets/customer/card2.png';
-import CardImage3 from '../../../../../assets/customer/card3.png';
+import CardImage1 from '../../../../../assets/customer/카카오페이카드.png';
+import CardImage2 from '../../../../../assets/customer/농협카드.png';
+import CardImage3 from '../../../../../assets/customer/신한카드.png';
+import CardImage4 from '../../../../../assets/customer/우리카드.png';
+import CardImage5 from '../../../../../assets/customer/국민카드.png';
 
+import {
+  getMerchantCategories,
+  registerMerchant,
+  getCreditCardList,
+  createCreditCard,
+  getMyCreditCardList,
+  payByCreditCard,
+} from 'api/common/ssafyPay/card.js';
+
+import {
+  createSsafyPayAccount,
+  getSsafyPayAccount,
+} from 'api/common/ssafyPay/user.js';
+
+import { getAccountList, createAccount } from 'api/common/ssafyPay/account.js';
+import { payDepositPaymentByKakaoPay } from 'api/common/payment.js';
 import Carousel from 'react-spring-3d-carousel';
 import { config } from 'react-spring';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import useCommonStore from '../../../../../stores/common/useCommonStore.js';
 const DepositPaymentPage = () => {
   const navigate = useNavigate();
-  const price = 50000;
-  const cardImages = [
-    { index: 0, image: CardImage1 },
-    { index: 1, image: CardImage2 },
-    { index: 2, image: CardImage3 },
-  ];
+  const { email } = useCommonStore();
+  const { depositPerMember, restaurantName } = useRestaurantStore();
+  const { memberCount } = useReservationStore();
+  const [depositPrice, setDepositPrice] = useState(0);
+
+  const [cards, setCards] = useState([]);
+  const [selectedCard, setSelectedCard] = useState(null);
+  const cardImages = {
+    카카오페이카드: CardImage1,
+    농협카드: CardImage2,
+    신협카드: CardImage3,
+    우리카드: CardImage4,
+    KB국민카드: CardImage5,
+  };
   const [goToSlide, setGoToSlide] = useState(null);
 
-  const slides = cardImages.map((card) => ({
-    key: card.index,
+  useEffect(() => {
+    // 회원 카드 정보 조회
+    const fetchCards = async () => {
+      const result = await getMyCreditCardList();
+      const cards = result.data.REC;
+      setCards([...cards, { cardIssuerName: '카카오페이카드', cardNo: '0' }]);
+    };
+    setDepositPrice(
+      depositPerMember * memberCount === 0
+        ? 50000
+        : depositPerMember * memberCount
+    );
+    fetchCards();
+  }, []);
+  const slides = cards.map((card, index) => ({
+    key: index,
     content: (
       <img
-        src={card.image}
-        onClick={() => setGoToSlide(card.index)}
-        alt={`Card ${card.index}`}
+        onClick={() => {
+          setGoToSlide(index);
+          setSelectedCard(card);
+        }}
+        width="144px"
+        height="229px"
+        src={cardImages[card.cardIssuerName]}
+        alt={`Card ${card.cardNo}`}
       />
     ),
   }));
@@ -44,28 +91,31 @@ const DepositPaymentPage = () => {
     navigate(-1);
   };
 
-  const handleNextButtonClick = () => {
+  const handleNextButtonClick = async () => {
+    if (!selectedCard) {
+      setSelectedCard(cards[0]);
+    }
+
+    // 카카오페이 결제
+    if (selectedCard.cardNo === '0') {
+      await payDepositPaymentByKakaoPay({});
+      return;
+    }
+
+    // 싸피페이 결제
+    const result = await payByCreditCard(
+      selectedCard.cardNo,
+      selectedCard.cvc,
+      2022,
+      depositPrice
+    );
+
+    if (result.status === 200) {
+      alert('결제 성공');
+    }
+
     navigate('/customer/reservation/fingerprint-auth');
   };
-  // const handleNextButtonClick = async () => {
-  //     try {
-  //         await navigator.credentials.get({
-  //             publicKey: {
-  //             challenge: new Uint8Array([117, 61, 252, 231, 191, 241, 32, 4]),
-  //             rpId: window.location.hostname,
-  //             allowCredentials: [{
-  //                 type: "public-key",
-  //                 id: new Uint8Array([64, 66, 25, 78, 168, 226, 174, 23])
-  //             }],
-  //             userVerification: "required",
-  //             }
-  //         });
-  //     } catch (e) {
-  //         navigate('/customer/reservation/success')
-  //     }
-  //     navigate('/customer/reservation/success')
-  // }
-
   return (
     <DepositPaymentPageContainer>
       <WEStep index={2} />
@@ -73,7 +123,7 @@ const DepositPaymentPage = () => {
         <DepositInfoContainer>
           <DepositPriceInfoWrapper>
             <DepositPriceInfo type={'number'}>
-              {price.toLocaleString()}
+              {depositPrice.toLocaleString()}
             </DepositPriceInfo>
             <DepositPriceInfo>원</DepositPriceInfo>
           </DepositPriceInfoWrapper>

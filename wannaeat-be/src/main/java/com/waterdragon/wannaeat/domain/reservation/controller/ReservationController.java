@@ -11,8 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
-import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationEditRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
@@ -206,12 +205,12 @@ public class ReservationController {
 	}
 
 	@Operation(summary = "예약 취소 API")
-	@PatchMapping("/users/reservations")
+	@DeleteMapping("/users/reservations/{reservationId}")
 	@Transactional
-	public ResponseEntity<ResponseDto<Void>> editReservation(@Valid @RequestBody
-	ReservationEditRequestDto reservationEditRequestDto) {
+	public ResponseEntity<ResponseDto<Void>> removeReservation(
+		@RequestParam(value = "reservationId", required = false) Long reservationId) {
 
-		reservationService.editReservation(reservationEditRequestDto);
+		reservationService.removeReservation(reservationId);
 		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
 			.status(HttpStatus.OK.value())
 			.message("예약이 취소되었습니다.")

@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.waterdragon.wannaeat.domain.restaurantlike.exception.error.AlreadyLikeException;
+import com.waterdragon.wannaeat.domain.restaurantlike.exception.error.LikeDuplicateException;
 import com.waterdragon.wannaeat.domain.restaurantlike.exception.error.LikeNotFoundException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
@@ -13,11 +13,11 @@ import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 public class RestaurantLikeExceptionHandler {
 
 	// 이미 존재하는 찜
-	@ExceptionHandler(AlreadyLikeException.class)
-	public final ResponseEntity<ErrorResponseDto> handleAlreadyLikeException(
-		AlreadyLikeException ex) {
+	@ExceptionHandler(LikeDuplicateException.class)
+	public final ResponseEntity<ErrorResponseDto> handleLikeDuplicateException(
+		LikeDuplicateException ex) {
 		ex.printStackTrace();
-		ErrorResponseDto error = new ErrorResponseDto("Already Like Exception", ex.getMessage());
+		ErrorResponseDto error = new ErrorResponseDto("Like Duplicate", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
 	}
 

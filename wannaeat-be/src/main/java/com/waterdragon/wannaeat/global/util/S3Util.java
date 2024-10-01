@@ -1,5 +1,7 @@
 package com.waterdragon.wannaeat.global.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -84,14 +87,18 @@ public class S3Util {
 	}
 
 	// 파일 삭제 메서드
-	public void deleteFile(String fileName) {
+	public void deleteFile(String fileUrl) {
+		// 파일명 추출
+		String fileName = extractFileNameFromUrl(fileUrl);
+		// 파일 존재 여부 확인
+		if (!amazonS3.doesObjectExist(bucket, fileName)) {
+			throw new FileRemoveFailureException("파일이 존재하지 않습니다.");
+		}
 		try {
-			// 파일이 없으면 예외 발생
-			// if (!amazonS3.doesObjectExist(bucket, fileName)) {
-			// 	throw new FileNotFoundException("파일이 존재하지 않습니다. 파일명: " + fileName);
-			// }
+			// 파일 삭제
 			amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
-			log.info("deleted file : " + fileName);
+		} catch (AmazonS3Exception e) {
+			throw new FileRemoveFailureException("S3 파일 삭제 중 오류 발생");
 		} catch (Exception e) {
 			throw new FileRemoveFailureException("파일 삭제 중 오류 발생");
 		}
@@ -100,5 +107,14 @@ public class S3Util {
 	// 고유한 파일 이름 생성
 	private String generateFileName(MultipartFile file) {
 		return UUID.randomUUID().toString() + "-" + file.getOriginalFilename().replace(" ", "_");
+	}
+
+	// 파일명 추출 메서드
+	private String extractFileNameFromUrl(String fileUrl) {
+		try {
+			return URLDecoder.decode(fileUrl.substring(fileUrl.lastIndexOf("/") + 1), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new FileRemoveFailureException("파일명 디코딩 실패");
+		}
 	}
 }

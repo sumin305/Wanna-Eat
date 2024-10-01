@@ -12,6 +12,7 @@ import com.waterdragon.wannaeat.domain.reservation.exception.error.InvalidQrToke
 import com.waterdragon.wannaeat.domain.reservation.exception.error.QrTokenNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationParticipantNotFoundException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.UnpaidOrderExistsException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
 @RestControllerAdvice
@@ -50,6 +51,15 @@ public class ReservationExceptionHandler {
 		AlreadyCancelledReservationException ex) {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Already Cancelled Reservation", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+	}
+
+	// 미결제된 주문 존재
+	@ExceptionHandler(UnpaidOrderExistsException.class)
+	public final ResponseEntity<ErrorResponseDto> handleUnpaidOrderExistsException(
+		UnpaidOrderExistsException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Unpaid Order Exists Exception", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
 	}
 

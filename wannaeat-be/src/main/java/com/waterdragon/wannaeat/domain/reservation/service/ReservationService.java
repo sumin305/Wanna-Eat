@@ -28,9 +28,11 @@ public interface ReservationService {
 
 	List<ReservationCountResponseDto> getListReservationCount(int year, int month);
 
+	void registerReservationTable(Reservation reservation, List<Integer> tableNumbers);
+
 	void removeReservation(Long reservationId);
 
-	void registerReservationTable(Reservation reservation, List<Integer> tableNumbers);
+	void editReservation(UrlValidationRequestDto urlValidationRequestDto);
 
 	List<Integer> getListNotReservedTableNumber(Long restaurantId, LocalDate localDate, LocalTime startTime,
 		LocalTime endTime);

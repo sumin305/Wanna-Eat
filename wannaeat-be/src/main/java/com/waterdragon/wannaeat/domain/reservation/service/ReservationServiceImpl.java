@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.waterdragon.wannaeat.domain.order.domain.Order;
+import com.waterdragon.wannaeat.domain.order.repository.OrderRepository;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.domain.ReservationTable;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
@@ -27,6 +29,7 @@ import com.waterdragon.wannaeat.domain.reservation.exception.error.FailureGenera
 import com.waterdragon.wannaeat.domain.reservation.exception.error.InvalidQrTokenException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.QrTokenNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.UnpaidOrderExistsException;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationTableRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
@@ -57,6 +60,7 @@ public class ReservationServiceImpl implements ReservationService {
 	private final AuthUtil authUtil;
 	private final QrUtil qrUtil;
 	private final RedisService redisService;
+	private final OrderRepository orderRepository;
 	@Value("${redirectURL}")
 	private String REDIRECT_URL;
 
@@ -411,6 +415,29 @@ public class ReservationServiceImpl implements ReservationService {
 		reservation.remove();
 		log.info(reservation.toString());
 		reservationRepository.save(reservation);
+	}
+
+	/**
+	 * 식사 후 퇴실하는 메소드
+	 *
+	 * @param urlValidationRequestDto 예약 URL 정보
+	 */
+	@Override
+	public void editReservation(UrlValidationRequestDto urlValidationRequestDto) {
+		Reservation reservation = reservationRepository.findByReservationUrlWithLock(
+				urlValidationRequestDto.getReservationUrl())
+			.orElseThrow(() -> new ReservationNotFoundException(
+				"유효하지 않거나, 이미 퇴실한 URL 입니다."));
+
+		List<Order> orders = orderRepository.findIncompleteOrdersByReservation(reservation);
+
+		if (!orders.isEmpty()) {
+			throw new UnpaidOrderExistsException("미결제된 주문이 존재합니다.");
+		}
+
+		reservation.edit();
+		reservationRepository.save(reservation);
+
 	}
 
 	/**

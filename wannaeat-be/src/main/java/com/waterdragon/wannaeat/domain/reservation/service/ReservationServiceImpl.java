@@ -44,7 +44,6 @@ import com.waterdragon.wannaeat.global.redis.service.RedisService;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
 import com.waterdragon.wannaeat.global.util.QrUtil;
 
-import io.grpc.internal.InternalServer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

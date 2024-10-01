@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.waterdragon.wannaeat.global.exception.error.BadRequestException;
+import com.waterdragon.wannaeat.global.exception.error.FileRemoveFailureException;
 import com.waterdragon.wannaeat.global.exception.error.FileUploadFailureException;
+import com.waterdragon.wannaeat.global.exception.error.FileUploadMoreThanTenException;
 import com.waterdragon.wannaeat.global.exception.error.NotAuthenticatedException;
 import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
@@ -30,7 +32,7 @@ public class GlobalExceptionHandler {
 
 	// Bad Request 에러
 	@ExceptionHandler(BadRequestException.class)
-	public final ResponseEntity<ErrorResponseDto> handleBadRequestException(Exception ex) {
+	public final ResponseEntity<ErrorResponseDto> handleBadRequestException(BadRequestException ex) {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Bad Request Error", ex.getMessage());
 
@@ -53,16 +55,25 @@ public class GlobalExceptionHandler {
 
 	// FileUpload 에러
 	@ExceptionHandler(FileUploadFailureException.class)
-	public final ResponseEntity<ErrorResponseDto> handleFileUploadFailureException(Exception ex) {
+	public final ResponseEntity<ErrorResponseDto> handleFileUploadFailureException(FileUploadFailureException ex) {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("File Upload Error", ex.getMessage());
 
 		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	// FileRemove 에러
+	@ExceptionHandler(FileRemoveFailureException.class)
+	public final ResponseEntity<ErrorResponseDto> handleFileRemoveFailureException(FileRemoveFailureException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("File Remove Error", ex.getMessage());
+
+		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
 	// 비인증 에러
 	@ExceptionHandler(NotAuthenticatedException.class)
-	public final ResponseEntity<ErrorResponseDto> handleNotAuthenticatedException(Exception ex) {
+	public final ResponseEntity<ErrorResponseDto> handleNotAuthenticatedException(NotAuthenticatedException ex) {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Not Authenticated", ex.getMessage());
 
@@ -71,11 +82,21 @@ public class GlobalExceptionHandler {
 
 	// 비인가(권한 없음) 에러
 	@ExceptionHandler(NotAuthorizedException.class)
-	public final ResponseEntity<ErrorResponseDto> handleNotAuthorizedException(Exception ex) {
+	public final ResponseEntity<ErrorResponseDto> handleNotAuthorizedException(NotAuthorizedException ex) {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Not Authorized", ex.getMessage());
 
 		return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+	}
+
+	// FileUpload 10개 이상 (용량 제한)
+	@ExceptionHandler(FileUploadMoreThanTenException.class)
+	public final ResponseEntity<ErrorResponseDto> handleFileUploadMoreThanTenException(
+		FileUploadMoreThanTenException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("File Upload More Than 10 Error", ex.getMessage());
+
+		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }

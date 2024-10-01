@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class CartMenuRegisterResponseDto {
+public class CartMenuResponseDto {
 
 	private String menuName;
 	private String menuImage;

@@ -7,10 +7,19 @@ import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import OrderMainBox from 'component/customer/order/OrderMainBox';
 import useHeaderStore from 'stores/common/useHeaderStore';
+import useOrderStore from 'stores/customer/useOrderStore';
+import { getOrderData } from 'api/customer/order';
 
 const OrderMainPage = () => {
-  const { isConnected, setIsConnected, stompClient, setStompClient } =
-    useChatStore();
+  const {
+    isConnected,
+    setIsConnected,
+    stompClient,
+    setStompClient,
+    chatPage,
+    chatSize,
+  } = useChatStore();
+  const { allMenus, setAllMenus } = useOrderStore();
   const nav = useNavigate();
   const params = useParams();
   const reservationUrl = params.url;
@@ -53,12 +62,6 @@ const OrderMainPage = () => {
     validateAndConnect();
   }, []);
 
-  useEffect(() => {
-    if (isConnected) {
-      console.log('연결되었음!');
-    }
-  }, [isConnected]);
-
   const initializeConnection = () => {
     const socket = new SockJS('http://localhost:8080/api/public/ws');
     const client = Stomp.over(socket);
@@ -93,6 +96,31 @@ const OrderMainPage = () => {
 
   console.log('웹소켓연결확인:', stompClient);
   console.log('웹소켓연결확인:', isConnected);
+
+  const fetchOrderData = async () => {
+    if (isConnected) {
+      const allOrderData = await getOrderData(
+        reservationUrl,
+        chatPage,
+        chatSize
+      );
+      console.log('메인페이지 불러온 데이터:', allOrderData.data);
+      console.log(
+        '전체 메뉴들:',
+        allOrderData.data.cartDetailResponseDto.cartElements
+      );
+      // 전체 메뉴 리스트 저장
+      await setAllMenus(allOrderData.data.cartDetailResponseDto.cartElements);
+      console.log('zustand allMenus:', allMenus);
+    }
+  };
+
+  // 모든 주문 데이터 불러오기
+  useEffect(() => {
+    if (isConnected) {
+      fetchOrderData();
+    }
+  }, [isConnected]);
 
   return (
     <>

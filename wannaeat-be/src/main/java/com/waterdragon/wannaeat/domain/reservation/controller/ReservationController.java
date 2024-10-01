@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -204,8 +205,14 @@ public class ReservationController {
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
+	/**
+	 * 예약을 취소하는 API
+	 *
+	 * @param reservationId 예약 아이디
+	 * @return
+	 */
 	@Operation(summary = "예약 취소 API")
-	@DeleteMapping("/users/reservations/{reservationId}")
+	@DeleteMapping("/reservations/{reservationId}")
 	@Transactional
 	public ResponseEntity<ResponseDto<Void>> removeReservation(
 		@PathVariable(value = "reservationId", required = false) Long reservationId) {
@@ -220,6 +227,34 @@ public class ReservationController {
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
+	/**
+	 * 예약 후 퇴실하는 API
+	 *
+	 * @param urlValidationRequestDto 예약 Url 정보
+	 * @return
+	 */
+	@Operation(summary = "예약 퇴실 API")
+	@PatchMapping("/public/reservations")
+	@Transactional
+	public ResponseEntity<ResponseDto<Void>> editReservation(
+		@Valid @RequestBody UrlValidationRequestDto urlValidationRequestDto) {
+
+		reservationService.editReservation(urlValidationRequestDto);
+		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+			.status(HttpStatus.OK.value())
+			.message("퇴실이 완료되었습니다.")
+			.data(null)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	/**
+	 * 비회원용 매장 입장 QR 생성 API
+	 *
+	 * @param qrGenerateRequestDto
+	 * @return
+	 */
 	@Operation(summary = "비회원 매장 입장 QR 생성 API")
 	@PostMapping("/public/restaurant/qr")
 	public Object generateEnterQrcode(

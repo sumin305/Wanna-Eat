@@ -28,14 +28,13 @@ const WEHeader = () => {
   } = useHeaderStore();
 
   const nav = useNavigate();
-  const { role } = useCommonStore();
 
   const handleClickBack = () => {
     nav(-1); // 뒤로가기
   };
 
   return (
-    <HeaderContainer role={role} isCarrot={isCarrot} isUnderLine={isUnderLine}>
+    <HeaderContainer isCarrot={isCarrot} isUnderLine={isUnderLine}>
       <HeaderWrapper>
         <HeaderLeft isShowLogo={isShowLogo}>
           {isShowLogo ? (

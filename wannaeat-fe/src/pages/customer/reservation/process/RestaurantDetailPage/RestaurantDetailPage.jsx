@@ -52,11 +52,13 @@ const RestaurantDetailPage = () => {
     restaurantName,
     restaurantOpenTime,
     restaurantPhone,
+    setRestaurant,
   } = useRestaurantStore();
 
   useEffect(() => {
+    setRestaurant(params.id);
     setIsCarrot(true);
-    setPageName(restaurantName ? restaurantName : '맛있는 식당'); // 나중에 가게이름
+    setPageName(restaurantName ? restaurantName : '맛있는 식당');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
     setActiveIcons([3]);

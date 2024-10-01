@@ -17,7 +17,6 @@ const useCommonStore = create((set) => ({
   setEmail: (value) => set(() => ({ email: value })),
   setSocialType: (value) => set(() => ({ socialType: value })),
   setCategories: (categories) => set({ categories: categories }),
-  setFcmToken: (token) => set({ fcmToken: token }),
 
   getUserInfo: async () => {
     // refresh -> access 재발급

@@ -378,7 +378,7 @@ public class ReservationServiceImpl implements ReservationService {
 	 */
 	@Override
 	public void removeReservation(Long reservationId) {
-		if(reservationId == null){
+		if (reservationId == null) {
 			throw new ReservationNotFoundException("해당 예약이 존재하지 않습니다.");
 		}
 		User user = authUtil.getAuthenticatedUser();

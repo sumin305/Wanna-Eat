@@ -34,11 +34,13 @@ import blackArrowRightIcon from '../../../../assets/icons/common/black-arrow-rig
 import bossamIcon from '../../../../assets/icons/food/bossam.svg';
 import foodImage from '../../../../assets/icons/common/food.png';
 import { useNavigate } from 'react-router-dom';
+import useMapFilterStore from 'stores/map/useMapFilterStore.js';
 import useCommonStore, {
   ROLE,
 } from '../../../../stores/common/useCommonStore.js';
 
 const MainPage = () => {
+  const { setKeyword } = useMapFilterStore();
   const { setIsShowLogo, setActiveIcons, setPageName } = useHeaderStore();
   const navigate = useNavigate();
   const [restaurantCategories, setRestaurantCategories] = useState([]);
@@ -73,6 +75,10 @@ const MainPage = () => {
     setRestaurantCategories(JSON.parse(localStorage.getItem('categories')));
   }, []);
 
+  const handleClickCategoryItem = (category) => {
+    setKeyword(category);
+    navigate('/customer/reservation');
+  };
   const handleReservationButtonClick = () => {
     navigate('/customer/reservation');
   };
@@ -107,7 +113,12 @@ const MainPage = () => {
         <CategoryTitle>무엇을 드시고 싶으세요?</CategoryTitle>
         <CategoryContainer>
           {restaurantCategories.map((category) => (
-            <div key={category.restaurantCategoryId}>
+            <div
+              key={category.restaurantCategoryId}
+              onClick={() =>
+                handleClickCategoryItem(category.restaurantCategoryName)
+              }
+            >
               <CategoryImage src={category.restaurantCategoryImage} />
               <CategoryName>{category.restaurantCategoryName}</CategoryName>
             </div>

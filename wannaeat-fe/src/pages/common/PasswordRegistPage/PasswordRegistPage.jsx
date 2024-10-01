@@ -22,7 +22,7 @@ const PasswordRegistPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // 인증 상태 저장
   const [isSupported, setIsSupported] = useState(false); // WebAuthn 지원 여부 저장
   const [isPasskeyRegistered, setIsPasskeyRegistered] = useState(false); // 패스키 등록 여부 저장
-  const { navigate } = useNavigate;
+  const navigate = useNavigate();
 
   useEffect(() => {
     suffleNumber();

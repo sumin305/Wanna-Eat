@@ -61,7 +61,7 @@ const MapRestaurantPage = () => {
         ...(reservationDate !== '' && { reservationDate: reservationDate }),
         ...(startTime !== '' && { startTime: startTime }),
         ...(endTime !== '' && { endTime: endTime }),
-        ...(memberCount !== -1 && { memberCount: memberCount }),
+        ...(memberCount !== -1 && { memberCount: memberCount ?? 0 }),
       })
     );
   };
@@ -134,6 +134,7 @@ const MapRestaurantPage = () => {
       <HeaderContainer>
         <SearchWrapper>
           <SearchInput
+            value={keyword}
             onChange={handleSearchInputChange}
             placeholder="메뉴, 식당, 지역 검색"
           />

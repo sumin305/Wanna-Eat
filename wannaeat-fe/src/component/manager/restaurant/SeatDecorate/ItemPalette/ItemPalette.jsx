@@ -32,19 +32,13 @@ const ItemPalette = () => {
 
   return (
     <ItemPaletteContainerStyled>
-      <ArrowLeftIconStyled
-        onClick={scrollLeft}
-        disabled={!canScrollLeft}
-      />
+      <ArrowLeftIconStyled onClick={scrollLeft} disabled={!canScrollLeft} />
       <ItemPaletteStyled ref={scrollRef} onScroll={handleScroll}>
         {paletteItems.map((item) => (
-          <PaletteItem key={item.id} item={item} />
+          <PaletteItem key={item.itemId} item={item} />
         ))}
       </ItemPaletteStyled>
-      <ArrowRightIconStyled
-        onClick={scrollRight}
-        disabled={!canScrollRight}
-      />
+      <ArrowRightIconStyled onClick={scrollRight} disabled={!canScrollRight} />
     </ItemPaletteContainerStyled>
   );
 };
@@ -52,7 +46,7 @@ const ItemPalette = () => {
 const PaletteItem = ({ item }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'PALETTE_ITEM',
-    item: { id: item.id, type: 'PALETTE_ITEM' },
+    item: { itemId: item.itemId, type: 'PALETTE_ITEM' },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),

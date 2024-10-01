@@ -30,7 +30,7 @@ const createClientInstance = () => {
       'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
       'Access-Control-Allow-Credentials': 'true',
     },
-    withCredentials: true,
+    withCredentials: false,
   });
   return instance;
 };
@@ -120,6 +120,7 @@ authClientInstance.interceptors.response.use(
         setAccessToken(accessToken);
         config.headers['authorization-wannaeat'] = accessToken;
         console.log('AccessToken Reissue 성공');
+        console.dir(authClientInstance(config));
         return authClientInstance(config);
       } else {
         console.log('AccessToken Reissue 실패');

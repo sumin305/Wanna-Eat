@@ -5,6 +5,8 @@ import { validateReservationUrl } from 'api/customer/order';
 import useChatStore from 'stores/customer/useChatStore';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import OrderMainBox from 'component/customer/order/OrderMainBox';
+import useHeaderStore from 'stores/common/useHeaderStore';
 
 const OrderMainPage = () => {
   const { isConnected, setIsConnected, stompClient, setStompClient } =
@@ -12,9 +14,22 @@ const OrderMainPage = () => {
   const nav = useNavigate();
   const params = useParams();
   const reservationUrl = params.url;
+  const {
+    setIsCarrot,
+    setPageName,
+    setIsShowLogo,
+    setActiveIcons,
+    setIsShowBackIcon,
+  } = useHeaderStore();
 
   // 웹소켓 초기 연결
   useEffect(() => {
+    setIsCarrot(true);
+    setPageName('주문 내역');
+    setIsShowLogo(false);
+    setActiveIcons([3]);
+    setIsShowBackIcon(true);
+
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);
 
@@ -83,6 +98,7 @@ const OrderMainPage = () => {
     <>
       <div>주문하기 메인페이지</div>
       <button onClick={clickGotoChat}>채팅으로 이동</button>
+      <OrderMainBox />
       <div>버튼아 보여라</div>
       <div>버튼</div>
     </>

@@ -27,14 +27,22 @@ const MapContainer = () => {
   const { reservationDate, startTime, endTime, memberCount } =
     useReservationStore;
   const { categoryId, keyword } = useMapFilterStore();
+
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const navigate = useNavigate();
   // 초기 렌더링 시 사용자 현재 위치 기반 식당 검색
   useEffect(() => {
     const fetchMarketPositions = async () => {
+      console.log(reservationDate, startTime, endTime, memberCount);
       const restaurantMarkers = await getRestaurantPositions({
         latitude: lat,
         longitude: lon,
+        ...(categoryId !== -1 && { categoryId: categoryId }),
+        ...(keyword && { keyword: keyword }),
+        ...(reservationDate && { reservationDate: reservationDate }),
+        ...(startTime && { startTime: startTime }),
+        ...(endTime && { endTime: endTime }),
+        ...(memberCount && memberCount !== -1 && { memberCount: memberCount }),
       });
       setMarkerPositions(restaurantMarkers);
     };

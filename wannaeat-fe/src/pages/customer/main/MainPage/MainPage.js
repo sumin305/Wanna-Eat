@@ -2,10 +2,9 @@ import styled from '@emotion/styled/macro';
 import theme from '../../../../style/common/theme';
 
 const MainPageContainer = styled.div`
-  scrollbar-width: none;
-  scroll-behavior: smooth;
   display: flex;
   flex-direction: column;
+  margin-bottom: 10%;
 `;
 
 const SearchWrapper = styled.div`
@@ -142,6 +141,11 @@ const RestaurantTitleButton = styled.button`
 `;
 const RestaurantInfoBox = styled.div`
   margin-right: 1rem;
+  margin-bottom: 1rem;
+
+  padding: 0.5rem;
+  border-radius: 5px;
+  background: white;
 `;
 
 const RestaurantInfoImage = styled.img`
@@ -153,6 +157,7 @@ const RestaurantInfoImage = styled.img`
 
 const RestaurantInfoName = styled.p`
   font-size: ${theme.fontSize.px13};
+  margin: 0.1rem 0;
 `;
 const RestaurantDetailWrapper = styled.div`
   display: flex;

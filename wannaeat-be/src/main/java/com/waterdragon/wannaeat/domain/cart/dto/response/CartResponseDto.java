@@ -9,9 +9,9 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class CartRegisterResponseDto extends SocketResponseDto {
+public class CartResponseDto extends SocketResponseDto {
 
 	private Long reservationId;
-	private List<CartElementRegisterResponseDto> cartElements; // Key: reservationParticipantId(사람), Value: <menuId : cartMenu>
+	private List<CartElementResponseDto> cartElements; // Key: reservationParticipantId(사람), Value: <menuId : cartMenu>
 	private int cartTotalPrice;
 }

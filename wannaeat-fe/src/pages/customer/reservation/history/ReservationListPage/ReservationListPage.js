@@ -64,6 +64,57 @@ const ReservationDetailButton = styled.button`
   margin: 0.5rem 0;
 `;
 
+const ReservationAlertWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  background: #fff9db;
+  height: 8rem;
+  place-content: center;
+  align-items: center;
+
+  @media (min-width: 480px) {
+    height: 9rem;
+  }
+`;
+
+const ReservationDateWrapper = styled.div``;
+
+const ReservationAlertDate = styled.p`
+  color: ${theme.color.secondary};
+  font-size: ${theme.fontSize.px13};
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px15};
+  }
+`;
+const ReservationAlertTime = styled.p`
+  display: flex;
+  align-items: center;
+`;
+const ReservationLastTime = styled.p`
+  color: ${theme.color.primary};
+  font-weight: 900;
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+
+  @media (min-width: 480px) {
+    font-size: 2rem;
+  }
+`;
+const ReservationTimeInfo = styled.p`
+  font-size: ${theme.fontSize.px13};
+`;
+
+const ReservationiInfoButtonWrapper = styled.div`
+  display: flex;
+  align-self: end;
+  margin: 0 1rem;
+`;
+const ReservationInfoButton = styled.button`
+  background: none;
+  border: none;
+  color: ${theme.color.secondary};
+`;
+
 export {
   ReservationListContainer,
   ReservationItem,
@@ -73,4 +124,12 @@ export {
   ReservationItemTitle,
   ReservationItemSubTitle,
   ReservationDetailButton,
+  ReservationAlertWrapper,
+  ReservationAlertDate,
+  ReservationAlertTime,
+  ReservationLastTime,
+  ReservationTimeInfo,
+  ReservationInfoButton,
+  ReservationDateWrapper,
+  ReservationiInfoButtonWrapper,
 };

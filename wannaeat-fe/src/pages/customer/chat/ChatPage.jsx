@@ -6,6 +6,7 @@ import { getChatlist } from 'api/customer/chat';
 import { useNavigate, useParams } from 'react-router-dom';
 import { validateReservationUrl } from 'api/customer/order';
 import {
+  DateBox,
   ChatContainer,
   ChatWrapper,
   ChatMessageBox,
@@ -235,6 +236,18 @@ const ChatPage = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('ko-KR', options);
+  };
+
+  const showChatTime = (chatTime) => {
+    return chatTime.substring(
+      chatTime.indexOf('T') + 1,
+      chatTime.indexOf('T') + 6
+    );
+  };
+
   return (
     <>
       <ChatContainer
@@ -242,9 +255,24 @@ const ChatPage = () => {
         style={{ height: '500px', overflowY: 'scroll' }}
       >
         {chatMessages &&
-          chatMessages.map((chat) => {
+          chatMessages.map((chat, index) => {
+            // 이전 메세지의 날짜와 현재 메세지의 날짜 비교
+            const currentMessageDate = formatDate(chat.registerTime);
+            const prevMessageDate =
+              index > 0
+                ? formatDate(chatMessages[index - 1].registerTime)
+                : null;
             return (
               <>
+                <DateBox key={chat.id}>
+                  {currentMessageDate !== prevMessageDate && (
+                    <div>
+                      <span>-</span>
+                      {currentMessageDate}
+                      <span>-</span>
+                    </div>
+                  )}
+                </DateBox>
                 <ChatWrapper
                   isMyMessage={
                     chat.senderReservationParticipantId ===
@@ -280,7 +308,7 @@ const ChatPage = () => {
                         myReservationParticipantId
                       }
                     >
-                      {chat.registerTime}
+                      {showChatTime(chat.registerTime)}
                     </ChatTime>
                   </ChatMessageBox>
                 </ChatWrapper>

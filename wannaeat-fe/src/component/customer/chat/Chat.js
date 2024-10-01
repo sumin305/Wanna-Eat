@@ -1,6 +1,14 @@
 import styled from '@emotion/styled';
 import theme from 'style/common/theme';
 
+export const DateBox = styled.div`
+  display: flex;
+  justify-content: center;
+  color: ${theme.color.white};
+  font-size: ${theme.fontSize.px9};
+  margin: 10px 0;
+`;
+
 export const ChatContainer = styled.div`
   height: 100%;
   background-color: ${theme.color.secondary};

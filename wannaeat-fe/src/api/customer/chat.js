@@ -1,5 +1,14 @@
 import { clientInstance } from 'utils/http-client';
 
+// export const getReservationData = async (reservationUrl, chatPage, chatSize) => {
+//     try {
+//         const result = await clientInstance.get(
+//             `api/public/share-data/${reservationUrl}?chatPage=${chatPage}&chatSize=${chatSize}`
+//         );
+//         console.log('')
+//     }
+// }
+
 export const getChatlist = async (reservationUrl, chatPage, chatSize) => {
   try {
     const result = await clientInstance.get(

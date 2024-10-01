@@ -95,7 +95,7 @@ const ChatPage = () => {
       console.log(chatdata.data);
       // 초기에 받은 데이터가 최신순이어서 순서를 바꾸고 chatMessages로 넣음
       await setChatMessages(
-        chatdata.data.chatMessageDetailResponseDtos.chatMessageDetailResponseDtos.content
+        chatdata.data.chatMessageListResponseDto.chatMessageDetailResponseDtos.content
           .slice()
           .reverse()
       );

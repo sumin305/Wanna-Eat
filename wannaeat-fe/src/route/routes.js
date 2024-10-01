@@ -27,6 +27,7 @@ import FingerprintAuthPage from '../pages/customer/reservation/process/Fingerpri
 import ChatPage from 'pages/customer/chat/ChatPage.jsx';
 import OrderMainPage from 'pages/customer/order/OrderMainPage';
 import NotExistOrderPage from 'pages/customer/order/NotExistOrderPage';
+import MenuSelectPage from 'pages/customer/order/MenuSelectPage';
 import CardManagePage from '../pages/customer/user/CardManagePage/CardManagePage.jsx';
 import CardRegistPage from '../pages/customer/user/CardRegistPage/CardRegistPage.jsx';
 import NicknameEditPage from '../pages/customer/user/NicknameEditPage/NicknameEditPage.jsx';
@@ -87,6 +88,7 @@ const AppRoutes = () => {
           path="/customer/order/notexist"
           element={<NotExistOrderPage />}
         />
+        <Route path="/customer/menu-select/:url" element={<MenuSelectPage />} />
         <Route path="/customer/myinfo" element={<MyInfoPage />} />
         <Route path="/customer/card-manage" element={<CardManagePage />} />
         <Route path="/customer/card-regist" element={<CardRegistPage />} />

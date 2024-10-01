@@ -12,12 +12,14 @@ import {
 // import useOrderStore from 'stores/customer/useOrderStore.js';
 import WECheck from '../../common/check/WECheck.jsx';
 import theme from '../../../style/common/theme.js';
+import { useNavigate } from 'react-router-dom';
 
-const OrderMainBox = () => {
+const OrderMainBox = ({ reservationUrl }) => {
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ['나의 메뉴', '전체 메뉴'];
   //   const { allMenus, reservationTime } = useOrderStore();
   const [isPrepared, setIsPrepared] = useState(false);
+  const nav = useNavigate();
 
   const data = {
     reservationDate: '2024-10-20',
@@ -162,6 +164,10 @@ const OrderMainBox = () => {
   const allMenus = data.cartDetailResponseDto.cartElements;
   const reservationParticipantId = 2;
 
+  const handleMenuViewButtonClick = () => {
+    nav(`/customer/menu-select/${reservationUrl}`);
+  };
+
   return (
     <OrderContainer>
       <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -270,7 +276,9 @@ const OrderMainBox = () => {
             <CheckText>예약 시간까지 준비해주세요</CheckText>
           </CheckBox>
           <ButtonWrapper>
-            <WEButton size="medium">메뉴 보기</WEButton>
+            <WEButton size="medium" onClick={handleMenuViewButtonClick}>
+              메뉴 보기
+            </WEButton>
             <WEButton size="medium">주문하기</WEButton>
           </ButtonWrapper>
         </>

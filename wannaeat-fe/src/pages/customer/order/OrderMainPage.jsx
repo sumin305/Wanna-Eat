@@ -119,7 +119,7 @@ const OrderMainPage = () => {
   return (
     <>
       <button onClick={clickGotoChat}>채팅으로 이동</button>
-      <OrderMainBox />
+      <OrderMainBox reservationUrl={reservationUrl} />
     </>
   );
 };

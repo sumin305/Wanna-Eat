@@ -253,7 +253,7 @@ const GridCanvas = ({ currentFloor }) => {
 
           if (
             selectedItem.itemType === 'square' ||
-            selectedItem.itemType === 'roundes'
+            selectedItem.itemType === 'rounded'
           ) {
             setSelectedItem({
               ...selectedItem,

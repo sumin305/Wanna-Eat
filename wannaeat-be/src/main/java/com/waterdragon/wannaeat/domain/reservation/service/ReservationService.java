@@ -29,7 +29,7 @@ public interface ReservationService {
 
 	List<ReservationCountResponseDto> getListReservationCount(int year, int month);
 
-	void editReservation(ReservationEditRequestDto reservationEditRequestDto);
+	void removeReservation(Long reservationId);
 
 	void registerReservationTable(Reservation reservation, List<Integer> tableNumbers);
 

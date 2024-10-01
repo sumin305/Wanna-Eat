@@ -278,7 +278,6 @@ const ChatPage = () => {
                     chat.senderReservationParticipantId ===
                     myReservationParticipantId
                   }
-                  key={chat.id}
                 >
                   <ChatNickname
                     isMyMessage={

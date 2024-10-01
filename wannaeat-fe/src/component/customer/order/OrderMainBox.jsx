@@ -2,18 +2,21 @@ import { useState } from 'react';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 import {
+  TopBox,
+  OrderContainer,
   ButtonContainer,
   ButtonWrapper,
   CheckBox,
   CheckText,
 } from './OrderMainBox.js';
-import useOrderStore from 'stores/customer/useOrderStore.js';
+// import useOrderStore from 'stores/customer/useOrderStore.js';
 import WECheck from '../../common/check/WECheck.jsx';
+import theme from '../../../style/common/theme.js';
 
 const OrderMainBox = () => {
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ['나의 메뉴', '전체 메뉴'];
-  const { allMenus, reservationTime } = useOrderStore();
+  //   const { allMenus, reservationTime } = useOrderStore();
   const [isPrepared, setIsPrepared] = useState(false);
 
   const data = {
@@ -156,14 +159,59 @@ const OrderMainBox = () => {
     setIsPrepared(!isPrepared);
   };
 
+  const allMenus = data.cartDetailResponseDto.cartElements;
+  const reservationParticipantId = 2;
+
   return (
-    <>
-      <div>주문 메인 박스</div>
+    <OrderContainer>
       <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
       <div>
+        <TopBox>
+          <p>총 메뉴 {}개</p>
+          {activeTab === 0 ? (
+            <WEButton
+              width="14%"
+              height="5%"
+              outlined="true"
+              color={theme.color.disabled}
+              borderColor={theme.color.disabled}
+              fontSize={theme.fontSize.px11}
+            >
+              비우기
+            </WEButton>
+          ) : null}
+        </TopBox>
         {activeTab === 0 ? (
           <>
             <div>나의 메뉴 리스트</div>
+            <div>
+              {allMenus
+                .filter(
+                  (menus) =>
+                    menus.reservationParticipantId === reservationParticipantId
+                )
+                .map((menus, index) => (
+                  <div key={index}>
+                    <p>{menus.reservationParticipantNickname || ''}</p>
+                    <div>
+                      {menus.menuInfo ? (
+                        Object.values(menus.menuInfo).map((menu, index) => (
+                          <div key={index}>
+                            <p>{menu.menuImage}</p>
+                            <p>{menu.menuName}</p>
+                            <p>{menu.menuCnt}</p>
+                            <p>{menu.menuTotalPrice}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <p>메뉴 정보가 없습니다.</p>
+                      )}
+                    </div>
+                    <p>총:{menus.participantTotalPrice || ''}</p>
+                    <br />
+                  </div>
+                ))}
+            </div>
           </>
         ) : (
           <>
@@ -171,23 +219,26 @@ const OrderMainBox = () => {
             <div>
               {allMenus.map((menus, index) => (
                 <div key={index}>
-                  <p>{menus.reservationParticipantNickname}</p>
+                  <p>{menus.reservationParticipantNickname || ''}</p>
                   <div>
-                    {menus.menuInfo &&
-                    Array.isArray(menus.menuInfo) &&
-                    menus.menuInfo.length > 0 ? (
-                      menus.menuInfo.map((menu, index) => (
+                    {menus.menuInfo ? ( // menus.menuInfo가 객체이므로 Object.values로 배열상태로 변경
+                      Object.values(menus.menuInfo).map((menu, index) => (
                         <div key={index}>
+                          <p>{menu.menuImage}</p>
                           <p>{menu.menuName}</p>
+                          <p>{menu.menuCnt}</p>
+                          <p>{menu.menuTotalPrice}</p>
                         </div>
                       ))
                     ) : (
                       <p>메뉴 정보가 없습니다.</p>
                     )}
                   </div>
-                  <p>{menus.participantTotalPrice}</p>
+                  <p>총:{menus.participantTotalPrice || ''}</p>
+                  <br />
                 </div>
               ))}
+              <p>총:{data.cartDetailResponseDto.cartTotalPrice}</p>
             </div>
           </>
         )}
@@ -196,6 +247,7 @@ const OrderMainBox = () => {
         data.reservationDate,
         data.reservationStartTime
       ) ? (
+        // 예약시간 후
         <ButtonContainer>
           <ButtonWrapper>
             <WEButton size="medium" outlined="true">
@@ -208,6 +260,7 @@ const OrderMainBox = () => {
           <WEButton>결제하기</WEButton>
         </ButtonContainer>
       ) : (
+        // 예약시간 전
         <>
           <CheckBox>
             <WECheck
@@ -222,7 +275,10 @@ const OrderMainBox = () => {
           </ButtonWrapper>
         </>
       )}
-    </>
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+    </OrderContainer>
   );
 };
 

@@ -118,7 +118,6 @@ const OrderMainPage = () => {
 
   return (
     <>
-      <div>주문하기 메인페이지</div>
       <button onClick={clickGotoChat}>채팅으로 이동</button>
       <OrderMainBox />
     </>

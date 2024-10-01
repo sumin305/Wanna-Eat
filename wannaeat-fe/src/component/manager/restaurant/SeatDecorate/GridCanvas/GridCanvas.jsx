@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useDrop, useDrag } from 'react-dnd';
 import { authClientInstance } from 'utils/http-client.js';
 import { v4 as uuid } from 'uuid';
@@ -18,63 +18,101 @@ import {
 import useModalStore from 'stores/common/useModalStore.js';
 
 const useStore = create((set, get) => ({
-  items: [],
-  gridStatus: {},
-  addItem: (item) => {
+  itemsByFloor: {},
+  gridStatusByFloor: {},
+
+  // items: [],
+  // gridStatus: {},
+  addItem: (floor, item) => {
     const itemId = uuid();
     console.log('Item being added:', item);
     set((state) => ({
-      items: [...state.items, { ...item, tableNumber: '', capacity: 0 }],
-      gridStatus: {
-        ...state.gridStatus,
-        [`${item.x},${item.y}`]: itemId,
+      itemsByFloor: {
+        ...state.itemsByFloor,
+        [floor]: [
+          ...(state.itemsByFloor[floor] || []),
+          { ...item, tableNumber: '', capacity: 0 },
+        ],
+      },
+      gridStatusByFloor: {
+        ...state.gridStatusByFloor,
+        [floor]: {
+          ...state.gridStatusByFloor[floor],
+          [`${item.x},${item.y}`]: itemId,
+        },
       },
     }));
   },
 
-  updateItem: (itemId, newData) => {
+  updateItem: (floor, itemId, newData) => {
     set((state) => ({
-      items: state.items.map((item) =>
-        item.itemId === itemId ? { ...item, ...newData } : item
-      ),
+      itemsByFloor: {
+        ...state.itemsByFloor,
+        [floor]: state.itemsByFloor[floor].map((item) =>
+          item.itemId === itemId ? { ...item, ...newData } : item
+        ),
+      },
     }));
   },
 
-  updateItemPosition: (itemId, newX, newY) => {
-    const { items, gridStatus } = get();
-    const item = items.find((item) => item.itemId === itemId);
+  updateItemPosition: (floor, itemId, newX, newY) => {
+    const { itemsByFloor, gridStatusByFloor } = get();
+    const item = itemsByFloor[floor].find((item) => item.itemId === itemId);
 
     if (item) {
-      delete gridStatus[`${item.x},${item.y}`];
+      delete gridStatusByFloor[floor][`${item.x},${item.y}`];
     }
 
     set((state) => ({
-      items: state.items.map((item) =>
-        item.itemId === itemId ? { ...item, x: newX, y: newY } : item
-      ),
-      gridStatus: {
-        ...state.gridStatus,
-        [`${newX},${newY}`]: itemId,
+      itemsByFloor: {
+        ...state.itemsByFloor,
+        [floor]: state.itemsByFloor[floor].map((item) =>
+          item.itemId === itemId ? { ...item, x: newX, y: newY } : item
+        ),
+      },
+      gridStatusByFloor: {
+        ...state.gridStatusByFloor,
+        [floor]: {
+          ...state.gridStatusByFloor[floor],
+          [`${newX},${newY}`]: itemId,
+        },
       },
     }));
   },
-  setItems: (items) => set({ items }),
-  clearItems: () => set({ items: [] }),
-  isCellOccupied: (x, y) => {
-    const gridStatus = get().gridStatus;
-    return !!gridStatus[`${x},${y}`];
+  setItemsByFloor: (floor, items) =>
+    set((state) => ({
+      itemsByFloor: {
+        ...state.itemsByFloor,
+        [floor]: items,
+      },
+    })),
+  clearItemsByFloor: (floor) =>
+    set((state) => ({
+      itemsByFloor: {
+        ...state.itemsByFloor,
+        [floor]: [],
+      },
+    })),
+  isCellOccupied: (floor, x, y) => {
+    const gridStatus = get().gridStatusByFloor[floor];
+    return !!gridStatus && !!gridStatus[`${x},${y}`];
   },
 }));
 
-const GridCanvas = () => {
+const GridCanvas = ({ currentFloor }) => {
   const gridColumns = 10; // 가로
   const gridRows = 10; // 세로
   const [gridSize, setGridSize] = useState(50);
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
-  const { items, addItem, setItems, updateItem, updateItemPosition } =
-    useStore();
+  const {
+    itemsByFloor,
+    addItem,
+    setItemsByFloor,
+    updateItem,
+    updateItemPosition,
+  } = useStore();
 
   const {
     open,
@@ -113,12 +151,12 @@ const GridCanvas = () => {
     authClientInstance
       .get(`/api/restaurants/${restaurantId}/structure`)
       .then((response) => {
-        setItems(response.data);
+        setItemsByFloor(currentFloor, response.data);
       })
       .catch((error) => {
         console.error('꾸미기 정보 요청 오류:', error);
       });
-  }, [setItems]);
+  }, [setItemsByFloor, currentFloor]);
 
   const handleWheel = (e) => {
     if (e.ctrlKey) {
@@ -167,7 +205,7 @@ const GridCanvas = () => {
 
       console.log(selectedItem);
 
-      updateItem(selectedItem.itemId, {
+      updateItem(currentFloor, selectedItem.itemId, {
         tableNumber,
         capacity: parseInt(capacity, 10),
       });
@@ -193,7 +231,7 @@ const GridCanvas = () => {
       const x = Math.floor(adjustedX / gridSize) * gridSize;
       const y = Math.floor(adjustedY / gridSize) * gridSize;
 
-      if (useStore.getState().isCellOccupied(x, y)) {
+      if (useStore.getState().isCellOccupied(currentFloor, x, y)) {
         window.alert('중복 방지!!!!!!!!!!!!!!');
         return;
       }
@@ -204,7 +242,7 @@ const GridCanvas = () => {
         );
 
         if (selectedItem) {
-          addItem({
+          addItem(currentFloor, {
             itemId: item.itemId,
             x,
             y,
@@ -252,7 +290,7 @@ const GridCanvas = () => {
           }
         }
       } else if (item.type === 'GRID_ITEM') {
-        updateItemPosition(item.itemId, x, y);
+        updateItemPosition(currentFloor, item.itemId, x, y);
       }
 
       setIsDragging(false);
@@ -263,7 +301,7 @@ const GridCanvas = () => {
     authClientInstance
       .post(
         '/api/restaurants/{restaurantId}structure',
-        { items },
+        { itemsByFloor },
         {
           headers: {
             'Content-Type': 'application/json',
@@ -310,7 +348,7 @@ const GridCanvas = () => {
             {Array.from({ length: gridColumns * gridRows }).map((_, index) => (
               <GridCellStyled key={index} />
             ))}
-            {items.map((item) => (
+            {(itemsByFloor[currentFloor] || []).map((item) => (
               <GridItem
                 key={item.itemId}
                 item={item}

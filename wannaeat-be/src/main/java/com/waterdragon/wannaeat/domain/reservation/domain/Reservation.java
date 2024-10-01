@@ -82,4 +82,9 @@ public class Reservation {
 		this.cancelled = true;
 	}
 
+	public void edit() {
+		this.reservationUrl = null;
+		this.endTime = LocalTime.now();
+	}
+
 }

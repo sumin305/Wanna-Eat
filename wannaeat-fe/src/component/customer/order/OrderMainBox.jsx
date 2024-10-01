@@ -22,7 +22,7 @@ const OrderMainBox = ({ reservationUrl }) => {
   const nav = useNavigate();
 
   const data = {
-    reservationDate: '2024-10-20',
+    reservationDate: '2024-09-20',
     reservationStartTime: '13:00:00',
     reservationEndTime: '15:00:00',
     chatMessageListResponseDto: {
@@ -259,7 +259,11 @@ const OrderMainBox = ({ reservationUrl }) => {
             <WEButton size="medium" outlined="true">
               사장님 호출
             </WEButton>
-            <WEButton size="medium" outlined="true">
+            <WEButton
+              size="medium"
+              outlined="true"
+              onClick={handleMenuViewButtonClick}
+            >
               추가 주문
             </WEButton>
           </ButtonWrapper>

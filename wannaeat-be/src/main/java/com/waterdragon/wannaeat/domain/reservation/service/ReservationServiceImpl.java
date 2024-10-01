@@ -25,6 +25,8 @@ import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationRes
 import com.waterdragon.wannaeat.domain.reservation.exception.error.AlreadyCancelledReservationException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.DuplicateReservationTableException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.FailureGenerateQrCodeException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.InvalidQrTokenException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.QrTokenNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationTableRepository;
@@ -272,6 +274,45 @@ public class ReservationServiceImpl implements ReservationService {
 		}
 
 		return qr;
+	}
+
+	@Override
+	public Restaurant validateQr(String token) {
+		if (token == null || token.isEmpty()) {
+			throw new QrTokenNotFoundException("입장 코드가 존재하지 않습니다.");
+		}
+
+		// Redis에서 값을 가져오기 (Object로 받아서 타입 확인)
+		Object redisValueObject = redisService.getValues(token);
+
+		// redisValue가 null인지 확인
+		if (redisValueObject == null) {
+			throw new InvalidQrTokenException("인증코드가 만료되었습니다.");
+		}
+
+		// redisValue를 String으로 변환 (Integer 타입일 경우 처리)
+		String redisValue;
+		if (redisValueObject instanceof Integer) {
+			redisValue = String.valueOf(redisValueObject);
+		} else if (redisValueObject instanceof String) {
+			redisValue = (String)redisValueObject;
+		} else {
+			throw new InvalidQrTokenException("인증코드 형식이 올바르지 않습니다.");
+		}
+
+		// restaurantId가 Long 형식으로 저장되어 있을 경우 String을 Long으로 변환
+		Long restaurantId;
+		try {
+			restaurantId = Long.parseLong(redisValue);
+		} catch (NumberFormatException e) {
+			throw new InvalidQrTokenException("인증코드 형식이 올바르지 않습니다.");
+		}
+
+		// restaurantId를 기반으로 식당 찾기
+		Restaurant restaurant = restaurantRepository.findByRestaurantId(restaurantId)
+			.orElseThrow(() -> new RestaurantNotFoundException("해당 식당이 존재하지 않습니다."));
+
+		return restaurant;
 	}
 
 	/**

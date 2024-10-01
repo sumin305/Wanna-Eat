@@ -15,6 +15,7 @@ import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequ
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
+import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 
 public interface ReservationService {
 
@@ -36,6 +37,8 @@ public interface ReservationService {
 		LocalTime endTime);
 
 	Object generateEnterQrcode(QrGenerateRequestDto qrGenerateRequestDto);
+
+	Restaurant validateQr(String token);
 
 	String generateRandomString();
 }

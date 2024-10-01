@@ -9,6 +9,7 @@ import lombok.Getter;
 @Builder
 public class CartElementResponseDto {
 
+	private Long reservationParticipantId;
 	private String reservationParticipantNickname;
 	private Map<Long, CartMenuResponseDto> menuInfo;
 	private int participantTotalPrice;

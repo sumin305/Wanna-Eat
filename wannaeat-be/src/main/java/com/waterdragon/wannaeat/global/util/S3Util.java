@@ -87,10 +87,11 @@ public class S3Util {
 	public void deleteFile(String fileName) {
 		try {
 			// 파일이 없으면 예외 발생
-			if (!amazonS3.doesObjectExist(bucket, fileName)) {
-				throw new FileRemoveFailureException("파일이 존재하지 않습니다. 파일명: " + fileName);
-			}
+			// if (!amazonS3.doesObjectExist(bucket, fileName)) {
+			// 	throw new FileNotFoundException("파일이 존재하지 않습니다. 파일명: " + fileName);
+			// }
 			amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+			log.info("deleted file : " + fileName);
 		} catch (Exception e) {
 			throw new FileRemoveFailureException("파일 삭제 중 오류 발생");
 		}

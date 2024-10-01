@@ -2,6 +2,7 @@ package com.waterdragon.wannaeat.domain.restaurant.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -58,6 +59,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class RestaurantServiceImpl implements RestaurantService {
+
+	// 시간 형식을 정의 ("HH:mm" 형식)
+	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
 	private final RestaurantRepository restaurantRepository;
 	private final RestaurantCategoryRepository restaurantCategoryRepository;
@@ -362,10 +366,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.restaurantPhone(restaurant.getPhone())
 			.restaurantName(restaurant.getName())
 			.restaurantCategoryName(restaurant.getCategory().getCategoryName())
-			.restaurantOpenTime(restaurant.getOpenTime())
-			.restaurantCloseTime(restaurant.getCloseTime())
-			.breakStartTime(restaurant.getBreakStartTime())
-			.breakEndTime(restaurant.getBreakEndTime())
+			.restaurantOpenTime(formatTime(restaurant.getOpenTime()))
+			.restaurantCloseTime(formatTime(restaurant.getCloseTime()))
+			.breakStartTime(formatTime(restaurant.getBreakStartTime()))
+			.breakEndTime(formatTime(restaurant.getBreakEndTime()))
 			.maxReservationTime(restaurant.getMaxReservationTime())
 			.minMemberCount(restaurant.getMinMemberCount())
 			.maxMemberCount(restaurant.getMaxMemberCount())
@@ -479,7 +483,6 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 		for (RestaurantImage existingRestaurantImage : existingRestaurantImages) {
 			fileUtil.deleteFile(existingRestaurantImage.getImageUrl());
-			log.info("deleted file : " + existingRestaurantImage.getImageUrl());
 			restaurantImageRepository.delete(existingRestaurantImage);
 		}
 	}
@@ -501,5 +504,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 				.build();
 			restaurantImageRepository.save(restaurantImage);
 		}
+	}
+
+	// 시간(LocalTime)을 "HH:mm" 형식으로 포맷하는 메소드
+	private String formatTime(LocalTime time) {
+		return time != null ? time.format(TIME_FORMATTER) : null;
 	}
 }

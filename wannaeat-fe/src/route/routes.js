@@ -16,7 +16,7 @@ import RestaurantRegistPage from '../pages/manager/restaurant/RestaurantRegistPa
 // 손님 관련 페이지
 import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
 import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage.jsx';
-import ListPage from '../pages/customer/reservation/history/ListPage';
+import ListPage from '../pages/customer/reservation/history/ReservationListPage';
 import MyInfoPage from '../pages/customer/user/MyInfoPage/MyInfoPage.jsx';
 import RestaurantDetailPage from '../pages/customer/reservation/process/RestaurantDetailPage/RestaurantDetailPage.jsx';
 import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage/TimeSelectPage.jsx';

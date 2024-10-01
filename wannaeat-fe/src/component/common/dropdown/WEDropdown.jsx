@@ -25,7 +25,7 @@ const WEDropdown = ({ useDropdownStore, placeholder, onSelect }) => {
   };
 
   const handleOptionClick = (index) => {
-    console.log(index)
+    console.log(index);
     setSelectedId(index);
     if (onSelect) {
       onSelect(items[index]);

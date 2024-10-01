@@ -14,7 +14,7 @@ import {
 import WETextField from 'component/common/textfield/WETextfield/WETextfield.jsx';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
-import WEDropdown from 'component/common/dropdown/WEDropdown.jsx';
+import WETimeDropdown from 'component/manager/WETimeDropdown.jsx';
 
 const RestaurantRegistPage = () => {
   const tabs = ['사업자', '매장'];
@@ -121,6 +121,7 @@ const RestaurantRegistPage = () => {
             <InputWrapperStyled>
               <InputWithLabelStyled>
                 <label>대표자</label>
+                <WETimeDropdown />
               </InputWithLabelStyled>
             </InputWrapperStyled>
 

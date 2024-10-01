@@ -78,7 +78,7 @@ const AppRoutes = () => {
         <Route path="/customer/reservation/success" element={<SuccessPage />} />
         <Route path="/customer/reservationlist" element={<ListPage />} />
         <Route path="/customer/order/:url" element={<OrderMainPage />} />
-        <Route path="/customer/order/:url/chat" element={<ChatPage />} />
+        <Route path="/customer/order/chat/:url" element={<ChatPage />} />
         <Route
           path="/customer/order/notexist"
           element={<NotExistOrderPage />}

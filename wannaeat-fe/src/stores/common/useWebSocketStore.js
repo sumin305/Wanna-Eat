@@ -9,6 +9,10 @@ const useWebSocketStore = create((set, get) => ({
   connectWebSoket: (url) => {
     const socket = new SockJS(url); // SockJS로 서버에 연결
     const stompClient = Stomp.over(socket); // stomp 프로토콜 사용
+    stompClient.debug = (str) => {
+      console.log('STOMP debug:', str);
+    };
+    console.log(stompClient);
     stompClient.connect({}, () => {
       set({ stompClient });
       console.log('웹소켓 연결 성공');
@@ -31,7 +35,9 @@ const useWebSocketStore = create((set, get) => ({
     const { stompClient } = useWebSocketStore.getState();
     if (stompClient) {
       stompClient.subscribe(destination, (message) => {
+        console.log('구독');
         callback(JSON.parse(message.body));
+        console.log('구독성공');
       });
     }
   },

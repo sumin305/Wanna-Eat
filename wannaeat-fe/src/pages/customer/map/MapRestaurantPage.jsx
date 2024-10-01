@@ -14,8 +14,12 @@ import MapFilterModalBox from '../../../component/customer/map/MapFilterModalBox
 import searchIcon from '../../../assets/icons/common/search.svg';
 import useReservationStore from '../../../stores/customer/useReservationStore.js';
 import useMapStore from '../../../stores/map/useMapStore.js';
+import useChatStore from '../../../stores/customer/useChatStore.js';
 
 const MapRestaurantPage = () => {
+  const { stompClient, isconneted } = useChatStore();
+  console.log('웹소켓연결확인', stompClient);
+  console.log('웹소켓연결확인', isconneted);
   const { open, setModalType, setTitle, setConfirmText, setChildren } =
     useModalStore();
 

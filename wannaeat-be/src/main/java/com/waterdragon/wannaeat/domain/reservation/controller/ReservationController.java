@@ -68,7 +68,7 @@ public class ReservationController {
 	public ResponseEntity<ResponseDto<ReservationDetailResponseDto>> registerReservation(
 		@RequestParam(value = "token", required = false) String token,
 		@Valid @RequestBody
-	ReservationRegisterRequestDto reservationRegisterRequestDto) {
+		ReservationRegisterRequestDto reservationRegisterRequestDto) {
 
 		reservationService.validateQr(token);
 		ReservationDetailResponseDto reservationDetailResponseDto = reservationService.registerReservation(

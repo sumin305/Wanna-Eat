@@ -1,10 +1,19 @@
 import { useEffect, useState } from 'react';
 import useHeaderStore from 'stores/common/useHeaderStore';
 import { getMyReservation } from 'api/customer/reservation';
-import styled from '@emotion/styled';
 import Button from 'component/common/button/WEButton/WEButton.jsx';
-import theme from 'style/common/theme';
 import moment from 'moment';
+import {
+  ReservationListContainer,
+  ReservationItem,
+  ReservationItemInfo,
+  ReservationItemImage,
+  ReservationItemText,
+  ReservationItemTitle,
+  ReservationItemSubTitle,
+  ReservationDetailButton,
+} from './ReservationListPage.js';
+
 const ListPage = () => {
   const { setPageName, setIsShowBackIcon, setIsShowLogo, setActiveIcons } =
     useHeaderStore();
@@ -83,3 +92,4 @@ const ListPage = () => {
     </ReservationListContainer>
   );
 };
+export default ListPage;

@@ -23,13 +23,13 @@ public class RestaurantDetailResponseDto {
 
 	private String restaurantCategoryName;
 
-	private LocalTime restaurantOpenTime;
+	private String restaurantOpenTime;
 
-	private LocalTime restaurantCloseTime;
+	private String restaurantCloseTime;
 
-	private LocalTime breakStartTime;
+	private String breakStartTime;
 
-	private LocalTime breakEndTime;
+	private String breakEndTime;
 
 	private Integer maxReservationTime;
 

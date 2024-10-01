@@ -208,7 +208,7 @@ public class ReservationController {
 	@DeleteMapping("/users/reservations/{reservationId}")
 	@Transactional
 	public ResponseEntity<ResponseDto<Void>> removeReservation(
-		@RequestParam(value = "reservationId", required = false) Long reservationId) {
+		@PathVariable(value = "reservationId", required = false) Long reservationId) {
 
 		reservationService.removeReservation(reservationId);
 		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()

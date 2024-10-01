@@ -20,7 +20,7 @@ import com.waterdragon.wannaeat.domain.cart.dto.response.CartMenuResponseDto;
 import com.waterdragon.wannaeat.domain.cart.dto.response.CartResponseDto;
 import com.waterdragon.wannaeat.domain.cart.exception.error.CartMenuCntMinusException;
 import com.waterdragon.wannaeat.domain.cart.exception.error.CartMenuPlusMinusException;
-import com.waterdragon.wannaeat.domain.cart.exception.error.CartNotFoundException;
+import com.waterdragon.wannaeat.domain.cart.exception.error.ReservationParticipantNotMatchReservationException;
 import com.waterdragon.wannaeat.domain.menu.domain.Menu;
 import com.waterdragon.wannaeat.domain.menu.exception.error.MenuNotBelongToRestaurantException;
 import com.waterdragon.wannaeat.domain.menu.exception.error.MenuNotFoundException;
@@ -55,7 +55,7 @@ public class CartServiceImpl implements CartService {
 	private static final String CART_KEY_PREFIX = "cart_";
 
 	/**
-	 * 소켓 요청 들어왔을 때, MongoDB 장바구니 업데이트 메소드
+	 * 소켓 요청 들어왔을 때, Redis 장바구니 업데이트 메소드
 	 *
 	 * @param cartRegisterRequestDto
 	 */
@@ -67,6 +67,12 @@ public class CartServiceImpl implements CartService {
 
 		// reservationParticipantId 유효성 확인
 		ReservationParticipant reservationParticipant = validateReservationParticipantId(cartRegisterRequestDto);
+
+		if (!reservationParticipant.getReservation().getReservationId().equals(reservation.getReservationId())) {
+			throw new ReservationParticipantNotMatchReservationException(
+				"예약과 예약 참가자가 매칭되지 않습니다. 예약 id" + reservation.getReservationId() +
+					", 예약 참가자 id : " + reservationParticipant.getReservationParticipantId());
+		}
 
 		// menu 유효성 확인
 		Menu menu = validateMenuId(cartRegisterRequestDto);
@@ -118,6 +124,7 @@ public class CartServiceImpl implements CartService {
 			}
 			// CartMenu 정보 새로 만들기
 			cartMenu = CartMenu.builder()
+				.menuId(menu.getMenuId())
 				.menuName(menu.getName())
 				.menuImage(menu.getImage())
 				.menuPrice(menu.getPrice())
@@ -157,6 +164,7 @@ public class CartServiceImpl implements CartService {
 			for (Map.Entry<Long, CartMenu> menuEntry : cartMenuMap.entrySet()) {
 				CartMenu cartMenuItem = menuEntry.getValue();
 				CartMenuResponseDto cartMenuResponseDto = CartMenuResponseDto.builder()
+					.menuId(cartMenuItem.getMenuId())
 					.menuName(cartMenuItem.getMenuName())
 					.menuImage(cartMenuItem.getMenuImage())
 					.menuPrice(cartMenuItem.getMenuPrice())
@@ -171,6 +179,7 @@ public class CartServiceImpl implements CartService {
 
 			// CartElementRegisterResponseDto 생성
 			CartElementResponseDto cartElementResponseDto = CartElementResponseDto.builder()
+				.reservationParticipantId(orderParticipant.getReservationParticipantId())
 				.reservationParticipantNickname(orderParticipant.getReservationParticipantNickName())
 				.menuInfo(dtoMenuMap)
 				.participantTotalPrice(participantTotalPrice)
@@ -208,7 +217,7 @@ public class CartServiceImpl implements CartService {
 
 		// Cart 존재 안함
 		if (cart == null) {
-			throw new CartNotFoundException("해당 예약 url의 장바구니가 존재하지 않습니다. 예약 url : " + reservationUrl);
+			return null;
 		}
 
 		List<CartElementResponseDto> cartElementResponseDtos = new ArrayList<>();
@@ -231,6 +240,7 @@ public class CartServiceImpl implements CartService {
 			for (Map.Entry<Long, CartMenu> menuEntry : cartMenuMap.entrySet()) {
 				CartMenu cartMenuItem = menuEntry.getValue();
 				CartMenuResponseDto cartMenuResponseDto = CartMenuResponseDto.builder()
+					.menuId(cartMenuItem.getMenuId())
 					.menuName(cartMenuItem.getMenuName())
 					.menuImage(cartMenuItem.getMenuImage())
 					.menuPrice(cartMenuItem.getMenuPrice())
@@ -245,6 +255,7 @@ public class CartServiceImpl implements CartService {
 
 			// CartElementResponseDto 생성
 			CartElementResponseDto cartElementResponseDto = CartElementResponseDto.builder()
+				.reservationParticipantId(orderParticipant.getReservationParticipantId())
 				.reservationParticipantNickname(orderParticipant.getReservationParticipantNickName())
 				.menuInfo(dtoMenuMap)
 				.participantTotalPrice(participantTotalPrice)
@@ -259,6 +270,24 @@ public class CartServiceImpl implements CartService {
 			.cartElements(cartElementResponseDtos)
 			.cartTotalPrice(cart.getCartTotalPrice())
 			.build();
+	}
+
+	/**
+	 * Redis 장바구니 삭제 메소드
+	 *
+	 * @param reservationUrl 예약 url
+	 */
+	@Override
+	public void removeCart(String reservationUrl) {
+		String cartKey = CART_KEY_PREFIX + reservationUrl;
+		Object cachedObject = redisService.getValues(cartKey);
+		ObjectMapper objectMapper = new ObjectMapper();
+		Cart cart = objectMapper.convertValue(cachedObject, Cart.class);
+
+		if (cart != null) {
+			log.info("해당 url 장바구니 존재함. cartKey : " + cartKey);
+			redisService.deleteValues(cartKey);
+		}
 	}
 
 	private Reservation validateReservationUrl(CartRegisterRequestDto cartRegisterRequestDto) {

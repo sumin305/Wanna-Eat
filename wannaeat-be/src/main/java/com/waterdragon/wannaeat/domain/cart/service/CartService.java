@@ -8,4 +8,6 @@ public interface CartService {
 	void registerCart(CartRegisterRequestDto cartRegisterRequestDto);
 
 	CartDetailResponseDto getDetailCartByReservationUrl(String reservationUrl);
+
+	void removeCart(String reservationUrl);
 }

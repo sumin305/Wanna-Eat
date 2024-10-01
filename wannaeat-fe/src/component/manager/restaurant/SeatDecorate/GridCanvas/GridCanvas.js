@@ -93,9 +93,12 @@ const GridCellStyled = styled.div`
 const GridCanvasModalStyled = styled.div`
   display: flex;
   flex-direction: column;
+  margin-top: 0.938rem;
+
   input {
     width: 95%;
     height: 1.375rem;
+    font-size: ${theme.fontSize.px11};
     padding: 0.24rem;
     display: 'block';
     margin: 6px 0;
@@ -113,11 +116,17 @@ const GridCanvasModalStyled = styled.div`
     }
   }
 
+  label {
+    font-size: ${theme.fontSize.px11};
+  }
+
   @media (min-width: 480px) {
     label {
+      font-size: ${theme.fontSize.px15};
       margin-block: 10px;
     }
     input {
+      font-size: ${theme.fontSize.px15};
       margin-block: 10px;
     }
   }

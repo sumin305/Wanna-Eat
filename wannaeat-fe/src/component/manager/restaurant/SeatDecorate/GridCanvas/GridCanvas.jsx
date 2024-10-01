@@ -21,17 +21,15 @@ const useStore = create((set, get) => ({
   itemsByFloor: {},
   gridStatusByFloor: {},
 
-  // items: [],
-  // gridStatus: {},
   addItem: (floor, item) => {
     const itemId = uuid();
-    console.log('Item being added:', item);
+    console.log('추가된 아이템:', item);
     set((state) => ({
       itemsByFloor: {
         ...state.itemsByFloor,
         [floor]: [
           ...(state.itemsByFloor[floor] || []),
-          { ...item, tableNumber: '', capacity: 0 },
+          { ...item, itemType: item.itemType, tableNumber: '', capacity: 0 },
         ],
       },
       gridStatusByFloor: {
@@ -244,6 +242,7 @@ const GridCanvas = ({ currentFloor }) => {
         if (selectedItem) {
           addItem(currentFloor, {
             itemId: item.itemId,
+            itemType: item.itemType,
             x,
             y,
             icon: selectedItem.icon,
@@ -296,6 +295,41 @@ const GridCanvas = ({ currentFloor }) => {
       setIsDragging(false);
     },
   });
+
+  const handleClick = (item) => {
+    console.log('클릭된 아이템:', item);
+    setSelectedItem(item);
+    if (item.itemType === 'square' || item.itemType === 'rounded') {
+      setModalType('setting');
+      setTitle(`${item.label} 설정`);
+
+      setHandleButtonClick(handleSubmit);
+      setChildren(
+        <GridCanvasModalStyled>
+          <label>
+            테이블 번호:
+            <input
+              id="tableNumber"
+              type="text"
+              placeholder="테이블 번호 입력"
+              defaultValue={item.tableNumber}
+            />
+          </label>
+          <label>
+            최대 수용 인원:
+            <input
+              id="capacity"
+              type="number"
+              min="0"
+              placeholder="최대 수용 인원 입력"
+              defaultValue={item.capacity}
+            />
+          </label>
+        </GridCanvasModalStyled>
+      );
+      open();
+    }
+  };
 
   const handleCanvasSave = () => {
     authClientInstance
@@ -354,7 +388,7 @@ const GridCanvas = ({ currentFloor }) => {
                 item={item}
                 gridSize={gridSize}
                 setSelectedItem={setSelectedItem}
-                setIsModalOpen={open}
+                onClick={handleClick}
               />
             ))}
           </GridBackgroundStyled>
@@ -368,7 +402,7 @@ const GridCanvas = ({ currentFloor }) => {
   );
 };
 
-const GridItem = ({ item, gridSize, setSelectedItem, setIsModalOpen }) => {
+const GridItem = ({ item, gridSize, onClick }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'GRID_ITEM',
     item: { itemId: item.itemId, type: 'GRID_ITEM' },
@@ -376,11 +410,6 @@ const GridItem = ({ item, gridSize, setSelectedItem, setIsModalOpen }) => {
       isDragging: !!monitor.isDragging(),
     }),
   }));
-
-  const handleClick = () => {
-    setSelectedItem(item);
-    setIsModalOpen();
-  };
 
   return (
     <GridItemStyled
@@ -390,7 +419,7 @@ const GridItem = ({ item, gridSize, setSelectedItem, setIsModalOpen }) => {
       x={item.x}
       y={item.y}
       rotation={item.rotation}
-      onClick={handleClick}
+      onClick={() => onClick(item)}
     >
       <item.icon
         className="grid-item-icon"

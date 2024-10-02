@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import useHeaderStore from 'stores/common/useHeaderStore';
 import { useNavigate, useParams } from 'react-router-dom';
-import { validateReservationUrl } from 'api/customer/order';
+import { getMenuData, validateReservationUrl } from 'api/customer/order';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import useChatStore from 'stores/customer/useChatStore';
-import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 import MenuSelectBox from 'component/customer/order/MenuSelectBox';
+import useOrderStore from 'stores/customer/useOrderStore';
 
 const MenuSelectPage = () => {
   const nav = useNavigate();
@@ -22,6 +22,8 @@ const MenuSelectPage = () => {
     setIsShowBackIcon,
     setActiveIcons,
   } = useHeaderStore();
+
+  const { allMenusData, setAllMenusData } = useOrderStore();
 
   // 웹소켓 초기 연결
   useEffect(() => {
@@ -82,15 +84,26 @@ const MenuSelectPage = () => {
     );
   };
 
-  const clickGotoOrder = () => {
-    nav(`/customer/order/${reservationUrl}`);
+  const restaurantId = 1;
+
+  const fetchMenuData = async () => {
+    const allMenuData = await getMenuData(restaurantId);
+    console.log('식당의 전체 메뉴 불러온 데이터', allMenuData.data);
+    await setAllMenusData(allMenuData.data);
+    console.log('zustand allMenusData:', allMenusData);
   };
+
+  // 모든 메뉴 데이터 불러오기
+  useEffect(() => {
+    if (isConnected) {
+      fetchMenuData();
+    }
+  }, []);
 
   return (
     <>
       <div>메뉴 선택 페이지</div>
       <MenuSelectBox />
-      <WEButton onClick={clickGotoOrder}>주문내역보기</WEButton>
     </>
   );
 };

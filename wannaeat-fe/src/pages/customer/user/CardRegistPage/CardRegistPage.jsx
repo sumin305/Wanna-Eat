@@ -1,13 +1,20 @@
 import { useEffect } from 'react';
 import {
   getCreditCardIssuerList,
-  createCreditCardProduct,
   getCreditCardList,
-  isCreditCardExist,
+  createCreditCard,
 } from 'api/common/ssafyPay/card.js';
 import useCardStore from 'stores/customer/useCardStore';
+import useHeaderStore from 'stores/common/useHeaderStore';
+import styled from '@emotion/styled';
+import theme from 'style/common/theme';
+import { cardMaps } from 'assets';
+import AddIcon from 'assets/customer/add.svg';
+import useAlert from 'utils/alert';
 const CardRegistPage = () => {
   const { cardList, setCardIssuerList, setCardList } = useCardStore();
+  const { setPageName, setIsShowBackIcon, setActiveIcons } = useHeaderStore();
+  const alert = useAlert();
   useEffect(() => {
     const fetchData = async () => {
       const cardIssuerRest = await getCreditCardIssuerList();
@@ -30,17 +37,54 @@ const CardRegistPage = () => {
     };
 
     fetchData();
+
+    setPageName('카드 추가');
+    setIsShowBackIcon(true);
+    setActiveIcons([]);
+    console.log(cardList);
+    console.log('cardMaps', cardMaps);
   }, []);
+
+  const getPriceInfo = (price) => {
+    if (price.length > 4) {
+      return price.slice(0, -4).toLocaleString() + '만원';
+    } else {
+      return price.toLocaleString() + '원';
+    }
+  };
+
+  const addCard = async (cardUniqueNo) => {
+    const result = await createCreditCard(cardUniqueNo);
+    if (result.status === 200) {
+      alert('카드 추가에 성공했습니다.');
+    }
+    console.log('카드 추가 결과', result);
+  };
   return (
-    <div>
-      {cardList.map((card, index) => {
-        return (
-          <div key={index}>
-            {card.cardNo} - {card.cardIssuerName}
-          </div>
-        );
-      })}
-    </div>
+    <CardRegistPageContainer>
+      {cardList.length > 0 ? (
+        cardList.map((card, index) => (
+          <CardRegistItem key={index}>
+            <CardRegistItemImage src={cardMaps[card.cardName]} />
+            <CardInfoWrapper>
+              <CardInfoTitle>{card.cardName}</CardInfoTitle>
+              <CardInfoText>{card.cardDescription}</CardInfoText>
+              <CardInfoText>
+                기준실적 {getPriceInfo(card.baselinePerformance)}
+              </CardInfoText>
+              <CardInfoText>
+                최대 혜택한도 {getPriceInfo(card.maxBenefitLimit)}
+              </CardInfoText>
+            </CardInfoWrapper>
+            <CardRegistButton onClick={() => addCard(card.cardUniqueNo)}>
+              <img src={AddIcon} />
+            </CardRegistButton>
+          </CardRegistItem>
+        ))
+      ) : (
+        <p>카드 정보를 불러오는 중입니다...</p>
+      )}
+    </CardRegistPageContainer>
   );
 };
 

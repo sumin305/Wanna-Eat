@@ -13,7 +13,5 @@ public class UserLikeDetailResponseDto {
 
 	private String restaurantImageUrl;
 
-	private boolean restaurantLike;
-
 	private int userReservationCnt;
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -36,7 +37,7 @@ public class MenuCategory {
 	@Column(name = "menu_category_name", nullable = false)
 	private String categoryName;
 
-	@OneToMany(mappedBy = "menuCategory", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "menuCategory", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<Menu> menus;
 
 	@ManyToOne(fetch = FetchType.LAZY)

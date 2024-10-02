@@ -9,12 +9,12 @@ import org.springframework.data.domain.Pageable;
 
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
-import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationEditRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
+import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 
 public interface ReservationService {
 
@@ -28,13 +28,18 @@ public interface ReservationService {
 
 	List<ReservationCountResponseDto> getListReservationCount(int year, int month);
 
-	void editReservation(ReservationEditRequestDto reservationEditRequestDto);
-
 	void registerReservationTable(Reservation reservation, List<Integer> tableNumbers);
 
-	List<Integer> getListNotReservedTableNumber(Long restaurantId, LocalDate localDate, LocalTime startTime, LocalTime endTime);
+	void removeReservation(Long reservationId);
+
+	void editReservation(UrlValidationRequestDto urlValidationRequestDto);
+
+	List<Integer> getListNotReservedTableNumber(Long restaurantId, LocalDate localDate, LocalTime startTime,
+		LocalTime endTime);
 
 	Object generateEnterQrcode(QrGenerateRequestDto qrGenerateRequestDto);
+
+	Restaurant validateQr(String token);
 
 	String generateRandomString();
 }

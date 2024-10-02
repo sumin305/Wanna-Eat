@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
-import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationEditRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
@@ -65,9 +65,12 @@ public class ReservationController {
 	@Operation(summary = "비회원 예약 API")
 	@PostMapping("/public/restaurants/{restaurantId}/reservations")
 	@Transactional
-	public ResponseEntity<ResponseDto<ReservationDetailResponseDto>> registerReservation(@Valid @RequestBody
-	ReservationRegisterRequestDto reservationRegisterRequestDto) {
+	public ResponseEntity<ResponseDto<ReservationDetailResponseDto>> registerReservation(
+		@RequestParam(value = "token", required = false) String token,
+		@Valid @RequestBody
+		ReservationRegisterRequestDto reservationRegisterRequestDto) {
 
+		reservationService.validateQr(token);
 		ReservationDetailResponseDto reservationDetailResponseDto = reservationService.registerReservation(
 			reservationRegisterRequestDto);
 		ResponseDto<ReservationDetailResponseDto> responseDto = ResponseDto.<ReservationDetailResponseDto>builder()
@@ -143,7 +146,7 @@ public class ReservationController {
 	}
 
 	/**
-	 * 예약 가능한 테이블 번호 목록 조회 API
+	 * 회원용 예약 가능한 테이블 번호 목록 조회 API
 	 *
 	 * @param restaurantId 식당 아이디
 	 * @param date 예약일
@@ -151,8 +154,8 @@ public class ReservationController {
 	 * @param endTime 이용 종료 시간
 	 * @return 예약 가능한 테이블 번호 목록
 	 */
-	@Operation(summary = "예약 가능 테이블 목록 조회 API")
-	@GetMapping("/public/restaurants/{restaurantId}/reservations/available-tables")
+	@Operation(summary = "회원 예약 가능 테이블 목록 조회 API")
+	@GetMapping("/restaurants/{restaurantId}/reservations/available-tables")
 	public ResponseEntity<ResponseDto<List<Integer>>> getListNotReservedTableNumber(
 		@PathVariable("restaurantId") Long restaurantId,
 		@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
@@ -171,13 +174,50 @@ public class ReservationController {
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
-	@Operation(summary = "예약 취소 API")
-	@PatchMapping("/users/reservations")
-	@Transactional
-	public ResponseEntity<ResponseDto<Void>> editReservation(@Valid @RequestBody
-	ReservationEditRequestDto reservationEditRequestDto) {
+	/**
+	 * 비회원용 예약 가능한 테이블 번호 목록 조회 API
+	 *
+	 * @param restaurantId 식당 아이디
+	 * @param date 예약일
+	 * @param startTime 이용 시작 시간
+	 * @param endTime 이용 종료 시간
+	 * @return 예약 가능한 테이블 번호 목록
+	 */
+	@Operation(summary = "비회원 예약 가능 테이블 목록 조회 API")
+	@GetMapping("/public/restaurants/{restaurantId}/reservations/available-tables")
+	public ResponseEntity<ResponseDto<List<Integer>>> getListNotReservedTableNumber(
+		@PathVariable("restaurantId") Long restaurantId,
+		@RequestParam(value = "token", required = false) String token,
+		@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+		@RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
+		@RequestParam("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime
+	) {
 
-		reservationService.editReservation(reservationEditRequestDto);
+		reservationService.validateQr(token);
+		List<Integer> tableNumbers = reservationService.getListNotReservedTableNumber(restaurantId, date, startTime,
+			endTime);
+		ResponseDto<List<Integer>> responseDto = ResponseDto.<List<Integer>>builder()
+			.status(HttpStatus.OK.value())
+			.message("예약 가능 테이블 번호 목록")
+			.data(tableNumbers)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	/**
+	 * 예약을 취소하는 API
+	 *
+	 * @param reservationId 예약 아이디
+	 * @return
+	 */
+	@Operation(summary = "예약 취소 API")
+	@DeleteMapping("/reservations/{reservationId}")
+	@Transactional
+	public ResponseEntity<ResponseDto<Void>> removeReservation(
+		@PathVariable(value = "reservationId", required = false) Long reservationId) {
+
+		reservationService.removeReservation(reservationId);
 		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
 			.status(HttpStatus.OK.value())
 			.message("예약이 취소되었습니다.")
@@ -187,6 +227,34 @@ public class ReservationController {
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
+	/**
+	 * 예약 후 퇴실하는 API
+	 *
+	 * @param urlValidationRequestDto 예약 Url 정보
+	 * @return
+	 */
+	@Operation(summary = "예약 퇴실 API")
+	@PatchMapping("/public/reservations")
+	@Transactional
+	public ResponseEntity<ResponseDto<Void>> editReservation(
+		@Valid @RequestBody UrlValidationRequestDto urlValidationRequestDto) {
+
+		reservationService.editReservation(urlValidationRequestDto);
+		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+			.status(HttpStatus.OK.value())
+			.message("퇴실이 완료되었습니다.")
+			.data(null)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	/**
+	 * 비회원용 매장 입장 QR 생성 API
+	 *
+	 * @param qrGenerateRequestDto
+	 * @return
+	 */
 	@Operation(summary = "비회원 매장 입장 QR 생성 API")
 	@PostMapping("/public/restaurant/qr")
 	public Object generateEnterQrcode(

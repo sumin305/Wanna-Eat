@@ -7,9 +7,10 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class CartElementRegisterResponseDto {
+public class CartElementResponseDto {
 
+	private Long reservationParticipantId;
 	private String reservationParticipantNickname;
-	private Map<Long, CartMenuRegisterResponseDto> menuInfo;
+	private Map<Long, CartMenuResponseDto> menuInfo;
 	private int participantTotalPrice;
 }

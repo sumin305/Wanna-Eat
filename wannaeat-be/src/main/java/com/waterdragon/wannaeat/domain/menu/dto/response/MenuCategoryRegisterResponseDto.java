@@ -7,6 +7,6 @@ import lombok.Getter;
 @Builder
 public class MenuCategoryRegisterResponseDto {
 
-	private Long menuCategoryId;
 	private String menuCategoryName;
+	private Long restaurantId;
 }

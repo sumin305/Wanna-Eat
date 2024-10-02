@@ -2,6 +2,7 @@ package com.waterdragon.wannaeat.domain.user.domain;
 
 import java.util.List;
 
+import com.waterdragon.wannaeat.domain.alarm.domain.Alarm;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.restaurantlike.domain.RestaurantLike;
@@ -65,6 +66,9 @@ public class User {
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<Restaurant> restaurants;
+
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<Alarm> alarms;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<Reservation> reservations;

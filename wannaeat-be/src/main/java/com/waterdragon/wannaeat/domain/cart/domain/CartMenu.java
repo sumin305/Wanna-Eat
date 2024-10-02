@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartMenu {
+	private Long menuId;
 	private String menuName;
 	private String menuImage;
 	private int menuPrice;

@@ -13,10 +13,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.waterdragon.wannaeat.domain.order.domain.Order;
+import com.waterdragon.wannaeat.domain.order.repository.OrderRepository;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.domain.ReservationTable;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
-import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationEditRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
@@ -25,7 +26,10 @@ import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationRes
 import com.waterdragon.wannaeat.domain.reservation.exception.error.AlreadyCancelledReservationException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.DuplicateReservationTableException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.FailureGenerateQrCodeException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.InvalidQrTokenException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.QrTokenNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.UnpaidOrderExistsException;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationTableRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
@@ -44,7 +48,6 @@ import com.waterdragon.wannaeat.global.redis.service.RedisService;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
 import com.waterdragon.wannaeat.global.util.QrUtil;
 
-import io.grpc.internal.InternalServer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,6 +60,7 @@ public class ReservationServiceImpl implements ReservationService {
 	private final AuthUtil authUtil;
 	private final QrUtil qrUtil;
 	private final RedisService redisService;
+	private final OrderRepository orderRepository;
 	@Value("${redirectURL}")
 	private String REDIRECT_URL;
 
@@ -275,6 +279,45 @@ public class ReservationServiceImpl implements ReservationService {
 		return qr;
 	}
 
+	@Override
+	public Restaurant validateQr(String token) {
+		if (token == null || token.isEmpty()) {
+			throw new QrTokenNotFoundException("입장 코드가 존재하지 않습니다.");
+		}
+
+		// Redis에서 값을 가져오기 (Object로 받아서 타입 확인)
+		Object redisValueObject = redisService.getValues(token);
+
+		// redisValue가 null인지 확인
+		if (redisValueObject == null) {
+			throw new InvalidQrTokenException("인증코드가 만료되었습니다.");
+		}
+
+		// redisValue를 String으로 변환 (Integer 타입일 경우 처리)
+		String redisValue;
+		if (redisValueObject instanceof Integer) {
+			redisValue = String.valueOf(redisValueObject);
+		} else if (redisValueObject instanceof String) {
+			redisValue = (String)redisValueObject;
+		} else {
+			throw new InvalidQrTokenException("인증코드 형식이 올바르지 않습니다.");
+		}
+
+		// restaurantId가 Long 형식으로 저장되어 있을 경우 String을 Long으로 변환
+		Long restaurantId;
+		try {
+			restaurantId = Long.parseLong(redisValue);
+		} catch (NumberFormatException e) {
+			throw new InvalidQrTokenException("인증코드 형식이 올바르지 않습니다.");
+		}
+
+		// restaurantId를 기반으로 식당 찾기
+		Restaurant restaurant = restaurantRepository.findByRestaurantId(restaurantId)
+			.orElseThrow(() -> new RestaurantNotFoundException("해당 식당이 존재하지 않습니다."));
+
+		return restaurant;
+	}
+
 	/**
 	 * 로그인한 고객의 예약 내역을 받아오는 메소드
 	 *
@@ -335,14 +378,16 @@ public class ReservationServiceImpl implements ReservationService {
 	/**
 	 * 예약을 취소하는 메소드
 	 *
-	 * @param reservationEditRequestDto 취소 예약 정보
+	 * @param reservationId 취소 예약 아이디
 	 */
 	@Override
-	public void editReservation(ReservationEditRequestDto reservationEditRequestDto) {
+	public void removeReservation(Long reservationId) {
+		if (reservationId == null) {
+			throw new ReservationNotFoundException("해당 예약이 존재하지 않습니다.");
+		}
 		User user = authUtil.getAuthenticatedUser();
 
-		Reservation reservation = reservationRepository.findByReservationIdWithLock(
-				reservationEditRequestDto.getReservationId())
+		Reservation reservation = reservationRepository.findByReservationIdWithLock(reservationId)
 			.orElseThrow(() -> new ReservationNotFoundException(
 				"해당 예약이 존재하지 않습니다."));
 
@@ -367,9 +412,32 @@ public class ReservationServiceImpl implements ReservationService {
 		reservationTableRepository.deleteAll(reservationTables);
 
 		// 예약 정보 수정 후 저장
-		reservation.edit();
+		reservation.remove();
 		log.info(reservation.toString());
 		reservationRepository.save(reservation);
+	}
+
+	/**
+	 * 식사 후 퇴실하는 메소드
+	 *
+	 * @param urlValidationRequestDto 예약 URL 정보
+	 */
+	@Override
+	public void editReservation(UrlValidationRequestDto urlValidationRequestDto) {
+		Reservation reservation = reservationRepository.findByReservationUrlWithLock(
+				urlValidationRequestDto.getReservationUrl())
+			.orElseThrow(() -> new ReservationNotFoundException(
+				"유효하지 않거나, 이미 퇴실한 URL 입니다."));
+
+		List<Order> orders = orderRepository.findIncompleteOrdersByReservation(reservation);
+
+		if (!orders.isEmpty()) {
+			throw new UnpaidOrderExistsException("미결제된 주문이 존재합니다.");
+		}
+
+		reservation.edit();
+		reservationRepository.save(reservation);
+
 	}
 
 	/**

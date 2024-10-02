@@ -4,60 +4,47 @@ import { ReactComponent as RoundTableIcon } from '../../../../../assets/icons/ma
 import { ReactComponent as RestroomIcon } from '../../../../../assets/icons/manager/restaurant/restroom.svg';
 import { ReactComponent as CounterIcon } from '../../../../../assets/icons/manager/restaurant/cashier.svg';
 import { ReactComponent as EntranceIcon } from '../../../../../assets/icons/manager/restaurant/door.svg';
+import { ReactComponent as KitchenIcon } from '../../../../../assets/icons/manager/restaurant/kitchen.svg';
 
 import { ReactComponent as ArrowLeftIcon } from '../../../../../assets/icons/manager/restaurant/arrow-left.svg';
 import { ReactComponent as ArrowRIghtIcon } from '../../../../../assets/icons/manager/restaurant/arrow-right.svg';
 
 const paletteItems = [
   {
-    id: 1,
+    itemId: 1,
+    itemType: 'square',
     label: '사각 테이블',
     icon: SquareTableIcon,
   },
   {
-    id: 2,
+    itemId: 2,
+    itemType: 'rounded',
     label: '원형 테이블',
     icon: RoundTableIcon,
   },
   {
-    id: 3,
+    itemId: 3,
+    itemType: 'restroom',
     label: '화장실',
     icon: RestroomIcon,
   },
   {
-    id: 4,
+    itemId: 4,
+    itemType: 'counter',
     label: '계산대',
     icon: CounterIcon,
   },
   {
-    id: 5,
+    itemId: 5,
+    itemType: 'entrance',
     label: '출입구',
     icon: EntranceIcon,
   },
   {
-    id: 1,
-    label: '사각 테이블',
-    icon: SquareTableIcon,
-  },
-  {
-    id: 2,
-    label: '원형 테이블',
-    icon: RoundTableIcon,
-  },
-  {
-    id: 3,
-    label: '화장실',
-    icon: RestroomIcon,
-  },
-  {
-    id: 4,
-    label: '계산대',
-    icon: CounterIcon,
-  },
-  {
-    id: 5,
-    label: '출입구',
-    icon: EntranceIcon,
+    itemId: 6,
+    itemType: 'kitchen',
+    label: '주방',
+    icon: KitchenIcon,
   },
 ];
 
@@ -99,7 +86,7 @@ const PaletteItemStyled = styled.div`
   flex: 0 0 auto;
   scroll-snap-align: start;
   opacity: ${(props) => (props.isDragging ? 0.5 : 1)};
-  touch-action: none;
+  /* touch-action: none; */
 
   @media (min-width: 480px) {
     width: 80px;

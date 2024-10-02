@@ -18,7 +18,7 @@ const OrderMainPage = () => {
     chatPage,
     chatSize,
   } = useChatStore();
-  const { allMenus, setAllMenus } = useOrderStore();
+  const { allMenusInfo, setAllMenusInfo } = useOrderStore();
   const nav = useNavigate();
   const params = useParams();
   const reservationUrl = params.url;
@@ -99,13 +99,13 @@ const OrderMainPage = () => {
   const fetchOrderData = async () => {
     const allOrderData = await getOrderData(reservationUrl, chatPage, chatSize);
     console.log('메인페이지 불러온 데이터:', allOrderData.data);
-    console.log(
-      '전체 메뉴들:',
-      allOrderData.data.cartDetailResponseDto.cartElements
-    );
+    // console.log(
+    //   '전체 메뉴들:',
+    //   allOrderData.data.cartDetailResponseDto.cartElements
+    // );
     // 전체 메뉴 리스트 저장
-    setAllMenus(allOrderData.data.cartDetailResponseDto.cartElements);
-    console.log('zustand allMenus:', allMenus);
+    setAllMenusInfo(allOrderData.data);
+    console.log('zustand allMenus:', allMenusInfo);
   };
 
   // 모든 주문 데이터 불러오기

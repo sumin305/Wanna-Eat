@@ -10,8 +10,8 @@ import ManagerMainPage from '../pages/manager/main/MainPage';
 import AdminPage from '../pages/manager/reservation/AdminPage';
 import SeatDecoratePage from '../pages/manager/restaurant/SeatDecoratePage/SeatDecoratePage.jsx';
 import RestaurantViewPage from '../pages/manager/restaurant/RestaurantViewPage';
-import StatisticsPage from '../pages/manager/statistics/StatisticsPage';
 import RestaurantRegistPage from '../pages/manager/restaurant/RestaurantRegistPage/RestaurantRegistPage.jsx';
+import StatisticsPage from 'pages/manager/statistics/StatisticsPage/StatisticsPage.jsx';
 
 // 손님 관련 페이지
 import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';

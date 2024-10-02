@@ -180,6 +180,7 @@ public class OrderServiceImpl implements OrderService {
 				.reservationId(order.getReservation().getReservationId())
 				.menuId(order.getMenu().getMenuId())
 				.menuName(order.getMenu().getName())
+				.menuPrice(order.getMenu().getPrice())
 				.menuImage(order.getMenu().getImage())
 				.reservationParticipantId(order.getReservationParticipant().getReservationParticipantId())
 				.reservationParticipantNickname(order.getReservationParticipant().getReservationParticipantNickName())

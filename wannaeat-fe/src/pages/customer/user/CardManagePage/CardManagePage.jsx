@@ -60,10 +60,17 @@ const CardManagePage = () => {
     setActiveIcons([]);
   }, []);
 
+  const handleCardRegistButtonClick = () => {
+    navigate('/customer/card-regist');
+  };
   return (
     <CardManagePageContainer>
       <ButtonWrapper>
-        <Button size="long" outlined={'true'}>
+        <Button
+          size="long"
+          outlined={'true'}
+          onClick={handleCardRegistButtonClick}
+        >
           카드 추가하기
         </Button>
       </ButtonWrapper>

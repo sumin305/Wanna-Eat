@@ -17,9 +17,8 @@ export default function useCountDownTimer(targetTime: string) {
       const days = String(duration.days()).padStart(2, '0'); //padStart(목표문자열길이,모자라면채워지는값)
       const hours = String(duration.hours()).padStart(2, '0');
       const minutes = String(duration.minutes()).padStart(2, '0');
-      const seconds = String(duration.seconds()).padStart(2, '0');
 
-      setRemaingTime(`${days}:${hours}:${minutes}:${seconds}`);
+      setRemaingTime(`${days}:${hours}:${minutes}`);
       // setRemaingTime(`${hours}: ${minutes}: ${seconds}`);
     };
 

@@ -53,6 +53,42 @@ export const getCreditCardList = async () => {
     .catch((error) => error);
 };
 
+export const getCreditCardIssuerList = async () => {
+  return await ssafyClient
+    .post('/api/v1/edu/creditCard/inquireCardIssuerCodesList', {
+      Header: Header('inquireCardIssuerCodesList'),
+    })
+    .then((result) => result)
+    .catch((error) => error);
+};
+
+// 카드 상품 생성
+export const createCreditCardProduct = async (
+  cardIssuerCode,
+  cardName,
+  baselinePerformance,
+  maxBenefitLimit,
+  cardDescription,
+  cardBenefits,
+  categoryId,
+  discountRate
+) => {
+  return await ssafyClient
+    .post('/api/v1/edu/creditCard/createCreditCardProduct', {
+      Header: Header('createCreditCardProduct'),
+      cardIssuerCode: cardIssuerCode,
+      cardName: cardName,
+      baselinePerformance: baselinePerformance,
+      maxBenefitLimit: maxBenefitLimit,
+      cardDescription: cardDescription,
+      cardBenefits: cardBenefits,
+      categoryId: categoryId,
+      discountRate: discountRate,
+    })
+    .then((result) => result)
+    .catch((error) => error);
+};
+
 // 카드 생성
 export const createCreditCard = async (
   cardUniqueNo = '1001-fc77272400f44a6',

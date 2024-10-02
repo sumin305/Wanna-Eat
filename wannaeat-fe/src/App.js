@@ -6,7 +6,7 @@ import Main from './Main';
 
 import { requestPermission } from './firebase/firebaseCloudMessaging';
 import { getRestaurantCategories } from 'api/customer/restaurant.js';
-
+import { getMerchantCategories } from 'api/common/ssafyPay/card.js';
 const globalStyles = css`
   @font-face {
     font-family: 'Paperlogy-5Regular';
@@ -55,6 +55,7 @@ const getCategories = async () => {
   // setCategories(data.categories);
 };
 getCategories();
+getMerchantCategories();
 function App() {
   return (
     <BrowserRouter>

@@ -93,15 +93,18 @@ const ReservationAlertTime = styled.p`
 const ReservationLastTime = styled.p`
   color: ${theme.color.primary};
   font-weight: 900;
-  font-size: 1.5rem;
+  font-size: 2rem;
   margin-right: 0.5rem;
 
   @media (min-width: 480px) {
-    font-size: 2rem;
+    font-size: 3rem;
   }
 `;
 const ReservationTimeInfo = styled.p`
   font-size: ${theme.fontSize.px13};
+  @media (min-width: 480px) {
+    font-size: 1rem;
+  }
 `;
 
 const ReservationiInfoButtonWrapper = styled.div`

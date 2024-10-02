@@ -56,7 +56,7 @@ const TextFieldWrapperButton = styled.button`
   border-radius: 5px;
   width: 3rem;
   height: 5.5vh;
-  &: hover {
+  &:hover {
     background: ${theme.color.primary};
     color: white;
   }

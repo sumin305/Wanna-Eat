@@ -31,61 +31,89 @@ import searchIcon from '../../../../assets/icons/common/search.svg';
 import tableIcon from '../../../../assets/icons/common/table.svg';
 import arrowRightIcon from '../../../../assets/icons/common/arrow-right.svg';
 import blackArrowRightIcon from '../../../../assets/icons/common/black-arrow-right.svg';
-import bossamIcon from '../../../../assets/icons/food/bossam.svg';
 import foodImage from '../../../../assets/icons/common/food.png';
 import { useNavigate } from 'react-router-dom';
-import useCommonStore, {
-  ROLE,
-} from '../../../../stores/common/useCommonStore.js';
-
+import useMapFilterStore from 'stores/map/useMapFilterStore.js';
+import { getMyReservation } from 'api/customer/reservation.js';
 const MainPage = () => {
+  const { setKeyword, keyword } = useMapFilterStore();
   const { setIsShowLogo, setActiveIcons, setPageName } = useHeaderStore();
   const navigate = useNavigate();
   const [restaurantCategories, setRestaurantCategories] = useState([]);
-  const recentlyReservedRestaurants = [
-    {
-      index: 0,
-      restaurantName: '싸덱스 식당1',
-      restaurantImage: foodImage,
-      myReservationCount: 5,
-      totalReservationCount: 200,
-    },
-    {
-      index: 1,
-      restaurantName: '싸덱스 식당2',
-      restaurantImage: foodImage,
-      myReservationCount: 2,
-      totalReservationCount: 45,
-    },
-    {
-      index: 2,
-      restaurantName: '싸덱스 식당3',
-      restaurantImage: foodImage,
-      myReservationCount: 4,
-      totalReservationCount: 123,
-    },
-  ];
+  const [recentlyReservedRestaurants, setRecentlyReservedRestaurants] =
+    useState([]);
+  //    = [
+  //   {
+  //     index: 0,
+  //     restaurantName: '싸덱스 식당1',
+  //     restaurantImage: foodImage,
+  //     myReservationCount: 5,
+  //     totalReservationCount: 200,
+  //   },
+  //   {
+  //     index: 1,
+  //     restaurantName: '싸덱스 식당2',
+  //     restaurantImage: foodImage,
+  //     myReservationCount: 2,
+  //     totalReservationCount: 45,
+  //   },
+  //   {
+  //     index: 2,
+  //     restaurantName: '싸덱스 식당3',
+  //     restaurantImage: foodImage,
+  //     myReservationCount: 4,
+  //     totalReservationCount: 123,
+  //   },
+  // ];
 
   useEffect(() => {
+    const fetchMyReservationList = async () => {
+      const result = await getMyReservation();
+      console.log(result);
+
+      if (result.status === 200) {
+        console.log('내 예약 정보 불러오기 성공');
+        setRecentlyReservedRestaurants(result.data.content);
+      } else {
+        console.log('내 예약 정보 불러오기 실패');
+      }
+    };
     setPageName('');
     setIsShowLogo(true);
     setActiveIcons([0]);
     setRestaurantCategories(JSON.parse(localStorage.getItem('categories')));
+    fetchMyReservationList();
   }, []);
 
-  const handleReservationButtonClick = (e) => {
+  const handleSearchKeywordChange = (e) => {
+    setKeyword(e.target.value);
+  };
+  const handleSearchIconClick = () => {
+    navigate('/customer/reservation');
+  };
+  const handleClickCategoryItem = (category) => {
+    navigate('/customer/reservation');
+  };
+  const handleReservationButtonClick = () => {
     navigate('/customer/reservation');
   };
 
-  const handleReservationListButtonClick = (e) => {
+  const handleReservationListButtonClick = () => {
     navigate('/customer/reservationlist');
   };
 
   return (
     <MainPageContainer>
       <SearchWrapper>
-        <SearchInput placeholder="메뉴, 식당, 지역 검색" />
-        <SearchIcon src={searchIcon}></SearchIcon>
+        <SearchInput
+          value={keyword}
+          onChange={handleSearchKeywordChange}
+          placeholder="메뉴, 식당, 지역 검색"
+        />
+        <SearchIcon
+          onClick={handleSearchIconClick}
+          src={searchIcon}
+        ></SearchIcon>
       </SearchWrapper>
       <BannerWrapper>
         <BannerImage src={tableIcon} />
@@ -107,8 +135,13 @@ const MainPage = () => {
         <CategoryTitle>무엇을 드시고 싶으세요?</CategoryTitle>
         <CategoryContainer>
           {restaurantCategories.map((category) => (
-            <div key={category.restaurantCategoryId}>
-              <CategoryImage src={bossamIcon} />
+            <div
+              key={category.restaurantCategoryId}
+              onClick={() =>
+                handleClickCategoryItem(category.restaurantCategoryName)
+              }
+            >
+              <CategoryImage src={category.restaurantCategoryImage} />
               <CategoryName>{category.restaurantCategoryName}</CategoryName>
             </div>
           ))}

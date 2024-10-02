@@ -168,6 +168,10 @@ const OrderMainBox = ({ reservationUrl }) => {
     nav(`/customer/menu-select/${reservationUrl}`);
   };
 
+  const handleOrderSheetButtonClick = () => {
+    nav(`/customer/order-sheet/${reservationUrl}`);
+  };
+
   return (
     <OrderContainer>
       <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -267,7 +271,9 @@ const OrderMainBox = ({ reservationUrl }) => {
               추가 주문
             </WEButton>
           </ButtonWrapper>
-          <WEButton>결제하기</WEButton>
+          <WEButton onClick={handleOrderSheetButtonClick}>
+            결제내역보기
+          </WEButton>
         </ButtonContainer>
       ) : (
         // 예약시간 전

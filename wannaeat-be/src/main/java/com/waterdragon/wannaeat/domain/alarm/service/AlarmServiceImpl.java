@@ -1,18 +1,17 @@
 package com.waterdragon.wannaeat.domain.alarm.service;
 
-import com.waterdragon.wannaeat.domain.alarm.dto.response.AlarmGetResponseDto;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import com.waterdragon.wannaeat.domain.alarm.domain.Alarm;
 import com.waterdragon.wannaeat.domain.alarm.domain.repository.AlarmRepository;
 import com.waterdragon.wannaeat.domain.alarm.dto.request.AlarmRegisterRequestDto;
+import com.waterdragon.wannaeat.domain.alarm.dto.response.AlarmGetResponseDto;
 import com.waterdragon.wannaeat.domain.user.repository.UserRepository;
 import com.waterdragon.wannaeat.global.fcm.service.FcmService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -25,13 +24,13 @@ public class AlarmServiceImpl implements AlarmService {
 
 	@Override
 	public void registerAlarm(AlarmRegisterRequestDto alarmRegisterRequestDto) {
-//		Alarm alarm = alarmRepository.save(Alarm.builder()
-//			.user(userRepository.findByUserId(alarmRegisterRequestDto.getUserId()).get())
-//			.type(alarmRegisterRequestDto.getAlarmType())
-//			.message(alarmRegisterRequestDto.getMessage())
-//			.moveCategory(alarmRegisterRequestDto.getMoveCategory())
-//			.moveCategoryId(alarmRegisterRequestDto.getMoveCategoryId())
-//			.build());
+		//		Alarm alarm = alarmRepository.save(Alarm.builder()
+		//			.user(userRepository.findByUserId(alarmRegisterRequestDto.getUserId()).get())
+		//			.type(alarmRegisterRequestDto.getAlarmType())
+		//			.message(alarmRegisterRequestDto.getMessage())
+		//			.moveCategory(alarmRegisterRequestDto.getMoveCategory())
+		//			.moveCategoryId(alarmRegisterRequestDto.getMoveCategoryId())
+		//			.build());
 
 		// String token = alarm.getUser().getUserToken().getFcmToken();
 		// if (token != null && !token.isEmpty()) {

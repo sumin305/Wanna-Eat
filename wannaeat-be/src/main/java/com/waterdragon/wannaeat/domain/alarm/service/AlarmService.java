@@ -1,9 +1,9 @@
 package com.waterdragon.wannaeat.domain.alarm.service;
 
+import java.util.List;
+
 import com.waterdragon.wannaeat.domain.alarm.dto.request.AlarmRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.alarm.dto.response.AlarmGetResponseDto;
-
-import java.util.List;
 
 public interface AlarmService {
 

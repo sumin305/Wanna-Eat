@@ -20,11 +20,13 @@ import {
   CardInfoText,
   CardRegistButton,
 } from './CardRegistPage';
+import { useNavigate } from 'react-router-dom';
 
 const CardRegistPage = () => {
   const { cardList, setCardIssuerList, setCardList } = useCardStore();
   const { setPageName, setIsShowBackIcon, setActiveIcons } = useHeaderStore();
   const alert = useAlert();
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       const cardIssuerRest = await getCreditCardIssuerList();
@@ -51,8 +53,6 @@ const CardRegistPage = () => {
     setPageName('카드 추가');
     setIsShowBackIcon(true);
     setActiveIcons([]);
-    console.log(cardList);
-    console.log('cardMaps', cardMaps);
   }, []);
 
   const getPriceInfo = (price) => {
@@ -67,8 +67,8 @@ const CardRegistPage = () => {
     const result = await createCreditCard(cardUniqueNo);
     if (result.status === 200) {
       alert('카드 추가에 성공했습니다.');
+      navigate('/customer/card-manage');
     }
-    console.log('카드 추가 결과', result);
   };
   return (
     <CardRegistPageContainer>

@@ -14,6 +14,8 @@ import lombok.Getter;
 @Builder
 public class ShareDataResponseDto {
 
+	private Long restaurantId;
+	private Long reservationId;
 	private LocalDate reservationDate;
 	private LocalTime reservationStartTime;
 	private LocalTime reservationEndTime;

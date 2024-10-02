@@ -5,6 +5,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -13,9 +15,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.waterdragon.wannaeat.domain.cart.exception.error.ReservationParticipantNotMatchReservationException;
 import com.waterdragon.wannaeat.domain.order.domain.Order;
 import com.waterdragon.wannaeat.domain.order.repository.OrderRepository;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
+import com.waterdragon.wannaeat.domain.reservation.domain.ReservationParticipant;
 import com.waterdragon.wannaeat.domain.reservation.domain.ReservationTable;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
@@ -29,7 +33,9 @@ import com.waterdragon.wannaeat.domain.reservation.exception.error.FailureGenera
 import com.waterdragon.wannaeat.domain.reservation.exception.error.InvalidQrTokenException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.QrTokenNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationParticipantNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.UnpaidOrderExistsException;
+import com.waterdragon.wannaeat.domain.reservation.repository.ReservationParticipantRepository;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationTableRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
@@ -77,10 +83,11 @@ public class ReservationServiceImpl implements ReservationService {
 	private final RestaurantRepository restaurantRepository;
 	private final UserRepository userRepository;
 	private final ReservationTableRepository reservationTableRepository;
+	private final ReservationParticipantRepository reservationParticipantRepository;
 
 	@Override
 	@Transactional
-	public UrlValidationResponseDto validateUrl(UrlValidationRequestDto urlValidationRequestDto) {
+	public UrlValidationResponseDto validateUrl(UrlValidationRequestDto urlValidationRequestDto, String participantIdFromCookie) {
 
 		log.info("예약 url : " + urlValidationRequestDto.getReservationUrl());
 		Reservation reservation = reservationRepository.findByReservationUrl(
@@ -88,8 +95,44 @@ public class ReservationServiceImpl implements ReservationService {
 			.orElseThrow(() -> new ReservationNotFoundException(
 				"해당 예약은 만료되었거나, 퇴실 완료 처리 되었습니다. reservationUrl : " + urlValidationRequestDto.getReservationUrl()));
 
+		ReservationParticipant reservationParticipant;
+
+		if (participantIdFromCookie != null) {
+			Long reservationParticipantId = Long.parseLong(participantIdFromCookie);
+			reservationParticipant = reservationParticipantRepository.findByReservationParticipantId(reservationParticipantId)
+				.orElseThrow(() -> new ReservationParticipantNotFoundException("해당 참가자가 존재하지 않습니다."));
+
+			if (!reservation.getReservationId().equals(reservationParticipant.getReservation().getReservationId())) {
+				throw new ReservationParticipantNotMatchReservationException("해당 예약의 참가자가 아닙니다. 예약 id : " + reservation.getReservationId() + "예약 참가자 id : " + reservationParticipant.getReservationParticipantId());
+			}
+		} else {
+			// 쿠키가 없다면 새로운 참가자 생성
+			String[] prefixData = {"이상한", "까부는", "춤추는", "노래하는", "신난", "슬픈"};
+			String[] suffixData = {"엘레나", "리오넬", "크레이지", "다리우스", "루비", "세바스찬"};
+
+			// 랜덤으로 앞,뒤 선택
+			String randomPrefix = prefixData[new Random().nextInt(prefixData.length)];
+			String randomSuffix = suffixData[new Random().nextInt(suffixData.length)];
+
+			// UUID 생성 후 4~6자리만 사용
+			String uuid = UUID.randomUUID().toString().replace("-", "").substring(0, 6); // 6자리 UUID 사용
+
+			// "앞 + 뒤 + UUID" 형식의 닉네임 생성
+			String fullNickname = randomPrefix + " " + randomSuffix + uuid;
+
+			reservationParticipant = ReservationParticipant.builder()
+				.reservation(reservation)
+				.reservationParticipantNickName(fullNickname) // DB에는 전체 닉네임을 저장
+				.build();
+
+			// DB에 저장
+			reservationParticipant = reservationParticipantRepository.save(reservationParticipant);
+		}
+
 		return UrlValidationResponseDto.builder()
 			.reservationId(reservation.getReservationId())
+			.reservationParticipantId(reservationParticipant.getReservationParticipantId())
+			.reservationParticipantNickname(reservationParticipant.getReservationParticipantNickName())
 			.build();
 	}
 

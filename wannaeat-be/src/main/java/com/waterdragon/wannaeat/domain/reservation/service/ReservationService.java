@@ -18,7 +18,7 @@ import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 
 public interface ReservationService {
 
-	UrlValidationResponseDto validateUrl(UrlValidationRequestDto urlValidationRequestDto);
+	UrlValidationResponseDto validateUrl(UrlValidationRequestDto urlValidationRequestDto, String participantIdFromCookie);
 
 	ReservationDetailResponseDto registerReservation(ReservationRegisterRequestDto reservationRegisterRequestDto);
 

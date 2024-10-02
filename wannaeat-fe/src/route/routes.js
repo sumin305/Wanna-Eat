@@ -12,6 +12,8 @@ import SeatDecoratePage from '../pages/manager/restaurant/SeatDecoratePage/SeatD
 import RestaurantViewPage from '../pages/manager/restaurant/RestaurantViewPage';
 import StatisticsPage from '../pages/manager/statistics/StatisticsPage';
 import RestaurantRegistPage from '../pages/manager/restaurant/RestaurantRegistPage/RestaurantRegistPage.jsx';
+import NotificationPage from '../pages/manager/notification/NotificationPage.jsx';
+import ReservationDetailPage from '../pages/manager/reservation/ReservationDetailPage.jsx';
 
 // 손님 관련 페이지
 import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
@@ -57,6 +59,15 @@ const AppRoutes = () => {
           element={<RestaurantViewPage />}
         />
         <Route path="/manager/statistics" element={<StatisticsPage />} />
+
+
+        <Route path="/manager/notification" element={<NotificationPage/>} />
+        <Route
+          path="/manager/reservation/reservation-detail/:id"
+          element={<ReservationDetailPage />} 
+        />
+
+
         <Route path="/customer" element={<CustomerMainPage />} />
         <Route path="/customer/reservation" element={<MapRestaurantPage />} />
         <Route

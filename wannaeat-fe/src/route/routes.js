@@ -18,7 +18,8 @@ import ReservationDetailPage from '../pages/manager/reservation/ReservationDetai
 // 손님 관련 페이지
 import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
 import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage.jsx';
-import ListPage from '../pages/customer/reservation/history/ReservationListPage/ReservationListPage.jsx';
+import ReservationListPage from '../pages/customer/reservation/history/ReservationListPage/ReservationListPage.jsx';
+import ReservationDetailPage from '../pages/customer/reservation/history/ReservationDetailPage/ReservationDetailPage.jsx';
 import MyInfoPage from '../pages/customer/user/MyInfoPage/MyInfoPage.jsx';
 import RestaurantDetailPage from '../pages/customer/reservation/process/RestaurantDetailPage/RestaurantDetailPage.jsx';
 import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage/TimeSelectPage.jsx';
@@ -36,7 +37,7 @@ import CardManagePage from '../pages/customer/user/CardManagePage/CardManagePage
 import CardRegistPage from '../pages/customer/user/CardRegistPage/CardRegistPage.jsx';
 import NicknameEditPage from '../pages/customer/user/NicknameEditPage/NicknameEditPage.jsx';
 import MyZzimPage from '../pages/customer/user/MyZzimPage/MyZzimPage.jsx';
-
+import PasswordAuthPage from 'pages/customer/reservation/process/PasswordAuthPage/PasswordAuthPage.jsx';
 // 비회원 관련 페이지
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';
 
@@ -91,8 +92,17 @@ const AppRoutes = () => {
           path="/customer/reservation/fingerprint-auth"
           element={<FingerprintAuthPage />}
         />
+        <Route path="/customer/password-auth" element={<PasswordAuthPage />} />
         <Route path="/customer/reservation/success" element={<SuccessPage />} />
-        <Route path="/customer/reservationlist" element={<ListPage />} />
+        <Route
+          path="/customer/reservationlist"
+          element={<ReservationListPage />}
+        />
+        <Route
+          path="/customer/reservation/detail/:id"
+          element={<ReservationDetailPage />}
+        />
+
         <Route path="/customer/order/:url" element={<OrderMainPage />} />
         <Route path="/customer/order/chat/:url" element={<ChatPage />} />
         <Route

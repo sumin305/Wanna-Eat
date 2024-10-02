@@ -33,4 +33,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 		@Param("menu") Menu menu,
 		@Param("reservationParticipant") ReservationParticipant reservationParticipant
 	);
+
+	List<Order> findAllByReservation(Reservation reservation);
 }

@@ -1,4 +1,4 @@
-import { clientInstance } from 'utils/http-client';
+import { clientInstance, authClientInstance } from 'utils/http-client';
 
 // reservationUrl 유효성 검사
 export const validateReservationUrl = async (reservationUrl) => {
@@ -39,5 +39,17 @@ export const getMenuData = async (restaurantId) => {
     return result.data;
   } catch (error) {
     console.log('데이터 불러오기 실패', error);
+  }
+};
+
+// 장바구니 삭제 함수
+export const deleteCarts = async (reservationUrl) => {
+  try {
+    const result = await clientInstance.delete(
+      `/api/public/carts/${reservationUrl}`
+    );
+    console.log('장바구니 삭제 성공', result);
+  } catch (error) {
+    console.log('장바구니 삭제 실패', error);
   }
 };

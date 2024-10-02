@@ -4,7 +4,6 @@ import { validateReservationUrl } from 'api/customer/order';
 import useChatStore from 'stores/customer/useChatStore';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import OrderMainBox from 'component/customer/order/OrderMainBox.jsx';
 import useHeaderStore from 'stores/common/useHeaderStore';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 

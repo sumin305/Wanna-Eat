@@ -60,7 +60,7 @@ const OrderMainPage = () => {
     };
 
     validateAndConnect();
-  }, []);
+  }, [allMenusInfo]);
 
   const initializeConnection = () => {
     const socket = new SockJS(

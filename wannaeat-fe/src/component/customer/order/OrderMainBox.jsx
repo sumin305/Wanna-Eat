@@ -13,11 +13,13 @@ import WECheck from '../../common/check/WECheck.jsx';
 import theme from '../../../style/common/theme.js';
 import { useNavigate } from 'react-router-dom';
 import useOrderStore from '../../../stores/customer/useOrderStore.js';
+import DeleteButton from 'assets/icons/order/delete.svg';
+import { deleteCarts } from 'api/customer/order.js';
 
 const OrderMainBox = ({ reservationUrl }) => {
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ['나의 메뉴', '전체 메뉴'];
-  const { allMenusInfo } = useOrderStore();
+  const { allMenusInfo, setAllMenusInfo } = useOrderStore();
   const [isPrepared, setIsPrepared] = useState(false);
   const nav = useNavigate();
 
@@ -56,6 +58,14 @@ const OrderMainBox = ({ reservationUrl }) => {
     nav(`/customer/order/order-sheet/${reservationUrl}`);
   };
 
+  const handleMenuDeleteButtonClick = async (reservationUrl) => {
+    await deleteCarts(reservationUrl);
+
+    setAllMenusInfo({
+      cartDetailResponseDto: { cartElements: [], cartTotalPrice: 0 },
+    });
+  };
+
   return (
     <OrderContainer>
       <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -70,6 +80,7 @@ const OrderMainBox = ({ reservationUrl }) => {
               color={theme.color.disabled}
               borderColor={theme.color.disabled}
               fontSize={theme.fontSize.px11}
+              onClick={() => handleMenuDeleteButtonClick(reservationUrl)}
             >
               비우기
             </WEButton>

@@ -7,9 +7,13 @@ import com.waterdragon.wannaeat.domain.user.dto.request.UserEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.response.UserDetailResponseDto;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 public interface UserService {
 
 	void signup(UserSignupRequestDto userSignupRequestDto);
+
+	void signout(HttpServletResponse response);
 
 	UserDetailResponseDto getDetailMyUser();
 
@@ -23,5 +27,4 @@ public interface UserService {
 
 	void editFcmToken(FcmTokenEditRequestDto fcmTokenEditRequestDto);
 
-	void removeFcmToken(FcmTokenEditRequestDto fcmTokenEditRequestDto);
 }

@@ -93,13 +93,17 @@ const ChatPage = () => {
       console.log('연결상태:', isConnected);
       const chatdata = await getChatlist(reservationUrl, chatPage, chatSize);
       console.log(chatdata.data);
-      // 초기에 받은 데이터가 최신순이어서 순서를 바꾸고 chatMessages로 넣음
-      await setChatMessages(
-        chatdata.data.chatMessageListResponseDto.chatMessageDetailResponseDtos.content
-          .slice()
-          .reverse()
-      );
-      console.log('zustand chatMessages :', chatMessages);
+      if (chatdata) {
+        // 초기에 받은 데이터가 최신순이어서 순서를 바꾸고 chatMessages로 넣음
+        await setChatMessages(
+          chatdata.data.chatMessageListResponseDto.chatMessageDetailResponseDtos.content
+            .slice()
+            .reverse()
+        );
+        console.log('zustand chatMessages :', chatMessages);
+      } else {
+        console.log('채팅 데이터 없음');
+      }
     } else {
       console.log('채팅 메세지 불러오기 실패');
     }

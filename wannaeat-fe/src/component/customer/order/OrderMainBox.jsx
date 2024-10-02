@@ -9,7 +9,6 @@ import {
   CheckBox,
   CheckText,
 } from './OrderMainBox.js';
-// import useOrderStore from 'stores/customer/useOrderStore.js';
 import WECheck from '../../common/check/WECheck.jsx';
 import theme from '../../../style/common/theme.js';
 import { useNavigate } from 'react-router-dom';
@@ -165,11 +164,11 @@ const OrderMainBox = ({ reservationUrl }) => {
   const reservationParticipantId = 2;
 
   const handleMenuViewButtonClick = () => {
-    nav(`/customer/menu-select/${reservationUrl}`);
+    nav(`/customer/order/menu-select/${reservationUrl}`);
   };
 
   const handleOrderSheetButtonClick = () => {
-    nav(`/customer/order-sheet/${reservationUrl}`);
+    nav(`/customer/order/order-sheet/${reservationUrl}`);
   };
 
   return (
@@ -248,7 +247,7 @@ const OrderMainBox = ({ reservationUrl }) => {
                   <br />
                 </div>
               ))}
-              <p>총:{data.cartDetailResponseDto.cartTotalPrice}</p>
+              <p>총:{data.cartDetailResponseDto.cartTotalPrice || ''}</p>
             </div>
           </>
         )}

@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UrlValidationRequestDto {
 
-	@NotNull
-	private String reservationUrl;
+	@NotNull(message = "Url이 존재하지 않습니다.")
+	String reservationUrl;
 }

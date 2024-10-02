@@ -1,6 +1,5 @@
 package com.waterdragon.wannaeat.domain.menu.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,10 +25,9 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotF
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantCategoryRepository;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
-import com.waterdragon.wannaeat.global.exception.error.FileRemoveFailureException;
 import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
-import com.waterdragon.wannaeat.global.util.FileUtil;
+import com.waterdragon.wannaeat.global.util.S3Util;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +41,7 @@ public class MenuServiceImpl implements MenuService {
 	private final RestaurantRepository restaurantRepository;
 	private final MenuCategoryRepository menuCategoryRepository;
 	private final AuthUtil authUtil;
-	private final FileUtil fileUtil;
+	private final S3Util fileUtil;
 	private final MenuRepository menuRepository;
 	private final RestaurantCategoryRepository restaurantCategoryRepository;
 
@@ -77,12 +75,7 @@ public class MenuServiceImpl implements MenuService {
 		}
 
 		// 메뉴 사진 등록
-		String uploadedMenuImageFileName = null;
-		try {
-			uploadedMenuImageFileName = fileUtil.saveFile(multipartFile, "menus");
-		} catch (IOException e) {
-			log.error("파일 업로드 작업 실패 : {}", multipartFile.getOriginalFilename(), e);
-		}
+		String uploadedMenuImageFileName = fileUtil.uploadFile(multipartFile);
 
 		// Menu 엔티티 생성 후 저장
 		Menu menu = Menu.builder()
@@ -192,19 +185,14 @@ public class MenuServiceImpl implements MenuService {
 		}
 
 		// 기존 메뉴 사진 삭제
-		try {
-			fileUtil.removeFile("menus", menu.getImage());
-		} catch (IOException e) {
-			throw new FileRemoveFailureException("파일 삭제 실패. 파일 이름 : " + menu.getImage());
+		if (menu.getImage() != null) {
+			fileUtil.deleteFile(menu.getImage());
+			log.info("deleted file : " + menu.getImage());
 		}
 
 		// 새로운 메뉴 사진 등록
-		String uploadedMenuImageFileName = null;
-		try {
-			uploadedMenuImageFileName = fileUtil.saveFile(multipartFile, "menus");
-		} catch (IOException e) {
-			log.error("파일 업로드 작업 실패 : {}", multipartFile.getOriginalFilename(), e);
-		}
+		String uploadedMenuImageFileName = fileUtil.uploadFile(multipartFile);
+		log.info("uplaoded file : " + menu.getImage());
 
 		// 메뉴 엔티티 수정 후 저장
 		menu.update(menuCategory, menuEditRequestDto.getMenuName(), menuEditRequestDto.getMenuPrice(),
@@ -233,17 +221,8 @@ public class MenuServiceImpl implements MenuService {
 				user)
 			.orElseThrow(() -> new NotAuthorizedException("메뉴 삭제 권한 없음."));
 
-		// 메뉴 이미지 삭제
-		String menuImageFileName = menu.getImage();
-		if (menuImageFileName != null) {
-			try {
-				fileUtil.removeFile("menus", menuImageFileName);
-			} catch (IOException e) {
-				throw new FileRemoveFailureException("파일 삭제 실패. 파일 이름 : " + menuImageFileName);
-			}
-		}
-
 		// 메뉴 삭제
-		menuRepository.delete(menu);
+		menu.delete();
+		menuRepository.save(menu);
 	}
 }

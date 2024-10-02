@@ -15,7 +15,7 @@ import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepositor
 import com.waterdragon.wannaeat.domain.restaurantlike.domain.RestaurantLike;
 import com.waterdragon.wannaeat.domain.restaurantlike.dto.response.UserLikeDetailResponseDto;
 import com.waterdragon.wannaeat.domain.restaurantlike.dto.response.UserLikeListResponseDto;
-import com.waterdragon.wannaeat.domain.restaurantlike.exception.error.AlreadyLikeException;
+import com.waterdragon.wannaeat.domain.restaurantlike.exception.error.LikeDuplicateException;
 import com.waterdragon.wannaeat.domain.restaurantlike.exception.error.LikeNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurantlike.repository.RestaurantLikeRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
@@ -53,7 +53,7 @@ public class RestaurantLikeServiceImpl implements RestaurantLikeService {
 		// 이미 찜한 매장
 		restaurantLikeRepository.findByUserAndRestaurant(user, restaurant)
 			.ifPresent(like -> {
-				throw new AlreadyLikeException("이미 매장 찜이 등록되어있습니다.");
+				throw new LikeDuplicateException("이미 매장 찜이 등록되어있습니다.");
 			});
 
 		// 찜 등록
@@ -83,12 +83,14 @@ public class RestaurantLikeServiceImpl implements RestaurantLikeService {
 		for (RestaurantLike restaurantLike : restaurantLikes) {
 			Restaurant restaurant = restaurantLike.getRestaurant();
 
+			// 식당 이미지 최상단 1개만
 			Optional<RestaurantImage> restaurantImageUrlOptional = restaurantImageRepository.findTopByRestaurantOrderByImageIdAsc(
 				restaurant);
 			String restaurantImageUrl = restaurantImageUrlOptional
 				.map(RestaurantImage::getImageUrl)
 				.orElse("");
 
+			// 지금까지 내가 예약한 횟수 불러오기
 			int userReservationCnt = reservationRepository.countByUserAndRestaurant(user, restaurant);
 
 			UserLikeDetailResponseDto dto = UserLikeDetailResponseDto.builder()
@@ -96,7 +98,6 @@ public class RestaurantLikeServiceImpl implements RestaurantLikeService {
 				.restaurantName(restaurant.getName())
 				.restaurantDescription(restaurant.getDescription())
 				.restaurantImageUrl(restaurantImageUrl)
-				.restaurantLike(true) // 이미 좋아요 한 식당이므로 true 설정
 				.userReservationCnt(userReservationCnt)
 				.build();
 

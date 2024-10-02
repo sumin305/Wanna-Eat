@@ -78,8 +78,13 @@ public class Reservation {
 	@OneToMany(mappedBy = "reservation", fetch = FetchType.LAZY)
 	private List<Order> orders;
 
-	public void edit() {
+	public void remove() {
 		this.cancelled = true;
+	}
+
+	public void edit() {
+		this.reservationUrl = null;
+		this.endTime = LocalTime.now();
 	}
 
 }

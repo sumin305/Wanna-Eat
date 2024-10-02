@@ -1,12 +1,33 @@
 package com.waterdragon.wannaeat.domain.order.service;
 
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.waterdragon.wannaeat.domain.cart.domain.Cart;
+import com.waterdragon.wannaeat.domain.cart.domain.CartMenu;
+import com.waterdragon.wannaeat.domain.cart.exception.error.CartNotFoundException;
+import com.waterdragon.wannaeat.domain.menu.domain.Menu;
+import com.waterdragon.wannaeat.domain.menu.exception.error.MenuNotFoundException;
+import com.waterdragon.wannaeat.domain.menu.repository.MenuRepository;
 import com.waterdragon.wannaeat.domain.order.domain.Order;
 import com.waterdragon.wannaeat.domain.order.dto.request.OrderPaidCntEditRequestDto;
+import com.waterdragon.wannaeat.domain.order.dto.request.OrderRegisterRequestDto;
+import com.waterdragon.wannaeat.domain.order.dto.response.OrderRegisterResponseDto;
 import com.waterdragon.wannaeat.domain.order.exception.error.OrderNotFoundException;
 import com.waterdragon.wannaeat.domain.order.exception.error.TotalCntLowerThanPaidCntException;
 import com.waterdragon.wannaeat.domain.order.repository.OrderRepository;
+import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
+import com.waterdragon.wannaeat.domain.reservation.domain.ReservationParticipant;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationParticipantNotFoundException;
+import com.waterdragon.wannaeat.domain.reservation.repository.ReservationParticipantRepository;
+import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
+import com.waterdragon.wannaeat.domain.socket.domain.enums.SocketType;
+import com.waterdragon.wannaeat.global.redis.service.RedisService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +39,12 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderServiceImpl implements OrderService {
 
 	private final OrderRepository orderRepository;
+	private static final String CART_KEY_PREFIX = "cart_";
+	private final RedisService redisService;
+	private final ReservationParticipantRepository reservationParticipantRepository;
+	private final ReservationRepository reservationRepository;
+	private final MenuRepository menuRepository;
+	private final SimpMessageSendingOperations sendingOperations;
 
 	/**
 	 * 결제된 수량만큼 paid_cnt 수정 메소드
@@ -42,5 +69,90 @@ public class OrderServiceImpl implements OrderService {
 		// 결제 수량 paid_cnt 업데이트
 		order.updatePaidCnt(orderPaidCntEditRequestDto.getPaidMenuCnt());
 		orderRepository.save(order);
+	}
+
+	/**
+	 * 주문 넣기
+	 *
+	 * @param orderRegisterRequestDto 예약 url 정보
+	 */
+	@Override
+	@Transactional
+	public void registerOrder(OrderRegisterRequestDto orderRegisterRequestDto) {
+
+		boolean prepareRequest = false;
+		if (orderRegisterRequestDto.getPrepareRequest().equals(Boolean.TRUE)) {
+			prepareRequest = true;
+		}
+		String reservationUrl = orderRegisterRequestDto.getReservationUrl();
+
+		String cartKey = CART_KEY_PREFIX + reservationUrl;
+		Object cachedObject = redisService.getValues(cartKey);
+		ObjectMapper objectMapper = new ObjectMapper();
+		Cart cart = objectMapper.convertValue(cachedObject, Cart.class);
+
+		// Cart 존재 안함
+		if (cart == null) {
+			throw new CartNotFoundException("장바구니가 현재 존재하지 않습니다. 예약 url : " + reservationUrl);
+		}
+
+		Reservation reservation = reservationRepository.findByReservationUrl(reservationUrl)
+			.orElseThrow(
+				() -> new ReservationNotFoundException("해당 예약은 존재하지 않거나 퇴실처리되었습니다. 예약 url : " + reservationUrl));
+
+		for (Map.Entry<Long, Map<Long, CartMenu>> entry : cart.getCartElements().entrySet()) {
+			Long orderParticipantId = entry.getKey();
+			Map<Long, CartMenu> menuMap = entry.getValue();
+
+			ReservationParticipant reservationParticipant = reservationParticipantRepository.findByReservationParticipantId(
+					orderParticipantId)
+				.orElseThrow(() -> new ReservationParticipantNotFoundException(
+					"해당 예약 참가자 id의 참가자가 존재하지 않습니다. orderParticipantId : " + orderParticipantId));
+
+			// 각 메뉴에 대해서 처리
+			for (Map.Entry<Long, CartMenu> menuEntry : menuMap.entrySet()) {
+				Long menuId = menuEntry.getKey();
+				CartMenu cartMenu = menuEntry.getValue();
+
+				Menu menu = menuRepository.findByMenuIdAndDeletedFalse(menuId)
+					.orElseThrow(() -> new MenuNotFoundException("해당 메뉴가 존재하지 않습니다. 메뉴 id : " + menuId));
+
+				// 기존에 해당 예약의 해당 예약 참가자의 해당 메뉴 주문 내역이 있는지 확인
+				Optional<Order> existingOrderOpt = orderRepository.findByReservationAndMenuAndReservationParticipant(
+					reservation, menu, reservationParticipant);
+
+				Order order;
+				if (existingOrderOpt.isPresent()) {
+					order = existingOrderOpt.get();
+					order.updateTotalCnt(cartMenu.getMenuCnt());
+				} else {
+					// 주문이 없다면 새로 생성
+					order = Order.builder()
+						.reservation(reservation)
+						.menu(menu)
+						.reservationParticipant(reservationParticipant)
+						.totalCnt(cartMenu.getMenuCnt())
+						.prepareRequestCnt(prepareRequest ? cartMenu.getMenuCnt() : 0)
+						.servedCnt(0)
+						.paidCnt(0)
+						.build();
+				}
+
+				// 주문 저장
+				orderRepository.save(order);
+			}
+		}
+
+		// Redis에서 장바구니 제거
+		redisService.deleteValues(cartKey);
+
+		// 주문되었음 알림 보내기
+		OrderRegisterResponseDto orderRegisterResponseDto = OrderRegisterResponseDto.builder()
+			.socketType(SocketType.ORDER)
+			.message("장바구니 모든 내역이 주문 처리되었습니다. 주문서를 갱신하시겠습니까?")
+			.build();
+
+		sendingOperations.convertAndSend("/topic/reservations/" + reservation.getReservationUrl(),
+			orderRegisterResponseDto);
 	}
 }

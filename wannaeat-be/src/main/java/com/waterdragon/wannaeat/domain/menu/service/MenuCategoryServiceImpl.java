@@ -49,7 +49,7 @@ public class MenuCategoryServiceImpl implements MenuCategoryService {
 		// restaurantId 유효성 검증
 		Restaurant restaurant = restaurantRepository.findByRestaurantId(
 				menuCategoryRegisterRequestDto.getRestaurantId())
-			.orElseThrow(() -> new RestaurantNotFoundException("메뉴 카테고리 요청의 식당 id의 식당은 존재하지 않습니다. restaurantId = "
+			.orElseThrow(() -> new RestaurantNotFoundException("해당 식당 id의 식당은 존재하지 않습니다. restaurantId = "
 				+ menuCategoryRegisterRequestDto.getRestaurantId()));
 
 		// 사장님에 해당하는 식당 검증
@@ -66,8 +66,8 @@ public class MenuCategoryServiceImpl implements MenuCategoryService {
 
 		// MenuCategoryResponseDto 반환
 		return MenuCategoryRegisterResponseDto.builder()
-			.menuCategoryId(menuCategory.getCategoryId())
 			.menuCategoryName(menuCategory.getCategoryName())
+			.restaurantId(restaurant.getRestaurantId())
 			.build();
 	}
 
@@ -113,19 +113,19 @@ public class MenuCategoryServiceImpl implements MenuCategoryService {
 		// menuCategoryId 유효성 검증
 		MenuCategory menuCategory = menuCategoryRepository.findByCategoryId(menuCategoryId)
 			.orElseThrow(() -> new MenuCategoryNotFoundException(
-				"해당 메뉴 카테고리 id의 메뉴 카테고리는 존재하지 않습니다. menuCategoryId = " + menuCategoryId));
+				"해당 메뉴 카테고리 id의 메뉴 카테고리는 존재하지 않습니다. 메뉴 카테고리 id = " + menuCategoryId));
 
 		// restaurantId 유효성 검증
-		Restaurant restaurant = restaurantRepository.findByRestaurantId(menuCategoryEditRequestDto.getRestaurantId())
+		Restaurant restaurant = restaurantRepository.findByRestaurantId(menuCategory.getRestaurant().getRestaurantId())
 			.orElseThrow(() -> new RestaurantNotFoundException(
-				"메뉴 카테고리 요청의 식당 id의 식당은 존재하지 않습니다. restaurantId = " + menuCategoryEditRequestDto.getRestaurantId()));
+				"해당 메뉴 카테고리 id에 대한 식당은 존재하지 않습니다. 메뉴 카테고리 id = " + menuCategoryId));
 
-		// 사장님에 해당하는 식당 검증
+		// 사장님에 해당하는 식당인지 검증
 		if (!restaurant.getUser().getUserId().equals(user.getUserId())) {
-			throw new NotAuthorizedException("메뉴 수정 권한이 없습니다.");
+			throw new NotAuthorizedException("해당 식당의 메뉴 수정 권한이 없습니다.");
 		}
 
-		menuCategory.updateCategoryName(menuCategory.getCategoryName());
+		menuCategory.updateCategoryName(menuCategoryEditRequestDto.getMenuCategoryName());
 		menuCategoryRepository.save(menuCategory);
 	}
 

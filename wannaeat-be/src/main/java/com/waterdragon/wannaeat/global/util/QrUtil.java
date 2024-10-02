@@ -19,10 +19,10 @@ public class QrUtil {
 		int height = 200;
 
 		// QR Code - BitMatrix: qr code 정보 생성
-		BitMatrix bitMatrix = new MultiFormatWriter().encode(url, BarcodeFormat.QR_CODE,width,height);
+		BitMatrix bitMatrix = new MultiFormatWriter().encode(url, BarcodeFormat.QR_CODE, width, height);
 
-		try(ByteArrayOutputStream out = new ByteArrayOutputStream();){
-			MatrixToImageWriter.writeToStream(bitMatrix,"PNG",out);
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream();) {
+			MatrixToImageWriter.writeToStream(bitMatrix, "PNG", out);
 			return out.toByteArray();
 		}
 

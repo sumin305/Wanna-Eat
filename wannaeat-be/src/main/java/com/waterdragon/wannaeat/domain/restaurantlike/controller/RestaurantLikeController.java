@@ -45,7 +45,12 @@ public class RestaurantLikeController {
 
 	}
 
-	@Operation(summary = "찜 매장 목록 조회 API")
+	/**
+	 * 내가 찜한 매장 목록 조회 API
+	 *
+	 * @return UserLikeListResponseDto 찜 매장 목록
+	 */
+	@Operation(summary = "내가 찜한 매장 목록 조회 API")
 	@GetMapping("/users/like")
 	ResponseEntity<ResponseDto<UserLikeListResponseDto>> getListUserLikeRestaurant() {
 

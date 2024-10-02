@@ -1,15 +1,13 @@
 package com.waterdragon.wannaeat.domain.restaurant.service;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,9 +35,9 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.DuplicateBusin
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidBreakStartEndTimeException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidFilterReservationDateException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidFilterTimeSequenceException;
-import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantCategoryException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantOpenCloseTimeException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidUserLocationException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantCategoryNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.TimeRequestWithoutDateException;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantCategoryRepository;
@@ -48,11 +46,10 @@ import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantImageRepo
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructureRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
-import com.waterdragon.wannaeat.global.exception.error.FileRemoveFailureException;
-import com.waterdragon.wannaeat.global.exception.error.FileUploadFailureException;
+import com.waterdragon.wannaeat.global.exception.error.FileUploadMoreThanTenException;
 import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
-import com.waterdragon.wannaeat.global.util.FileUtil;
+import com.waterdragon.wannaeat.global.util.S3Util;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -63,11 +60,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class RestaurantServiceImpl implements RestaurantService {
 
+	// 시간 형식을 정의 ("HH:mm" 형식)
+	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+
 	private final RestaurantRepository restaurantRepository;
 	private final RestaurantCategoryRepository restaurantCategoryRepository;
 	private final RestaurantImageRepository restaurantImageRepository;
 	private final MenuRepository menuRepository;
-	private final FileUtil fileUtil;
+	private final S3Util fileUtil;
 	private final AuthUtil authUtil;
 	private final RestaurantCustomRepositoryImpl restaurantCustomRepositoryImpl;
 	private final ReservationTableRepository reservationTableRepository;
@@ -98,7 +98,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 		// 미유효 식당 카테고리 체크
 		Long categoryId = restaurantRegisterRequestDto.getRestaurantCategoryId();
 		RestaurantCategory restaurantCategory = restaurantCategoryRepository.findByCategoryId(categoryId)
-			.orElseThrow(() -> new InvalidRestaurantCategoryException("미유효 식당 카테고리 번호 : " + categoryId));
+			.orElseThrow(() -> new RestaurantCategoryNotFoundException("미유효 식당 카테고리 번호 : " + categoryId));
 
 		// Restaurant 엔티티 생성 후 저장
 		Restaurant restaurant = Restaurant.builder()
@@ -366,10 +366,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.restaurantPhone(restaurant.getPhone())
 			.restaurantName(restaurant.getName())
 			.restaurantCategoryName(restaurant.getCategory().getCategoryName())
-			.restaurantOpenTime(restaurant.getOpenTime())
-			.restaurantCloseTime(restaurant.getCloseTime())
-			.breakStartTime(restaurant.getBreakStartTime())
-			.breakEndTime(restaurant.getBreakEndTime())
+			.restaurantOpenTime(formatTime(restaurant.getOpenTime()))
+			.restaurantCloseTime(formatTime(restaurant.getCloseTime()))
+			.breakStartTime(formatTime(restaurant.getBreakStartTime()))
+			.breakEndTime(formatTime(restaurant.getBreakEndTime()))
 			.maxReservationTime(restaurant.getMaxReservationTime())
 			.minMemberCount(restaurant.getMinMemberCount())
 			.maxMemberCount(restaurant.getMaxMemberCount())
@@ -397,6 +397,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.map(category -> RestaurantCategoryDetailResponseDto.builder()
 				.restaurantCategoryId(category.getCategoryId())
 				.restaurantCategoryName(category.getCategoryName())
+				.restaurantCategoryImage(category.getCategoryImage())
 				.build())
 			.toList();
 
@@ -420,7 +421,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 		// 인증 회원 객체
 		User user = authUtil.getAuthenticatedUser();
 
-		// 유저에 해당하는 식당인지 확인
+		// 식당 존재여부 및 유저에 해당하는 식당인지 확인
 		Restaurant restaurant = restaurantRepository.findByRestaurantIdAndUser(restaurantId, user)
 			.orElseThrow(() -> new NotAuthorizedException("식당 수정 권한 없음."));
 
@@ -434,7 +435,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 		// 미유효 식당 카테고리 체크
 		Long categoryId = restaurantEditRequestDto.getRestaurantCategoryId();
 		RestaurantCategory restaurantCategory = restaurantCategoryRepository.findByCategoryId(categoryId)
-			.orElseThrow(() -> new InvalidRestaurantCategoryException("미유효 식당 카테고리 번호 : " + categoryId));
+			.orElseThrow(() -> new RestaurantCategoryNotFoundException("미유효 식당 카테고리 번호 : " + categoryId));
 
 		// 식당 시간 순서 체크
 		if (restaurantEditRequestDto.getRestaurantCloseTime()
@@ -481,12 +482,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 		List<RestaurantImage> existingRestaurantImages = restaurantImageRepository.findAllByRestaurant(restaurant);
 
 		for (RestaurantImage existingRestaurantImage : existingRestaurantImages) {
-			try {
-				fileUtil.removeFile("restaurants", existingRestaurantImage.getImageUrl());
-			} catch (IOException e) {
-				throw new FileRemoveFailureException("파일 삭제 실패. 파일 이름 : " + existingRestaurantImage.getImageUrl());
-			}
-
+			fileUtil.deleteFile(existingRestaurantImage.getImageUrl());
 			restaurantImageRepository.delete(existingRestaurantImage);
 		}
 	}
@@ -494,32 +490,24 @@ public class RestaurantServiceImpl implements RestaurantService {
 	// 새로운 매장 사진 등록 메소드
 	private void uploadNewRestaurantImages(Restaurant restaurant, List<MultipartFile> multipartFiles) {
 
-		List<String> uploadedRestaurantImageFileNames = new ArrayList<>();
-
-		try {
-			for (MultipartFile file : multipartFiles) {
-				String uploadedRestaurantImageFileName = fileUtil.saveFile(file, "restaurants");
-				if (uploadedRestaurantImageFileName != null) {
-					uploadedRestaurantImageFileNames.add(uploadedRestaurantImageFileName);
-
-					RestaurantImage restaurantImage = RestaurantImage.builder()
-						.restaurant(restaurant)
-						.imageUrl(uploadedRestaurantImageFileName)
-						.build();
-					restaurantImageRepository.save(restaurantImage);
-				}
-			}
-		} catch (IOException e) {
-
-			// 파일 여러장을 올리다가 실패했을 때, 기존 올라갔던 파일 삭제 로직
-			for (String fileName : uploadedRestaurantImageFileNames) {
-				try {
-					fileUtil.removeFile("restaurants", fileName);
-				} catch (IOException ex) {
-					throw new FileRemoveFailureException("파일 삭제 실패. 파일 이름 : " + fileName);
-				}
-			}
-			throw new FileUploadFailureException("파일 업로드 실패 : " + e.getMessage());
+		if (multipartFiles.size() > 10) {
+			throw new FileUploadMoreThanTenException("파일을 10개 이상 업로드할 수 없습니다.");
 		}
+
+		for (MultipartFile file : multipartFiles) {
+			String uploadedRestaurantImageFileName = fileUtil.uploadFile(file);
+			log.info("uploaded file : " + uploadedRestaurantImageFileName);
+
+			RestaurantImage restaurantImage = RestaurantImage.builder()
+				.restaurant(restaurant)
+				.imageUrl(uploadedRestaurantImageFileName)
+				.build();
+			restaurantImageRepository.save(restaurantImage);
+		}
+	}
+
+	// 시간(LocalTime)을 "HH:mm" 형식으로 포맷하는 메소드
+	private String formatTime(LocalTime time) {
+		return time != null ? time.format(TIME_FORMATTER) : null;
 	}
 }

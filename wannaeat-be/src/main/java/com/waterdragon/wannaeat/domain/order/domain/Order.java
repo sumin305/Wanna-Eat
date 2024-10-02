@@ -59,4 +59,8 @@ public class Order {
 	public void updatePaidCnt(int paidMenuCnt) {
 		this.paidCnt += paidMenuCnt;
 	}
+
+	public void updateTotalCnt(int orderedMenuCnt) {
+		this.totalCnt += orderedMenuCnt;
+	}
 }

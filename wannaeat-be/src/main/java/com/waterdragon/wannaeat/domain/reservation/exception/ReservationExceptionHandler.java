@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.AlreadyCancelledReservationException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.DuplicateReservationTableException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.FailureGenerateQrCodeException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.InvalidQrTokenException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.QrTokenNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationParticipantNotFoundException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.UnpaidOrderExistsException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
 @RestControllerAdvice
@@ -51,6 +54,15 @@ public class ReservationExceptionHandler {
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
 	}
 
+	// 미결제된 주문 존재
+	@ExceptionHandler(UnpaidOrderExistsException.class)
+	public final ResponseEntity<ErrorResponseDto> handleUnpaidOrderExistsException(
+		UnpaidOrderExistsException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Unpaid Order Exists Exception", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+	}
+
 	// QR 코드 생성 실패
 	@ExceptionHandler(FailureGenerateQrCodeException.class)
 	public final ResponseEntity<ErrorResponseDto> handleFailureGenerateQrCodeException(
@@ -58,5 +70,23 @@ public class ReservationExceptionHandler {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Failure Generate Qr Code", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	// QR 코드 존재 안함
+	@ExceptionHandler(QrTokenNotFoundException.class)
+	public final ResponseEntity<ErrorResponseDto> handleQrTokenNotFoundException(
+		QrTokenNotFoundException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Qr Token Not Found", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+	}
+
+	// QR 코드 만료됨
+	@ExceptionHandler(InvalidQrTokenException.class)
+	public final ResponseEntity<ErrorResponseDto> InvalidQrTokenException(
+		InvalidQrTokenException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Invalid Qr Token Exception", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
 	}
 }

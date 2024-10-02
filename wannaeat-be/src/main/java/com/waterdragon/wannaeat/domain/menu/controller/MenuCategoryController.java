@@ -58,7 +58,7 @@ public class MenuCategoryController {
 	 * @return MenuCategoryListResponseDto 메뉴 카테고리 목록
 	 */
 	@Operation(summary = "식당별 메뉴 카테고리 목록 조회 API")
-	@GetMapping("/public/menu-categories/{restaurantId}")
+	@GetMapping("/public/restaurants/{restaurantId}/menu-categories")
 	public ResponseEntity<ResponseDto<MenuCategoryListResponseDto>> getListMenuCategoryByRestaurantId(
 		@PathVariable(name = "restaurantId") Long restaurantId) {
 

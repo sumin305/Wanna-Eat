@@ -9,4 +9,5 @@ public class RestaurantCategoryDetailResponseDto {
 
 	private Long restaurantCategoryId;
 	private String restaurantCategoryName;
+	private String restaurantCategoryImage;
 }

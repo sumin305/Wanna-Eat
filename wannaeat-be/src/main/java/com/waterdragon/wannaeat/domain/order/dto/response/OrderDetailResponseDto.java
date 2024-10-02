@@ -14,6 +14,7 @@ public class OrderDetailResponseDto {
 	private Long menuId;
 	private String menuName;
 	private String menuImage;
+	private int menuPrice;
 
 	private Long reservationParticipantId;
 	private String reservationParticipantNickname;

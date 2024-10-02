@@ -1,7 +1,9 @@
 package com.waterdragon.wannaeat.domain.order.service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import com.waterdragon.wannaeat.domain.menu.repository.MenuRepository;
 import com.waterdragon.wannaeat.domain.order.domain.Order;
 import com.waterdragon.wannaeat.domain.order.dto.request.OrderPaidCntEditRequestDto;
 import com.waterdragon.wannaeat.domain.order.dto.request.OrderRegisterRequestDto;
+import com.waterdragon.wannaeat.domain.order.dto.response.OrderDetailResponseDto;
+import com.waterdragon.wannaeat.domain.order.dto.response.OrderListResponseDto;
 import com.waterdragon.wannaeat.domain.order.dto.response.OrderRegisterResponseDto;
 import com.waterdragon.wannaeat.domain.order.exception.error.OrderNotFoundException;
 import com.waterdragon.wannaeat.domain.order.exception.error.TotalCntLowerThanPaidCntException;
@@ -155,4 +159,40 @@ public class OrderServiceImpl implements OrderService {
 		sendingOperations.convertAndSend("/topic/reservations/" + reservation.getReservationUrl(),
 			orderRegisterResponseDto);
 	}
+
+	/**
+	 * 예약 Url로 주문 목록 가져오기
+	 *
+	 * @param reservationUrl
+	 * @return
+	 */
+	@Override
+	public OrderListResponseDto getListOrderByReservationUrl(String reservationUrl) {
+
+		Reservation reservation = reservationRepository.findByReservationUrl(reservationUrl)
+			.orElseThrow(() -> new ReservationNotFoundException("예약 url의 예약이 존재하지 않습니다. 예약 url : " + reservationUrl));
+
+		List<Order> orders = orderRepository.findAllByReservation(reservation);
+
+		List<OrderDetailResponseDto> orderDetailResponseDtos = orders.stream()
+			.map(order -> OrderDetailResponseDto.builder()
+				.orderId(order.getOrderId())
+				.reservationId(order.getReservation().getReservationId())
+				.menuId(order.getMenu().getMenuId())
+				.menuName(order.getMenu().getName())
+				.menuPrice(order.getMenu().getPrice())
+				.menuImage(order.getMenu().getImage())
+				.reservationParticipantId(order.getReservationParticipant().getReservationParticipantId())
+				.reservationParticipantNickname(order.getReservationParticipant().getReservationParticipantNickName())
+				.totalCnt(order.getTotalCnt())
+				.paidCnt(order.getPaidCnt())
+				.build())
+			.collect(Collectors.toList());
+
+		// OrderListResponseDto로 반환
+		return OrderListResponseDto.builder()
+			.orderDetailResponseDtos(orderDetailResponseDtos)
+			.build();
+	}
+
 }

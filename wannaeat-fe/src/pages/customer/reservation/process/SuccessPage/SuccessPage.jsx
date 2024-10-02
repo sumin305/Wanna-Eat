@@ -17,15 +17,17 @@ import {
 import theme from '../../../../../style/common/theme.js';
 import paper from '../../../.././../assets/icons/common/paper.svg';
 import useReservationStore from '../../../../../stores/customer/useReservationStore.js';
+import useRestaurantStore from 'stores/customer/useRestaurantStore';
 import { useNavigate } from 'react-router-dom';
 const SuccessPage = () => {
   const {
-    selectedDate,
-    selectedStartTime,
-    selectedEndTime,
-    selectedHeadCount,
+    reservationDate,
+    startTime,
+    endTime,
+    memberCount,
     selectedSeatNumber,
   } = useReservationStore();
+  const { restaurantName } = useReservationStore();
   const link = 'https://wannaeat/invite/myrestaurant';
   const navigate = useNavigate();
   const handleCopyButtonClick = (e) => {
@@ -43,12 +45,12 @@ const SuccessPage = () => {
         <SuccessMessageText>늦지않게 방문해주세요!</SuccessMessageText>
       </SuccessMessageWrapper>
       <ReservationInfoWrapper>
-        <ReservationTitle>서래갈매기 한밭대점</ReservationTitle>
+        <ReservationTitle>{restaurantName}</ReservationTitle>
         <Button size="long" height={'7vh'} outlined={true} fontWeight={900}>
-          {selectedDate} {selectedStartTime} ~ {selectedEndTime}
+          {reservationDate} {startTime} ~ {endTime}
         </Button>
         <Button size="long" height={'7vh'} outlined={true} fontWeight={900}>
-          {selectedHeadCount}명 좌석 {selectedSeatNumber}
+          {memberCount}명 좌석 {selectedSeatNumber}
         </Button>
       </ReservationInfoWrapper>
       <LinkInfoWrapper>

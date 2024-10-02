@@ -22,7 +22,7 @@ const OrderMainBox = ({ reservationUrl }) => {
   const nav = useNavigate();
 
   const reservationParticipantId = 4;
-  const allMenus = allMenusInfo.cartDetailResponseDto.cartElements || [];
+  const allMenus = allMenusInfo?.cartDetailResponseDto?.cartElements || [];
 
   // 현재를 기준으로 예약시간이 지났는지 확인하는 함수
   const isReservationTimePassed = (
@@ -79,16 +79,46 @@ const OrderMainBox = ({ reservationUrl }) => {
           <>
             <div>나의 메뉴 리스트</div>
             <div>
-              {allMenus
-                .filter(
-                  (menus) =>
-                    menus.reservationParticipantId === reservationParticipantId
-                )
-                .map((menus, index) => (
+              {allMenus &&
+                allMenus
+                  .filter(
+                    (menus) =>
+                      menus.reservationParticipantId ===
+                      reservationParticipantId
+                  )
+                  .map((menus, index) => (
+                    <div key={index}>
+                      <p>{menus.reservationParticipantNickname || ''}</p>
+                      <div>
+                        {menus.menuInfo ? (
+                          Object.values(menus.menuInfo).map((menu, index) => (
+                            <div key={index}>
+                              <p>{menu.menuImage}</p>
+                              <p>{menu.menuName}</p>
+                              <p>{menu.menuCnt}</p>
+                              <p>{menu.menuTotalPrice}</p>
+                            </div>
+                          ))
+                        ) : (
+                          <p>메뉴 정보가 없습니다.</p>
+                        )}
+                      </div>
+                      <p>총:{menus.participantTotalPrice || ''}</p>
+                      <br />
+                    </div>
+                  ))}
+            </div>
+          </>
+        ) : (
+          <>
+            <div>전체 메뉴 리스트</div>
+            <div>
+              {allMenus &&
+                allMenus.map((menus, index) => (
                   <div key={index}>
                     <p>{menus.reservationParticipantNickname || ''}</p>
                     <div>
-                      {menus.menuInfo ? (
+                      {menus.menuInfo ? ( // menus.menuInfo가 객체이므로 Object.values로 배열상태로 변경
                         Object.values(menus.menuInfo).map((menu, index) => (
                           <div key={index}>
                             <p>{menu.menuImage}</p>
@@ -105,36 +135,11 @@ const OrderMainBox = ({ reservationUrl }) => {
                     <br />
                   </div>
                 ))}
-            </div>
-          </>
-        ) : (
-          <>
-            <div>전체 메뉴 리스트</div>
-            <div>
-              {allMenus.map((menus, index) => (
-                <div key={index}>
-                  <p>{menus.reservationParticipantNickname || ''}</p>
-                  <div>
-                    {menus.menuInfo ? ( // menus.menuInfo가 객체이므로 Object.values로 배열상태로 변경
-                      Object.values(menus.menuInfo).map((menu, index) => (
-                        <div key={index}>
-                          <p>{menu.menuImage}</p>
-                          <p>{menu.menuName}</p>
-                          <p>{menu.menuCnt}</p>
-                          <p>{menu.menuTotalPrice}</p>
-                        </div>
-                      ))
-                    ) : (
-                      <p>메뉴 정보가 없습니다.</p>
-                    )}
-                  </div>
-                  <p>총:{menus.participantTotalPrice || ''}</p>
-                  <br />
-                </div>
-              ))}
-              <p>
-                총:{allMenusInfo.cartDetailResponseDto.cartTotalPrice || ''}
-              </p>
+              {allMenusInfo?.cartDetailResponseDto ? (
+                <p>
+                  총:{allMenusInfo.cartDetailResponseDto.cartTotalPrice || ''}
+                </p>
+              ) : null}
             </div>
           </>
         )}

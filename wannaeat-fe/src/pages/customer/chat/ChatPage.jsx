@@ -110,7 +110,9 @@ const ChatPage = () => {
   };
 
   const initializeConnection = () => {
-    const socket = new SockJS('http://localhost:8080/api/public/ws');
+    const socket = new SockJS(
+      `${process.env.REACT_APP_REST_API_URL}/api/public/ws`
+    );
     const client = Stomp.over(socket);
 
     // 웹소켓 연결

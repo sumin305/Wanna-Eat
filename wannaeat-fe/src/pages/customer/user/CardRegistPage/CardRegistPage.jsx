@@ -11,6 +11,16 @@ import theme from 'style/common/theme';
 import { cardMaps } from 'assets';
 import AddIcon from 'assets/customer/add.svg';
 import useAlert from 'utils/alert';
+import {
+  CardRegistPageContainer,
+  CardRegistItem,
+  CardRegistItemImage,
+  CardInfoWrapper,
+  CardInfoTitle,
+  CardInfoText,
+  CardRegistButton,
+} from './CardRegistPage';
+
 const CardRegistPage = () => {
   const { cardList, setCardIssuerList, setCardList } = useCardStore();
   const { setPageName, setIsShowBackIcon, setActiveIcons } = useHeaderStore();

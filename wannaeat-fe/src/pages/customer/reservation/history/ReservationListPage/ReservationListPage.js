@@ -55,9 +55,10 @@ const ReservationItemSubTitle = styled.p`
 
 const ReservationDetailButton = styled.button`
   background: none;
-  border: 1.5px solid #c0c0c0;
+  border: 2px solid #c0c0c0;
   border-radius: 5px;
   font-size: ${theme.fontSize.px11};
+  font-weight: bold;
   color: #c0c0c0;
   width: 3rem;
   height: 1.5rem;

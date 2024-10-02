@@ -67,23 +67,16 @@ const StatisticsPage = () => {
       </StatisticsColumnWrapperStyled>
       <StatisticsDonutWrapperStyled>
         <StatisticsHeaderStyled>
-          <TitleStyled>피크타임 분석</TitleStyled>
+          <TitleStyled>인기 메뉴</TitleStyled>
           <GoToDetailStyled>더보기 {'>'}</GoToDetailStyled>
         </StatisticsHeaderStyled>
-        <DonutWrapperStyled>
-          <DonutWithLabelStyled>
-            <WEDonut />
-            <label>월</label>
-          </DonutWithLabelStyled>
-          <DonutWithLabelStyled>
-            <WEDonut />
-            <label>요일</label>
-          </DonutWithLabelStyled>
-          <DonutWithLabelStyled>
-            <WEDonut />
-            <label>시간</label>
-          </DonutWithLabelStyled>
-        </DonutWrapperStyled>
+        <DonutWrapperStyled></DonutWrapperStyled>
+      </StatisticsDonutWrapperStyled>
+      <StatisticsDonutWrapperStyled>
+        <StatisticsHeaderStyled>
+          <TitleStyled>인기 좌석</TitleStyled>
+        </StatisticsHeaderStyled>
+        <DonutWrapperStyled></DonutWrapperStyled>
       </StatisticsDonutWrapperStyled>
     </StatisticsStyled>
   );

@@ -9,6 +9,9 @@ class ColumnChart extends Component {
     this.state = {
       isWeb: window.matchMedia('(min-width: 480px)').matches,
       options: {
+        fill: {
+          colors: ['#344BFD'],
+        },
         chart: {
           height: 350,
           type: 'bar',
@@ -24,7 +27,7 @@ class ColumnChart extends Component {
         dataLabels: {
           enabled: true,
           formatter: function (val) {
-            return val + '%';
+            return val;
           },
           offsetY: -20,
           style: {
@@ -67,12 +70,12 @@ class ColumnChart extends Component {
           labels: {
             show: false,
             formatter: function (val) {
-              return val + '%';
+              return val + '만원';
             },
           },
         },
         title: {
-          text: 'Monthly Inflation in Argentina, 2002',
+          text: '',
           floating: true,
           offsetY: 330,
           align: 'center',
@@ -84,7 +87,7 @@ class ColumnChart extends Component {
       series: [
         {
           name: 'Inflation',
-          data: [2.3, 3.1, 4.0, 10.1, 4.0],
+          data: [50, 20, 180, 150, 140],
         },
       ],
     };

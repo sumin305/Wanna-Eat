@@ -5,11 +5,10 @@ const StatisticsStyled = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  flex-direction: column;
   align-items: center;
   width: 100%;
   height: 110vh;
-  margin-bottom: 5vh;
+  margin-bottom: 15vh;
   flex-shrink: 0;
 
   overflow-y: auto;
@@ -55,8 +54,7 @@ const StatisticsColumnWrapperStyled = styled.div`
   align-items: center;
 
   width: 14.08688rem;
-  height: auto;
-  /* height: 23.125rem; */
+  height: 14.063rem;
 
   border-radius: 0.625rem;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
@@ -66,7 +64,7 @@ const StatisticsColumnWrapperStyled = styled.div`
 
   @media (min-width: 480px) {
     width: 80%;
-    height: 25.125rem;
+    height: 22.125rem;
   }
 `;
 

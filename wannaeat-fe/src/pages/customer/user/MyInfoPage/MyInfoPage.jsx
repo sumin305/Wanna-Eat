@@ -31,11 +31,9 @@ const MyInfoPage = () => {
     const fetchMyInfo = async () => {
       const response = await getMyInfo();
       if (response && response.status === 200) {
-        console.log(response);
         setNickname(response.data.nickname);
         setEmail(response.data.email);
         setPhone(response.data.phone);
-        console.log(typeof nickname);
       } else {
         console.error('getMyInfo error:', response);
       }

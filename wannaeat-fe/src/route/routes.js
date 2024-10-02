@@ -4,7 +4,7 @@ import Layout from '../layout/common/Layout';
 // 공통 페이지
 import LoginPage from '../pages/common/LoginPage/LoginPage.jsx';
 import SignUpPage from '../pages/common/SignUpPage/SignUpPage.jsx';
-
+import PasswordRegistPage from 'pages/common/PasswordRegistPage/PasswordRegistPage.jsx';
 // 사업자 관련 페이지
 import ManagerMainPage from '../pages/manager/main/MainPage';
 import AdminPage from '../pages/manager/reservation/AdminPage';
@@ -18,7 +18,7 @@ import ReservationDetailPage from '../pages/manager/reservation/ReservationDetai
 // 손님 관련 페이지
 import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
 import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage.jsx';
-import ListPage from '../pages/customer/reservation/history/ListPage';
+import ListPage from '../pages/customer/reservation/history/ReservationListPage/ReservationListPage.jsx';
 import MyInfoPage from '../pages/customer/user/MyInfoPage/MyInfoPage.jsx';
 import RestaurantDetailPage from '../pages/customer/reservation/process/RestaurantDetailPage/RestaurantDetailPage.jsx';
 import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage/TimeSelectPage.jsx';
@@ -26,6 +26,9 @@ import DepositPaymentPage from '../pages/customer/reservation/process/DepositPay
 import SeatSelectPage from '../pages/customer/reservation/process/SeatSelectPage/SeatSelectPage.jsx';
 import SuccessPage from '../pages/customer/reservation/process/SuccessPage/SuccessPage.jsx';
 import FingerprintAuthPage from '../pages/customer/reservation/process/FingerprintAuthPage/FingerprintAuthPage.jsx';
+import ChatPage from 'pages/customer/chat/ChatPage.jsx';
+import OrderMainPage from 'pages/customer/order/OrderMainPage';
+import NotExistOrderPage from 'pages/customer/order/NotExistOrderPage';
 import CardManagePage from '../pages/customer/user/CardManagePage/CardManagePage.jsx';
 import CardRegistPage from '../pages/customer/user/CardRegistPage/CardRegistPage.jsx';
 import NicknameEditPage from '../pages/customer/user/NicknameEditPage/NicknameEditPage.jsx';
@@ -40,7 +43,7 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/join" element={<SignUpPage />} />
-
+        <Route path="/password-regist" element={<PasswordRegistPage />} />
         <Route path="/manager" element={<ManagerMainPage />} />
         <Route path="/manager/admin" element={<AdminPage />} />
         <Route
@@ -89,6 +92,12 @@ const AppRoutes = () => {
         />
         <Route path="/customer/reservation/success" element={<SuccessPage />} />
         <Route path="/customer/reservationlist" element={<ListPage />} />
+        <Route path="/customer/order/:url" element={<OrderMainPage />} />
+        <Route path="/customer/order/chat/:url" element={<ChatPage />} />
+        <Route
+          path="/customer/order/notexist"
+          element={<NotExistOrderPage />}
+        />
         <Route path="/customer/myinfo" element={<MyInfoPage />} />
         <Route path="/customer/card-manage" element={<CardManagePage />} />
         <Route path="/customer/card-regist" element={<CardRegistPage />} />

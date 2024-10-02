@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useDrop, useDrag } from 'react-dnd';
 import { authClientInstance } from 'utils/http-client.js';
 import { v4 as uuid } from 'uuid';
@@ -13,55 +13,114 @@ import {
   CancelButtonStyled,
   SaveButtonStyled,
   ButtonWrapperStyled,
+  GridCanvasModalStyled,
 } from './GridCanvas';
+import useModalStore from 'stores/common/useModalStore.js';
 
 const useStore = create((set, get) => ({
-  items: [],
-  gridStatus: {},
-  addItem: (item) => {
+  itemsByFloor: {},
+  gridStatusByFloor: {},
+
+  addItem: (floor, item) => {
     const itemId = uuid();
+    console.log('추가된 아이템:', item);
     set((state) => ({
-      items: [...state.items, { ...item, id: itemId }],
-      gridStatus: {
-        ...state.gridStatus,
-        [`${item.x},${item.y}`]: itemId,
+      itemsByFloor: {
+        ...state.itemsByFloor,
+        [floor]: [
+          ...(state.itemsByFloor[floor] || []),
+          { ...item, itemType: item.itemType, tableNumber: '', capacity: 0 },
+        ],
+      },
+      gridStatusByFloor: {
+        ...state.gridStatusByFloor,
+        [floor]: {
+          ...state.gridStatusByFloor[floor],
+          [`${item.x},${item.y}`]: itemId,
+        },
       },
     }));
   },
-  updateItemPosition: (id, newX, newY) => {
-    const { items, gridStatus } = get();
-    const item = items.find((item) => item.id === id);
+
+  updateItem: (floor, itemId, newData) => {
+    set((state) => ({
+      itemsByFloor: {
+        ...state.itemsByFloor,
+        [floor]: state.itemsByFloor[floor].map((item) =>
+          item.itemId === itemId ? { ...item, ...newData } : item
+        ),
+      },
+    }));
+  },
+
+  updateItemPosition: (floor, itemId, newX, newY) => {
+    const { itemsByFloor, gridStatusByFloor } = get();
+    const item = itemsByFloor[floor].find((item) => item.itemId === itemId);
 
     if (item) {
-      delete gridStatus[`${item.x},${item.y}`];
+      delete gridStatusByFloor[floor][`${item.x},${item.y}`];
     }
 
     set((state) => ({
-      items: state.items.map((item) =>
-        item.id === id ? { ...item, x: newX, y: newY } : item
-      ),
-      gridStatus: {
-        ...state.gridStatus,
-        [`${newX},${newY}`]: id,
+      itemsByFloor: {
+        ...state.itemsByFloor,
+        [floor]: state.itemsByFloor[floor].map((item) =>
+          item.itemId === itemId ? { ...item, x: newX, y: newY } : item
+        ),
+      },
+      gridStatusByFloor: {
+        ...state.gridStatusByFloor,
+        [floor]: {
+          ...state.gridStatusByFloor[floor],
+          [`${newX},${newY}`]: itemId,
+        },
       },
     }));
   },
-  setItems: (items) => set({ items }),
-  clearItems: () => set({ items: [] }),
-  isCellOccupied: (x, y) => {
-    const gridStatus = get().gridStatus;
-    return !!gridStatus[`${x},${y}`];
+  setItemsByFloor: (floor, items) =>
+    set((state) => ({
+      itemsByFloor: {
+        ...state.itemsByFloor,
+        [floor]: items,
+      },
+    })),
+  clearItemsByFloor: (floor) =>
+    set((state) => ({
+      itemsByFloor: {
+        ...state.itemsByFloor,
+        [floor]: [],
+      },
+    })),
+  isCellOccupied: (floor, x, y) => {
+    const gridStatus = get().gridStatusByFloor[floor];
+    return !!gridStatus && !!gridStatus[`${x},${y}`];
   },
 }));
 
-const GridCanvas = () => {
+const GridCanvas = ({ currentFloor }) => {
   const gridColumns = 10; // 가로
   const gridRows = 10; // 세로
   const [gridSize, setGridSize] = useState(50);
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
-  const { items, addItem, setItems, updateItemPosition } = useStore();
+  const {
+    itemsByFloor,
+    addItem,
+    setItemsByFloor,
+    updateItem,
+    updateItemPosition,
+  } = useStore();
+
+  const {
+    open,
+    close,
+    setModalType,
+    setTitle,
+    setChildren,
+    setHandleButtonClick,
+  } = useModalStore();
+  const [selectedItem, setSelectedItem] = useState();
 
   const containerRef = useRef();
 
@@ -90,12 +149,12 @@ const GridCanvas = () => {
     authClientInstance
       .get(`/api/restaurants/${restaurantId}/structure`)
       .then((response) => {
-        setItems(response.data);
+        setItemsByFloor(currentFloor, response.data);
       })
       .catch((error) => {
         console.error('꾸미기 정보 요청 오류:', error);
       });
-  }, [setItems]);
+  }, [setItemsByFloor, currentFloor]);
 
   const handleWheel = (e) => {
     if (e.ctrlKey) {
@@ -133,6 +192,28 @@ const GridCanvas = () => {
     setIsDragging(false);
   };
 
+  const handleSubmit = () => {
+    if (selectedItem && selectedItem.itemId) {
+      const tableNumber = document.querySelector('#tableNumber').value;
+      const capacity = document.querySelector('#capacity').value;
+
+      console.log(
+        `${tableNumber}번 테이블, 최대 수용 인원 ${capacity}명으로 제출되었습니다!`
+      );
+
+      console.log(selectedItem);
+
+      updateItem(currentFloor, selectedItem.itemId, {
+        tableNumber,
+        capacity: parseInt(capacity, 10),
+      });
+
+      close();
+    } else {
+      console.error('selectedItem이 설정되지 않았습니다.');
+    }
+  };
+
   const [, dropRef] = useDrop({
     accept: ['PALETTE_ITEM', 'GRID_ITEM'],
     drop: (item, monitor) => {
@@ -148,39 +229,113 @@ const GridCanvas = () => {
       const x = Math.floor(adjustedX / gridSize) * gridSize;
       const y = Math.floor(adjustedY / gridSize) * gridSize;
 
-      if (useStore.getState().isCellOccupied(x, y)) {
+      if (useStore.getState().isCellOccupied(currentFloor, x, y)) {
         window.alert('중복 방지!!!!!!!!!!!!!!');
         return;
       }
 
       if (item.type === 'PALETTE_ITEM') {
         const selectedItem = paletteItems.find(
-          (paletteItem) => paletteItem.id === item.id
+          (paletteItem) => paletteItem.itemId === item.itemId
         );
 
         if (selectedItem) {
-          addItem({
-            id: item.id,
+          addItem(currentFloor, {
+            itemId: item.itemId,
+            itemType: item.itemType,
             x,
             y,
             icon: selectedItem.icon,
             label: selectedItem.label,
             rotation: 0,
           });
+
+          if (
+            selectedItem.itemType === 'square' ||
+            selectedItem.itemType === 'rounded'
+          ) {
+            setSelectedItem({
+              ...selectedItem,
+              itemId: item.itemId,
+              x,
+              y,
+            });
+            setModalType('setting');
+            setTitle(`${selectedItem.label} 설정`);
+
+            setHandleButtonClick(handleSubmit);
+            setChildren(
+              <GridCanvasModalStyled>
+                <label>
+                  테이블 번호:
+                  <input
+                    id="tableNumber"
+                    type="text"
+                    placeholder="테이블 번호 입력"
+                  />
+                </label>
+                <label>
+                  최대 수용 인원:
+                  <input
+                    id="capacity"
+                    type="number"
+                    min="0"
+                    placeholder="최대 수용 인원 입력"
+                  />
+                </label>
+              </GridCanvasModalStyled>
+            );
+            open();
+          }
         }
       } else if (item.type === 'GRID_ITEM') {
-        updateItemPosition(item.id, x, y);
+        updateItemPosition(currentFloor, item.itemId, x, y);
       }
 
       setIsDragging(false);
     },
   });
 
+  const handleClick = (item) => {
+    console.log('클릭된 아이템:', item);
+    setSelectedItem(item);
+    if (item.itemType === 'square' || item.itemType === 'rounded') {
+      setModalType('setting');
+      setTitle(`${item.label} 설정`);
+
+      setHandleButtonClick(handleSubmit);
+      setChildren(
+        <GridCanvasModalStyled>
+          <label>
+            테이블 번호:
+            <input
+              id="tableNumber"
+              type="text"
+              placeholder="테이블 번호 입력"
+              defaultValue={item.tableNumber}
+            />
+          </label>
+          <label>
+            최대 수용 인원:
+            <input
+              id="capacity"
+              type="number"
+              min="0"
+              placeholder="최대 수용 인원 입력"
+              defaultValue={item.capacity}
+            />
+          </label>
+        </GridCanvasModalStyled>
+      );
+      open();
+    }
+  };
+
   const handleCanvasSave = () => {
     authClientInstance
       .post(
         '/api/restaurants/{restaurantId}structure',
-        { items },
+        { itemsByFloor },
         {
           headers: {
             'Content-Type': 'application/json',
@@ -196,7 +351,11 @@ const GridCanvas = () => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        display: 'flex',
+      }}
+    >
       <GridWrapperStyled
         ref={containerRef}
         onWheel={handleWheel}
@@ -223,8 +382,14 @@ const GridCanvas = () => {
             {Array.from({ length: gridColumns * gridRows }).map((_, index) => (
               <GridCellStyled key={index} />
             ))}
-            {items.map((item) => (
-              <GridItem key={item.id} item={item} gridSize={gridSize} />
+            {(itemsByFloor[currentFloor] || []).map((item) => (
+              <GridItem
+                key={item.itemId}
+                item={item}
+                gridSize={gridSize}
+                setSelectedItem={setSelectedItem}
+                onClick={handleClick}
+              />
             ))}
           </GridBackgroundStyled>
         </ZoomableGridWrapperStyled>
@@ -237,10 +402,10 @@ const GridCanvas = () => {
   );
 };
 
-const GridItem = ({ item, gridSize }) => {
+const GridItem = ({ item, gridSize, onClick }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'GRID_ITEM',
-    item: { id: item.id, type: 'GRID_ITEM' },
+    item: { itemId: item.itemId, type: 'GRID_ITEM' },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -254,6 +419,7 @@ const GridItem = ({ item, gridSize }) => {
       x={item.x}
       y={item.y}
       rotation={item.rotation}
+      onClick={() => onClick(item)}
     >
       <item.icon
         className="grid-item-icon"

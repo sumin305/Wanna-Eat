@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { ReactComponent as SaveButton } from '../../../../../assets/icons/manager/restaurant/button-save.svg';
 import { ReactComponent as CancelButton } from '../../../../../assets/icons/manager/restaurant/button-cancel.svg';
+import theme from 'style/common/theme.js';
 
 const GridItemStyled = styled.div`
   position: absolute;
@@ -14,7 +15,6 @@ const GridItemStyled = styled.div`
   top: ${(props) => `${props.y}px`};
   opacity: ${(props) => (props.isDragging ? 0.5 : 1)};
   transform: rotate(${(props) => `${props.rotation}deg`});
-
   overflow: auto;
 `;
 
@@ -90,6 +90,48 @@ const GridCellStyled = styled.div`
   background: transparent;
 `;
 
+const GridCanvasModalStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.938rem;
+
+  input {
+    width: 95%;
+    height: 1.375rem;
+    font-size: ${theme.fontSize.px11};
+    padding: 0.24rem;
+    display: 'block';
+    margin: 6px 0;
+    border: 1px solid ${theme.color.disabled};
+    border-radius: 0.1875rem;
+  }
+
+  input:focus {
+    outline: none;
+    border: 1px solid transparent;
+    border-color: ${theme.color.primary};
+    color: ${theme.color.primary};
+    ::placeholder {
+      color: ${theme.color.primary};
+    }
+  }
+
+  label {
+    font-size: ${theme.fontSize.px11};
+  }
+
+  @media (min-width: 480px) {
+    label {
+      font-size: ${theme.fontSize.px15};
+      margin-block: 10px;
+    }
+    input {
+      font-size: ${theme.fontSize.px15};
+      margin-block: 10px;
+    }
+  }
+`;
+
 export {
   GridItemStyled,
   SaveButtonStyled,
@@ -99,4 +141,5 @@ export {
   GridBackgroundStyled,
   GridCellStyled,
   ButtonWrapperStyled,
+  GridCanvasModalStyled,
 };

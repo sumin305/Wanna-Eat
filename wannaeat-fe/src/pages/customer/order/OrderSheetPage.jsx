@@ -6,19 +6,11 @@ import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import OrderMainBox from 'component/customer/order/OrderMainBox.jsx';
 import useHeaderStore from 'stores/common/useHeaderStore';
-import useOrderStore from 'stores/customer/useOrderStore';
-import { getOrderData } from 'api/customer/order';
+import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 
-const OrderMainPage = () => {
-  const {
-    isConnected,
-    setIsConnected,
-    stompClient,
-    setStompClient,
-    chatPage,
-    chatSize,
-  } = useChatStore();
-  const { allMenusInfo, setAllMenusInfo } = useOrderStore();
+const OrderSheetPage = () => {
+  const { isConnected, setIsConnected, stompClient, setStompClient } =
+    useChatStore();
   const nav = useNavigate();
   const params = useParams();
   const reservationUrl = params.url;
@@ -33,7 +25,7 @@ const OrderMainPage = () => {
   // 웹소켓 초기 연결
   useEffect(() => {
     setIsCarrot(true);
-    setPageName('주문 내역');
+    setPageName('결제 내역');
     setIsShowLogo(false);
     setActiveIcons([3]);
     setIsShowBackIcon(true);
@@ -89,38 +81,19 @@ const OrderMainPage = () => {
     );
   };
 
-  const clickGotoChat = () => {
-    nav(`/customer/order/chat/${reservationUrl}`);
+  const clickGotoPay = () => {
+    nav(`/customer/pay/${reservationUrl}`);
   };
 
   console.log('웹소켓연결확인:', stompClient);
   console.log('웹소켓연결확인:', isConnected);
 
-  const fetchOrderData = async () => {
-    const allOrderData = await getOrderData(reservationUrl, chatPage, chatSize);
-    console.log('메인페이지 불러온 데이터:', allOrderData.data);
-    // console.log(
-    //   '전체 메뉴들:',
-    //   allOrderData.data.cartDetailResponseDto.cartElements
-    // );
-    // 전체 메뉴 리스트 저장
-    setAllMenusInfo(allOrderData.data);
-    console.log('zustand allMenus:', allMenusInfo);
-  };
-
-  // 모든 주문 데이터 불러오기
-  useEffect(() => {
-    if (isConnected) {
-      fetchOrderData();
-    }
-  }, []);
-
   return (
     <>
-      <button onClick={clickGotoChat}>채팅으로 이동</button>
-      <OrderMainBox reservationUrl={reservationUrl} />
+      <div>결제 내역 페이지</div>
+      <WEButton onClick={clickGotoPay}>결제하기</WEButton>
     </>
   );
 };
 
-export default OrderMainPage;
+export default OrderSheetPage;

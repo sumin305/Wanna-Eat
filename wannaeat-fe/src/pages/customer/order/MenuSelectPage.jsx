@@ -1,43 +1,35 @@
 import { useEffect } from 'react';
+import useHeaderStore from 'stores/common/useHeaderStore';
 import { useNavigate, useParams } from 'react-router-dom';
 import { validateReservationUrl } from 'api/customer/order';
-import useChatStore from 'stores/customer/useChatStore';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import OrderMainBox from 'component/customer/order/OrderMainBox.jsx';
-import useHeaderStore from 'stores/common/useHeaderStore';
-import useOrderStore from 'stores/customer/useOrderStore';
-import { getOrderData } from 'api/customer/order';
+import useChatStore from 'stores/customer/useChatStore';
+import WEButton from 'component/common/button/WEButton/WEButton.jsx';
+import MenuSelectBox from 'component/customer/order/MenuSelectBox';
 
-const OrderMainPage = () => {
-  const {
-    isConnected,
-    setIsConnected,
-    stompClient,
-    setStompClient,
-    chatPage,
-    chatSize,
-  } = useChatStore();
-  const { allMenusInfo, setAllMenusInfo } = useOrderStore();
+const MenuSelectPage = () => {
   const nav = useNavigate();
   const params = useParams();
   const reservationUrl = params.url;
+  const { isConnected, setIsConnected, stompClient, setStompClient } =
+    useChatStore();
+
   const {
     setIsCarrot,
     setPageName,
     setIsShowLogo,
-    setActiveIcons,
     setIsShowBackIcon,
+    setActiveIcons,
   } = useHeaderStore();
 
   // 웹소켓 초기 연결
   useEffect(() => {
     setIsCarrot(true);
-    setPageName('주문 내역');
+    setPageName('메뉴선택');
     setIsShowLogo(false);
-    setActiveIcons([3]);
     setIsShowBackIcon(true);
-
+    setActiveIcons([3]);
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);
 
@@ -65,6 +57,7 @@ const OrderMainPage = () => {
     const socket = new SockJS('http://localhost:8080/api/public/ws');
     const client = Stomp.over(socket);
 
+    // 웹소켓 연결
     client.connect(
       {},
       () => {
@@ -89,38 +82,17 @@ const OrderMainPage = () => {
     );
   };
 
-  const clickGotoChat = () => {
-    nav(`/customer/order/chat/${reservationUrl}`);
+  const clickGotoOrder = () => {
+    nav(`/customer/order/${reservationUrl}`);
   };
-
-  console.log('웹소켓연결확인:', stompClient);
-  console.log('웹소켓연결확인:', isConnected);
-
-  const fetchOrderData = async () => {
-    const allOrderData = await getOrderData(reservationUrl, chatPage, chatSize);
-    console.log('메인페이지 불러온 데이터:', allOrderData.data);
-    // console.log(
-    //   '전체 메뉴들:',
-    //   allOrderData.data.cartDetailResponseDto.cartElements
-    // );
-    // 전체 메뉴 리스트 저장
-    setAllMenusInfo(allOrderData.data);
-    console.log('zustand allMenus:', allMenusInfo);
-  };
-
-  // 모든 주문 데이터 불러오기
-  useEffect(() => {
-    if (isConnected) {
-      fetchOrderData();
-    }
-  }, []);
 
   return (
     <>
-      <button onClick={clickGotoChat}>채팅으로 이동</button>
-      <OrderMainBox reservationUrl={reservationUrl} />
+      <div>메뉴 선택 페이지</div>
+      <MenuSelectBox />
+      <WEButton onClick={clickGotoOrder}>주문내역보기</WEButton>
     </>
   );
 };
 
-export default OrderMainPage;
+export default MenuSelectPage;

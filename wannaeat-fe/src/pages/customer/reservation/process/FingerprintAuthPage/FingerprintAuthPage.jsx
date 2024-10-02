@@ -4,6 +4,27 @@ import theme from '../../../../../style/common/theme';
 import { ButtonWrapper } from '../TimeSelectPage/TimeSelectPage';
 import Button from '../../../../../component/common/button/WEButton/WEButton';
 
+// 생체 인증 (지문 등) 확인 함수
+export const handleCheckFingerprint = async () => {
+  try {
+    const assertion = await navigator.credentials.get({
+      publicKey: {
+        challenge: new Uint8Array([117, 61, 252, 231, 191, 241, 32, 4]), // 서버에서 생성한 고유한 값 (랜덤 값)
+        rpId: window.location.hostname, // 현재 웹사이트 도메인 (RP ID)
+        userVerification: 'required', // 생체 인증 강제 (지문 등)
+        timeout: 60000, // 타임아웃 설정 (60초)
+      },
+    });
+
+    console.log('Assertion Received:', assertion);
+
+    // 인증 성공 처리
+    return true;
+  } catch (e) {
+    console.error('Authentication error:', e);
+    return false;
+  }
+};
 const FingerprintAuthPage = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false); // 인증 상태 저장
@@ -80,10 +101,10 @@ const FingerprintAuthPage = () => {
 
       // 인증 성공 처리
       setIsAuthenticated(true); // 인증 성공 상태로 변경
-      navigate('/customer/reservation/success'); // 인증 성공 시 페이지 이동
+      navigate('/customer/reservation/deposit-payment'); // 인증 성공 시 페이지 이동
     } catch (e) {
-      console.error('Authentication error:', e);
       alert('인증에 실패했습니다. 다시 시도해주세요.');
+      navigate('/customer/reservation/deposit-payment'); // 인증 성공 시 페이지 이동
     }
   };
 

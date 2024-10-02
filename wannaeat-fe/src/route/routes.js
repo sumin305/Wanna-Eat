@@ -32,7 +32,7 @@ import CardManagePage from '../pages/customer/user/CardManagePage/CardManagePage
 import CardRegistPage from '../pages/customer/user/CardRegistPage/CardRegistPage.jsx';
 import NicknameEditPage from '../pages/customer/user/NicknameEditPage/NicknameEditPage.jsx';
 import MyZzimPage from '../pages/customer/user/MyZzimPage/MyZzimPage.jsx';
-
+import PasswordAuthPage from 'pages/customer/reservation/process/PasswordAuthPage/PasswordAuthPage.jsx';
 // 비회원 관련 페이지
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';
 
@@ -80,6 +80,7 @@ const AppRoutes = () => {
           path="/customer/reservation/fingerprint-auth"
           element={<FingerprintAuthPage />}
         />
+        <Route path="/customer/password-auth" element={<PasswordAuthPage />} />
         <Route path="/customer/reservation/success" element={<SuccessPage />} />
         <Route
           path="/customer/reservationlist"

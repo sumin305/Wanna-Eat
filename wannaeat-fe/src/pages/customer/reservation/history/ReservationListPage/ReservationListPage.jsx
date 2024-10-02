@@ -89,7 +89,7 @@ const ListPage = () => {
     if (day !== '00' && day !== '0') {
       return day + '일' + hour + '시간';
     } else if (hour !== '00' && hour !== '0') {
-      return hour + ':' + min;
+      return hour + '시간' + min + '분';
     } else {
       return min + '분';
     }

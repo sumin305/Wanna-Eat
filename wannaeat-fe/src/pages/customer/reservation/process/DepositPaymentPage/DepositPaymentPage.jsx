@@ -43,10 +43,20 @@ const DepositPaymentPage = () => {
     isPasskeyRegistered,
     setIsSupported,
     setIsPasskeyRegistered,
+    setIsAuthenticated,
     isAuthenticated,
     selectedCard,
     setSelectedCard,
   } = useAuthStore();
+  const {
+    reservationDate,
+    startTime,
+    endTime,
+    setReservationDate,
+    setStartTime,
+    setEndTime,
+    selectedTimes,
+  } = useReservationStore();
 
   useEffect(() => {
     // 회원 카드 정보 조회
@@ -80,13 +90,14 @@ const DepositPaymentPage = () => {
       if (result.status === 200) {
         alert('결제 성공');
         navigate('/customer/reservation/success');
+        setIsAuthenticated(false);
       } else {
         alert('결제에 실패했습니다.');
       }
     };
 
     fetchCards();
-
+    console.log(reservationDate);
     // 인증 성공
     if (isAuthenticated) {
       // 카카오페이 결제

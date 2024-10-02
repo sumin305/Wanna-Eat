@@ -7,6 +7,10 @@ import SockJS from 'sockjs-client';
 import useChatStore from 'stores/customer/useChatStore';
 import MenuSelectBox from 'component/customer/order/MenuSelectBox';
 import useOrderStore from 'stores/customer/useOrderStore';
+import WETab from 'component/common/tab/WETab/WETab.jsx';
+import WEButton from 'component/common/button/WEButton/WEButton.jsx';
+import { useState } from 'react';
+import CartIcon from 'assets/icons/order/cart.svg';
 
 const MenuSelectPage = () => {
   const nav = useNavigate();
@@ -14,6 +18,9 @@ const MenuSelectPage = () => {
   const reservationUrl = params.url;
   const { isConnected, setIsConnected, stompClient, setStompClient } =
     useChatStore();
+  const [activeTab, setActiveTab] = useState(0);
+  const myReservationParticipantId = 2;
+  const increment = 1; // 증가 갯수는 1로 설정
 
   const {
     setIsCarrot,
@@ -56,7 +63,9 @@ const MenuSelectPage = () => {
   }, []);
 
   const initializeConnection = () => {
-    const socket = new SockJS('http://localhost:8080/api/public/ws');
+    const socket = new SockJS(
+      `${process.env.REACT_APP_REST_API_URL}/api/public/ws`
+    );
     const client = Stomp.over(socket);
 
     // 웹소켓 연결
@@ -100,9 +109,67 @@ const MenuSelectPage = () => {
     }
   }, []);
 
+  // 카테고리 추출
+  const tabs = allMenusData.menuListByCategoryResponseDtos.map(
+    (category) => category.menuCategoryName
+  );
+
+  // 선택한 카테고리에 따른 메뉴
+  const currentMenuDetails =
+    allMenusData.menuListByCategoryResponseDtos[activeTab]
+      ?.menuDetailResponseDtos;
+
+  const clickGotoOrder = () => {
+    nav(`/customer/order/${reservationUrl}`);
+  };
+
+  const handleCartIconClick = (menuId) => {
+    const cartRegisterRequestDto = {
+      reservationUrl: reservationUrl,
+      reservationParticipantId: myReservationParticipantId,
+      menuId: menuId,
+      menuPlusMinus: increment,
+    };
+
+    if (stompClient && isConnected) {
+      console.log('메뉴선택 웹소켓', stompClient);
+      console.log('메뉴선택 연결상태', isConnected);
+      try {
+        stompClient.send(
+          `/api/public/sockets/carts/register`,
+          {},
+          JSON.stringify(cartRegisterRequestDto)
+        );
+        console.log('장바구니 업데이트 내용:', cartRegisterRequestDto);
+      } catch (error) {
+        console.log('장바구니 업데이트 실패', error);
+      }
+    } else {
+      console.log('웹소켓 연결 실패');
+      alert('웹소켓 연결에 실패했습니다.');
+    }
+  };
+
   return (
     <>
-      <MenuSelectBox />
+      <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+      {tabs[activeTab]}
+      {currentMenuDetails &&
+        currentMenuDetails.map((menu, menuId) => (
+          <div key={menuId}>
+            <p>{menu.menuImage}</p>
+            <p>{menu.menuName}</p>
+            <p>{menu.menuPrice}</p>
+            <p>{menu.menuDescription}</p>
+            <img
+              src={CartIcon}
+              alt="담기 아이콘"
+              onClick={() => handleCartIconClick(menu.menuId)}
+            />
+          </div>
+        ))}
+
+      <WEButton onClick={clickGotoOrder}>주문내역보기</WEButton>
     </>
   );
 };

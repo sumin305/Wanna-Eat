@@ -63,7 +63,9 @@ const OrderMainPage = () => {
   }, []);
 
   const initializeConnection = () => {
-    const socket = new SockJS('http://localhost:8080/api/public/ws');
+    const socket = new SockJS(
+      `${process.env.REACT_APP_REST_API_URL}/api/public/ws`
+    );
     const client = Stomp.over(socket);
 
     client.connect(
@@ -119,6 +121,9 @@ const OrderMainPage = () => {
   return (
     <>
       <button onClick={clickGotoChat}>채팅으로 이동</button>
+      <button onClick={() => nav('/customer/order/menu-select/random1')}>
+        메뉴선택페이지로 이동
+      </button>
       <OrderMainBox reservationUrl={reservationUrl} />
     </>
   );

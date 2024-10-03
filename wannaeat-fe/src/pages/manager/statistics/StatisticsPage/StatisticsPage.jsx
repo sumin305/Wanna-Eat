@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useHeaderStore from 'stores/common/useHeaderStore.js';
+import { authClientInstance } from 'utils/http-client.js';
 import {
   StatisticsStyled,
   StatisticsDonutWrapperStyled,
@@ -18,9 +19,9 @@ import WEDonut from 'component/manager/statistics/WEDonut/WEDonut.jsx';
 import WEColumn from 'component/manager/statistics/WEColumn/WEColumn.jsx';
 import WEMenu from 'component/manager/statistics/WEMenu/WEMenu.jsx';
 
-import testImage1 from 'assets/MochaLong1.webp';
-import testImage2 from 'assets/MochaShort1.png';
-import testImage3 from 'assets/MintLatte1.png';
+// import testImage1 from 'assets/MochaLong1.webp';
+// import testImage2 from 'assets/MochaShort1.png';
+// import testImage3 from 'assets/MintLatte1.png';
 
 const StatisticsPage = () => {
   const {
@@ -30,6 +31,8 @@ const StatisticsPage = () => {
     setPageName,
     setIsUnderLine,
   } = useHeaderStore();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsCarrot(false);
@@ -45,58 +48,114 @@ const StatisticsPage = () => {
     setIsUnderLine,
   ]);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    authClientInstance
+      .get(`/api/restaurants/statistics`, {
+        headers: {
+          'Authorization-wannaeat':
+            'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBY2Nlc3NUb2tlbiIsImV4cCI6MTcyNzk3MTU4NCwiZW1haWwiOiJsZWVnZ29uMTIxM0BuYXRlLmNvbSIsInNvY2lhbFR5cGUiOiJLQUtBTyIsInJvbGUiOiJNQU5BR0VSIn0.uvkhace12RwL4ZiPWCiNFfz2Hyb8-firyis-3gOuCz0hMZEP2lpjf3vzeKkWn9DAi_z6iS06BvNvCqD1jCEZeQ',
+        },
+      })
 
-  const BestImages = [
-    {
-      url: testImage1,
-      label: '아이스카페모카',
-      numberOfOrders: '123456789',
-    },
-    {
-      url: testImage2,
-      label: 'CafeMocha',
-      numberOfOrders: '12345',
-    },
-    {
-      url: testImage3,
-      label: 'Mint Latte',
-      numberOfOrders: '12345',
-    },
-  ];
+      .then((response) => {
+        const data = response.data.data;
 
-  const WorstImages = [
-    {
-      url: testImage3,
-      label: 'Mint Latte',
-      numberOfOrders: '12345',
-    },
-    {
-      url: testImage2,
-      label: 'CafeMocha',
-      numberOfOrders: '12345',
-    },
-    {
-      url: testImage1,
-      label: '아이스카페모카',
-      numberOfOrders: '123456789',
-    },
-  ];
+        const monthLabels = Object.keys(data.monthStatistics).map(
+          (month) => `${month}월`
+        );
+        const monthSeries = Object.values(data.monthStatistics);
 
-  const monthLabels = ['6', '12', '4'];
-  const monthSeries = [100, 60, 30];
-  const dayLabels = ['금', '화', '월'];
-  const daySeries = [100, 40, 30];
-  const timeLabels = ['18:00', '17:00', '12:00'];
-  const timeSeries = [30, 50, 10];
+        const dayLabels = Object.keys(data.dayStatistics);
+        const daySeries = Object.values(data.dayStatistics);
 
-  const categories = ['9/29', '9/30', '10/1', '10/2', '10/3'];
-  const series = [
-    {
-      name: '매출',
-      data: [50, 20, 180, 150, 140],
-    },
-  ];
+        const hourLabels = Object.keys(data.hourStatistics);
+        const hourSeries = Object.values(data.hourStatistics);
+
+        const revenueLabels = Object.keys(data.revenues);
+        const revenueSeries = Object.values(data.revenues);
+
+        const topMenus = data.topMenuStatistics.map((menu) => ({
+          url: menu.menuImage,
+          label: menu.menuName,
+          numberOfOrders: menu.orderCnt,
+        }));
+
+        const bottomMenus = data.bottomMenuStatistics.map((menu) => ({
+          url: menu.menuImage,
+          label: menu.menuName,
+          numberOfOrders: menu.orderCnt,
+        }));
+
+        setMonthStatistics({ labels: monthLabels, series: monthSeries });
+        setDayStatistics({ labels: dayLabels, series: daySeries });
+        setHourStatistics({ labels: hourLabels, series: hourSeries });
+        setRevenues({ labels: revenueLabels, series: revenueSeries });
+        setTopMenuStatistics(topMenus);
+        setBottomMenuStatistics(bottomMenus);
+      })
+      .catch((error) => {
+        console.error('통계 메인페이지 요청 실패:', error);
+      });
+  }, []);
+
+  const [monthStatistics, setMonthStatistics] = useState([]);
+  const [dayStatistics, setDayStatistics] = useState([]);
+  const [hourStatistics, setHourStatistics] = useState([]);
+  const [revenues, setRevenues] = useState([]);
+  const [topMenuStatistics, setTopMenuStatistics] = useState([]);
+  const [bottomMenuStatistics, setBottomMenuStatistics] = useState([]);
+
+  // const BestImages = [
+  //   {
+  //     url: testImage1,
+  //     label: '아이스카페모카',
+  //     numberOfOrders: '123456789',
+  //   },
+  //   {
+  //     url: testImage2,
+  //     label: 'CafeMocha',
+  //     numberOfOrders: '12345',
+  //   },
+  //   {
+  //     url: testImage3,
+  //     label: 'Mint Latte',
+  //     numberOfOrders: '12345',
+  //   },
+  // ];
+
+  // const WorstImages = [
+  //   {
+  //     url: testImage3,
+  //     label: 'Mint Latte',
+  //     numberOfOrders: '12345',
+  //   },
+  //   {
+  //     url: testImage2,
+  //     label: 'CafeMocha',
+  //     numberOfOrders: '12345',
+  //   },
+  //   {
+  //     url: testImage1,
+  //     label: '아이스카페모카',
+  //     numberOfOrders: '123456789',
+  //   },
+  // ];
+
+  // const monthLabels = ['6', '12', '4'];
+  // const monthSeries = [100, 60, 30];
+
+  // const dayLabels = ['금', '화', '월'];
+  // const daySeries = [100, 40, 30];
+  // const timeLabels = ['18:00', '17:00', '12:00'];
+  // const timeSeries = [30, 50, 10];
+
+  // const categories = ['9/29', '9/30', '10/1', '10/2', '10/3'];
+  // const series = [
+  //   {
+  //     name: '매출',
+  //     data: [50, 20, 180, 150, 140],
+  //   },
+  // ];
 
   return (
     <StatisticsStyled>
@@ -111,15 +170,25 @@ const StatisticsPage = () => {
         </StatisticsHeaderStyled>
         <DonutWrapperStyled>
           <DonutWithLabelStyled>
-            <WEDonut labels={monthLabels} series={monthSeries} />
+            <WEDonut
+              labels={monthStatistics.labels || []}
+              series={monthStatistics.series || []}
+            />
             <label>월</label>
           </DonutWithLabelStyled>
           <DonutWithLabelStyled>
-            <WEDonut labels={dayLabels} series={daySeries} />
+            <WEDonut
+              labels={dayStatistics.labels || []}
+              series={dayStatistics.series || []}
+            />
             <label>요일</label>
           </DonutWithLabelStyled>
           <DonutWithLabelStyled>
-            <WEDonut labels={timeLabels} series={timeSeries} type="time" />
+            <WEDonut
+              labels={hourStatistics.labels || []}
+              series={hourStatistics.series || []}
+              type="time"
+            />
             <label>시간</label>
           </DonutWithLabelStyled>
         </DonutWrapperStyled>
@@ -133,20 +202,23 @@ const StatisticsPage = () => {
             더보기 {'>'}
           </GoToDetailStyled>
         </StatisticsHeaderStyled>
-        <WEColumn categories={categories} series={series} />
+        <WEColumn
+          categories={revenues.labels}
+          series={[{ name: '매출', data: revenues.series }]}
+        />
       </StatisticsColumnWrapperStyled>
       <StatisticsMenuWrapperStyled>
         <WEBestMenuStyled>
           <MenuHeaderStyled>
             <TitleStyled>인기 메뉴</TitleStyled>
           </MenuHeaderStyled>
-          <WEMenu images={BestImages} />
+          <WEMenu images={topMenuStatistics} />
         </WEBestMenuStyled>
         <WEBestMenuStyled>
           <MenuHeaderStyled>
             <TitleStyled>비인기 메뉴</TitleStyled>
           </MenuHeaderStyled>
-          <WEMenu images={WorstImages} />
+          <WEMenu images={bottomMenuStatistics} />
         </WEBestMenuStyled>
       </StatisticsMenuWrapperStyled>
     </StatisticsStyled>

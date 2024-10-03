@@ -1,6 +1,7 @@
 package com.waterdragon.wannaeat.domain.statistic.service;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -9,9 +10,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -22,8 +25,12 @@ import com.waterdragon.wannaeat.domain.order.domain.Order;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
+import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantStructure;
+import com.waterdragon.wannaeat.domain.restaurant.domain.Table;
+import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructureRepository;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MainStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MenuStatisticResponseDto;
+import com.waterdragon.wannaeat.domain.statistic.dto.response.PeekStatisticResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +40,7 @@ public class StatisticServiceImpl implements StatisticService {
 
 	private final ReservationRepository reservationRepository;
 	private final MenuRepository menuRepository;
+	private final RestaurantStructureRepository restaurantStructureRepository;
 
 	@Override
 	public MainStatisticResponseDto getStatisticsByMain(Restaurant restaurant) {
@@ -40,7 +48,7 @@ public class StatisticServiceImpl implements StatisticService {
 
 		Map<Integer, Long> monthStatistics = getMonthlyStatsByMonths(reservations);
 		Map<String, Long> dayStatistics = getDayOfWeekStatsByMonths(reservations);
-		Map<String, Long> hourStatistics = getHourlyStatsByMonths(reservations);
+		Map<String, Long> hourStatistics = getHourlyStatsByMonths(restaurant, reservations);
 
 		Map<String, Long> revenues = getRevenueByLastFiveDays(restaurant);
 		List<MenuStatisticResponseDto> menuStatistics = getPopularMenusByLastThreeMonths(restaurant);
@@ -57,6 +65,27 @@ public class StatisticServiceImpl implements StatisticService {
 			.topMenuStatistics(topMenuStatistics)
 			.bottomMenuStatistics(bottomMenuStatistics)
 			.build();
+	}
+
+	@Override
+	public PeekStatisticResponseDto getStatisticsByPeek(Restaurant restaurant, int year, int month) {
+		List<Reservation> reservations = reservationRepository.findReservationsByRestaurantAndYearAndMonth(restaurant,
+			year, month);
+
+		Map<String, Long> dayStatistics = getDayOfWeekStatsByMonths(reservations);
+		Map<String, Long> hourStatistics = getHourlyStatsByMonths(restaurant, reservations);
+
+		double turnoverRate = getTurnoverRate(restaurant, reservations);
+
+		int averageUsageTime = getAverageUsageTime(reservations);
+
+		return PeekStatisticResponseDto.builder()
+			.dayStatistics(dayStatistics)
+			.hourStatistics(hourStatistics)
+			.turnoverRate(turnoverRate)
+			.averageUsageTime(averageUsageTime)
+			.build();
+
 	}
 
 	/**
@@ -86,15 +115,25 @@ public class StatisticServiceImpl implements StatisticService {
 	 */
 	@Override
 	public Map<String, Long> getDayOfWeekStatsByMonths(List<Reservation> reservations) {
-		return reservations.stream()
+		// 요일을 한글로 변환한 기본 맵 (월~일)
+		Map<String, Long> dayOfWeekMap = new LinkedHashMap<>();
+		dayOfWeekMap.put("월", 0L);
+		dayOfWeekMap.put("화", 0L);
+		dayOfWeekMap.put("수", 0L);
+		dayOfWeekMap.put("목", 0L);
+		dayOfWeekMap.put("금", 0L);
+		dayOfWeekMap.put("토", 0L);
+		dayOfWeekMap.put("일", 0L);
+
+		// 예약 데이터를 요일별로 카운트하여 맵을 업데이트
+		reservations.stream()
 			.collect(Collectors.groupingBy(
 				reservation -> convertDayOfWeekToKorean(reservation.getReservationDate().getDayOfWeek()), // 요일을 한글로 변환
 				Collectors.counting() // 각 요일별 예약 수 카운트
 			))
-			.entrySet().stream()
-			.sorted(Map.Entry.<String, Long>comparingByValue().reversed()) // 예약 수에 따라 정렬
-			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
-				LinkedHashMap::new)); // 결과를 LinkedHashMap에 담아서 순서를 유지
+			.forEach((day, count) -> dayOfWeekMap.merge(day, count, Long::sum)); // 값이 있으면 더하고, 없으면 추가
+
+		return dayOfWeekMap;
 	}
 
 	/**
@@ -104,16 +143,30 @@ public class StatisticServiceImpl implements StatisticService {
 	 * @return 피크타임 순으로 정렬된 시간 목록
 	 */
 	@Override
-	public Map<String, Long> getHourlyStatsByMonths(List<Reservation> reservations) {
-		return reservations.stream()
+	public Map<String, Long> getHourlyStatsByMonths(Restaurant restaurant, List<Reservation> reservations) {
+		// 기본 값 초기화
+		Map<String, Long> hourlyStatsMap = new LinkedHashMap<>();
+
+		// restaurant의 startTime과 endTime을 기본값으로 추가
+		hourlyStatsMap.put(getHalfHourSlot(restaurant.getOpenTime()), 0L);
+		hourlyStatsMap.put(getHalfHourSlot(restaurant.getCloseTime()), 0L);
+
+		// 예약 데이터를 바탕으로 시간대별로 그룹화하여 카운트
+		reservations.stream()
 			.collect(Collectors.groupingBy(
 				reservation -> getHalfHourSlot(reservation.getStartTime()), // 30분 단위로 그룹화
 				Collectors.counting() // 각 시간대별 예약 수 카운트
 			))
-			.entrySet().stream()
-			.sorted(Map.Entry.<String, Long>comparingByValue().reversed()) // 예약 수에 따라 정렬
-			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
-				LinkedHashMap::new)); // 결과를 LinkedHashMap에 담아서 순서를 유지
+			.forEach((timeSlot, count) -> hourlyStatsMap.merge(timeSlot, count, Long::sum)); // 기존 값에 추가
+
+		// 시간 순서로 정렬
+		return hourlyStatsMap.entrySet().stream()
+			.sorted(Comparator.comparing(entry -> LocalTime.parse(entry.getKey()))) // 시간을 기준으로 정렬
+			.collect(Collectors.toMap(
+				Map.Entry::getKey,
+				Map.Entry::getValue,
+				(e1, e2) -> e1,
+				LinkedHashMap::new)); // 순서 유지
 	}
 
 	/**
@@ -261,6 +314,95 @@ public class StatisticServiceImpl implements StatisticService {
 		LocalDate startDate = endDate.minusMonths(month).withDayOfMonth(1);     // 12개월 전 1일
 
 		return reservationRepository.findReservationsForRestaurantWithinDateRange(restaurant, startDate, endDate);
+	}
+
+	/**
+	 * 테이블의 회전율을 계산하여 리턴하는 메소드
+	 *
+	 * @param restaurant 식당 정보
+	 * @param reservations 예약 목록
+	 * @return 회전율
+	 */
+	@Override
+	public double getTurnoverRate(Restaurant restaurant, List<Reservation> reservations) {
+		RestaurantStructure restaurantStructure = restaurantStructureRepository.findByRestaurantId(
+			restaurant.getRestaurantId()).get();
+
+		List<Table> restaurantTables = restaurantStructure.getTables();
+		// 해당 매장의 테이블 수
+		int totalTableCount = restaurantTables.size();
+
+		// 해당 월의 예약된 테이블 수
+		int reservedTableCount = getTotalReservationTableCount(reservations);
+
+		// 해당 월의 예약을 받은 날 수
+		int reservedDate = getUniqueReservationDatesCount(reservations);
+
+		double turnoverRate = (double)reservedTableCount / totalTableCount / reservedDate;
+
+		// 소수점 첫째 자리까지 반올림 (ex: 0.12345 -> 0.1)
+		return Math.round(turnoverRate * 10) / 10.0;
+
+	}
+
+	/**
+	 * 평균 테이블 이용 시간
+	 *
+	 * @param reservations 예약 목록
+	 * @return 평균 테이블 이용 시간
+	 */
+	@Override
+	public int getAverageUsageTime(List<Reservation> reservations) {
+		long totalMinutes = 0;
+
+		// 각 예약의 이용 시간 계산 (분 단위)
+		for (Reservation reservation : reservations) {
+			LocalTime startTime = reservation.getStartTime();
+			LocalTime endTime = reservation.getEndTime();
+
+			// startTime과 endTime의 차이(분)를 계산
+			long minutes = Duration.between(startTime, endTime).toMinutes();
+			totalMinutes += minutes;
+		}
+
+		// 예약의 총 개수로 나누어 평균 이용 시간 계산
+		return reservations.isEmpty() ? 0 : (int)(totalMinutes / reservations.size());
+	}
+
+	/**
+	 * 예약 목록 중 고유 예약 일자 수를 리턴하는 메소드
+	 * @param reservations
+	 * @return 고유 예약 일자 수
+	 */
+	@Override
+	public int getUniqueReservationDatesCount(List<Reservation> reservations) {
+		Set<LocalDate> uniqueDates = new HashSet<>();
+
+		// 예약 목록에서 고유한 날짜를 추출
+		for (Reservation reservation : reservations) {
+			uniqueDates.add(reservation.getReservationDate());
+		}
+
+		// 고유한 날짜의 수 반환
+		return uniqueDates.size();
+	}
+
+	/**
+	 * 예약 목록의 예약 테이블 수의 합을 리턴하는 메소드
+	 *
+	 * @param reservations
+	 * @return 예약 테이블 수 합
+	 */
+	@Override
+	public int getTotalReservationTableCount(List<Reservation> reservations) {
+		int totalTableCount = 0;
+
+		// 각 예약별로 연결된 ReservationTable 수를 합산
+		for (Reservation reservation : reservations) {
+			totalTableCount += reservation.getReservationTables().size(); // 각 예약에 연결된 테이블 수를 더함
+		}
+
+		return totalTableCount;
 	}
 
 	/**

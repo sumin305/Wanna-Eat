@@ -4,12 +4,12 @@ import { validateReservationUrl } from 'api/customer/order';
 import useChatStore from 'stores/customer/useChatStore';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import OrderMainBox from 'component/customer/order/OrderMainBox.jsx';
+import OrderCartBox from 'component/customer/order/OrderCartBox.jsx';
 import useHeaderStore from 'stores/common/useHeaderStore';
 import useOrderStore from 'stores/customer/useOrderStore';
-import { getOrderData } from 'api/customer/order';
+import { getOrderData } from 'api/customer/order.js';
 
-const OrderMainPage = () => {
+const OrderCartPage = () => {
   const {
     isConnected,
     setIsConnected,
@@ -34,7 +34,7 @@ const OrderMainPage = () => {
   // 웹소켓 초기 연결
   useEffect(() => {
     setIsCarrot(true);
-    setPageName('주문서');
+    setPageName('장바구니');
     setIsShowLogo(false);
     setActiveIcons([3]);
     setIsShowBackIcon(true);
@@ -126,9 +126,9 @@ const OrderMainPage = () => {
       >
         메뉴선택페이지로 이동
       </button>
-      <OrderMainBox reservationUrl={reservationUrl} />
+      <OrderCartBox reservationUrl={reservationUrl} />
     </>
   );
 };
 
-export default OrderMainPage;
+export default OrderCartPage;

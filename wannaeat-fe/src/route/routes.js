@@ -27,7 +27,7 @@ import SeatSelectPage from '../pages/customer/reservation/process/SeatSelectPage
 import SuccessPage from '../pages/customer/reservation/process/SuccessPage/SuccessPage.jsx';
 import FingerprintAuthPage from '../pages/customer/reservation/process/FingerprintAuthPage/FingerprintAuthPage.jsx';
 import ChatPage from 'pages/customer/chat/ChatPage.jsx';
-import OrderMainPage from 'pages/customer/order/OrderMainPage';
+import OrderCartPage from 'pages/customer/order/OrderCartPage';
 import NotExistOrderPage from 'pages/customer/order/NotExistOrderPage';
 import MenuSelectPage from 'pages/customer/order/MenuSelectPage';
 import OrderSheetPage from 'pages/customer/order/OrderSheetPage';
@@ -93,7 +93,7 @@ const AppRoutes = () => {
         />
         <Route path="/customer/reservation/success" element={<SuccessPage />} />
         <Route path="/customer/reservationlist" element={<ListPage />} />
-        <Route path="/customer/order/:url" element={<OrderMainPage />} />
+        <Route path="/customer/order/cart/:url" element={<OrderCartPage />} />
         <Route path="/customer/order/chat/:url" element={<ChatPage />} />
         <Route
           path="/customer/order/notexist"

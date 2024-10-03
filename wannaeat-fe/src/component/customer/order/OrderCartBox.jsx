@@ -4,16 +4,16 @@ import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 import {
   TopBox,
   OrderContainer,
-  ButtonContainer,
+  // ButtonContainer,
   ButtonWrapper,
-} from './OrderMainBox.js';
+} from './OrderCartBox.js';
 import theme from '../../../style/common/theme.js';
 import { useNavigate } from 'react-router-dom';
 import useOrderStore from '../../../stores/customer/useOrderStore.js';
 import { deleteCarts } from 'api/customer/order.js';
 import useChatStore from '../../../stores/customer/useChatStore.js';
 
-const OrderMainBox = ({ reservationUrl }) => {
+const OrderCartBox = ({ reservationUrl }) => {
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ['나의 메뉴', '전체 메뉴'];
   const { allMenusInfo, setAllMenusInfo } = useOrderStore();
@@ -36,11 +36,11 @@ const OrderMainBox = ({ reservationUrl }) => {
     );
 
     if (now < reservationStartDateTime) {
-      console.log('예약시간 안됨: false');
-      return false;
-    } else {
-      console.log('예약시간 지남: true');
+      console.log('예약시간 안됨: true');
       return true;
+    } else {
+      console.log('예약시간 지남: false');
+      return false;
     }
   };
 
@@ -78,6 +78,9 @@ const OrderMainBox = ({ reservationUrl }) => {
           JSON.stringify(orderRegisterRequestDto)
         );
         console.log('주문에 보내는 내용:', orderRegisterRequestDto);
+
+        // 카트 정보 초기화
+        setAllMenusInfo({ cartDetailResponseDto: { cartElements: [] } });
       } catch (error) {
         console.log('주문 실패:', error);
       }
@@ -88,7 +91,6 @@ const OrderMainBox = ({ reservationUrl }) => {
 
   return (
     <OrderContainer>
-      <button onClick={clickGotoMenuSelect}>메뉴선택페이지로 이동</button>
       <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
       <div>
         <TopBox>
@@ -180,25 +182,6 @@ const OrderMainBox = ({ reservationUrl }) => {
         allMenusInfo.reservationDate,
         allMenusInfo.reservationStartTime
       ) ? (
-        // 예약시간 후
-        <ButtonContainer>
-          <ButtonWrapper>
-            <WEButton size="medium" outlined="true">
-              사장님 호출
-            </WEButton>
-            <WEButton
-              size="medium"
-              outlined="true"
-              onClick={handleMenuViewButtonClick}
-            >
-              추가 주문
-            </WEButton>
-          </ButtonWrapper>
-          <WEButton onClick={handleOrderSheetButtonClick}>
-            결제내역보기
-          </WEButton>
-        </ButtonContainer>
-      ) : (
         // 예약시간 전
         <>
           <ButtonWrapper>
@@ -218,6 +201,18 @@ const OrderMainBox = ({ reservationUrl }) => {
             </WEButton>
           </ButtonWrapper>
         </>
+      ) : (
+        // 예약시간 후
+        <ButtonWrapper>
+          <WEButton
+            size="medium"
+            outlined="true"
+            onClick={handleMenuViewButtonClick}
+          >
+            장바구니 보기
+          </WEButton>
+          <WEButton onClick={handleOrderSheetButtonClick}>결제하기</WEButton>
+        </ButtonWrapper>
       )}
       <div>1</div>
       <div>1</div>
@@ -226,4 +221,4 @@ const OrderMainBox = ({ reservationUrl }) => {
   );
 };
 
-export default OrderMainBox;
+export default OrderCartBox;

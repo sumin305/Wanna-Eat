@@ -40,7 +40,7 @@ public class StatisticServiceImpl implements StatisticService {
 
 		Map<Integer, Long> monthStatistics = getMonthlyStatsByMonths(reservations);
 		Map<String, Long> dayStatistics = getDayOfWeekStatsByMonths(reservations);
-		Map<String, Long> hourStatistics = getHourlyStatsByMonths(reservations);
+		Map<String, Long> hourStatistics = getHourlyStatsByMonths(restaurant, reservations);
 
 		Map<String, Long> revenues = getRevenueByLastFiveDays(restaurant);
 		List<MenuStatisticResponseDto> menuStatistics = getPopularMenusByLastThreeMonths(restaurant);
@@ -86,15 +86,25 @@ public class StatisticServiceImpl implements StatisticService {
 	 */
 	@Override
 	public Map<String, Long> getDayOfWeekStatsByMonths(List<Reservation> reservations) {
-		return reservations.stream()
+		// 요일을 한글로 변환한 기본 맵 (월~일)
+		Map<String, Long> dayOfWeekMap = new LinkedHashMap<>();
+		dayOfWeekMap.put("월", 0L);
+		dayOfWeekMap.put("화", 0L);
+		dayOfWeekMap.put("수", 0L);
+		dayOfWeekMap.put("목", 0L);
+		dayOfWeekMap.put("금", 0L);
+		dayOfWeekMap.put("토", 0L);
+		dayOfWeekMap.put("일", 0L);
+
+		// 예약 데이터를 요일별로 카운트하여 맵을 업데이트
+		reservations.stream()
 			.collect(Collectors.groupingBy(
 				reservation -> convertDayOfWeekToKorean(reservation.getReservationDate().getDayOfWeek()), // 요일을 한글로 변환
 				Collectors.counting() // 각 요일별 예약 수 카운트
 			))
-			.entrySet().stream()
-			.sorted(Map.Entry.<String, Long>comparingByValue().reversed()) // 예약 수에 따라 정렬
-			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
-				LinkedHashMap::new)); // 결과를 LinkedHashMap에 담아서 순서를 유지
+			.forEach((day, count) -> dayOfWeekMap.merge(day, count, Long::sum)); // 값이 있으면 더하고, 없으면 추가
+
+		return dayOfWeekMap;
 	}
 
 	/**
@@ -104,16 +114,30 @@ public class StatisticServiceImpl implements StatisticService {
 	 * @return 피크타임 순으로 정렬된 시간 목록
 	 */
 	@Override
-	public Map<String, Long> getHourlyStatsByMonths(List<Reservation> reservations) {
-		return reservations.stream()
+	public Map<String, Long> getHourlyStatsByMonths(Restaurant restaurant, List<Reservation> reservations) {
+		// 기본 값 초기화
+		Map<String, Long> hourlyStatsMap = new LinkedHashMap<>();
+
+		// restaurant의 startTime과 endTime을 기본값으로 추가
+		hourlyStatsMap.put(getHalfHourSlot(restaurant.getOpenTime()), 0L);
+		hourlyStatsMap.put(getHalfHourSlot(restaurant.getCloseTime()), 0L);
+
+		// 예약 데이터를 바탕으로 시간대별로 그룹화하여 카운트
+		reservations.stream()
 			.collect(Collectors.groupingBy(
 				reservation -> getHalfHourSlot(reservation.getStartTime()), // 30분 단위로 그룹화
 				Collectors.counting() // 각 시간대별 예약 수 카운트
 			))
-			.entrySet().stream()
-			.sorted(Map.Entry.<String, Long>comparingByValue().reversed()) // 예약 수에 따라 정렬
-			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
-				LinkedHashMap::new)); // 결과를 LinkedHashMap에 담아서 순서를 유지
+			.forEach((timeSlot, count) -> hourlyStatsMap.merge(timeSlot, count, Long::sum)); // 기존 값에 추가
+
+		// 시간 순서로 정렬
+		return hourlyStatsMap.entrySet().stream()
+			.sorted(Comparator.comparing(entry -> LocalTime.parse(entry.getKey()))) // 시간을 기준으로 정렬
+			.collect(Collectors.toMap(
+				Map.Entry::getKey,
+				Map.Entry::getValue,
+				(e1, e2) -> e1,
+				LinkedHashMap::new)); // 순서 유지
 	}
 
 	/**

@@ -18,7 +18,7 @@ public interface StatisticService {
 
 	Map<String, Long> getDayOfWeekStatsByMonths(List<Reservation> reservations);
 
-	Map<String, Long> getHourlyStatsByMonths(List<Reservation> reservations);
+	Map<String, Long> getHourlyStatsByMonths(Restaurant restaurant, List<Reservation> reservations);
 
 	Map<String, Long> getRevenueByLastFiveDays(Restaurant restaurant);
 

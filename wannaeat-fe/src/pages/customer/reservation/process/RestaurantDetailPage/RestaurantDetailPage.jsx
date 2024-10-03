@@ -27,6 +27,7 @@ import Location from '../../../../../assets/icons/reservation/location.svg';
 import Clock from '../../../../../assets/icons/reservation/clock.svg';
 import Phone from '../../../../../assets/icons/reservation/phone.svg';
 import useRestaurantStore from 'stores/customer/useRestaurantStore';
+import { addZzimRestaurant } from 'api/customer/zzim.js';
 const RestaurantDetailPage = () => {
   const params = useParams();
   const nav = useNavigate();
@@ -40,6 +41,7 @@ const RestaurantDetailPage = () => {
     setIsShowLogo,
     setActiveIcons,
     setIsShowBackIcon,
+    setIconAction,
   } = useHeaderStore();
 
   const {
@@ -56,12 +58,18 @@ const RestaurantDetailPage = () => {
   } = useRestaurantStore();
 
   useEffect(() => {
+    const addZzim = async () => {
+      console.log('addZzim');
+      const result = await addZzimRestaurant(params.id);
+      console.dir('result', result);
+    };
     setRestaurant(params.id);
     setIsCarrot(true);
     setPageName(restaurantName ? restaurantName : '맛있는 식당');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
-    setActiveIcons([3]);
+    setActiveIcons([6]);
+    setIconAction([() => addZzim()]);
   }, []);
 
   const [activeTab, setActiveTab] = useState(0);

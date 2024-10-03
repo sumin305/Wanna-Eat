@@ -43,6 +43,25 @@ public class StatisticServiceImpl implements StatisticService {
 	}
 
 	/**
+	 * n개월치 예약 데이터를 받아 피크 요일을 리턴하는 메소드
+	 *
+	 * @param reservations 예약 목록
+	 * @return 피크타임 순으로 정렬된 요일 목록
+	 */
+	@Override
+	public Map<String, Long> getDayOfWeekStatsByMonths(List<Reservation> reservations) {
+		return reservations.stream()
+			.collect(Collectors.groupingBy(
+				reservation -> convertDayOfWeekToKorean(reservation.getReservationDate().getDayOfWeek()), // 요일을 한글로 변환
+				Collectors.counting() // 각 요일별 예약 수 카운트
+			))
+			.entrySet().stream()
+			.sorted(Map.Entry.<String, Long>comparingByValue().reversed()) // 예약 수에 따라 정렬
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
+				LinkedHashMap::new)); // 결과를 LinkedHashMap에 담아서 순서를 유지
+	}
+
+	/**
 	 * 최근 n개월 치의 예약 데이터를 가져오는 메소드
 	 *
 	 * @param restaurant 정보를 가져올 식당

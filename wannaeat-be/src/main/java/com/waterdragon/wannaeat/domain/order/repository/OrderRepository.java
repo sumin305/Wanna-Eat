@@ -35,4 +35,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	);
 
 	List<Order> findAllByReservation(Reservation reservation);
+
+	// 여러 주문에 대해 비관적 락(PESSIMISTIC_WRITE)을 걸기 위한 메소드
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	@Query("SELECT o FROM Order o WHERE o.orderId IN :orderIds")
+	List<Order> findByOrderIdsWithLock(@Param("orderIds") List<Long> orderIds);
 }

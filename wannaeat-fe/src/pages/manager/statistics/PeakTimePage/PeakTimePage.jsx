@@ -1,8 +1,12 @@
 import { useEffect } from 'react';
 import {
   PeakTimePageStyled,
+  PeaKTimePageWrapper,
   PeakTimeHeaderStyled,
   DateStyled,
+  DayWrapperStyled,
+  TurnoverWrapperStyled,
+  TurnoverStyled,
 } from './PeakTimePage.js';
 
 import useHeaderStore from 'stores/common/useHeaderStore.js';
@@ -45,12 +49,25 @@ const PeakTimePage = () => {
 
   return (
     <PeakTimePageStyled>
-      <PeakTimeHeaderStyled>
-        <LeftArrow className="arrow" />
-        <DateStyled> 2024.09 </DateStyled>
-        <RightArrow className="arrow" />
-      </PeakTimeHeaderStyled>
-      <WEColumn categories={categories} series={series} />
+      <PeaKTimePageWrapper>
+        <PeakTimeHeaderStyled>
+          <LeftArrow className="arrow" />
+          <DateStyled> 2024.09 </DateStyled>
+          <RightArrow className="arrow" />
+        </PeakTimeHeaderStyled>
+        <DayWrapperStyled>
+          <div>요일</div>
+          <WEColumn categories={categories} series={series} />
+        </DayWrapperStyled>
+        <TurnoverWrapperStyled>
+          <TurnoverStyled>회전율: 1.5회</TurnoverStyled>
+          <TurnoverStyled>평균 이용 시간: 1.5시간</TurnoverStyled>
+        </TurnoverWrapperStyled>
+        <div>
+          <div>시간</div>
+          <WEColumn categories={categories} series={series} />
+        </div>
+      </PeaKTimePageWrapper>
     </PeakTimePageStyled>
   );
 };

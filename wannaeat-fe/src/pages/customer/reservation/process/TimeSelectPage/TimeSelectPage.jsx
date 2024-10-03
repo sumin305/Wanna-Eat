@@ -25,7 +25,7 @@ const TimeSelectPage = () => {
     setReservationDate,
     setStartTime,
     setEndTime,
-    selectedTimes,
+    setSelectedTimes,
   } = useReservationStore();
 
   const navigate = useNavigate();
@@ -55,6 +55,7 @@ const TimeSelectPage = () => {
     setReservationDate(moment(date).format('YYYY-MM-DD'));
     setStartTime('00:00');
     setEndTime('00:00');
+    setSelectedTimes([]);
     handleTimeSelectButtonClick();
   };
 
@@ -83,6 +84,7 @@ const TimeSelectPage = () => {
           outlined={true}
           onClick={handleTimeSelectButtonClick}
           fontWeight={900}
+          fontSize={'1rem'}
         >
           {moment(reservationDate).format('YYYY-MM-DD')} {startTime} ~ {endTime}{' '}
           {memberCount === -1 ? 0 : memberCount}명

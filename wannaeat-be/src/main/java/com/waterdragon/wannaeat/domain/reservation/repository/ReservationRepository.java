@@ -55,4 +55,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	List<Reservation> findByRestaurantAndReservationDate(@Param("restaurant") Restaurant restaurant,
 		@Param("reservationDate") LocalDate reservationDate);
 
+	@Query("SELECT r FROM Reservation r WHERE r.restaurant = :restaurant " +
+		"AND r.cancelled = false " +
+		"AND r.reservationDate BETWEEN :startDate AND :endDate")
+	List<Reservation> findReservationsForRestaurantWithinDateRange(@Param("restaurant") Restaurant restaurant,
+		@Param("startDate") LocalDate startDate,
+		@Param("endDate") LocalDate endDate);
+
 }

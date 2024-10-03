@@ -7,8 +7,8 @@ const StatisticsStyled = styled.div`
   position: relative;
   align-items: center;
   width: 100%;
-  height: 110vh;
-  margin-bottom: 15vh;
+  height: 135vh;
+  margin-bottom: 10vh;
   flex-shrink: 0;
 
   overflow-y: auto;
@@ -20,7 +20,7 @@ const StatisticsStyled = styled.div`
   }
 
   @media (min-width: 480px) {
-    height: auto;
+    height: 140vh;
     margin-bottom: 10vh;
   }
 `;
@@ -133,13 +133,61 @@ const DonutWithLabelStyled = styled.div`
   }
 `;
 
+const StatisticsMenuWrapperStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 14.08688rem;
+  height: 16.75rem;
+  flex-shrink: 0;
+
+  border-radius: 0.625rem;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+
+  padding: 0;
+  margin-top: 2.25rem;
+  padding-top: 1rem;
+
+  @media (min-width: 480px) {
+    width: 80%;
+    height: 23.75rem;
+    margin-top: 2.25rem;
+    padding-top: 1rem;
+  }
+`;
+
+const MenuHeaderStyled = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  height: 1.125rem;
+  margin-bottom: 0.375rem;
+
+  @media (min-width: 480px) {
+    margin-bottom: 0.563rem;
+  }
+`;
+
+const WEBestMenuStyled = styled.div`
+  width: 100%;
+  height: 100%;
+  margin-bottom: 30px;
+`;
+
 export {
   StatisticsStyled,
   StatisticsDonutWrapperStyled,
   StatisticsHeaderStyled,
+  MenuHeaderStyled,
   TitleStyled,
   GoToDetailStyled,
   DonutWrapperStyled,
   DonutWithLabelStyled,
   StatisticsColumnWrapperStyled,
+  WEBestMenuStyled,
+  StatisticsMenuWrapperStyled,
 };

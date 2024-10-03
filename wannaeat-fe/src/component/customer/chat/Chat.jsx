@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+// import useChatStore from 'stores/customer/useChatStore';
+import useWebSocketStore from 'stores/customer/useWebSocketStore';
 import {
   ChatContainer,
   ChatWrapper,
@@ -9,53 +11,72 @@ import {
   ChatInputWrapper,
 } from './Chat';
 
-const Chat = ({ stompClient, reservationUrl }) => {
+const Chat = () => {
+  //   const { chatMessages, setChatMessages } = useChatStore();
+  // 채팅메세지 예시
   const [chatMessages, setChatMessages] = useState([
-    // 초기 채팅 메시지 예시
     {
-      reservationUrl: 'random2',
+      reservationUrl: 'random1',
       senderReservationParticipantId: 1,
       content: '안녕',
     },
     {
-      reservationUrl: 'random2',
+      reservationUrl: 'random1',
       senderReservationParticipantId: 2,
       content: '안녕!',
     },
+    {
+      reservationUrl: 'random1',
+      senderReservationParticipantId: 2,
+      content: '어때?',
+    },
+    {
+      reservationUrl: 'random1',
+      senderReservationParticipantId: 1,
+      content: '좋아!',
+    },
   ]);
-
-  const myReservationParticipantId = 2; // 나의 참여자 ID
+  const myReservationParticipantId = 2;
   const [chatMessageInput, setChatMessageInput] = useState('');
 
-  // 메시지 입력 핸들러
   const handleChatMessageInputChange = (e) => {
     setChatMessageInput(e.target.value);
   };
 
-  // 메시지 전송 핸들러
   const handleChatMessageSendButtonClick = () => {
-    if (!chatMessageInput.trim()) return; // 공백 메시지 전송 방지
+    if (!chatMessageInput.trim()) return; // 공백 메시지는 전송하지 않음
 
     const newMessage = {
-      reservationUrl: reservationUrl,
+      reservationUrl: 'random1',
       senderReservationParticipantId: myReservationParticipantId,
       content: chatMessageInput,
     };
 
-    // 서버로 메시지 전송
-    if (stompClient) {
-      stompClient.send(
-        '/api/public/sockets/chats/register', // 메시지를 보낼 endpoint
-        {},
-        JSON.stringify(newMessage) // 메시지 전송
-      );
-      console.log('메시지 전송:', newMessage);
-    }
-
-    // 로컬 메시지 목록에 추가
+    console.log('전송할 메세지:', newMessage);
     setChatMessages((prevMessages) => [...prevMessages, newMessage]);
-    setChatMessageInput(''); // 입력 필드 초기화
+    // setChatMessages(newMessage);
+    setChatMessageInput('');
   };
+  useEffect(() => {
+    console.log('누적채팅:', chatMessages);
+  }, [chatMessages]);
+
+  const { stompClient } = useWebSocketStore();
+
+  // stompClient가 초기화되었는지 확인
+  if (stompClient) {
+    try {
+      stompClient.current.send(
+        '/api/public/sockets/chats/register',
+        {},
+        JSON.stringify(newMessage)
+      );
+    } catch (error) {
+      console.log('Error sending message:', error);
+    }
+  } else {
+    console.log('stompClient is not initialized or not connected');
+  }
 
   return (
     <ChatContainer>

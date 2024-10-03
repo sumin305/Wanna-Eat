@@ -25,6 +25,7 @@ const TimeSelectPage = () => {
     setReservationDate,
     setStartTime,
     setEndTime,
+    selectedTimes,
   } = useReservationStore();
 
   const navigate = useNavigate();
@@ -61,6 +62,15 @@ const TimeSelectPage = () => {
     navigate(-1);
   };
   const handleNextButtonClick = () => {
+    if (startTime === '00:00') {
+      alert('시간을 선택하세요.');
+      return;
+    } else if (reservationDate === '') {
+      alert('날짜를 선택하세요');
+    } else if (memberCount === -1) {
+      alert('인원수를 입력하세요.');
+      return;
+    }
     navigate('/customer/reservation/seat-select');
   };
 

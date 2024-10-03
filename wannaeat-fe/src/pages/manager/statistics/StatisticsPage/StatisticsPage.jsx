@@ -4,14 +4,18 @@ import {
   StatisticsStyled,
   StatisticsDonutWrapperStyled,
   StatisticsHeaderStyled,
+  MenuHeaderStyled,
   TitleStyled,
   GoToDetailStyled,
   DonutWrapperStyled,
   DonutWithLabelStyled,
   StatisticsColumnWrapperStyled,
+  WEBestMenuStyled,
+  StatisticsMenuWrapperStyled,
 } from './StatisticsPage.js';
 import WEDonut from 'component/manager/statistics/WEDonut/WEDonut.jsx';
 import WEColumn from 'component/manager/statistics/WEColumn/WEColumn.jsx';
+import WEMenu from 'component/manager/statistics/WEMenu/WEMenu.jsx';
 
 const StatisticsPage = () => {
   const {
@@ -65,19 +69,20 @@ const StatisticsPage = () => {
         </StatisticsHeaderStyled>
         <WEColumn />
       </StatisticsColumnWrapperStyled>
-      <StatisticsDonutWrapperStyled>
-        <StatisticsHeaderStyled>
-          <TitleStyled>인기 메뉴</TitleStyled>
-          <GoToDetailStyled>더보기 {'>'}</GoToDetailStyled>
-        </StatisticsHeaderStyled>
-        <DonutWrapperStyled></DonutWrapperStyled>
-      </StatisticsDonutWrapperStyled>
-      <StatisticsDonutWrapperStyled>
-        <StatisticsHeaderStyled>
-          <TitleStyled>인기 좌석</TitleStyled>
-        </StatisticsHeaderStyled>
-        <DonutWrapperStyled></DonutWrapperStyled>
-      </StatisticsDonutWrapperStyled>
+      <StatisticsMenuWrapperStyled>
+        <WEBestMenuStyled>
+          <MenuHeaderStyled>
+            <TitleStyled>인기 메뉴</TitleStyled>
+          </MenuHeaderStyled>
+          <WEMenu />
+        </WEBestMenuStyled>
+        <WEBestMenuStyled>
+          <MenuHeaderStyled>
+            <TitleStyled>비인기 메뉴</TitleStyled>
+          </MenuHeaderStyled>
+          <WEMenu />
+        </WEBestMenuStyled>
+      </StatisticsMenuWrapperStyled>
     </StatisticsStyled>
   );
 };

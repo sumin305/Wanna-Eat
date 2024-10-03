@@ -63,7 +63,8 @@ public class ReservationController {
 			}
 		}
 
-		UrlValidationResponseDto urlValidationResponseDto = reservationService.validateUrl(urlValidationRequestDto, participantIdFromCookie);
+		UrlValidationResponseDto urlValidationResponseDto = reservationService.validateUrl(urlValidationRequestDto,
+			participantIdFromCookie);
 		ResponseDto<UrlValidationResponseDto> responseDto = ResponseDto.<UrlValidationResponseDto>builder()
 			.status(HttpStatus.OK.value())
 			.message("유효한 예약 URL입니다.")
@@ -71,7 +72,8 @@ public class ReservationController {
 			.build();
 
 		if (participantIdFromCookie == null) {
-			Cookie cookie = new Cookie(urlValidationRequestDto.getReservationUrl(), urlValidationResponseDto.getReservationParticipantId().toString());
+			Cookie cookie = new Cookie(urlValidationRequestDto.getReservationUrl(),
+				urlValidationResponseDto.getReservationParticipantId().toString());
 			cookie.setMaxAge(7 * 24 * 60 * 60); // 유효기간 7일
 			cookie.setPath("/"); // 쿠키 경로 설정
 			response.addCookie(cookie);

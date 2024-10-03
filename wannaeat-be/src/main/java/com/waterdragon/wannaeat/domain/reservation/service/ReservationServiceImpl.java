@@ -87,7 +87,8 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Override
 	@Transactional
-	public UrlValidationResponseDto validateUrl(UrlValidationRequestDto urlValidationRequestDto, String participantIdFromCookie) {
+	public UrlValidationResponseDto validateUrl(UrlValidationRequestDto urlValidationRequestDto,
+		String participantIdFromCookie) {
 
 		log.info("예약 url : " + urlValidationRequestDto.getReservationUrl());
 		Reservation reservation = reservationRepository.findByReservationUrl(
@@ -99,11 +100,14 @@ public class ReservationServiceImpl implements ReservationService {
 
 		if (participantIdFromCookie != null) {
 			Long reservationParticipantId = Long.parseLong(participantIdFromCookie);
-			reservationParticipant = reservationParticipantRepository.findByReservationParticipantId(reservationParticipantId)
+			reservationParticipant = reservationParticipantRepository.findByReservationParticipantId(
+					reservationParticipantId)
 				.orElseThrow(() -> new ReservationParticipantNotFoundException("해당 참가자가 존재하지 않습니다."));
 
 			if (!reservation.getReservationId().equals(reservationParticipant.getReservation().getReservationId())) {
-				throw new ReservationParticipantNotMatchReservationException("해당 예약의 참가자가 아닙니다. 예약 id : " + reservation.getReservationId() + "예약 참가자 id : " + reservationParticipant.getReservationParticipantId());
+				throw new ReservationParticipantNotMatchReservationException(
+					"해당 예약의 참가자가 아닙니다. 예약 id : " + reservation.getReservationId() + "예약 참가자 id : "
+						+ reservationParticipant.getReservationParticipantId());
 			}
 		} else {
 			// 쿠키가 없다면 새로운 참가자 생성

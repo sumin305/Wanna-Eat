@@ -45,7 +45,6 @@ import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantCustomRep
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantImageRepository;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructureRepository;
-import com.waterdragon.wannaeat.domain.restaurantlike.domain.RestaurantLike;
 import com.waterdragon.wannaeat.domain.restaurantlike.repository.RestaurantLikeRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 import com.waterdragon.wannaeat.global.exception.error.FileUploadMoreThanTenException;

@@ -33,7 +33,7 @@ const OrderMainBox = ({ reservationUrl }) => {
         <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
         <div>
           <TopBox>
-            <p>총 메뉴 {}개</p>
+            <p>총 메뉴 {allOrders.length}개</p>
           </TopBox>
           {activeTab === 0 ? (
             // 나의 메뉴를 필터링하여 보여줌

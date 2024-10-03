@@ -119,8 +119,8 @@ const MenuSelectPage = () => {
     allMenusData.menuListByCategoryResponseDtos[activeTab]
       ?.menuDetailResponseDtos;
 
-  const clickGotoOrder = () => {
-    nav(`/customer/order/${reservationUrl}`);
+  const clickGotoCart = () => {
+    nav(`/customer/order/cart/${reservationUrl}`);
   };
 
   const handleCartIconClick = (menuId) => {
@@ -169,7 +169,7 @@ const MenuSelectPage = () => {
           </div>
         ))}
 
-      <WEButton onClick={clickGotoOrder}>주문내역보기</WEButton>
+      <WEButton onClick={clickGotoCart}>장바구니 보기</WEButton>
     </>
   );
 };

@@ -10,7 +10,7 @@ import {
 } from './TimeSelectModalBox';
 import Button from '../../../common/button/WEButton/WEButton';
 import theme from '../../../../style/common/theme';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Textfield from '../../../common/textfield/WETextfield/WETextfield.jsx';
 const TimeSelectModalBox = () => {
   const {
@@ -23,10 +23,14 @@ const TimeSelectModalBox = () => {
     setMemberCount,
     setSelectedTimes,
     selectedTimes,
+    memberCount,
   } = useReservationStore();
 
   const [memCnt, setMemCnt] = useState(0);
 
+  useEffect(() => {
+    setMemCnt(memberCount);
+  }, []);
   const handleHeadCountChange = (e) => {
     if (e.target.value === '') {
       setMemCnt(0);

@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -287,6 +289,24 @@ public class StatisticServiceImpl implements StatisticService {
 		LocalDate startDate = endDate.minusMonths(month).withDayOfMonth(1);     // 12개월 전 1일
 
 		return reservationRepository.findReservationsForRestaurantWithinDateRange(restaurant, startDate, endDate);
+	}
+
+	/**
+	 * 예약 목록 중 고유 예약 일자 수를 리턴하는 메소드
+	 * @param reservations
+	 * @return 고유 예약 일자 수
+	 */
+	@Override
+	public int getUniqueReservationDatesCount(List<Reservation> reservations) {
+		Set<LocalDate> uniqueDates = new HashSet<>();
+
+		// 예약 목록에서 고유한 날짜를 추출
+		for (Reservation reservation : reservations) {
+			uniqueDates.add(reservation.getReservationDate());
+		}
+
+		// 고유한 날짜의 수 반환
+		return uniqueDates.size();
 	}
 
 	/**

@@ -45,6 +45,8 @@ import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantCustomRep
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantImageRepository;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructureRepository;
+import com.waterdragon.wannaeat.domain.restaurantlike.domain.RestaurantLike;
+import com.waterdragon.wannaeat.domain.restaurantlike.repository.RestaurantLikeRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 import com.waterdragon.wannaeat.global.exception.error.FileUploadMoreThanTenException;
 import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
@@ -74,6 +76,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 	private final RestaurantStructureRepository restaurantStructureRepository;
 	private final ReservationRepository reservationRepository;
 	private final MenuService menuService;
+	private final RestaurantLikeRepository restaurantLikeRepository;
 
 	/**
 	 * 매장 등록 메소드
@@ -352,9 +355,15 @@ public class RestaurantServiceImpl implements RestaurantService {
 	@Override
 	public RestaurantDetailResponseDto getDetailRestaurantByRestaurantId(Long restaurantId) {
 
+		// 인증 회원 객체
+		User user = authUtil.getAuthenticatedUser();
+
 		// 식당 존재여부 확인
 		Restaurant restaurant = restaurantRepository.findByRestaurantId(restaurantId)
 			.orElseThrow(() -> new RestaurantNotFoundException("해당 매장 찾을 수 없음. restaurantId : " + restaurantId));
+
+		// 식당 좋아요 여부 확인
+		boolean isLiking = restaurantLikeRepository.findByUserAndRestaurant(user, restaurant).isPresent();
 
 		// 식당 메뉴 목록 불러오기
 		MenuListResponseDto menuListResponseDto = menuService.getListMenuByRestaurantId(restaurantId);
@@ -378,6 +387,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.latitude(restaurant.getLatitude())
 			.longitude(restaurant.getLongitude())
 			.menuListResponseDto(menuListResponseDto)
+			.restaurantLike(isLiking)
 			.build();
 	}
 

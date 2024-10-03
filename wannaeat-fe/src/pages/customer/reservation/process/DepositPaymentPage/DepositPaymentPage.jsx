@@ -31,7 +31,8 @@ import useAuthStore from 'stores/customer/useAuthStore';
 const DepositPaymentPage = () => {
   const navigate = useNavigate();
   const { email } = useCommonStore();
-  const { depositPerMember, restaurantName } = useRestaurantStore();
+  const { depositPerMember, restaurantName, restaurantId } =
+    useRestaurantStore();
   const { memberCount } = useReservationStore();
   const [depositPrice, setDepositPrice] = useState(0);
 
@@ -59,9 +60,14 @@ const DepositPaymentPage = () => {
   } = useReservationStore();
 
   useEffect(() => {
+    console.log(selectedCard);
+  }, [selectedCard]);
+  useEffect(() => {
     // 회원 카드 정보 조회
     const fetchCards = async () => {
       const result = await getMyCreditCardList();
+      if (result.status !== 200) {
+      }
       const cards = result.data.REC;
       setCards([...cards, { cardName: '카카오페이카드', cardNo: '0' }]);
     };
@@ -72,7 +78,21 @@ const DepositPaymentPage = () => {
     );
 
     const kakaoPayment = async () => {
-      await payDepositPaymentByKakaoPay({});
+      await payDepositPaymentByKakaoPay({
+        price:
+          depositPerMember * memberCount === 0
+            ? 50000
+            : depositPerMember * memberCount,
+        restaurantId: restaurantId,
+        reservationRegisterRequestDto: {
+          restaurantId: restaurantId,
+          reservationDate: reservationDate,
+          reservationStartTime: startTime,
+          reservationEndTime: endTime,
+          memberCnt: memberCount,
+          tableList: [],
+        },
+      });
       return;
     };
 
@@ -101,7 +121,7 @@ const DepositPaymentPage = () => {
     // 인증 성공
     if (isAuthenticated) {
       // 카카오페이 결제
-      if (selectedCard.cardNo === '0') {
+      if (selectedCard && selectedCard.cardNo === '0') {
         kakaoPayment();
       } else {
         // 싸피페이 결제

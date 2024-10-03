@@ -28,7 +28,7 @@ const ListPage = () => {
     useHeaderStore();
   const [myReservationList, setMyReservationList] = useState([]);
   const navigate = useNavigate();
-  const [date, setDate] = useState('2024-10-3 00:00:00');
+  const [date, setDate] = useState('2024-10-11 00:00:00');
   const [memberCount, setMemberCount] = useState(3);
   const [restaurantName, setRestaurantName] = useState('싸덱스 식당');
   const { remainingTime } = useCountDownTimer(date);
@@ -87,9 +87,9 @@ const ListPage = () => {
     const min = removeZero(splitArry[2]) ?? '00';
     console.log(day, hour, min);
     if (day !== '00' && day !== '0') {
-      return day + '일' + hour + '시간';
+      return day + '일 ' + hour + '시간';
     } else if (hour !== '00' && hour !== '0') {
-      return hour + '시간' + min + '분';
+      return hour + '시간 ' + min + '분';
     } else {
       return min + '분';
     }

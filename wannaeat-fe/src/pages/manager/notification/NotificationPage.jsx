@@ -71,11 +71,11 @@ const NotificationPage = () => {
   return (
     <NotificationPageContainer>
       <NotificationHeader>
-        <h3>
+        <p>
           {selectedCategory === '전체'
             ? '전체'
             : translateAlarmType(selectedCategory)}
-        </h3>
+        </p>
         {/* 카테고리 선택 탭 */}
         <NotificationTabs>
           <span

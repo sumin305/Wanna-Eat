@@ -46,13 +46,7 @@ const StatisticsPage = () => {
 
   useEffect(() => {
     authClientInstance
-      .get(`/api/restaurants/statistics`, {
-        headers: {
-          'Authorization-wannaeat':
-            'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBY2Nlc3NUb2tlbiIsImV4cCI6MTcyNzk3MTU4NCwiZW1haWwiOiJsZWVnZ29uMTIxM0BuYXRlLmNvbSIsInNvY2lhbFR5cGUiOiJLQUtBTyIsInJvbGUiOiJNQU5BR0VSIn0.uvkhace12RwL4ZiPWCiNFfz2Hyb8-firyis-3gOuCz0hMZEP2lpjf3vzeKkWn9DAi_z6iS06BvNvCqD1jCEZeQ',
-        },
-      })
-
+      .get(`/api/restaurants/statistics`)
       .then((response) => {
         const data = response.data.data;
 

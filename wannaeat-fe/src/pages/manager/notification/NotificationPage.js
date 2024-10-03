@@ -5,7 +5,7 @@ import theme from 'style/common/theme';
 // 페이지 전체 스타일
 const NotificationPageContainer = styled.div`
   margin-top: 20px;
-  margin-bottom: 20%
+  margin-bottom: 10%
   padding: 10px;
   font-family: Arial, sans-serif;
 `;
@@ -15,6 +15,13 @@ const NotificationHeader = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
+
+   p {
+    font-size: 10px; /* 원하는 글자 크기 */
+    font-weight: bold; /* 굵게 설정 */
+    color: #333; /* 원하는 글자 색상 (옵션) */
+    margin-left: 5px;
+  }
 `;
 
 // 탭 스타일
@@ -24,10 +31,10 @@ const NotificationTabs = styled.div`
     margin-right: 10px;
     cursor: pointer;
     font-weight: bold;
-    font-size: 17px;
+    font-size: 10px;
     color: #888;
     padding-bottom: 5px;
-    padding-right: 10px;
+    padding-right: 3px;
     border-bottom: 2px solid transparent;
 
     &:hover {
@@ -44,9 +51,9 @@ const NotificationTabs = styled.div`
 // 알림 리스트 스타일 (스크롤 가능)
 const NotificationList = styled.ul`
   list-style-type: none;
-  margin-top: 10px;
+  margin-top: 3px;
   padding: 0;
-  height: 600px; /* 스크롤 가능한 높이 설정 */
+  height: 400px; /* 스크롤 가능한 높이 설정 */
   overflow-y: auto; /* 스크롤 활성화 */
   
   border: 1px solid #ddd; /* 경계 추가 */
@@ -80,9 +87,9 @@ const NotificationItem = styled.li`
 
 // 알림 아이콘 스타일 (왼쪽에 고정, 가운데 정렬)
 const NotificationIcon = styled.img`
-  width: 70px;
-  height: 70px;
-  margin-right: 15px;
+  width: 45px;
+  height: 45px;
+  margin-right: 5px;
   align-self: center; /* 아이콘을 위아래 가운데 정렬 */
   border-radius: 50%;
 `;
@@ -90,7 +97,7 @@ const NotificationIcon = styled.img`
 // 알림 내용 스타일 (가운데 정렬)
 const NotificationContent = styled.div`
   flex-grow: 1;
-  font-size: 17px;
+  font-size: 10px;
   margin-left: 30px;
   display: flex;
   flex-direction: column;
@@ -100,7 +107,7 @@ const NotificationContent = styled.div`
 // 알림 타입 스타일 (알림 제목)
 const NotificationType = styled.div`
   font-weight: bold;
-  font-size: 20px;
+  font-size: 13px;
   margin-bottom: 5px;
 `;
 
@@ -113,7 +120,7 @@ const NotificationDetails = styled.div`
 // 알림 시간 스타일 (우측에 위치)
 const NotificationTime = styled.div`
   color: #888;
-  font-size: 13px;
+  font-size: 10px;
   text-align: right;
   align-self: flex-start;
   margin-top: 10px;
@@ -125,7 +132,7 @@ const NotificationEmptyMessage = styled.div`
   justify-content: center;
   align-items: center;
   height: 100%;  /* 부모 요소의 높이만큼 중앙 정렬 */
-  font-size: 20px; /* 글자 크기 조정 */
+  font-size: 12px; /* 글자 크기 조정 */
   color: #888; /* 색상 변경 */
 `;
 

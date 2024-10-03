@@ -2,9 +2,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import useHeaderStore from 'stores/common/useHeaderStore';
 import useChatStore from 'stores/customer/useChatStore';
-import { validateReservationUrl } from 'api/customer/order';
+import { validateReservationUrl, getOrderData } from 'api/customer/order';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import useOrderStore from 'stores/customer/useOrderStore';
+import OrderMainBox from 'component/customer/order/OrderMainBox.jsx';
 
 const OrderMainPage = () => {
   const nav = useNavigate();
@@ -18,8 +20,16 @@ const OrderMainPage = () => {
     setIsShowBackIcon,
   } = useHeaderStore();
 
-  const { isConnected, setIsConnected, stompClient, setStompClient } =
-    useChatStore();
+  const {
+    isConnected,
+    setIsConnected,
+    stompClient,
+    setStompClient,
+    chatPage,
+    chatSize,
+  } = useChatStore();
+
+  const { allOrdersInfo, setAllOrdersInfo } = useOrderStore();
 
   // 웹소켓 초기 연결
   useEffect(() => {
@@ -82,7 +92,44 @@ const OrderMainPage = () => {
     );
   };
 
-  return <div>주문서페이지</div>;
+  const fetchOrdersInfo = async () => {
+    const allOrdersInfo = await getOrderData(
+      reservationUrl,
+      chatPage,
+      chatSize
+    );
+    console.log('메인페이지 불러온 데이터:', allOrdersInfo.data);
+
+    // 전체 메뉴 리스트 저장
+    setAllOrdersInfo(allOrdersInfo.data);
+    // 식당 아이디 저장
+    // setRestaurantId(allOrderData.data.restaurantId);
+    console.log('zustand allMenus:', allOrdersInfo.data);
+    // console.log('zustand restaurantId:', restaurantId);
+  };
+
+  // 모든 주문 데이터 불러오기
+  useEffect(() => {
+    if (isConnected) {
+      fetchOrdersInfo();
+    }
+  }, []);
+
+  const clickGotoChat = () => {
+    nav(`/customer/order/chat/${reservationUrl}`);
+  };
+
+  return (
+    <>
+      <button onClick={clickGotoChat}>채팅으로 이동</button>
+      <button
+        onClick={() => nav(`/customer/order/menu-select/${reservationUrl}`)}
+      >
+        메뉴선택페이지로 이동
+      </button>
+      <OrderMainBox reservationUrl={reservationUrl} />
+    </>
+  );
 };
 
 export default OrderMainPage;

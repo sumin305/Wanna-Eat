@@ -60,10 +60,6 @@ const OrderCartBox = ({ reservationUrl }) => {
     });
   };
 
-  const clickGotoMenuSelect = () => {
-    nav(`/customer/order/menu-select/${reservationUrl}`);
-  };
-
   const handleOrderButtonClick = () => {
     const orderRegisterRequestDto = {
       reservationUrl: reservationUrl,
@@ -211,7 +207,13 @@ const OrderCartBox = ({ reservationUrl }) => {
           >
             장바구니 보기
           </WEButton>
-          <WEButton onClick={handleOrderSheetButtonClick}>결제하기</WEButton>
+          <WEButton
+            size="medium"
+            outlined="true"
+            onClick={handleOrderSheetButtonClick}
+          >
+            결제하기
+          </WEButton>
         </ButtonWrapper>
       )}
       <div>1</div>

@@ -18,8 +18,13 @@ const OrderCartPage = () => {
     chatPage,
     chatSize,
   } = useChatStore();
-  const { allMenusInfo, setAllMenusInfo, restaurantId, setRestaurantId } =
-    useOrderStore();
+  const {
+    allOrdersInfo,
+    allMenusInfo,
+    setAllMenusInfo,
+    restaurantId,
+    setRestaurantId,
+  } = useOrderStore();
   const nav = useNavigate();
   const params = useParams();
   const reservationUrl = params.url;
@@ -99,7 +104,7 @@ const OrderCartPage = () => {
   console.log('웹소켓연결확인:', stompClient);
   console.log('웹소켓연결확인:', isConnected);
 
-  const fetchOrderData = async () => {
+  const fetchMenusData = async () => {
     const allOrderData = await getOrderData(reservationUrl, chatPage, chatSize);
     console.log('메인페이지 불러온 데이터:', allOrderData.data);
 
@@ -107,14 +112,14 @@ const OrderCartPage = () => {
     setAllMenusInfo(allOrderData.data);
     // 식당 아이디 저장
     // setRestaurantId(allOrderData.data.restaurantId);
-    console.log('zustand allMenus:', allMenusInfo);
+    console.log('zustand allMenus:', allOrderData.data);
     // console.log('zustand restaurantId:', restaurantId);
   };
 
   // 모든 주문 데이터 불러오기
   useEffect(() => {
     if (isConnected) {
-      fetchOrderData();
+      fetchMenusData();
     }
   }, []);
 

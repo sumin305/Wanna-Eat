@@ -12,16 +12,16 @@ import {
   PasswordKey,
 } from './PasswordRegistPage';
 import { useNavigate } from 'react-router-dom';
+import useAuthStore from 'stores/customer/useAuthStore';
 const PasswordRegistPage = () => {
-  const { setRole } = useCommonStore();
+  const { setRole, email } = useCommonStore();
   const [title, setTitle] = useState('결제 비밀번호를 등록해주세요');
   const [isValidPassword, setIsValidPassword] = useState(false);
   const [number, setNumber] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
   const [password, setPassword] = useState('');
   const [inputNumber, setInputNumber] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // 인증 상태 저장
-  const [isSupported, setIsSupported] = useState(false); // WebAuthn 지원 여부 저장
-  const [isPasskeyRegistered, setIsPasskeyRegistered] = useState(false); // 패스키 등록 여부 저장
+  const { isSupported, setIsSupported, setIsPasskeyRegistered } =
+    useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -78,10 +78,10 @@ const PasswordRegistPage = () => {
       const attestation = await navigator.credentials.create({
         publicKey: {
           challenge: new Uint8Array(32), // 서버에서 생성한 고유한 challenge 값 필요
-          rp: { name: 'Your App Name', id: window.location.hostname }, // RP 정보 (사이트 도메인)
+          rp: { name: 'wanna-eat', id: window.location.hostname }, // RP 정보 (사이트 도메인)
           user: {
             id: new Uint8Array(16), // 사용자 ID (서버에서 고유하게 할당)
-            name: 'user@example.com', // 사용자 이메일 또는 이름
+            name: email, // 사용자 이메일 또는 이름
             displayName: 'User', // 사용자 이름
           },
           pubKeyCredParams: [{ type: 'public-key', alg: -7 }], // 공개 키 알고리즘

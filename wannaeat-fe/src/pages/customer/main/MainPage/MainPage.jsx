@@ -42,29 +42,7 @@ const MainPage = () => {
   const [restaurantCategories, setRestaurantCategories] = useState([]);
   const [recentlyReservedRestaurants, setRecentlyReservedRestaurants] =
     useState([]);
-  //    = [
-  //   {
-  //     index: 0,
-  //     restaurantName: '싸덱스 식당1',
-  //     restaurantImage: foodImage,
-  //     myReservationCount: 5,
-  //     totalReservationCount: 200,
-  //   },
-  //   {
-  //     index: 1,
-  //     restaurantName: '싸덱스 식당2',
-  //     restaurantImage: foodImage,
-  //     myReservationCount: 2,
-  //     totalReservationCount: 45,
-  //   },
-  //   {
-  //     index: 2,
-  //     restaurantName: '싸덱스 식당3',
-  //     restaurantImage: foodImage,
-  //     myReservationCount: 4,
-  //     totalReservationCount: 123,
-  //   },
-  // ];
+  const [searchKeyword, setSearchKeyword] = useState('');
 
   useEffect(() => {
     const fetchMyReservationList = async () => {
@@ -86,12 +64,14 @@ const MainPage = () => {
   }, []);
 
   const handleSearchKeywordChange = (e) => {
-    setKeyword(e.target.value);
+    setSearchKeyword(e.target.value);
   };
   const handleSearchIconClick = () => {
+    setKeyword(searchKeyword);
     navigate('/customer/reservation');
   };
   const handleClickCategoryItem = (category) => {
+    setKeyword(category);
     navigate('/customer/reservation');
   };
   const handleReservationButtonClick = () => {
@@ -106,7 +86,7 @@ const MainPage = () => {
     <MainPageContainer>
       <SearchWrapper>
         <SearchInput
-          value={keyword}
+          value={searchKeyword}
           onChange={handleSearchKeywordChange}
           placeholder="메뉴, 식당, 지역 검색"
         />

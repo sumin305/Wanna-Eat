@@ -18,7 +18,7 @@ class WELine extends Component {
           height: 350,
           type: 'line',
           zoom: {
-            enabled: false,
+            enabled: true,
           },
         },
         dataLabels: {

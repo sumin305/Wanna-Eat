@@ -22,6 +22,7 @@ import com.waterdragon.wannaeat.domain.order.domain.Order;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
+import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructureRepository;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MainStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MenuStatisticResponseDto;
 
@@ -33,6 +34,7 @@ public class StatisticServiceImpl implements StatisticService {
 
 	private final ReservationRepository reservationRepository;
 	private final MenuRepository menuRepository;
+	private final RestaurantStructureRepository restaurantStructureRepository;
 
 	@Override
 	public MainStatisticResponseDto getStatisticsByMain(Restaurant restaurant) {
@@ -285,6 +287,24 @@ public class StatisticServiceImpl implements StatisticService {
 		LocalDate startDate = endDate.minusMonths(month).withDayOfMonth(1);     // 12개월 전 1일
 
 		return reservationRepository.findReservationsForRestaurantWithinDateRange(restaurant, startDate, endDate);
+	}
+
+	/**
+	 * 예약 목록의 예약 테이블 수의 합을 리턴하는 메소드
+	 *
+	 * @param reservations
+	 * @return 예약 테이블 수 합
+	 */
+	@Override
+	public int getTotalReservationTableCount(List<Reservation> reservations) {
+		int totalTableCount = 0;
+
+		// 각 예약별로 연결된 ReservationTable 수를 합산
+		for (Reservation reservation : reservations) {
+			totalTableCount += reservation.getReservationTables().size(); // 각 예약에 연결된 테이블 수를 더함
+		}
+
+		return totalTableCount;
 	}
 
 	/**

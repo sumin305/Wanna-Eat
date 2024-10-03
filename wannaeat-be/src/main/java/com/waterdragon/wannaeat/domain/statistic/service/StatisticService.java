@@ -30,6 +30,8 @@ public interface StatisticService {
 
 	List<Reservation> getReservationsByMonths(Restaurant restaurant, int month);
 
+	int getTotalReservationTableCount(List<Reservation> reservations);
+
 	String getHalfHourSlot(LocalTime time);
 
 	String convertDayOfWeekToKorean(DayOfWeek dayOfWeek);

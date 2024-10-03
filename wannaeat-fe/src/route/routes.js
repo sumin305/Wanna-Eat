@@ -19,7 +19,7 @@ import ReservationDetailPage from '../pages/manager/reservation/ReservationDetai
 import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
 import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage.jsx';
 import ReservationListPage from '../pages/customer/reservation/history/ReservationListPage/ReservationListPage.jsx';
-import ReservationDetailPage from '../pages/customer/reservation/history/ReservationDetailPage/ReservationDetailPage.jsx';
+import MyReservationDetailPage from '../pages/customer/reservation/history/ReservationDetailPage/ReservationDetailPage.jsx';
 import MyInfoPage from '../pages/customer/user/MyInfoPage/MyInfoPage.jsx';
 import RestaurantDetailPage from '../pages/customer/reservation/process/RestaurantDetailPage/RestaurantDetailPage.jsx';
 import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage/TimeSelectPage.jsx';
@@ -100,7 +100,7 @@ const AppRoutes = () => {
         />
         <Route
           path="/customer/reservation/detail/:id"
-          element={<ReservationDetailPage />}
+          element={<MyReservationDetailPage />}
         />
 
         <Route path="/customer/order/:url" element={<OrderMainPage />} />

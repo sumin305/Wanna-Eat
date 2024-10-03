@@ -25,6 +25,7 @@ const WEHeader = () => {
     isShowLogo,
     isShowBackIcon,
     isUnderLine,
+    iconAction,
   } = useHeaderStore();
 
   const nav = useNavigate();
@@ -33,6 +34,12 @@ const WEHeader = () => {
     nav(-1); // 뒤로가기
   };
 
+  const handleHeaderIconClick = (index) => {
+    const action = iconAction[index];
+    console.log('typeof action', typeof action);
+    console.log('action', action);
+    action();
+  };
   return (
     <HeaderContainer isCarrot={isCarrot} isUnderLine={isUnderLine}>
       <HeaderWrapper>
@@ -64,7 +71,12 @@ const WEHeader = () => {
         <HeaderRight>
           {activeIcons &&
             activeIcons.map((icon, index) => (
-              <IconImg key={index} src={icon} alt="icon" />
+              <IconImg
+                onClick={() => handleHeaderIconClick(index)}
+                key={index}
+                src={icon}
+                alt="icon"
+              />
             ))}
         </HeaderRight>
       </HeaderWrapper>

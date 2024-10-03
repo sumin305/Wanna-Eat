@@ -1,6 +1,7 @@
 package com.waterdragon.wannaeat.domain.statistic.service;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -289,6 +290,30 @@ public class StatisticServiceImpl implements StatisticService {
 		LocalDate startDate = endDate.minusMonths(month).withDayOfMonth(1);     // 12개월 전 1일
 
 		return reservationRepository.findReservationsForRestaurantWithinDateRange(restaurant, startDate, endDate);
+	}
+
+	/**
+	 * 평균 테이블 이용 시간
+	 *
+	 * @param reservations 예약 목록
+	 * @return 평균 테이블 이용 시간
+	 */
+	@Override
+	public int getAverageUsageTime(List<Reservation> reservations) {
+		long totalMinutes = 0;
+
+		// 각 예약의 이용 시간 계산 (분 단위)
+		for (Reservation reservation : reservations) {
+			LocalTime startTime = reservation.getStartTime();
+			LocalTime endTime = reservation.getEndTime();
+
+			// startTime과 endTime의 차이(분)를 계산
+			long minutes = Duration.between(startTime, endTime).toMinutes();
+			totalMinutes += minutes;
+		}
+
+		// 예약의 총 개수로 나누어 평균 이용 시간 계산
+		return reservations.isEmpty() ? 0 : (int)(totalMinutes / reservations.size());
 	}
 
 	/**

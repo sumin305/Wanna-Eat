@@ -4,12 +4,22 @@ import styled from '@emotion/styled/macro';
 import moment from 'moment';
 import theme from '../../../../style/common/theme';
 import Calendar from 'react-calendar';
-
+import WETab from '../../../../component/common/tab/WETab/WETab.jsx';
+import { getReservationInfoByDay } from 'api/manager/reservation/reservation.js';
+import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore';
 const AdminPage = () => {
-  const { setIsCarrot, setPageName, setActiveIcons, setIsUnderLine } =
-    useHeaderStore();
+  const {
+    setIsCarrot,
+    setPageName,
+    setActiveIcons,
+    setIsUnderLine,
+    setIsShowLogo,
+  } = useHeaderStore();
+  const { reservationDetails, setReservationDetails } = useMyRestaurantStore();
   const [selectedDate, setSelectedDate] = useState('');
-
+  const [activeTab, setActiveTab] = useState(0);
+  const tabs = ['방문 예정', '방문 중', '방문 완료'];
+  const [reservationList, setReservationList] = useState([]);
   const dayList = [
     '2024-10-10',
     '2024-10-11',
@@ -40,6 +50,8 @@ const AdminPage = () => {
       willVisit: 4,
     },
   };
+
+  // 달력의 각 날짜에 들어갈 content
   const addContent = ({ date }) => {
     const contents = [];
     // date(각 날짜)가  리스트의 날짜와 일치하면 해당 컨텐츠(이모티콘) 추가
@@ -64,16 +76,40 @@ const AdminPage = () => {
     }
     return <div>{contents}</div>; // 각 날짜마다 해당 요소가 들어감
   };
+
   useEffect(() => {
     setPageName('예약 관리');
     setIsCarrot(false);
     setActiveIcons([0]);
     setIsUnderLine(true);
-    console.log('willVisit', reservationCount);
+    setIsShowLogo(false);
   }, []);
 
+  useEffect(() => {
+    // 방문 예정
+    if (activeTab === 0) {
+      setReservationList(reservationDetails.filter((reservation) => {}));
+    } else if (activeTab === 1) {
+    } else {
+    }
+  }, [activeTab]);
+
+  // 날짜가 선택될 때마다 실행되는 함수
   const handleDateChange = (date) => {
-    console.log(date);
+    const formattedDate = moment(date).format('YYYY-MM-DD');
+    console.log(formattedDate);
+
+    // 해당 날짜의 상세 예약 정보를 가져온다
+    const fetchReservationDateByDate = async (formattedDate) => {
+      const result = await getReservationInfoByDay(formattedDate);
+
+      if (result.status !== 200) {
+        alert('해당 날짜의 상세 예약 정보 불러오기 실패');
+      }
+      setReservationDetails(result.data);
+    };
+
+    fetchReservationDateByDate(formattedDate);
   };
 
   return (
@@ -87,6 +123,7 @@ const AdminPage = () => {
           formatDay={(locale, date) => moment(date).format('DD')}
         />
       </CalendarWrapper>
+      <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
     </ReservationManagePageContainer>
   );
 };

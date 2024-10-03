@@ -2,6 +2,8 @@ package com.waterdragon.wannaeat.domain.statistic.service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,19 @@ public class StatisticServiceImpl implements StatisticService {
 		LocalDate startDate = endDate.minusMonths(month).withDayOfMonth(1);     // 12개월 전 1일
 
 		return reservationRepository.findReservationsForRestaurantWithinDateRange(restaurant, startDate, endDate);
+	}
+
+	/**
+	 * 시간을 30분 단위의 문자열로 변환하는 메소드
+	 *
+	 * @param time 변환할 시간
+	 * @return 변환된 시간 정보
+	 */
+	@Override
+	public String getHalfHourSlot(LocalTime time) {
+		LocalTime halfHourSlot = time.truncatedTo(ChronoUnit.HOURS) // 시간을 먼저 00분으로 맞춘 후
+			.plusMinutes(time.getMinute() >= 30 ? 30 : 0); // 30분 기준으로 그룹화
+		return halfHourSlot.toString(); // 결과를 "HH:mm" 형식으로 반환
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package com.waterdragon.wannaeat.domain.statistic.service;
 
 import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,8 @@ public interface StatisticService {
 	Map<Integer, Long> getMonthlyStatsByMonths(List<Reservation> reservations);
 
 	List<Reservation> getReservationsByMonths(Restaurant restaurant, int month);
+
+	String getHalfHourSlot(LocalTime time);
 
 	String convertDayOfWeekToKorean(DayOfWeek dayOfWeek);
 }

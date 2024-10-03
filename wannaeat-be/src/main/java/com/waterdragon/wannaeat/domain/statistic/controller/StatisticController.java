@@ -14,6 +14,7 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidFilterT
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotFoundException;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MainStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.PeekStatisticResponseDto;
+import com.waterdragon.wannaeat.domain.statistic.dto.response.RevenueStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.service.StatisticService;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
@@ -69,7 +70,7 @@ public class StatisticController {
 	 */
 	@Operation(summary = "월별 피크 통계 조회 API")
 	@GetMapping("/restaurants/statistics/peek")
-	public ResponseEntity<ResponseDto<PeekStatisticResponseDto>> getStatisticsByMain(@RequestParam("year") int year,
+	public ResponseEntity<ResponseDto<PeekStatisticResponseDto>> getStatisticsByPeek(@RequestParam("year") int year,
 		@RequestParam("month") int month) {
 		User user = authUtil.getAuthenticatedUser();
 		if (user.getRole() != Role.MANAGER) {
@@ -91,7 +92,8 @@ public class StatisticController {
 			throw new InvalidFilterTimeSequenceException("검색 연월은 현재보다 뒤일 수 없습니다.");
 		}
 
-		PeekStatisticResponseDto peekStatisticResponseDto = statisticService.getStatisticsByPeek(restaurant, year, month);
+		PeekStatisticResponseDto peekStatisticResponseDto = statisticService.getStatisticsByPeek(restaurant, year,
+			month);
 		ResponseDto<PeekStatisticResponseDto> responseDto = ResponseDto.<PeekStatisticResponseDto>builder()
 			.status(HttpStatus.OK.value())
 			.message("월별 피크 통계 데이터.")
@@ -110,7 +112,8 @@ public class StatisticController {
 	 */
 	@Operation(summary = "월별 매출 통계 조회 API")
 	@GetMapping("/restaurants/statistics/revenue")
-	public ResponseEntity<ResponseDto<RevenueStatisticResponseDto>> getStatisticsByRevenue(@RequestParam("year") int year,
+	public ResponseEntity<ResponseDto<RevenueStatisticResponseDto>> getStatisticsByRevenue(
+		@RequestParam("year") int year,
 		@RequestParam("month") int month) {
 		User user = authUtil.getAuthenticatedUser();
 		if (user.getRole() != Role.MANAGER) {
@@ -132,7 +135,8 @@ public class StatisticController {
 			throw new InvalidFilterTimeSequenceException("검색 연월은 현재보다 뒤일 수 없습니다.");
 		}
 
-		RevenueStatisticResponseDto revenueStatisticResponseDto = statisticService.getStatisticsByRevenue(restaurant, year, month);
+		RevenueStatisticResponseDto revenueStatisticResponseDto = statisticService.getStatisticsByRevenue(restaurant,
+			year, month);
 		ResponseDto<RevenueStatisticResponseDto> responseDto = ResponseDto.<RevenueStatisticResponseDto>builder()
 			.status(HttpStatus.OK.value())
 			.message("월별 매출 통계 데이터.")

@@ -14,6 +14,8 @@ public interface StatisticService {
 
 	Map<String, Long> getDayOfWeekStatsByMonths(List<Reservation> reservations);
 
+	Map<String, Long> getHourlyStatsByMonths(List<Reservation> reservations);
+
 	List<Reservation> getReservationsByMonths(Restaurant restaurant, int month);
 
 	String getHalfHourSlot(LocalTime time);

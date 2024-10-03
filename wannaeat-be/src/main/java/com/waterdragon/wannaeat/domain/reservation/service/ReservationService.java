@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -43,4 +44,6 @@ public interface ReservationService {
 	Restaurant validateQr(String token);
 
 	String generateRandomString();
+
+	ManagerReservationDetailResponseDto getReservationListByManager(Long reservationId);
 }

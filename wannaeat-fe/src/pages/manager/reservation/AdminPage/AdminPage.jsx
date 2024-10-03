@@ -85,14 +85,14 @@ const AdminPage = () => {
     setIsShowLogo(false);
   }, []);
 
-  useEffect(() => {
-    // 방문 예정
-    if (activeTab === 0) {
-      setReservationList(reservationDetails.filter((reservation) => {}));
-    } else if (activeTab === 1) {
-    } else {
-    }
-  }, [activeTab]);
+  // useEffect(() => {
+  //   // 방문 예정
+  //   if (activeTab === 0) {
+  //     setReservationList(reservationDetails.filter((reservation) => {}));
+  //   } else if (activeTab === 1) {
+  //   } else {
+  //   }
+  // }, [activeTab]);
 
   // 날짜가 선택될 때마다 실행되는 함수
   const handleDateChange = (date) => {

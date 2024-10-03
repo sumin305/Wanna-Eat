@@ -4,7 +4,6 @@ import { validateReservationUrl } from 'api/customer/order';
 import useChatStore from 'stores/customer/useChatStore';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import OrderMainBox from 'component/customer/order/OrderMainBox.jsx';
 import useHeaderStore from 'stores/common/useHeaderStore';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 
@@ -54,7 +53,9 @@ const OrderSheetPage = () => {
   }, []);
 
   const initializeConnection = () => {
-    const socket = new SockJS('http://localhost:8080/api/public/ws');
+    const socket = new SockJS(
+      `${process.env.REACT_APP_REST_API_URL}/api/public/ws`
+    );
     const client = Stomp.over(socket);
 
     client.connect(

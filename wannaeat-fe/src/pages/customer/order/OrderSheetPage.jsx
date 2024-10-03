@@ -6,6 +6,7 @@ import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import useHeaderStore from 'stores/common/useHeaderStore';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
+import useOrderStore from 'stores/customer/useOrderStore';
 
 const OrderSheetPage = () => {
   const { isConnected, setIsConnected, stompClient, setStompClient } =
@@ -20,6 +21,7 @@ const OrderSheetPage = () => {
     setActiveIcons,
     setIsShowBackIcon,
   } = useHeaderStore();
+  const allMenusInfo = useOrderStore();
 
   // 웹소켓 초기 연결
   useEffect(() => {
@@ -88,6 +90,12 @@ const OrderSheetPage = () => {
 
   console.log('웹소켓연결확인:', stompClient);
   console.log('웹소켓연결확인:', isConnected);
+
+  useEffect(() => {
+    if (isConnected) {
+      console.log(allMenusInfo);
+    }
+  }, [isConnected]);
 
   return (
     <>

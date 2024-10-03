@@ -13,7 +13,7 @@ const OrderMainBox = ({ reservationUrl }) => {
   const { allOrdersInfo } = useOrderStore();
   const nav = useNavigate();
 
-  const reservationParticipantId = 3; // 나의 메뉴에 해당하는 ID 설정
+  const reservationParticipantId = 1; // 나의 메뉴에 해당하는 ID 설정
   const allOrders =
     allOrdersInfo?.orderListResponseDto?.orderDetailResponseDtos || [];
 

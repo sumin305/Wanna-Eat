@@ -21,13 +21,13 @@ const MyZzimItem = styled.div`
 `;
 
 const MyZzimItemImage = styled.img`
-  width: 3rem;
-  height: 5rem;
+  height: 20vh;
+  width: 20vh;
   margin-left: 1rem;
 
   @media (min-width: 480px) {
-    width: 5rem;
-    height: 8rem;
+    height: 20vh;
+    width: 20vh;
     margin: 0 1rem;
   }
 `;
@@ -44,30 +44,65 @@ const MyZzimInfoWrapper = styled.div`
 `;
 
 const MyZzimInfoTitle = styled.p`
+  display: flex;
+  justify-content: space-between;
   font-weight: bold;
   font-size: ${theme.fontSize.px13};
-  margin: 0.5rem 0;
+  margin-top: 0.5rem;
   @media (min-width: 480px) {
     font-size: ${theme.fontSize.px21};
   }
 `;
 
-const MyZzimInfoText = styled.p`
-  font-size: ${theme.fontSize.px9};
-  color: #c0c0c0;
-  margin: 0.1rem 0;
+const MyZzimInconImage = styled.img`
+  width: 1rem;
+  height: 1rem;
   @media (min-width: 480px) {
-    font-size: ${theme.fontSize.px15};
-    margin: 0.3rem 0;
+    width: 2rem;
+    height: 2rem;
   }
 `;
 
-const MyZzimHeartButton = styled.button`
-  border: none;
-  background: none;
-  margin-right: 1rem;
+const MyZzimInfoText = styled.p`
+  font-size: ${theme.fontSize.px9};
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px15};
+  }
 `;
 
+const MyZzimReservationWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin-top: 2rem;
+  align-items: center;
+  @media (min-width: 480px) {
+    margin-top: 3rem;
+    margin-right: 1rem;
+  }
+`;
+
+const MyZzimReservationCount = styled.p`
+  font-size: ${theme.fontSize.px8};
+  font-weight: bold;
+  border: 1px solid ${theme.color.primary};
+  border-radius: 5px;
+  padding: 3px;
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px10};
+  }
+`;
+const MyZzimReservationButton = styled.button`
+  background: none;
+  border: none;
+  font-size: ${theme.fontSize.px10};
+  color: ${theme.color.secondary};
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px13};
+  }
+`;
 export {
   MyZzimPageContainer,
   MyZzimItem,
@@ -75,5 +110,8 @@ export {
   MyZzimInfoWrapper,
   MyZzimInfoTitle,
   MyZzimInfoText,
-  MyZzimHeartButton,
+  MyZzimInconImage,
+  MyZzimReservationWrapper,
+  MyZzimReservationCount,
+  MyZzimReservationButton,
 };

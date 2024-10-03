@@ -7,7 +7,7 @@ import SignUpPage from '../pages/common/SignUpPage/SignUpPage.jsx';
 import PasswordRegistPage from 'pages/common/PasswordRegistPage/PasswordRegistPage.jsx';
 // 사업자 관련 페이지
 import ManagerMainPage from '../pages/manager/main/MainPage';
-import AdminPage from '../pages/manager/reservation/AdminPage';
+import AdminPage from '../pages/manager/reservation/AdminPage/AdminPage.jsx';
 import SeatDecoratePage from '../pages/manager/restaurant/SeatDecoratePage/SeatDecoratePage.jsx';
 import RestaurantViewPage from '../pages/manager/restaurant/RestaurantViewPage';
 import StatisticsPage from '../pages/manager/statistics/StatisticsPage';
@@ -19,7 +19,7 @@ import ReservationDetailPage from '../pages/manager/reservation/ReservationDetai
 import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
 import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage.jsx';
 import ReservationListPage from '../pages/customer/reservation/history/ReservationListPage/ReservationListPage.jsx';
-import MyReservationDetailPage from '../pages/customer/reservation/history/ReservationDetailPage/ReservationDetailPage.jsx';
+import CustomerReservationDetailPage from '../pages/customer/reservation/history/ReservationDetailPage/ReservationDetailPage.jsx';
 import MyInfoPage from '../pages/customer/user/MyInfoPage/MyInfoPage.jsx';
 import RestaurantDetailPage from '../pages/customer/reservation/process/RestaurantDetailPage/RestaurantDetailPage.jsx';
 import TimeSelectPage from '../pages/customer/reservation/process/TimeSelectPage/TimeSelectPage.jsx';
@@ -100,7 +100,7 @@ const AppRoutes = () => {
         />
         <Route
           path="/customer/reservation/detail/:id"
-          element={<MyReservationDetailPage />}
+          element={<CustomerReservationDetailPage />}
         />
 
         <Route path="/customer/order/:url" element={<OrderMainPage />} />

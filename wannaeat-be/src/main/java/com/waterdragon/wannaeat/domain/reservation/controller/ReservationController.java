@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -291,5 +292,29 @@ public class ReservationController {
 			.contentType(MediaType.IMAGE_PNG)
 			.body(qr);
 	}
+
+    /**
+     * 사업자용 예약 상세조회 API
+     *
+     * @param reservationId 예약 ID
+     * @return ResponseDto<ManagerReservationDetailResponseDto> 예약 상세 정보를 담은 응답 객체
+     */
+    @Operation(summary = "사업자용 예약 상세조회 API")
+    @GetMapping("/manager/reservation/{reservationId}")
+    public ResponseEntity<ResponseDto<ManagerReservationDetailResponseDto>> getReservationListByManager(
+            @PathVariable Long reservationId) {
+
+        // 예약 상세 정보 조회
+        ManagerReservationDetailResponseDto reservationDetail = reservationService.getReservationListByManager(reservationId);
+
+        // 응답 객체 생성
+        ResponseDto<ManagerReservationDetailResponseDto> responseDto = ResponseDto.<ManagerReservationDetailResponseDto>builder()
+                .status(HttpStatus.OK.value())
+                .message("예약 상세 정보가 성공적으로 조회되었습니다.")
+                .data(reservationDetail)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
 }

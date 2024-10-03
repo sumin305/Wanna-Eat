@@ -63,4 +63,8 @@ public class Order {
 	public void updateTotalCnt(int orderedMenuCnt) {
 		this.totalCnt += orderedMenuCnt;
 	}
+
+	public void plusServedCnt() {
+		this.servedCnt += 1;
+	}
 }

@@ -30,6 +30,7 @@ import com.waterdragon.wannaeat.domain.restaurant.domain.Table;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructureRepository;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MainStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MenuStatisticResponseDto;
+import com.waterdragon.wannaeat.domain.statistic.dto.response.PeekStatisticResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -64,6 +65,27 @@ public class StatisticServiceImpl implements StatisticService {
 			.topMenuStatistics(topMenuStatistics)
 			.bottomMenuStatistics(bottomMenuStatistics)
 			.build();
+	}
+
+	@Override
+	public PeekStatisticResponseDto getStatisticsByPeek(Restaurant restaurant, int year, int month) {
+		List<Reservation> reservations = reservationRepository.findReservationsByRestaurantAndYearAndMonth(restaurant,
+			year, month);
+
+		Map<String, Long> dayStatistics = getDayOfWeekStatsByMonths(reservations);
+		Map<String, Long> hourStatistics = getHourlyStatsByMonths(restaurant, reservations);
+
+		double turnoverRate = getTurnoverRate(restaurant, reservations);
+
+		int averageUsageTime = getAverageUsageTime(reservations);
+
+		return PeekStatisticResponseDto.builder()
+			.dayStatistics(dayStatistics)
+			.hourStatistics(hourStatistics)
+			.turnoverRate(turnoverRate)
+			.averageUsageTime(averageUsageTime)
+			.build();
+
 	}
 
 	/**

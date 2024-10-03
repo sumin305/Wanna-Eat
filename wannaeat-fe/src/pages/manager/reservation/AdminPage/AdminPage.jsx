@@ -86,11 +86,48 @@ const AdminPage = () => {
   }, []);
 
   useEffect(() => {
-    // 방문 예정
     if (activeTab === 0) {
-      setReservationList(reservationDetails.filter((reservation) => {}));
+      // 방문 예정인 예약들만 담는다.
+      setReservationList(
+        reservationDetails.filter((reservation) => {
+          // 현재 시각과 비교
+          if (
+            reservation.reservationDate ===
+            moment(new Date()).format('YYYY-MM-DD')
+          ) {
+            return (
+              reservation.reservationStartTime <
+              moment(new Date()).format('HH:mm')
+            );
+          }
+          return (
+            reservation.reservationDate <
+            moment(new Date()).format('YYYY-MM-DD')
+          );
+        })
+      );
     } else if (activeTab === 1) {
+      setReservationList(
+        reservationDetails.filter((reservation) => {
+          if (
+            reservation.reservationDate ===
+              moment(new Date()).format('YYYY-MM-DD') &&
+            reservation.reservationStartTime <
+              moment(new Date()).format('HH:mm') &&
+            reservation.endTime > moment(new Date()).format('HH:mm')
+          ) {
+            return true;
+          }
+        })
+      );
     } else {
+      setReservationList(
+        reservationDetails.filter((reservation) => {
+          if (reservation.reservationDate > moment(new Date()).format('YYYY-MM-DD') && reservation.reservationEndTime <
+          moment(new Date()).format('HH:mm') &&
+) return true;
+        })
+      );
     }
   }, [activeTab]);
 

@@ -1,5 +1,6 @@
 package com.waterdragon.wannaeat.domain.statistic.service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -54,4 +55,22 @@ public class StatisticServiceImpl implements StatisticService {
 		return reservationRepository.findReservationsForRestaurantWithinDateRange(restaurant, startDate, endDate);
 	}
 
+	/**
+	 * 요일을 한국어 약어로 변환하는 메소드
+	 *
+	 * @param dayOfWeek 요일 정보 (DayOfWeek)
+	 * @return 한국어 약어 형식의 요일
+	 */
+	@Override
+	public String convertDayOfWeekToKorean(DayOfWeek dayOfWeek) {
+		return switch (dayOfWeek) {
+			case MONDAY -> "월";
+			case TUESDAY -> "화";
+			case WEDNESDAY -> "수";
+			case THURSDAY -> "목";
+			case FRIDAY -> "금";
+			case SATURDAY -> "토";
+			case SUNDAY -> "일";
+		};
+	}
 }

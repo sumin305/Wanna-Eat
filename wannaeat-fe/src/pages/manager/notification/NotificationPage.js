@@ -5,6 +5,7 @@ import theme from 'style/common/theme';
 // 페이지 전체 스타일
 const NotificationPageContainer = styled.div`
   margin-top: 20px;
+  margin-bottom: 20%
   padding: 10px;
   font-family: Arial, sans-serif;
 `;
@@ -64,10 +65,16 @@ const NotificationItem = styled.li`
   display: flex;
   align-items: center;
   padding: 15px;
-  border-bottom: 1px solid #ddd; /* 알림마다 회색 실선 추가 */
+  border-bottom: 1px solid #ccc !important;
+  background-color: #fff; /* 배경색 추가로 구분선 더 명확히 */
   
   &:last-child {
     border-bottom: none; /* 마지막 항목에서는 실선 제거 */
+  }
+  
+  /* 구분선이 더 명확하게 보이도록 마진 조정 */
+  &:not(:last-child) {
+    margin-bottom: 5px;
   }
 `;
 
@@ -112,6 +119,16 @@ const NotificationTime = styled.div`
   margin-top: 10px;
 `;
 
+// NotificationEmptyMessage 스타일 추가
+const NotificationEmptyMessage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;  /* 부모 요소의 높이만큼 중앙 정렬 */
+  font-size: 20px; /* 글자 크기 조정 */
+  color: #888; /* 색상 변경 */
+`;
+
 export {
   NotificationPageContainer,
   NotificationHeader,
@@ -123,4 +140,5 @@ export {
   NotificationType,
   NotificationDetails,
   NotificationTime,
+  NotificationEmptyMessage
 };

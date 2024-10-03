@@ -78,7 +78,7 @@ const DepositPaymentPage = () => {
     );
 
     const kakaoPayment = async () => {
-      await payDepositPaymentByKakaoPay({
+      const result = await payDepositPaymentByKakaoPay({
         price:
           depositPerMember * memberCount === 0
             ? 50000
@@ -93,6 +93,10 @@ const DepositPaymentPage = () => {
           tableList: [],
         },
       });
+
+      if (result !== 200) {
+        alert('결제에 실패했습니다.');
+      }
       return;
     };
 

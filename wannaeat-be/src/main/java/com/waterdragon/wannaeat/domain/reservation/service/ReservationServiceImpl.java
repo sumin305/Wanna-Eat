@@ -4,32 +4,36 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import com.waterdragon.wannaeat.domain.reservation.dto.response.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.waterdragon.wannaeat.domain.cart.exception.error.ReservationParticipantNotMatchReservationException;
 import com.waterdragon.wannaeat.domain.order.domain.Order;
 import com.waterdragon.wannaeat.domain.order.repository.OrderRepository;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
+import com.waterdragon.wannaeat.domain.reservation.domain.ReservationParticipant;
 import com.waterdragon.wannaeat.domain.reservation.domain.ReservationTable;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
-import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
-import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
-import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.AlreadyCancelledReservationException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.DuplicateReservationTableException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.FailureGenerateQrCodeException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.InvalidQrTokenException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.QrTokenNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationParticipantNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.UnpaidOrderExistsException;
+import com.waterdragon.wannaeat.domain.reservation.repository.ReservationParticipantRepository;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationTableRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
@@ -77,10 +81,12 @@ public class ReservationServiceImpl implements ReservationService {
 	private final RestaurantRepository restaurantRepository;
 	private final UserRepository userRepository;
 	private final ReservationTableRepository reservationTableRepository;
+	private final ReservationParticipantRepository reservationParticipantRepository;
 
 	@Override
 	@Transactional
-	public UrlValidationResponseDto validateUrl(UrlValidationRequestDto urlValidationRequestDto) {
+	public UrlValidationResponseDto validateUrl(UrlValidationRequestDto urlValidationRequestDto,
+		String participantIdFromCookie) {
 
 		log.info("예약 url : " + urlValidationRequestDto.getReservationUrl());
 		Reservation reservation = reservationRepository.findByReservationUrl(
@@ -88,8 +94,47 @@ public class ReservationServiceImpl implements ReservationService {
 			.orElseThrow(() -> new ReservationNotFoundException(
 				"해당 예약은 만료되었거나, 퇴실 완료 처리 되었습니다. reservationUrl : " + urlValidationRequestDto.getReservationUrl()));
 
+		ReservationParticipant reservationParticipant;
+
+		if (participantIdFromCookie != null) {
+			Long reservationParticipantId = Long.parseLong(participantIdFromCookie);
+			reservationParticipant = reservationParticipantRepository.findByReservationParticipantId(
+					reservationParticipantId)
+				.orElseThrow(() -> new ReservationParticipantNotFoundException("해당 참가자가 존재하지 않습니다."));
+
+			if (!reservation.getReservationId().equals(reservationParticipant.getReservation().getReservationId())) {
+				throw new ReservationParticipantNotMatchReservationException(
+					"해당 예약의 참가자가 아닙니다. 예약 id : " + reservation.getReservationId() + "예약 참가자 id : "
+						+ reservationParticipant.getReservationParticipantId());
+			}
+		} else {
+			// 쿠키가 없다면 새로운 참가자 생성
+			String[] prefixData = {"이상한", "까부는", "춤추는", "노래하는", "신난", "슬픈"};
+			String[] suffixData = {"엘레나", "리오넬", "크레이지", "다리우스", "루비", "세바스찬"};
+
+			// 랜덤으로 앞,뒤 선택
+			String randomPrefix = prefixData[new Random().nextInt(prefixData.length)];
+			String randomSuffix = suffixData[new Random().nextInt(suffixData.length)];
+
+			// UUID 생성 후 4~6자리만 사용
+			String uuid = UUID.randomUUID().toString().replace("-", "").substring(0, 6); // 6자리 UUID 사용
+
+			// "앞 + 뒤 + UUID" 형식의 닉네임 생성
+			String fullNickname = randomPrefix + " " + randomSuffix + uuid;
+
+			reservationParticipant = ReservationParticipant.builder()
+				.reservation(reservation)
+				.reservationParticipantNickName(fullNickname) // DB에는 전체 닉네임을 저장
+				.build();
+
+			// DB에 저장
+			reservationParticipant = reservationParticipantRepository.save(reservationParticipant);
+		}
+
 		return UrlValidationResponseDto.builder()
 			.reservationId(reservation.getReservationId())
+			.reservationParticipantId(reservationParticipant.getReservationParticipantId())
+			.reservationParticipantNickname(reservationParticipant.getReservationParticipantNickName())
 			.build();
 	}
 
@@ -460,5 +505,79 @@ public class ReservationServiceImpl implements ReservationService {
 
 		return sb.toString();
 
-	}
+    }
+
+
+    /**
+     * 사업자용 예약 상세조회
+     *
+     * @param reservationId 예약 ID
+     * @return ManagerReservationDetailResponseDto 예약 상세 정보
+     */
+    @Override
+    public ManagerReservationDetailResponseDto getReservationListByManager(Long reservationId) {
+
+        // AtomicBoolean을 사용하여 람다 내에서 값 변경 가능
+        AtomicBoolean allPaymentsCompleted = new AtomicBoolean(true);
+
+        // 예약 정보 조회
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new ReservationNotFoundException("존재하지 않는 예약입니다."));
+
+        // 주문 리스트 조회
+        List<Order> orderList = reservation.getOrders();
+
+        // 주문 리스트를 메뉴 이름으로 그룹화하여 합침
+        Map<String, ReservationMenuResponseDto> menuMap = new HashMap<>();
+
+        orderList.forEach(order -> {
+            String menuName = order.getMenu().getName();
+            List<Integer> orderIdList = IntStream.range(0, order.getTotalCnt() - order.getServedCnt())
+                    .mapToObj(i -> order.getOrderId().intValue())
+                    .collect(Collectors.toList());
+
+            // 서빙되지 않은 수량 계산: totalCnt - servedCnt
+            int notServedCnt = order.getTotalCnt() - order.getServedCnt();
+
+            // 결제 상태 확인 (모든 주문의 paidCnt가 totalCnt와 같지 않으면 결제 미완료로 판단)
+            if (order.getPaidCnt() < order.getTotalCnt()) {
+                allPaymentsCompleted.set(false);  // AtomicBoolean을 사용하여 값 설정
+            }
+
+            if (menuMap.containsKey(menuName)) {
+                // 기존 메뉴에 데이터 추가
+                ReservationMenuResponseDto existingDto = menuMap.get(menuName);
+                existingDto.setNotServedCnt(existingDto.getNotServedCnt() + notServedCnt);
+                existingDto.setServedCnt(existingDto.getServedCnt() + order.getServedCnt());
+                existingDto.getOrderIdList().addAll(orderIdList);
+            } else {
+                // 새로운 메뉴 추가
+                ReservationMenuResponseDto newDto = ReservationMenuResponseDto.builder()
+                        .menuName(menuName)
+                        .notServedCnt(notServedCnt) // 서빙되지 않은 수량
+                        .servedCnt(order.getServedCnt()) // 서빙된 수량
+                        .orderIdList(orderIdList)
+                        .build();
+                menuMap.put(menuName, newDto);
+            }
+        });
+
+        // 테이블 번호 리스트 추출 (Integer 타입으로 처리)
+        List<Integer> tableList = reservation.getReservationTables().stream()
+                .map(reservationTable -> reservationTable.getTableId()) // tableId는 int 타입으로 처리
+                .collect(Collectors.toList());
+
+        // ManagerReservationDetailResponseDto 생성 및 반환
+        return ManagerReservationDetailResponseDto.builder()
+                .reservationDate(reservation.getReservationDate().toString()) // 예약 날짜
+                .reservationStartTime(reservation.getStartTime().toString()) // 시작 시간
+                .reservationEndTime(reservation.getEndTime().toString()) // 종료 시간
+                .memberCnt(reservation.getMemberCnt()) // 인원 수
+                .memberName(reservation.getUser().getNickname()) // 예약자 이름
+                .allPaymentsCompleted(allPaymentsCompleted.get()) // AtomicBoolean의 값을 boolean으로 전달
+                .tableList(tableList) // 테이블 리스트 (List<Integer>)
+                .reservationMenuList(new ArrayList<>(menuMap.values())) // 메뉴 리스트
+                .build();
+    }
+
 }

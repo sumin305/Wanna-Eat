@@ -42,7 +42,8 @@ public class UserToken {
 		this.fcmToken = fcmToken;
 	}
 
-	public void removeFcmToken() {
+	public void removeTokens() {
+		this.refreshToken = null;
 		this.fcmToken = null;
 	}
 }

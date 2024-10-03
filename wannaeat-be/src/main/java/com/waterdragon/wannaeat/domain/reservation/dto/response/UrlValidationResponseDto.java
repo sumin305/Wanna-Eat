@@ -8,4 +8,6 @@ import lombok.Getter;
 public class UrlValidationResponseDto {
 
 	private Long reservationId;
+	private Long reservationParticipantId;
+	private String reservationParticipantNickname;
 }

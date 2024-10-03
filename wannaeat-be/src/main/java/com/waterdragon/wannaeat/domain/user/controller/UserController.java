@@ -66,8 +66,7 @@ public class UserController {
 	@PostMapping("/users/signout")
 	public ResponseEntity<ResponseDto<Void>> signout(HttpServletRequest request, HttpServletResponse response) {
 
-		jwtService.removeAccessToken(response);
-		jwtService.removeRefreshTokenCookie(response);
+		userService.signout(response);
 
 		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
 			.status(HttpStatus.OK.value())
@@ -194,27 +193,6 @@ public class UserController {
 		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
 			.status(HttpStatus.OK.value())
 			.message("FcmToken이 갱신되었습니다.")
-			.data(null)
-			.build();
-
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
-	}
-
-	/**
-	 * FcmToken 삭제 API
-	 *
-	 * @param fcmTokenEditRequestDto
-	 * @return 토큰 삭제 결과
-	 */
-	@Operation(summary = "FcmToken 삭제 API")
-	@PatchMapping("/users/alarms")
-	public ResponseEntity<ResponseDto<Void>> RemoveFcmToken(
-		@Valid @RequestBody FcmTokenEditRequestDto fcmTokenEditRequestDto) {
-
-		userService.removeFcmToken(fcmTokenEditRequestDto);
-		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
-			.status(HttpStatus.OK.value())
-			.message("해당 기기의 FcmToken이 삭제되었습니다.")
 			.data(null)
 			.build();
 

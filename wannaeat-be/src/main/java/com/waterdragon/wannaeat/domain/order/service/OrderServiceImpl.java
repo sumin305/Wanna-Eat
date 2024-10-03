@@ -1,8 +1,14 @@
 package com.waterdragon.wannaeat.domain.order.service;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import com.waterdragon.wannaeat.domain.order.dto.request.OrderServeRequestDto;
+import com.waterdragon.wannaeat.domain.order.dto.response.OrderServeResponseDto;
+import com.waterdragon.wannaeat.domain.order.exception.error.OrderAlreadyServedException;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationMenuResponseDto;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +22,8 @@ import com.waterdragon.wannaeat.domain.menu.repository.MenuRepository;
 import com.waterdragon.wannaeat.domain.order.domain.Order;
 import com.waterdragon.wannaeat.domain.order.dto.request.OrderPaidCntEditRequestDto;
 import com.waterdragon.wannaeat.domain.order.dto.request.OrderRegisterRequestDto;
+import com.waterdragon.wannaeat.domain.order.dto.response.OrderDetailResponseDto;
+import com.waterdragon.wannaeat.domain.order.dto.response.OrderListResponseDto;
 import com.waterdragon.wannaeat.domain.order.dto.response.OrderRegisterResponseDto;
 import com.waterdragon.wannaeat.domain.order.exception.error.OrderNotFoundException;
 import com.waterdragon.wannaeat.domain.order.exception.error.TotalCntLowerThanPaidCntException;
@@ -154,5 +162,126 @@ public class OrderServiceImpl implements OrderService {
 
 		sendingOperations.convertAndSend("/topic/reservations/" + reservation.getReservationUrl(),
 			orderRegisterResponseDto);
+	}
+
+	/**
+	 * 예약 Url로 주문 목록 가져오기
+	 *
+	 * @param reservationUrl
+	 * @return
+	 */
+	@Override
+	public OrderListResponseDto getListOrderByReservationUrl(String reservationUrl) {
+
+		Reservation reservation = reservationRepository.findByReservationUrl(reservationUrl)
+			.orElseThrow(() -> new ReservationNotFoundException("예약 url의 예약이 존재하지 않습니다. 예약 url : " + reservationUrl));
+
+		List<Order> orders = orderRepository.findAllByReservation(reservation);
+
+		List<OrderDetailResponseDto> orderDetailResponseDtos = orders.stream()
+			.map(order -> OrderDetailResponseDto.builder()
+				.orderId(order.getOrderId())
+				.reservationId(order.getReservation().getReservationId())
+				.menuId(order.getMenu().getMenuId())
+				.menuName(order.getMenu().getName())
+				.menuPrice(order.getMenu().getPrice())
+				.menuImage(order.getMenu().getImage())
+				.reservationParticipantId(order.getReservationParticipant().getReservationParticipantId())
+				.reservationParticipantNickname(order.getReservationParticipant().getReservationParticipantNickName())
+				.totalCnt(order.getTotalCnt())
+				.paidCnt(order.getPaidCnt())
+				.build())
+			.collect(Collectors.toList());
+
+		// OrderListResponseDto로 반환
+		return OrderListResponseDto.builder()
+			.orderDetailResponseDtos(orderDetailResponseDtos)
+			.build();
+	}
+
+
+	/**
+	 * 사업자용 서빙 메서드
+	 *
+	 * @param orderServeRequestDto 주문 ID 리스트가 담긴 요청 DTO
+	 * @return OrderServeResponseDto 서빙 처리 결과
+	 */
+	@Override
+	public OrderServeResponseDto serveOrder(Long reservationId, OrderServeRequestDto orderServeRequestDto) {
+
+		// AtomicBoolean을 사용하여 결제 상태를 트래킹
+		AtomicBoolean allPaymentsCompleted = new AtomicBoolean(true);
+
+		// 주문 ID 리스트를 Long 타입으로 변환
+		List<Long> orderIdList = orderServeRequestDto.getOrderIdList().stream()
+				.map(Long::valueOf)
+				.collect(Collectors.toList());
+
+		// 각 주문에 대해 서빙 처리
+		orderIdList.forEach(orderId -> {
+			Order order = orderRepository.findById(orderId)
+					.orElseThrow(() -> new OrderNotFoundException("주문이 존재하지 않습니다. 주문 Id : " + orderId));
+			int servedCnt = order.getServedCnt();
+			int totalCnt = order.getTotalCnt();
+
+			// 서빙할 수 있는 주문인지 확인
+			if (servedCnt < totalCnt) {
+				// plusServedCnt 메서드 호출하여 서빙 처리
+				order.plusServedCnt();
+
+				// 주문 업데이트
+				orderRepository.save(order);
+			} else {
+				throw new OrderAlreadyServedException("서빙이 완료 된 주문입니다. 주문 Id : " + orderId);
+			}
+		});
+
+		// 예약 정보 조회
+		Reservation reservation = reservationRepository.findById(reservationId)
+				.orElseThrow(() -> new ReservationNotFoundException("존재하지 않는 예약입니다."));
+
+		// 주문 리스트 조회
+		List<Order> orderList = reservation.getOrders();
+
+		// 주문 리스트를 메뉴 이름으로 그룹화하여 합침
+		Map<String, ReservationMenuResponseDto> menuMap = new HashMap<>();
+
+		orderList.forEach(order -> {
+			String menuName = order.getMenu().getName();
+			List<Integer> orderIdListAll = IntStream.range(0, order.getTotalCnt() - order.getServedCnt())
+					.mapToObj(i -> order.getOrderId().intValue())
+					.collect(Collectors.toList());
+
+			// 서빙되지 않은 수량 계산: totalCnt - servedCnt
+			int notServedCnt = order.getTotalCnt() - order.getServedCnt();
+
+			// 결제 상태 확인 (모든 주문의 paidCnt가 totalCnt와 같지 않으면 결제 미완료로 판단)
+			if (order.getPaidCnt() < order.getTotalCnt()) {
+				allPaymentsCompleted.set(false);  // AtomicBoolean을 사용하여 값 설정
+			}
+
+			if (menuMap.containsKey(menuName)) {
+				// 기존 메뉴에 데이터 추가
+				ReservationMenuResponseDto existingDto = menuMap.get(menuName);
+				existingDto.setNotServedCnt(existingDto.getNotServedCnt() + notServedCnt);
+				existingDto.setServedCnt(existingDto.getServedCnt() + order.getServedCnt());
+				existingDto.getOrderIdList().addAll(orderIdListAll);
+			} else {
+				// 새로운 메뉴 추가
+				ReservationMenuResponseDto newDto = ReservationMenuResponseDto.builder()
+						.menuName(menuName)
+						.notServedCnt(notServedCnt) // 서빙되지 않은 수량
+						.servedCnt(order.getServedCnt()) // 서빙된 수량
+						.orderIdList(orderIdListAll)
+						.build();
+				menuMap.put(menuName, newDto);
+			}
+		});
+
+		return OrderServeResponseDto.builder()
+				.allPaymentsCompleted(allPaymentsCompleted.get()) // AtomicBoolean의 값을 boolean으로 전달
+				.reservationMenuList(new ArrayList<>(menuMap.values())) // 메뉴 리스트
+				.build();
+
 	}
 }

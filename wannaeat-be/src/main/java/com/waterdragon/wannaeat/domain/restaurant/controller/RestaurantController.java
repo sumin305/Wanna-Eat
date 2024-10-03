@@ -101,7 +101,7 @@ public class RestaurantController {
 	 * @return RestaurantDetailResponseDto 매장 정보
 	 */
 	@Operation(summary = "매장 정보 상세 조회 API(메뉴 포함)")
-	@GetMapping("/public/restaurants/{restaurantId}")
+	@GetMapping("/restaurants/{restaurantId}")
 	public ResponseEntity<ResponseDto<RestaurantDetailResponseDto>> getDetailRestaurantByRestaurantId(
 		@PathVariable(name = "restaurantId") Long restaurantId) {
 

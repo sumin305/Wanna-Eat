@@ -31,6 +31,12 @@ public class CartController {
 		cartService.registerCart(cartRegisterRequestDto);
 	}
 
+	/**
+	 * 장바구니 삭제 API
+	 *
+	 * @param reservationUrl
+	 * @return
+	 */
 	@Operation(summary = "장바구니 삭제 API")
 	@DeleteMapping("/api/public/carts/{reservationUrl}")
 	public ResponseEntity<ResponseDto<Void>> removeCart(@PathVariable(name = "reservationUrl") String reservationUrl) {

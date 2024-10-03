@@ -78,6 +78,7 @@ authClientInstance.interceptors.request.use(
   (request) => {
     // access token 헤더에 저장
     request.headers['Authorization-wannaeat'] = accessToken;
+    console.log(accessToken);
     return request;
   },
   (error) => {
@@ -145,6 +146,7 @@ authWithRefreshClientInstance.interceptors.response.use(
       setAccessToken(
         'Bearer ' + response.headers.get('authorization-wannaeat')
       );
+      console.log(accessToken);
     } else {
       console.log('access token 없음');
       console.log(response.headers.get('authorization-wannaeat'));

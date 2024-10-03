@@ -14,6 +14,11 @@ public class OrderController {
 
 	private final OrderService orderService;
 
+	/**
+	 * 장바구니 -> 주문서 주문하기 소켓 API
+	 *
+	 * @param orderRegisterRequestDto
+	 */
 	@MessageMapping("/orders/register")
 	public void registerOrder(OrderRegisterRequestDto orderRegisterRequestDto) {
 

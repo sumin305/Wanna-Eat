@@ -11,7 +11,6 @@ import com.waterdragon.wannaeat.domain.order.service.OrderService;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
-import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
 import com.waterdragon.wannaeat.domain.socket.dto.response.ShareDataResponseDto;
 

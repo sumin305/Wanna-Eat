@@ -3,7 +3,9 @@ package com.waterdragon.wannaeat.domain.statistic.service;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.waterdragon.wannaeat.domain.menu.domain.Menu;
+import com.waterdragon.wannaeat.domain.menu.repository.MenuRepository;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
@@ -22,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class StatisticServiceImpl implements StatisticService {
 
 	private final ReservationRepository reservationRepository;
+	private final MenuRepository menuRepository;
 
 	/**
 	 * n개월치 예약 데이터를 받아 피크 월을 리턴하는 메소드
@@ -78,6 +83,55 @@ public class StatisticServiceImpl implements StatisticService {
 			.sorted(Map.Entry.<String, Long>comparingByValue().reversed()) // 예약 수에 따라 정렬
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
 				LinkedHashMap::new)); // 결과를 LinkedHashMap에 담아서 순서를 유지
+	}
+
+	/**
+	 * 최근 5일간의 매출 내역을 리턴하는 메소드
+	 *
+	 * @param restaurant 식당 정보
+	 * @return 5일간의 매출 내역 목록
+	 */
+	@Override
+	public Map<String, Long> getRevenueByLastFiveDays(Restaurant restaurant) {
+		LocalDate today = LocalDate.now();
+		LocalDate endDate = today.minusDays(1); // 어제
+		LocalDate startDate = today.minusDays(5); // 5일 전
+
+		// 날짜 포맷 설정 (MM-dd)
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd");
+
+		// 최근 5일간의 Reservation을 가져옴
+		List<Reservation> reservations = reservationRepository.findReservationsForRestaurantWithinDateRange(restaurant,
+			startDate, endDate);
+
+		// 날짜별로 매출을 0으로 초기화
+		Map<String, Long> salesMap = new HashMap<>();
+		for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+			salesMap.put(date.format(formatter), 0L); // MM-dd 형식으로 변환하여 저장
+		}
+
+		// 예약 정보를 바탕으로 매출 계산
+		for (Reservation reservation : reservations) {
+			String reservationDate = reservation.getReservationDate().format(formatter); // MM-dd 형식으로 변환
+
+			// 예약에 연결된 Orders 처리
+			long totalSalesForDay = reservation.getOrders().stream()
+				.mapToLong(order -> {
+					// 메뉴 정보 가져오기
+					Menu menu = menuRepository.findById(order.getMenu().getMenuId()).orElseThrow();
+					return (long)menu.getPrice() * order.getTotalCnt(); // 메뉴 가격 * 주문 수량
+				})
+				.sum();
+
+			// 날짜별 매출을 Map에 추가
+			salesMap.merge(reservationDate, totalSalesForDay, Long::sum);
+		}
+
+		// 날짜 순으로 정렬하여 반환
+		return salesMap.entrySet().stream()
+			.sorted(Map.Entry.comparingByKey()) // 날짜 순으로 정렬
+			.collect(
+				Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new)); // 순서 유지
 	}
 
 	/**

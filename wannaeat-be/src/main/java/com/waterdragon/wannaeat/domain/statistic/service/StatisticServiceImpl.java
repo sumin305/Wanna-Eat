@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -190,6 +192,34 @@ public class StatisticServiceImpl implements StatisticService {
 		return menuStatistics.stream()
 			.limit(3) // 상위 3개를 가져옴
 			.collect(Collectors.toList());
+	}
+
+	/**
+	 * 정렬된 인기메뉴 리스트에서 하위 3개를 리턴하는 메소드
+	 *
+	 * @param menuStatistics 정렬된 인기 메뉴 리스트
+	 * @return 하위 3개의 메뉴
+	 */
+	@Override
+	public List<MenuStatisticResponseDto> getBottom3PopularMenus(List<MenuStatisticResponseDto> menuStatistics) {
+		int menuSize = menuStatistics.size();
+
+		if (menuSize <= 3) {
+			// 메뉴가 3개 이하일 경우, 그대로 역순으로 반환
+			List<MenuStatisticResponseDto> bottomMenus = new ArrayList<>(menuStatistics);
+			Collections.reverse(bottomMenus); // 역순으로 뒤집음
+			return bottomMenus;
+		}
+
+		// 하위 3개를 추출하고 역순으로 정렬
+		List<MenuStatisticResponseDto> bottomMenus = menuStatistics.stream()
+			.skip(menuSize - 3) // 하위 3개를 가져옴
+			.collect(Collectors.toList());
+
+		// 리스트를 역순으로 뒤집음
+		Collections.reverse(bottomMenus);
+
+		return bottomMenus;
 	}
 
 	/**

@@ -12,6 +12,8 @@ import SeatDecoratePage from '../pages/manager/restaurant/SeatDecoratePage/SeatD
 import RestaurantViewPage from '../pages/manager/restaurant/RestaurantViewPage';
 import RestaurantRegistPage from '../pages/manager/restaurant/RestaurantRegistPage/RestaurantRegistPage.jsx';
 import StatisticsPage from 'pages/manager/statistics/StatisticsPage/StatisticsPage.jsx';
+import PeakTimePage from 'pages/manager/statistics/PeakTimePage/PeakTimePage.jsx';
+import SalesPage from 'pages/manager/statistics/SalesPage/SalesPage.jsx';
 import NotificationPage from '../pages/manager/notification/NotificationPage.jsx';
 import ReservationDetailPage from '../pages/manager/reservation/ReservationDetailPage.jsx';
 
@@ -63,6 +65,14 @@ const AppRoutes = () => {
           element={<RestaurantViewPage />}
         />
         <Route path="/manager/statistics" element={<StatisticsPage />} />
+        <Route
+          path="/manager/statistics/peaktime-detail"
+          element={<PeakTimePage />}
+        />
+        <Route
+          path="/manager/statistics/sales-detail"
+          element={<SalesPage />}
+        />
 
         <Route path="/manager/notification" element={<NotificationPage />} />
         <Route

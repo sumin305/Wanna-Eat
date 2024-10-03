@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useHeaderStore from 'stores/common/useHeaderStore.js';
 import {
   StatisticsStyled,
@@ -43,6 +44,8 @@ const StatisticsPage = () => {
     setPageName,
     setIsUnderLine,
   ]);
+
+  const navigate = useNavigate();
 
   const BestImages = [
     {
@@ -100,7 +103,11 @@ const StatisticsPage = () => {
       <StatisticsDonutWrapperStyled>
         <StatisticsHeaderStyled>
           <TitleStyled>피크타임 분석</TitleStyled>
-          <GoToDetailStyled>더보기 {'>'}</GoToDetailStyled>
+          <GoToDetailStyled
+            onClick={() => navigate('/manager/statistics/peaktime-detail')}
+          >
+            더보기 {'>'}
+          </GoToDetailStyled>
         </StatisticsHeaderStyled>
         <DonutWrapperStyled>
           <DonutWithLabelStyled>
@@ -120,7 +127,11 @@ const StatisticsPage = () => {
       <StatisticsColumnWrapperStyled>
         <StatisticsHeaderStyled>
           <TitleStyled>일 매출 현황</TitleStyled>
-          <GoToDetailStyled>더보기 {'>'}</GoToDetailStyled>
+          <GoToDetailStyled
+            onClick={() => navigate('/manager/statistics/sales-detail')}
+          >
+            더보기 {'>'}
+          </GoToDetailStyled>
         </StatisticsHeaderStyled>
         <WEColumn categories={categories} series={series} />
       </StatisticsColumnWrapperStyled>

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,6 +11,7 @@ import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;

@@ -22,6 +22,7 @@ import com.waterdragon.wannaeat.domain.order.domain.Order;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
+import com.waterdragon.wannaeat.domain.statistic.dto.response.MainStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MenuStatisticResponseDto;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,31 @@ public class StatisticServiceImpl implements StatisticService {
 
 	private final ReservationRepository reservationRepository;
 	private final MenuRepository menuRepository;
+
+	@Override
+	public MainStatisticResponseDto getStatisticsByMain(Restaurant restaurant) {
+		List<Reservation> reservations = getReservationsByMonths(restaurant, 12);
+
+		Map<Integer, Long> monthStatistics = getMonthlyStatsByMonths(reservations);
+		Map<String, Long> dayStatistics = getDayOfWeekStatsByMonths(reservations);
+		Map<String, Long> hourStatistics = getHourlyStatsByMonths(reservations);
+
+		Map<String, Long> revenues = getRevenueByLastFiveDays(restaurant);
+		List<MenuStatisticResponseDto> menuStatistics = getPopularMenusByLastThreeMonths(restaurant);
+
+		List<MenuStatisticResponseDto> topMenuStatistics = getTop3PopularMenus(menuStatistics);
+
+		List<MenuStatisticResponseDto> bottomMenuStatistics = getBottom3PopularMenus(menuStatistics);
+
+		return MainStatisticResponseDto.builder()
+			.monthStatistics(monthStatistics)
+			.dayStatistics(dayStatistics)
+			.hourStatistics(hourStatistics)
+			.revenues(revenues)
+			.topMenuStatistics(topMenuStatistics)
+			.bottomMenuStatistics(bottomMenuStatistics)
+			.build();
+	}
 
 	/**
 	 * n개월치 예약 데이터를 받아 피크 월을 리턴하는 메소드

@@ -7,9 +7,12 @@ import java.util.Map;
 
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
+import com.waterdragon.wannaeat.domain.statistic.dto.response.MainStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MenuStatisticResponseDto;
 
 public interface StatisticService {
+
+	MainStatisticResponseDto getStatisticsByMain(Restaurant restaurant);
 
 	Map<Integer, Long> getMonthlyStatsByMonths(List<Reservation> reservations);
 

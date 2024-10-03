@@ -10,7 +10,7 @@ import {
 } from './TimeSelectModalBox';
 import Button from '../../../common/button/WEButton/WEButton';
 import theme from '../../../../style/common/theme';
-import { useEffect } from 'react';
+import { useState } from 'react';
 import Textfield from '../../../common/textfield/WETextfield/WETextfield.jsx';
 const TimeSelectModalBox = () => {
   const {
@@ -25,22 +25,19 @@ const TimeSelectModalBox = () => {
     selectedTimes,
   } = useReservationStore();
 
-  useEffect(() => {
-    setSelectedTimes([]);
-    console.log('hello');
-  }, []);
+  const [memCnt, setMemCnt] = useState(0);
 
   const handleHeadCountChange = (e) => {
     if (e.target.value === '') {
+      setMemCnt(0);
       setMemberCount(0);
+    }
+    if (e.target.value < 0) {
+      alert('0명 미만은 불가능합니다.');
+      setMemCnt(0);
       return;
     }
-
-    if (e.target.value <= 0) {
-      alert('0명 이하는 불가능합니다.');
-      setMemberCount(0);
-      return;
-    }
+    setMemCnt(parseInt(e.target.value));
     setMemberCount(parseInt(e.target.value));
   };
 
@@ -236,6 +233,7 @@ const TimeSelectModalBox = () => {
           <TimeSelectModalSubTitleStyled>인원</TimeSelectModalSubTitleStyled>
           <HeadCountInputWrapper>
             <Textfield
+              value={memCnt}
               height="3%"
               width="6.25rem"
               onChange={handleHeadCountChange}

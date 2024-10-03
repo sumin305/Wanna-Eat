@@ -59,19 +59,22 @@ const RestaurantDetailPage = () => {
 
   useEffect(() => {
     const addZzim = async () => {
-      console.log('addZzim');
       const result = await addZzimRestaurant(params.id);
-      console.dir('result', result);
+      if (result.status !== 200) {
+        alert('내 찜 추가 실패');
+      }
     };
     setRestaurant(params.id);
     setIsCarrot(true);
-    setPageName(restaurantName ? restaurantName : '맛있는 식당');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
     setActiveIcons([6]);
     setIconAction([() => addZzim()]);
   }, []);
 
+  useEffect(() => {
+    setPageName(restaurantName ? restaurantName : '맛있는 식당');
+  }, [restaurantName]);
   const [activeTab, setActiveTab] = useState(0);
 
   const categories = Object.keys(menus);
@@ -81,7 +84,6 @@ const RestaurantDetailPage = () => {
 
   return (
     <Box>
-      {/* <div> {params.id}번 가게 상세페이지</div> */}
       <RestaurantImageBox src={RestaurantImg} />
       <InformationContainer>
         <InformationText>

@@ -19,10 +19,6 @@ import WEDonut from 'component/manager/statistics/WEDonut/WEDonut.jsx';
 import WEColumn from 'component/manager/statistics/WEColumn/WEColumn.jsx';
 import WEMenu from 'component/manager/statistics/WEMenu/WEMenu.jsx';
 
-// import testImage1 from 'assets/MochaLong1.webp';
-// import testImage2 from 'assets/MochaShort1.png';
-// import testImage3 from 'assets/MintLatte1.png';
-
 const StatisticsPage = () => {
   const {
     setIsCarrot,

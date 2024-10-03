@@ -179,6 +179,20 @@ public class StatisticServiceImpl implements StatisticService {
 	}
 
 	/**
+	 * 정렬된 인기메뉴 리스트에서 상위 3개를 리턴하는 메소드
+	 *
+	 * @param menuStatistics 정렬된 인기 메뉴 리스트
+	 * @return 상위 3개의 메뉴
+	 */
+	@Override
+	public List<MenuStatisticResponseDto> getTop3PopularMenus(List<MenuStatisticResponseDto> menuStatistics) {
+		// 상위 3개의 인기 메뉴 반환
+		return menuStatistics.stream()
+			.limit(3) // 상위 3개를 가져옴
+			.collect(Collectors.toList());
+	}
+
+	/**
 	 * 최근 n개월 치의 예약 데이터를 가져오는 메소드
 	 *
 	 * @param restaurant 정보를 가져올 식당

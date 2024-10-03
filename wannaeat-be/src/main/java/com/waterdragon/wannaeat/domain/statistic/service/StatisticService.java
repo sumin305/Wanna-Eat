@@ -21,6 +21,8 @@ public interface StatisticService {
 
 	List<MenuStatisticResponseDto> getPopularMenusByLastThreeMonths(Restaurant restaurant);
 
+	List<MenuStatisticResponseDto> getTop3PopularMenus(List<MenuStatisticResponseDto> menuStatistics);
+
 	List<Reservation> getReservationsByMonths(Restaurant restaurant, int month);
 
 	String getHalfHourSlot(LocalTime time);

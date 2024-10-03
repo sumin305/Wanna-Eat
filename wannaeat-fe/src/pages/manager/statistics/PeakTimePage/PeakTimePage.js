@@ -6,7 +6,7 @@ const PeakTimePageStyled = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 150vh;
+  height: 115vh;
   margin-bottom: 10vh;
 
   @media (min-width: 480px) {
@@ -83,6 +83,12 @@ const DateStyled = styled.div`
 
 const DayWrapperStyled = styled.div``;
 
+const TurnoverContainerStyled = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const TurnoverWrapperStyled = styled.div`
   display: flex;
   flex-direction: row;
@@ -90,7 +96,7 @@ const TurnoverWrapperStyled = styled.div`
   align-items: center;
 
   width: 99%;
-  height: 9.688rem;
+  height: 5.688rem;
   flex-shrink: 0;
 
   border-radius: 0.625rem;
@@ -104,6 +110,10 @@ const TurnoverWrapperStyled = styled.div`
   @media (min-width: 480px) {
     width: 99%;
     height: 9.688rem;
+    flex-shrink: 0;
+    padding: 0;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
 `;
 
@@ -115,20 +125,44 @@ const TurnoverStyled = styled.div`
   height: 100%;
 
   margin-left: 8%;
+
+  @media (min-width: 480px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+
+    margin-left: 8%;
+  }
 `;
 
 const TurnoverLabelStyled = styled.div`
   text-align: start;
-  margin-inline: 10px;
-  font-size: ${theme.fontSize.px23};
+  margin-inline: 5px;
+  font-size: ${theme.fontSize.px13};
   font-weight: ${theme.fontWeight.bold};
+
+  @media (min-width: 480px) {
+    text-align: start;
+    margin-inline: 10px;
+    font-size: ${theme.fontSize.px23};
+    font-weight: ${theme.fontWeight.bold};
+  }
 `;
 
 const TurnoverValueStyled = styled.div`
   text-align: start;
-  font-size: ${theme.fontSize.px40};
+  font-size: ${theme.fontSize.px23};
   font-weight: ${theme.fontWeight.bold};
   color: ${theme.color.statisticsBlue};
+
+  @media (min-width: 480px) {
+    text-align: start;
+    font-size: ${theme.fontSize.px40};
+    font-weight: ${theme.fontWeight.bold};
+    color: ${theme.color.statisticsBlue};
+  }
 `;
 
 const TimeWrapperStyled = styled.div`

@@ -20,7 +20,7 @@ class ColumnChart extends Component {
           bar: {
             borderRadius: 10,
             dataLabels: {
-              position: 'top', // top, center, bottom
+              position: 'top',
             },
           },
         },
@@ -36,7 +36,7 @@ class ColumnChart extends Component {
           },
         },
         xaxis: {
-          categories: ['1', '2', '3', '4', '5'],
+          categories: this.props.categories || ['0', '0', '0', '0', '0'],
           position: 'top',
           axisBorder: {
             show: false,
@@ -86,8 +86,8 @@ class ColumnChart extends Component {
       },
       series: [
         {
-          name: 'Inflation',
-          data: [50, 20, 180, 150, 140],
+          name: '',
+          data: [0, 0, 0, 0, 0],
         },
       ],
     };
@@ -99,7 +99,7 @@ class ColumnChart extends Component {
       <ColumnWrapperStyled>
         <Chart
           options={this.state.options}
-          series={this.state.series}
+          series={this.props.series || this.state.series}
           type="bar"
           height={columnHeight}
         />

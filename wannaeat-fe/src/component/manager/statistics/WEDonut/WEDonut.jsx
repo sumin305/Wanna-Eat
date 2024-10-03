@@ -54,17 +54,22 @@ class WEDonut extends Component {
             enabled: false,
           },
         },
-        labels: ['금', '화', '월'],
+        labels: this.props.labels || ['금', '화', '월'],
       },
-      series: [44, 55, 41],
+      series: this.props.series || [44, 55, 41],
     };
   }
 
   render() {
     const donutWidth = this.state.isWeb ? 130 : 90;
-    const donutFontSize = this.state.isWeb
-      ? theme.fontSize.px15
-      : theme.fontSize.px10;
+    const donutFontSize =
+      this.props.type === 'time'
+        ? this.state.isWeb
+          ? theme.fontSize.px10
+          : theme.fontSize.px8
+        : this.state.isWeb
+          ? theme.fontSize.px13
+          : theme.fontSize.px10;
 
     const dynamicOptions = {
       ...this.state.options,

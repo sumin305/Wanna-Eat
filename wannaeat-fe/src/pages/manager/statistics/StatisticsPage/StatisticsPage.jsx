@@ -80,6 +80,21 @@ const StatisticsPage = () => {
     },
   ];
 
+  const monthLabels = ['6', '12', '4'];
+  const monthSeries = [100, 60, 30];
+  const dayLabels = ['금', '화', '월'];
+  const daySeries = [100, 40, 30];
+  const timeLabels = ['18:00', '17:00', '12:00'];
+  const timeSeries = [30, 50, 10];
+
+  const categories = ['9/29', '9/30', '10/1', '10/2', '10/3'];
+  const series = [
+    {
+      name: '매출',
+      data: [50, 20, 180, 150, 140],
+    },
+  ];
+
   return (
     <StatisticsStyled>
       <StatisticsDonutWrapperStyled>
@@ -89,15 +104,15 @@ const StatisticsPage = () => {
         </StatisticsHeaderStyled>
         <DonutWrapperStyled>
           <DonutWithLabelStyled>
-            <WEDonut />
+            <WEDonut labels={monthLabels} series={monthSeries} />
             <label>월</label>
           </DonutWithLabelStyled>
           <DonutWithLabelStyled>
-            <WEDonut />
+            <WEDonut labels={dayLabels} series={daySeries} />
             <label>요일</label>
           </DonutWithLabelStyled>
           <DonutWithLabelStyled>
-            <WEDonut />
+            <WEDonut labels={timeLabels} series={timeSeries} type="time" />
             <label>시간</label>
           </DonutWithLabelStyled>
         </DonutWrapperStyled>
@@ -107,7 +122,7 @@ const StatisticsPage = () => {
           <TitleStyled>일 매출 현황</TitleStyled>
           <GoToDetailStyled>더보기 {'>'}</GoToDetailStyled>
         </StatisticsHeaderStyled>
-        <WEColumn />
+        <WEColumn categories={categories} series={series} />
       </StatisticsColumnWrapperStyled>
       <StatisticsMenuWrapperStyled>
         <WEBestMenuStyled>

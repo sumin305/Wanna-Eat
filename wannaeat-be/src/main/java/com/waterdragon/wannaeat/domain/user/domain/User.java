@@ -50,6 +50,9 @@ public class User {
 	@Column(name = "phone")
 	private String phone;
 
+	@Column(name = "payment_password")
+	private String paymentPassword;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role", nullable = false)
 	private Role role;
@@ -64,8 +67,8 @@ public class User {
 	@OneToOne(mappedBy = "user")
 	private UserToken userToken;
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-	private List<Restaurant> restaurants;
+	@OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+	private Restaurant restaurant;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<Alarm> alarms;
@@ -79,6 +82,7 @@ public class User {
 	public void edit(UserSignupRequestDto userSignupRequestDto) {
 		this.nickname = userSignupRequestDto.getNickname();
 		this.phone = userSignupRequestDto.getPhone();
+		this.paymentPassword = userSignupRequestDto.getPaymentPassword();
 		this.role = userSignupRequestDto.getRole();
 	}
 

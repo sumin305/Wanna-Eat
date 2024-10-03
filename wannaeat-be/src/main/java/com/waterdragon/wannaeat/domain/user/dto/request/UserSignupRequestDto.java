@@ -17,6 +17,9 @@ public class UserSignupRequestDto {
 	@Size(min = 11, max = 11, message = "휴대폰 번호는 11자리여야 합니다.")
 	private String phone;
 
+	@NotEmpty(message = "비밀번호는 널일 수 없습니다.")
+	private String paymentPassword;
+
 	@NotNull(message = "권한은 널일 수 없습니다.")
 	private Role role;
 

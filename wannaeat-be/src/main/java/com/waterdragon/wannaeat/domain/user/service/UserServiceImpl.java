@@ -28,11 +28,13 @@ import com.waterdragon.wannaeat.domain.user.exception.error.InvalidCodeException
 import com.waterdragon.wannaeat.domain.user.exception.error.InvalidPhoneException;
 import com.waterdragon.wannaeat.domain.user.repository.UserRepository;
 import com.waterdragon.wannaeat.domain.user.repository.UserTokenRepository;
+import com.waterdragon.wannaeat.global.auth.jwt.service.JwtService;
 import com.waterdragon.wannaeat.global.auth.oauth2.service.EncryptService;
 import com.waterdragon.wannaeat.global.redis.service.RedisService;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,6 +49,7 @@ public class UserServiceImpl implements UserService {
 	private final AuthUtil authUtil;
 	private final UserTokenRepository userTokenRepository;
 	private DefaultMessageService messageService; // 생성자 주입
+	private final JwtService jwtService;
 
 	@Value("${spring.phone-authcode-expiration-millis}")
 	private int authCodeExpirationMillis;
@@ -78,8 +81,29 @@ public class UserServiceImpl implements UserService {
 			throw new DuplicateUserException("이미 가입된 계정입니다. 다시 로그인 해 주세요.");
 		}
 		userSignupRequestDto.setPhone(encryptService.encryptData(userSignupRequestDto.getPhone()));
+		userSignupRequestDto.setPaymentPassword(encryptService.encryptData(userSignupRequestDto.getPaymentPassword()));
 		user.edit(userSignupRequestDto);
 		userRepository.save(user);
+	}
+
+	/**
+	 * 로그아웃 메소드
+	 * DB의 Refresh와 FcmToken을 삭제, 헤더와 쿠키의 Access, RefreshToken 삭제
+	 *
+	 * @param response
+	 */
+	@Override
+	public void signout(HttpServletResponse response) {
+		User user = authUtil.getAuthenticatedUser();
+
+		// DB의 RefreshToken 삭제
+		user.getUserToken().removeTokens();
+		userRepository.save(user);
+
+		// 헤더의 AccessToken과 쿠키의 RefreshToken 삭제
+		jwtService.removeAccessToken(response);
+		jwtService.removeRefreshTokenCookie(response);
+
 	}
 
 	/**
@@ -199,18 +223,4 @@ public class UserServiceImpl implements UserService {
 
 	}
 
-	/**
-	 * FcmToken 삭제 메소드
-	 *
-	 * @param fcmTokenEditRequestDto FcmToken 정보
-	 */
-	@Override
-	public void removeFcmToken(FcmTokenEditRequestDto fcmTokenEditRequestDto) {
-		UserToken userToken = authUtil.getAuthenticatedUser().getUserToken();
-		// DB에 저장된 토큰과 일치하는 경우에만 삭제
-		if (userToken.getFcmToken().equals(fcmTokenEditRequestDto.getFcmToken())) {
-			userToken.removeFcmToken();
-			userTokenRepository.save(userToken);
-		}
-	}
 }

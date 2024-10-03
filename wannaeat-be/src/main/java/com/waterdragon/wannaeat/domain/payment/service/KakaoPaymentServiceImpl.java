@@ -3,6 +3,7 @@ package com.waterdragon.wannaeat.domain.payment.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -93,7 +94,7 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 		log.info("totalPrice : " + totalPrice);
 
 		// 카카오페이 결제 준비
-		Reservation reservation = reservationRepository.findByReservationIdWithLock(
+		Reservation reservation = reservationRepository.findByReservationId(
 				kakaoPaymentMenuRequestDto.getReservationId())
 			.orElseThrow(() -> new ReservationNotFoundException(
 				"해당 번호의 예약은 존재하지 않습니다. reservationId : " + kakaoPaymentMenuRequestDto.getReservationId()));
@@ -189,30 +190,29 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 	public void menuPaymentValidCheck(KakaoPaymentMenuRequestDto kakaoPaymentMenuRequestDto) {
 		for (PaymentMenuRequestDto menuRequestDto : kakaoPaymentMenuRequestDto.getPaymentMenuRequestDtos()) {
 
-			// 비관적 락을 활용한 (PESSIMISTIC_WRITE) 주문 Order 읽어오기
-			// 가장 상위 @Transactional 단위인 Controller의 kakayPayApprove 메소드 단위로 읽기,쓰기가 모두 불가능해진다.
-			// PESSIMISTIC_READ는 읽기는 가능함. 하지만 우리는 재고가 실시간으로 바뀌므로 읽기도 못하게 막아야 한다.
-			Order order = orderRepository.findByOrderIdWithLock(menuRequestDto.getOrderId())
-				.orElseThrow(() -> new IllegalArgumentException("해당 주문을 찾을 수 없습니다."));
+			List<Long> orderIds = kakaoPaymentMenuRequestDto.getPaymentMenuRequestDtos().stream()
+				.map(PaymentMenuRequestDto::getOrderId)
+				.collect(Collectors.toList());
 
-			// 결제 수량 확인 (남은 재고보다 더 많은 결제 요청이라면 결제로 안 넘어가게 함.)
-			int remainingCount = order.getTotalCnt() - order.getPaidCnt();
-			if (remainingCount < menuRequestDto.getMenuCount()) {
-				throw new MenuCountRequestMoreThanUnpaidException(
-					order.getMenu().getName() + "의 남은 미결제 수량보다 결제 수량이 많습니다.");
-				// HttpHeaders headers = new HttpHeaders();
-				// headers.setLocation(URI.create("/api/payments/fail/kakao"));  // fail URL로 리디렉션
-				// return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);  // 303 SEE_OTHER 리디렉션
+			// 여러 주문에 대해 PESSIMISTIC_WRITE 락을 동시에 걸기
+			// 동시 직전에 들어온 트랜잭션이 해당 주문 id에 접근하고 있다면 여기서 Lock이 걸린다.
+			// 직전 트랜잭션이 모두 수행되고 락이 풀리고, 밑에 내려가면 결제 수량 미스매칭이 나서 예외를 던지게 된다.
+			List<Order> orders = orderRepository.findByOrderIdsWithLock(orderIds);
+
+			for (Order order : orders) {
+				int remainingCount = order.getTotalCnt() - order.getPaidCnt();
+				if (remainingCount < menuRequestDto.getMenuCount()) {
+					throw new MenuCountRequestMoreThanUnpaidException(
+						order.getMenu().getName() + "의 남은 미결제 수량보다 결제 수량이 많습니다.");
+				}
+
+				// OrderPaidCntEditRequestDto 생성 및 주문 수량 업데이트
+				OrderPaidCntEditRequestDto orderPaidCntEditRequestDto = OrderPaidCntEditRequestDto.builder()
+					.orderId(order.getOrderId())
+					.paidMenuCnt(menuRequestDto.getMenuCount())
+					.build();
+				orderService.editOrderPaidCnt(orderPaidCntEditRequestDto);
 			}
-
-			// OrderPaidCntEditRequestDto 생성
-			OrderPaidCntEditRequestDto orderPaidCntEditRequestDto = OrderPaidCntEditRequestDto.builder()
-				.orderId(menuRequestDto.getOrderId())
-				.paidMenuCnt(menuRequestDto.getMenuCount())
-				.build();
-
-			// 각 orderId의 paidCnt 수정
-			orderService.editOrderPaidCnt(orderPaidCntEditRequestDto);
 		}
 	}
 

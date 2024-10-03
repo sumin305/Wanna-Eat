@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,6 +32,9 @@ import com.waterdragon.wannaeat.domain.reservation.service.ReservationService;
 import com.waterdragon.wannaeat.global.response.ResponseDto;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -43,15 +47,38 @@ public class ReservationController {
 
 	@Operation(summary = "예약 URL 유효성 검증 API")
 	@PostMapping("/public/reservations/validation")
-	public ResponseEntity<ResponseDto<UrlValidationResponseDto>> validateReservationUrl(@Valid @RequestBody
-	UrlValidationRequestDto urlValidationRequestDto) {
+	public ResponseEntity<ResponseDto<UrlValidationResponseDto>> validateReservationUrl(
+		@Valid @RequestBody UrlValidationRequestDto urlValidationRequestDto,
+		HttpServletRequest request,
+		HttpServletResponse response) {
 
-		UrlValidationResponseDto urlValidationResponseDto = reservationService.validateUrl(urlValidationRequestDto);
+		// 쿠키에서 예약 URL에 해당하는 참가자 ID 추출
+		String participantIdFromCookie = null;
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals(urlValidationRequestDto.getReservationUrl())) {
+					participantIdFromCookie = cookie.getValue();
+					break;
+				}
+			}
+		}
+
+		UrlValidationResponseDto urlValidationResponseDto = reservationService.validateUrl(urlValidationRequestDto,
+			participantIdFromCookie);
 		ResponseDto<UrlValidationResponseDto> responseDto = ResponseDto.<UrlValidationResponseDto>builder()
 			.status(HttpStatus.OK.value())
 			.message("유효한 예약 URL입니다.")
 			.data(urlValidationResponseDto)
 			.build();
+
+		if (participantIdFromCookie == null) {
+			Cookie cookie = new Cookie(urlValidationRequestDto.getReservationUrl(),
+				urlValidationResponseDto.getReservationParticipantId().toString());
+			cookie.setMaxAge(7 * 24 * 60 * 60); // 유효기간 7일
+			cookie.setPath("/"); // 쿠키 경로 설정
+			response.addCookie(cookie);
+		}
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
@@ -265,5 +292,29 @@ public class ReservationController {
 			.contentType(MediaType.IMAGE_PNG)
 			.body(qr);
 	}
+
+    /**
+     * 사업자용 예약 상세조회 API
+     *
+     * @param reservationId 예약 ID
+     * @return ResponseDto<ManagerReservationDetailResponseDto> 예약 상세 정보를 담은 응답 객체
+     */
+    @Operation(summary = "사업자용 예약 상세조회 API")
+    @GetMapping("/manager/reservation/{reservationId}")
+    public ResponseEntity<ResponseDto<ManagerReservationDetailResponseDto>> getReservationListByManager(
+            @PathVariable Long reservationId) {
+
+        // 예약 상세 정보 조회
+        ManagerReservationDetailResponseDto reservationDetail = reservationService.getReservationListByManager(reservationId);
+
+        // 응답 객체 생성
+        ResponseDto<ManagerReservationDetailResponseDto> responseDto = ResponseDto.<ManagerReservationDetailResponseDto>builder()
+                .status(HttpStatus.OK.value())
+                .message("예약 상세 정보가 성공적으로 조회되었습니다.")
+                .data(reservationDetail)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
 }

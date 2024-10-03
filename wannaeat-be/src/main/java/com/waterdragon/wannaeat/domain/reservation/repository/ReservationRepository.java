@@ -24,6 +24,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
 	int countByUserAndRestaurant(User user, Restaurant restaurant);
 
+	Optional<Reservation> findByReservationId(Long reservationId);
+
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("SELECT r FROM Reservation r WHERE r.reservationId = :reservationId")
 	Optional<Reservation> findByReservationIdWithLock(@Param("reservationId") Long reservationId);
@@ -53,4 +55,19 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	List<Reservation> findByRestaurantAndReservationDate(@Param("restaurant") Restaurant restaurant,
 		@Param("reservationDate") LocalDate reservationDate);
 
+	@Query("SELECT r FROM Reservation r WHERE r.restaurant = :restaurant " +
+		"AND r.cancelled = false " +
+		"AND r.reservationDate BETWEEN :startDate AND :endDate")
+	List<Reservation> findReservationsForRestaurantWithinDateRange(@Param("restaurant") Restaurant restaurant,
+		@Param("startDate") LocalDate startDate,
+		@Param("endDate") LocalDate endDate);
+
+
+	@Query("SELECT r FROM Reservation r WHERE r.restaurant = :restaurant " +
+		"AND r.cancelled = false " +
+		"AND FUNCTION('YEAR', r.reservationDate) = :year " +
+		"AND FUNCTION('MONTH', r.reservationDate) = :month")
+	List<Reservation> findReservationsByRestaurantAndYearAndMonth(@Param("restaurant") Restaurant restaurant,
+		@Param("year") int year,
+		@Param("month") int month);
 }

@@ -25,6 +25,8 @@ import com.waterdragon.wannaeat.domain.order.domain.Order;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
+import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantStructure;
+import com.waterdragon.wannaeat.domain.restaurant.domain.Table;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructureRepository;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MainStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MenuStatisticResponseDto;
@@ -290,6 +292,35 @@ public class StatisticServiceImpl implements StatisticService {
 		LocalDate startDate = endDate.minusMonths(month).withDayOfMonth(1);     // 12개월 전 1일
 
 		return reservationRepository.findReservationsForRestaurantWithinDateRange(restaurant, startDate, endDate);
+	}
+
+	/**
+	 * 테이블의 회전율을 계산하여 리턴하는 메소드
+	 *
+	 * @param restaurant 식당 정보
+	 * @param reservations 예약 목록
+	 * @return 회전율
+	 */
+	@Override
+	public double getTurnoverRate(Restaurant restaurant, List<Reservation> reservations) {
+		RestaurantStructure restaurantStructure = restaurantStructureRepository.findByRestaurantId(
+			restaurant.getRestaurantId()).get();
+
+		List<Table> restaurantTables = restaurantStructure.getTables();
+		// 해당 매장의 테이블 수
+		int totalTableCount = restaurantTables.size();
+
+		// 해당 월의 예약된 테이블 수
+		int reservedTableCount = getTotalReservationTableCount(reservations);
+
+		// 해당 월의 예약을 받은 날 수
+		int reservedDate = getUniqueReservationDatesCount(reservations);
+
+		double turnoverRate = (double)reservedTableCount / totalTableCount / reservedDate;
+
+		// 소수점 첫째 자리까지 반올림 (ex: 0.12345 -> 0.1)
+		return Math.round(turnoverRate * 10) / 10.0;
+
 	}
 
 	/**

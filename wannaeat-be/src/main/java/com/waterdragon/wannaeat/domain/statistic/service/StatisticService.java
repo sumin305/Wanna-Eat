@@ -30,6 +30,8 @@ public interface StatisticService {
 
 	List<Reservation> getReservationsByMonths(Restaurant restaurant, int month);
 
+	double getTurnoverRate(Restaurant restaurant, List<Reservation> reservations);
+
 	int getAverageUsageTime(List<Reservation> reservations);
 
 	int getUniqueReservationDatesCount(List<Reservation> reservations);

@@ -1,3 +1,4 @@
+import useCardStore from 'stores/customer/useCardStore';
 import { ssafyClient } from '../../../utils/http-client';
 import moment from 'moment';
 
@@ -48,6 +49,60 @@ export const getCreditCardList = async () => {
   return await ssafyClient
     .post('/api/v1/edu/creditCard/inquireCreditCardList', {
       Header: Header('inquireCreditCardList'),
+    })
+    .then((result) => result)
+    .catch((error) => error);
+};
+
+// 카드사 조회
+export const getCreditCardIssuerList = async () => {
+  return await ssafyClient
+    .post('/api/v1/edu/creditCard/inquireCardIssuerCodesList', {
+      Header: Header('inquireCardIssuerCodesList'),
+    })
+    .then((result) => result)
+    .catch((error) => error);
+};
+
+// 카드가 이미 존재하는지 확인
+export const isCreditCardExist = async (cardName) => {
+  return await ssafyClient
+    .post('/api/v1/edu/creditCard/inquireCreditCardList', {
+      Header: Header('inquireCreditCardList'),
+    })
+    .then((result) => {
+      console.log(result.data['REC']);
+      console.log(
+        result.data['REC'].filter((card) => card.cardName === cardName).length
+      );
+      return result.data['REC'].filter((card) => card.cardName === cardName)
+        .length === 0
+        ? false
+        : true;
+    })
+    .catch((error) => {
+      return false;
+    });
+};
+
+// 카드 상품 생성
+export const createCreditCardProduct = async (request) => {
+  if (await isCreditCardExist(request.cardName)) {
+    console.log('request.cardName already exists. ', request.cardName);
+    alert('이미 있는 카드입니다. ');
+    return;
+  }
+  return await ssafyClient
+    .post('/api/v1/edu/creditCard/createCreditCardProduct', {
+      Header: Header('createCreditCardProduct'),
+      cardIssuerCode: request.cardIssuerCode,
+      cardName: request.cardName,
+      baselinePerformance: request.baselinePerformance,
+      maxBenefitLimit: request.maxBenefitLimit,
+      cardDescription: request.cardDescription,
+      cardBenefits: request.cardBenefits,
+      categoryId: request.categoryId,
+      discountRate: request.discountRate,
     })
     .then((result) => result)
     .catch((error) => error);

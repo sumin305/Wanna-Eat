@@ -28,6 +28,12 @@ const theme = {
     px15: '0.938rem',
     px17: '1.063rem',
     px21: '1.313rem',
+    px23: '1.438rem',
+    px25: '1.563rem',
+    px27: '1.688rem',
+    px30: '1.875rem',
+    px35: '2.188rem',
+    px40: '2.5rem',
   },
 
   fontWeight: {

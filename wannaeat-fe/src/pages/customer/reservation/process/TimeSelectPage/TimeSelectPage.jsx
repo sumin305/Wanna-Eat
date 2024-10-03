@@ -25,6 +25,7 @@ const TimeSelectPage = () => {
     setReservationDate,
     setStartTime,
     setEndTime,
+    setSelectedTimes,
   } = useReservationStore();
 
   const navigate = useNavigate();
@@ -54,6 +55,7 @@ const TimeSelectPage = () => {
     setReservationDate(moment(date).format('YYYY-MM-DD'));
     setStartTime('00:00');
     setEndTime('00:00');
+    setSelectedTimes([]);
     handleTimeSelectButtonClick();
   };
 
@@ -61,6 +63,15 @@ const TimeSelectPage = () => {
     navigate(-1);
   };
   const handleNextButtonClick = () => {
+    if (startTime === '00:00') {
+      alert('시간을 선택하세요.');
+      return;
+    } else if (reservationDate === '') {
+      alert('날짜를 선택하세요');
+    } else if (memberCount === -1) {
+      alert('인원수를 입력하세요.');
+      return;
+    }
     navigate('/customer/reservation/seat-select');
   };
 
@@ -73,6 +84,7 @@ const TimeSelectPage = () => {
           outlined={true}
           onClick={handleTimeSelectButtonClick}
           fontWeight={900}
+          fontSize={'1rem'}
         >
           {moment(reservationDate).format('YYYY-MM-DD')} {startTime} ~ {endTime}{' '}
           {memberCount === -1 ? 0 : memberCount}명

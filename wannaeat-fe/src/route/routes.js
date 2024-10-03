@@ -13,7 +13,7 @@ import RestaurantViewPage from '../pages/manager/restaurant/RestaurantViewPage';
 import StatisticsPage from '../pages/manager/statistics/StatisticsPage';
 import RestaurantRegistPage from '../pages/manager/restaurant/RestaurantRegistPage/RestaurantRegistPage.jsx';
 import NotificationPage from '../pages/manager/notification/NotificationPage.jsx';
-import ReservationDetailPage from '../pages/manager/reservation/ReservationDetailPage.jsx';
+import ManagerReservationDetailPage from '../pages/manager/reservation/ManagerReservationDetailPage.jsx';
 
 // 손님 관련 페이지
 import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
@@ -67,7 +67,7 @@ const AppRoutes = () => {
         <Route path="/manager/notification" element={<NotificationPage />} />
         <Route
           path="/manager/reservation/reservation-detail/:id"
-          element={<ReservationDetailPage />}
+          element={<ManagerReservationDetailPage />}
         />
 
         <Route path="/customer" element={<CustomerMainPage />} />

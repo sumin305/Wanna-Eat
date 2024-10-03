@@ -24,6 +24,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
 	int countByUserAndRestaurant(User user, Restaurant restaurant);
 
+	Optional<Reservation> findByReservationId(Long reservationId);
+
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("SELECT r FROM Reservation r WHERE r.reservationId = :reservationId")
 	Optional<Reservation> findByReservationIdWithLock(@Param("reservationId") Long reservationId);

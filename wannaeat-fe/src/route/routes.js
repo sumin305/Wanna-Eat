@@ -27,11 +27,12 @@ import SeatSelectPage from '../pages/customer/reservation/process/SeatSelectPage
 import SuccessPage from '../pages/customer/reservation/process/SuccessPage/SuccessPage.jsx';
 import FingerprintAuthPage from '../pages/customer/reservation/process/FingerprintAuthPage/FingerprintAuthPage.jsx';
 import ChatPage from 'pages/customer/chat/ChatPage.jsx';
-import OrderCartPage from 'pages/customer/order/OrderCartPage';
-import NotExistOrderPage from 'pages/customer/order/NotExistOrderPage';
-import MenuSelectPage from 'pages/customer/order/MenuSelectPage';
-import OrderSheetPage from 'pages/customer/order/OrderSheetPage';
-import OrderPaymentPage from 'pages/customer/order/OrderPaymentPage';
+import OrderMainPage from 'pages/customer/order/OrderMainPage.jsx';
+import OrderCartPage from 'pages/customer/order/OrderCartPage.jsx';
+import NotExistOrderPage from 'pages/customer/order/NotExistOrderPage.jsx';
+import MenuSelectPage from 'pages/customer/order/MenuSelectPage.jsx';
+import OrderSheetPage from 'pages/customer/order/OrderSheetPage.jsx';
+import OrderPaymentPage from 'pages/customer/order/OrderPaymentPage.jsx';
 import CardManagePage from '../pages/customer/user/CardManagePage/CardManagePage.jsx';
 import CardRegistPage from '../pages/customer/user/CardRegistPage/CardRegistPage.jsx';
 import NicknameEditPage from '../pages/customer/user/NicknameEditPage/NicknameEditPage.jsx';
@@ -93,6 +94,7 @@ const AppRoutes = () => {
         />
         <Route path="/customer/reservation/success" element={<SuccessPage />} />
         <Route path="/customer/reservationlist" element={<ListPage />} />
+        <Route path="/customer/order/:url" element={<OrderMainPage />} />
         <Route path="/customer/order/cart/:url" element={<OrderCartPage />} />
         <Route path="/customer/order/chat/:url" element={<ChatPage />} />
         <Route

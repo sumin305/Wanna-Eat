@@ -64,8 +64,8 @@ public class User {
 	@OneToOne(mappedBy = "user")
 	private UserToken userToken;
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-	private List<Restaurant> restaurants;
+	@OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+	private Restaurant restaurant;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<Alarm> alarms;

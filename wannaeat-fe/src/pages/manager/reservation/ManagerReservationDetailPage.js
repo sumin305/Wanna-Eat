@@ -13,7 +13,7 @@ export const ReservationPageContainer = styled.div`
 export const ReservationHeader = styled.div`
   margin-bottom: 20px;
   h2 {
-    font-size: 1.5rem;
+    font-size: 10px;
     color: #333;
   }
 `;
@@ -32,8 +32,8 @@ export const InfoRowContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 16px;
-  gap: 40px; /* 아이콘 간격 조정 */
+  margin-bottom: 5px;
+  gap: 30px; /* 아이콘 간격 조정 */
 `;
 
 // 아이콘과 텍스트를 세로로 정렬
@@ -43,28 +43,28 @@ export const InfoRow = styled.div`
   align-items: center;
   span {
     margin-top: 8px;
-    font-size: 17px;
+    font-size: 8px;
     font-weight: bold;
     color: #333;
   }
 `;
 
 export const IconImage = styled.img`
-  width: 45px;
-  height: 45px;
-  margin-bottom: 8px;
+  width: 30px;
+  height: 30px;
+  margin-bottom: 5px;
 `;
 
 // 예약 상세 정보 텍스트 스타일
 export const InfoDetailsContainer = styled.div`
-  margin-top: 16px;
+  margin-top: 10px;
 `;
 
 export const InfoDetails = styled.div`
-  padding: 16px;
+  padding: 5px;
   p {
-    margin: 10px 0;
-    font-size: 17px;
+    margin: 5px 0;
+    font-size: 10px;
     color: #333;
   }
 `;
@@ -72,11 +72,11 @@ export const InfoDetails = styled.div`
 // 주문 메뉴 리스트 스타일
 export const ReservationMenuList = styled.div`
   background-color: #fff;
-  padding: 16px;
+  padding: 10px;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   h3 {
-    font-size: 1.2rem;
+    font-size: 10px;
     margin-bottom: 10px;
     font-weight: bold;
   }
@@ -97,7 +97,7 @@ export const ReservationMenuList = styled.div`
 
 // 개별 메뉴 항목 스타일
 export const MenuItem = styled.div`
-  margin-bottom: 16px;
+  margin-bottom: 5px;
   padding: 10px;
   border-bottom: 1px solid #ddd;
   &:last-child {
@@ -108,7 +108,7 @@ export const MenuItem = styled.div`
 // 메뉴 이름 스타일
 export const MenuName = styled.span`
   font-weight: bold; /* 진하게 표시 */
-  font-size: 1.1rem; /* 원하는 경우 크기도 약간 조정 가능 */
+  font-size: 8px; /* 원하는 경우 크기도 약간 조정 가능 */
   color: #333; /* 색상 조정 */
 `;
 
@@ -129,13 +129,13 @@ export const ButtonGroup = styled.div`
 export const IncrementButton = styled.button`
     background-color: #e67e22;
     color: white;
-    border: 2px solid #e67e22;
-    padding: 10px 20px;
-    font-size: 1rem;
+    border: 1px solid #e67e22;
+    padding: 5px 5px;
+    font-size: 10px;
     font-weight: bold;
     border-radius: 20px; /* 둥글게 만듦 */
     cursor: pointer;
-    margin-left: 5px;
+    margin-left: 3px;
     transition: all 0.3s ease;
 
     &:hover {
@@ -147,9 +147,9 @@ export const IncrementButton = styled.button`
 export const DecrementButton = styled.button`
     background-color: #e67e22;
     color: white;
-    border: 2px solid #e67e22;
-    padding: 10px 20px;
-    font-size: 1rem;
+    border: 1px solid #e67e22;
+    padding: 5px 5px;
+    font-size: 10px;
     font-weight: bold;
     border-radius: 20px; /* 둥글게 만듦 */
     cursor: pointer;
@@ -164,7 +164,7 @@ export const DecrementButton = styled.button`
 
 // 서빙 수량 표시 스타일
 export const ServeCountDisplay = styled.div`
-  font-size: 1.2rem;
+  font-size: 10px;
   font-weight: bold;
   padding: 0 10px;
 `;
@@ -174,17 +174,17 @@ export const FilterButtonGroup = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  gap: 20px; /* 필터 버튼과 전체 서빙 완료 버튼 간격 조정 */
+  margin-bottom: 10px;
+  gap: 5px; /* 필터 버튼과 전체 서빙 완료 버튼 간격 조정 */
 `;
 
 // 필터 버튼 스타일
 export const FilterButton = styled.button`
   background: none;
   border: none;
-  padding: 10px 20px;
-  margin: 0 10px;
-  font-size: 1rem;
+  padding: 5px 10px;
+  margin: 0 5px;
+  font-size: 10px;
   font-weight: ${(props) => (props.active ? 'bold' : 'normal')};
   color: ${(props) => (props.active ? '#e67e22' : '#ccc')};
   position: relative;
@@ -211,12 +211,12 @@ export const CompleteButton = styled.button`
   background-color: #e67e22;
   color: white;
   border: 1px solid #e67e22;
-  padding: 10px 20px;
-  font-size: 15px;
+  padding: 2px 5px;
+  font-size: 10px;
   font-weight: bold;
   border-radius: 20px; /* 둥글게 만듦 */
   cursor: pointer;
-  margin-left: 5px;
+  margin-left: 3px;
   transition: all 0.3s ease;
 
   &:hover {

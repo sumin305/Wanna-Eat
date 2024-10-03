@@ -263,7 +263,7 @@ const ManagerReservationDetailPage = () => {
               <MenuControls>
                 {filter === 'before' ? (
                   <>
-                    <p>{menu.notServedCnt} 개</p>
+                    <p style={{ fontSize: '10px' }}>{menu.notServedCnt} 개</p>
                     <ButtonGroup>
                       <DecrementButton
                         onClick={() =>
@@ -283,13 +283,15 @@ const ManagerReservationDetailPage = () => {
                     </ButtonGroup>
                   </>
                 ) : (
-                  <p style={{ marginTop: '10px' }}>{menu.servedCnt} 개</p>
+                  <p style={{ marginTop: '10px', fontSize: '10px' }}>
+                    {menu.servedCnt} 개
+                  </p>
                 )}
               </MenuControls>
             </MenuItem>
           ))
         ) : (
-          <p>
+          <p style={{ color: 'gray', fontSize: '12px' }}>
             {filter === 'before'
               ? '서빙 전인 메뉴가 없습니다.'
               : '서빙 후인 메뉴가 없습니다.'}

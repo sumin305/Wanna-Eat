@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
+import com.waterdragon.wannaeat.domain.statistic.dto.response.MenuStatisticResponseDto;
 
 public interface StatisticService {
 
@@ -17,6 +18,8 @@ public interface StatisticService {
 	Map<String, Long> getHourlyStatsByMonths(List<Reservation> reservations);
 
 	Map<String, Long> getRevenueByLastFiveDays(Restaurant restaurant);
+
+	List<MenuStatisticResponseDto> getPopularMenusByLastThreeMonths(Restaurant restaurant);
 
 	List<Reservation> getReservationsByMonths(Restaurant restaurant, int month);
 

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,9 +16,11 @@ import org.springframework.stereotype.Service;
 
 import com.waterdragon.wannaeat.domain.menu.domain.Menu;
 import com.waterdragon.wannaeat.domain.menu.repository.MenuRepository;
+import com.waterdragon.wannaeat.domain.order.domain.Order;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
+import com.waterdragon.wannaeat.domain.statistic.dto.response.MenuStatisticResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -132,6 +135,47 @@ public class StatisticServiceImpl implements StatisticService {
 			.sorted(Map.Entry.comparingByKey()) // 날짜 순으로 정렬
 			.collect(
 				Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new)); // 순서 유지
+	}
+
+	/**
+	 * 최근 3개월치의 인기 메뉴 통계를 리턴하는 메소드
+	 *
+	 * @param restaurant 식당 정보
+	 * @return 인기 메뉴 통계 목록
+	 */
+	@Override
+	public List<MenuStatisticResponseDto> getPopularMenusByLastThreeMonths(Restaurant restaurant) {
+		LocalDate today = LocalDate.now();
+		LocalDate endDate = today.minusDays(today.getDayOfMonth()); // 이번 달의 첫 날 이전
+		LocalDate startDate = endDate.minusMonths(3).withDayOfMonth(1); // 3개월 전 1일
+
+		// 최근 3개월간의 Reservation 가져오기
+		List<Reservation> reservations = reservationRepository.findReservationsForRestaurantWithinDateRange(restaurant,
+			startDate, endDate);
+
+		// 메뉴별 주문 수량 합산을 위한 Map
+		Map<Long, Long> menuOrderCountMap = new HashMap<>();
+
+		// 각 예약에 연결된 Orders 처리
+		for (Reservation reservation : reservations) {
+			for (Order order : reservation.getOrders()) {
+				Long menuId = order.getMenu().getMenuId();
+				Long orderCnt = (long)order.getTotalCnt();
+				menuOrderCountMap.merge(menuId, orderCnt, Long::sum);
+			}
+		}
+
+		// 메뉴별로 주문 수량을 기준으로 정렬 후, DTO로 변환
+		return menuOrderCountMap.entrySet().stream()
+			.map(entry -> {
+				Long menuId = entry.getKey();
+				Long orderCnt = entry.getValue();
+				Menu menu = menuRepository.findById(menuId)
+					.orElseThrow(() -> new IllegalArgumentException("Menu not found"));
+				return new MenuStatisticResponseDto(menu.getMenuId(), menu.getName(), menu.getImage(), orderCnt);
+			})
+			.sorted(Comparator.comparingLong(MenuStatisticResponseDto::getOrderCnt).reversed()) // 주문 수량 기준으로 내림차순 정렬
+			.collect(Collectors.toList());
 	}
 
 	/**

@@ -19,7 +19,7 @@ const MenuSelectPage = () => {
   const { isConnected, setIsConnected, stompClient, setStompClient } =
     useChatStore();
   const [activeTab, setActiveTab] = useState(0);
-  const myReservationParticipantId = 2;
+  const myReservationParticipantId = 3;
   const increment = 1; // 증가 갯수는 1로 설정
 
   const {

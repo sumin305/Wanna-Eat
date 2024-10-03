@@ -34,7 +34,7 @@ const OrderMainPage = () => {
   // 웹소켓 초기 연결
   useEffect(() => {
     setIsCarrot(true);
-    setPageName('주문 내역');
+    setPageName('주문서');
     setIsShowLogo(false);
     setActiveIcons([3]);
     setIsShowBackIcon(true);
@@ -60,7 +60,7 @@ const OrderMainPage = () => {
     };
 
     validateAndConnect();
-  }, [allMenusInfo]);
+  }, []);
 
   const initializeConnection = () => {
     const socket = new SockJS(
@@ -121,7 +121,9 @@ const OrderMainPage = () => {
   return (
     <>
       <button onClick={clickGotoChat}>채팅으로 이동</button>
-      <button onClick={() => nav('/customer/order/menu-select/random1')}>
+      <button
+        onClick={() => nav(`/customer/order/menu-select/${reservationUrl}`)}
+      >
         메뉴선택페이지로 이동
       </button>
       <OrderMainBox reservationUrl={reservationUrl} />

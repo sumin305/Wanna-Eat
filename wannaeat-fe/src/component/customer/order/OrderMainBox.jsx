@@ -6,25 +6,23 @@ import {
   OrderContainer,
   ButtonContainer,
   ButtonWrapper,
-  CheckBox,
-  CheckText,
 } from './OrderMainBox.js';
-import WECheck from '../../common/check/WECheck.jsx';
 import theme from '../../../style/common/theme.js';
 import { useNavigate } from 'react-router-dom';
 import useOrderStore from '../../../stores/customer/useOrderStore.js';
-import DeleteButton from 'assets/icons/order/delete.svg';
 import { deleteCarts } from 'api/customer/order.js';
+import useChatStore from '../../../stores/customer/useChatStore.js';
 
 const OrderMainBox = ({ reservationUrl }) => {
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ['나의 메뉴', '전체 메뉴'];
   const { allMenusInfo, setAllMenusInfo } = useOrderStore();
-  const [isPrepared, setIsPrepared] = useState(false);
   const nav = useNavigate();
 
-  const reservationParticipantId = 4;
+  const reservationParticipantId = 3;
   const allMenus = allMenusInfo?.cartDetailResponseDto?.cartElements || [];
+
+  const { stompClient, isConnected } = useChatStore();
 
   // 현재를 기준으로 예약시간이 지났는지 확인하는 함수
   const isReservationTimePassed = (
@@ -46,10 +44,6 @@ const OrderMainBox = ({ reservationUrl }) => {
     }
   };
 
-  const handleIsPreparedButtonClick = () => {
-    setIsPrepared(!isPrepared);
-  };
-
   const handleMenuViewButtonClick = () => {
     nav(`/customer/order/menu-select/${reservationUrl}`);
   };
@@ -66,8 +60,35 @@ const OrderMainBox = ({ reservationUrl }) => {
     });
   };
 
+  const clickGotoMenuSelect = () => {
+    nav(`/customer/order/menu-select/${reservationUrl}`);
+  };
+
+  const handleOrderButtonClick = () => {
+    const orderRegisterRequestDto = {
+      reservationUrl: reservationUrl,
+      prepareRequest: true,
+    };
+
+    if (stompClient && isConnected) {
+      try {
+        stompClient.send(
+          '/api/public/sockets/orders/register',
+          {},
+          JSON.stringify(orderRegisterRequestDto)
+        );
+        console.log('주문에 보내는 내용:', orderRegisterRequestDto);
+      } catch (error) {
+        console.log('주문 실패:', error);
+      }
+    } else {
+      console.log('stompClient is not initialized or not connected');
+    }
+  };
+
   return (
     <OrderContainer>
+      <button onClick={clickGotoMenuSelect}>메뉴선택페이지로 이동</button>
       <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
       <div>
         <TopBox>
@@ -180,18 +201,21 @@ const OrderMainBox = ({ reservationUrl }) => {
       ) : (
         // 예약시간 전
         <>
-          <CheckBox>
-            <WECheck
-              isChecked={isPrepared}
-              onClick={handleIsPreparedButtonClick}
-            />
-            <CheckText>예약 시간까지 준비해주세요</CheckText>
-          </CheckBox>
           <ButtonWrapper>
-            <WEButton size="medium" onClick={handleMenuViewButtonClick}>
-              메뉴 보기
+            <WEButton
+              size="medium"
+              outlined="true"
+              onClick={handleOrderSheetButtonClick}
+            >
+              주문서
             </WEButton>
-            <WEButton size="medium">주문하기</WEButton>
+            <WEButton
+              size="medium"
+              outlined="true"
+              onClick={handleOrderButtonClick}
+            >
+              주문하기
+            </WEButton>
           </ButtonWrapper>
         </>
       )}

@@ -27,10 +27,13 @@ import com.waterdragon.wannaeat.domain.reservation.repository.ReservationReposit
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.restaurant.domain.RestaurantStructure;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Table;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantStructureNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructureRepository;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MainStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MenuStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.PeekStatisticResponseDto;
+import com.waterdragon.wannaeat.domain.statistic.dto.response.RevenuePerDayResponseDto;
+import com.waterdragon.wannaeat.domain.statistic.dto.response.RevenueStatisticResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,6 +45,12 @@ public class StatisticServiceImpl implements StatisticService {
 	private final MenuRepository menuRepository;
 	private final RestaurantStructureRepository restaurantStructureRepository;
 
+	/**
+	 * 메인 통계를 리턴하는 메소드
+	 *
+	 * @param restaurant 식당 정보
+	 * @return 메인 통계
+	 */
 	@Override
 	public MainStatisticResponseDto getStatisticsByMain(Restaurant restaurant) {
 		List<Reservation> reservations = getReservationsByMonths(restaurant, 12);
@@ -67,6 +76,14 @@ public class StatisticServiceImpl implements StatisticService {
 			.build();
 	}
 
+	/**
+	 * 월별 피크 통계를 리턴하는 메소드
+	 *
+	 * @param restaurant 식당 정보
+	 * @param year 검색 연도
+	 * @param month 검색 월
+	 * @return 월별 피크 통계
+	 */
 	@Override
 	public PeekStatisticResponseDto getStatisticsByPeek(Restaurant restaurant, int year, int month) {
 		List<Reservation> reservations = reservationRepository.findReservationsByRestaurantAndYearAndMonth(restaurant,
@@ -86,6 +103,62 @@ public class StatisticServiceImpl implements StatisticService {
 			.averageUsageTime(averageUsageTime)
 			.build();
 
+	}
+
+	/**
+	 * 월별 매출 통계를 리턴하는 메소드
+	 *
+	 * @param restaurant 식당 정보
+	 * @param year 검색 연도
+	 * @param month 검색 월
+	 * @return 월별 매출 통계
+	 */
+	@Override
+	public RevenueStatisticResponseDto getStatisticsByRevenue(Restaurant restaurant, int year, int month) {
+		List<Reservation> reservations = reservationRepository.findReservationsByRestaurantAndYearAndMonth(restaurant,
+			year, month);
+
+		Map<LocalDate, RevenuePerDayResponseDto> dailySalesMap = new HashMap<>();
+		long totalRevenue = 0;
+
+		// 각 예약별로 일자별 매출과 예약 건수를 계산
+		for (Reservation reservation : reservations) {
+			LocalDate reservationDate = reservation.getReservationDate();
+			RevenuePerDayResponseDto dailyData = dailySalesMap.getOrDefault(reservationDate,
+				new RevenuePerDayResponseDto(0L, 0));
+
+			// 예약에 연결된 Orders의 매출 계산
+			long dailyRevenue = reservation.getOrders().stream()
+				.mapToLong(order -> {
+					Menu menu = order.getMenu();
+					return (long)menu.getPrice() * order.getTotalCnt();
+				})
+				.sum();
+
+			// 매출과 예약 건수를 누적
+			dailyData = RevenuePerDayResponseDto.builder()
+				.revenue(dailyData.getRevenue() + dailyRevenue)
+				.reservationCnt(dailyData.getReservationCnt() + 1)
+				.build();
+
+			dailySalesMap.put(reservationDate, dailyData);
+			totalRevenue += dailyRevenue; // 전체 매출 합산
+		}
+
+		// LocalDate 순으로 정렬
+		Map<LocalDate, RevenuePerDayResponseDto> sortedDailySalesMap = dailySalesMap.entrySet().stream()
+			.sorted(Map.Entry.comparingByKey()) // LocalDate로 정렬
+			.collect(Collectors.toMap(
+				Map.Entry::getKey,
+				Map.Entry::getValue,
+				(oldValue, newValue) -> oldValue,
+				LinkedHashMap::new // 순서를 유지하는 LinkedHashMap으로 변환
+			));
+
+		return RevenueStatisticResponseDto.builder()
+			.totalRevenue(totalRevenue)
+			.revenues(sortedDailySalesMap)
+			.build();
 	}
 
 	/**
@@ -326,7 +399,8 @@ public class StatisticServiceImpl implements StatisticService {
 	@Override
 	public double getTurnoverRate(Restaurant restaurant, List<Reservation> reservations) {
 		RestaurantStructure restaurantStructure = restaurantStructureRepository.findByRestaurantId(
-			restaurant.getRestaurantId()).get();
+				restaurant.getRestaurantId())
+			.orElseThrow(() -> new RestaurantStructureNotFoundException("매장 구조 정보가 존재하지 않습니다."));
 
 		List<Table> restaurantTables = restaurantStructure.getTables();
 		// 해당 매장의 테이블 수
@@ -371,7 +445,7 @@ public class StatisticServiceImpl implements StatisticService {
 
 	/**
 	 * 예약 목록 중 고유 예약 일자 수를 리턴하는 메소드
-	 * @param reservations
+	 * @param reservations 예약 목록
 	 * @return 고유 예약 일자 수
 	 */
 	@Override
@@ -390,7 +464,7 @@ public class StatisticServiceImpl implements StatisticService {
 	/**
 	 * 예약 목록의 예약 테이블 수의 합을 리턴하는 메소드
 	 *
-	 * @param reservations
+	 * @param reservations 예약 목록
 	 * @return 예약 테이블 수 합
 	 */
 	@Override

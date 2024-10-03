@@ -42,6 +42,12 @@ public class StatisticServiceImpl implements StatisticService {
 	private final MenuRepository menuRepository;
 	private final RestaurantStructureRepository restaurantStructureRepository;
 
+	/**
+	 * 메인 통계를 리턴하는 메소드
+	 *
+	 * @param restaurant 식당 정보
+	 * @return 메인 통계
+	 */
 	@Override
 	public MainStatisticResponseDto getStatisticsByMain(Restaurant restaurant) {
 		List<Reservation> reservations = getReservationsByMonths(restaurant, 12);
@@ -67,6 +73,14 @@ public class StatisticServiceImpl implements StatisticService {
 			.build();
 	}
 
+	/**
+	 * 월별 피크 통계를 리턴하는 메소드
+	 *
+	 * @param restaurant 식당 정보
+	 * @param year 검색 연도
+	 * @param month 검색 월
+	 * @return 월별 피크 통계
+	 */
 	@Override
 	public PeekStatisticResponseDto getStatisticsByPeek(Restaurant restaurant, int year, int month) {
 		List<Reservation> reservations = reservationRepository.findReservationsByRestaurantAndYearAndMonth(restaurant,
@@ -86,6 +100,62 @@ public class StatisticServiceImpl implements StatisticService {
 			.averageUsageTime(averageUsageTime)
 			.build();
 
+	}
+
+	/**
+	 * 월별 매출 통계를 리턴하는 메소드
+	 *
+	 * @param restaurant 식당 정보
+	 * @param year 검색 연도
+	 * @param month 검색 월
+	 * @return 월별 매출 통계
+	 */
+	@Override
+	public RevenueStatisticResponseDto getStatisticsByRevenue(Restaurant restaurant, int year, int month) {
+		List<Reservation> reservations = reservationRepository.findReservationsByRestaurantAndYearAndMonth(restaurant,
+			year, month);
+
+		Map<LocalDate, RevenuePerDayResponseDto> dailySalesMap = new HashMap<>();
+		long totalRevenue = 0;
+
+		// 각 예약별로 일자별 매출과 예약 건수를 계산
+		for (Reservation reservation : reservations) {
+			LocalDate reservationDate = reservation.getReservationDate();
+			RevenuePerDayResponseDto dailyData = dailySalesMap.getOrDefault(reservationDate,
+				new RevenuePerDayResponseDto(0L, 0));
+
+			// 예약에 연결된 Orders의 매출 계산
+			long dailyRevenue = reservation.getOrders().stream()
+				.mapToLong(order -> {
+					Menu menu = order.getMenu();
+					return (long)menu.getPrice() * order.getTotalCnt();
+				})
+				.sum();
+
+			// 매출과 예약 건수를 누적
+			dailyData = RevenuePerDayResponseDto.builder()
+				.revenue(dailyData.getRevenue() + dailyRevenue)
+				.reservationCnt(dailyData.getReservationCnt() + 1)
+				.build();
+
+			dailySalesMap.put(reservationDate, dailyData);
+			totalRevenue += dailyRevenue; // 전체 매출 합산
+		}
+
+		// LocalDate 순으로 정렬
+		Map<LocalDate, RevenuePerDayResponseDto> sortedDailySalesMap = dailySalesMap.entrySet().stream()
+			.sorted(Map.Entry.comparingByKey()) // LocalDate로 정렬
+			.collect(Collectors.toMap(
+				Map.Entry::getKey,
+				Map.Entry::getValue,
+				(oldValue, newValue) -> oldValue,
+				LinkedHashMap::new // 순서를 유지하는 LinkedHashMap으로 변환
+			));
+
+		return RevenueStatisticResponseDto.builder()
+			.totalRevenue(totalRevenue)
+			.revenues(sortedDailySalesMap)
+			.build();
 	}
 
 	/**

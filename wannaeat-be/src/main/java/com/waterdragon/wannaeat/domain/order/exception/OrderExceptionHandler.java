@@ -1,11 +1,11 @@
 package com.waterdragon.wannaeat.domain.order.exception;
 
-import com.waterdragon.wannaeat.domain.order.exception.error.OrderAlreadyServedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.waterdragon.wannaeat.domain.order.exception.error.OrderAlreadyServedException;
 import com.waterdragon.wannaeat.domain.order.exception.error.OrderNotFoundException;
 import com.waterdragon.wannaeat.domain.order.exception.error.TotalCntLowerThanPaidCntException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
@@ -34,7 +34,7 @@ public class OrderExceptionHandler {
 	// 이미 서빙 완료된 주문
 	@ExceptionHandler(OrderAlreadyServedException.class)
 	public final ResponseEntity<ErrorResponseDto> handleOrderAlreadyServedException(
-			OrderAlreadyServedException ex) {
+		OrderAlreadyServedException ex) {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Order Already Served", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);

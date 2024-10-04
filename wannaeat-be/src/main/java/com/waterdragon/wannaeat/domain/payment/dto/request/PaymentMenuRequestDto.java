@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PaymentMenuRequestDto {
 
-	@NotNull
-	private Long menuId;
-	@NotNull
+	@NotNull(message = "주문 id는 필수 입력값입니다.")
 	private Long orderId;
-	@NotNull
+	@NotNull(message = "메뉴 id는 필수 입력값입니다.")
+	private Long menuId;
+	@NotNull(message = "메뉴 수량은 필수 입력값입니다.")
 	private Integer menuCount;
 }

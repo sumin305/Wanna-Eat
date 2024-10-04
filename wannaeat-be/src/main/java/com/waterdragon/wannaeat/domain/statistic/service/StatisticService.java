@@ -10,6 +10,7 @@ import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MainStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MenuStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.PeekStatisticResponseDto;
+import com.waterdragon.wannaeat.domain.statistic.dto.response.ReservationCountStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.RevenueStatisticResponseDto;
 
 public interface StatisticService {
@@ -19,6 +20,8 @@ public interface StatisticService {
 	PeekStatisticResponseDto getStatisticsByPeek(Restaurant restaurant, int year, int month);
 
 	RevenueStatisticResponseDto getStatisticsByRevenue(Restaurant restaurant, int year, int month);
+
+	ReservationCountStatisticResponseDto getReservationCountStatistics(Restaurant restaurant, int year, int month);
 
 	Map<Integer, Long> getMonthlyStatsByMonths(List<Reservation> reservations);
 

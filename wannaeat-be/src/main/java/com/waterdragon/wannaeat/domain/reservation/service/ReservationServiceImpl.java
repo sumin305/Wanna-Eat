@@ -4,12 +4,16 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.waterdragon.wannaeat.domain.reservation.dto.response.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +29,11 @@ import com.waterdragon.wannaeat.domain.reservation.domain.ReservationTable;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationMenuResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.AlreadyCancelledReservationException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.DuplicateReservationTableException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.FailureGenerateQrCodeException;
@@ -182,18 +191,16 @@ public class ReservationServiceImpl implements ReservationService {
 			.orElseThrow(() -> new RestaurantStructureNotFoundException("매장 구조 정보가 존재하지 않습니다."));
 
 		// 예약 테이블을 필터링하는 쿼리 실행
-		List<ReservationTable> reservatedTables = reservationTableRepository.findReservedTables(
+		List<ReservationTable> reservedTables = reservationTableRepository.findReservedTables(
 			restaurant.getRestaurantId(),
 			reservationRegisterRequestDto.getReservationDate(),
 			reservationRegisterRequestDto.getReservationStartTime(),
 			reservationRegisterRequestDto.getReservationEndTime());
 
 		// 예약된 테이블이 있을 경우 예외 처리
-		if (!reservatedTables.isEmpty()) {
+		if (!reservedTables.isEmpty()) {
 			throw new DuplicateReservationTableException("이미 예약된 테이블입니다.");
 		}
-
-		log.info(reservatedTables.toString());
 
 		User user = userRepository.findByUserId(reservationRegisterRequestDto.getUserId()).orElse(null);
 
@@ -505,79 +512,78 @@ public class ReservationServiceImpl implements ReservationService {
 
 		return sb.toString();
 
-    }
+	}
 
+	/**
+	 * 사업자용 예약 상세조회
+	 *
+	 * @param reservationId 예약 ID
+	 * @return ManagerReservationDetailResponseDto 예약 상세 정보
+	 */
+	@Override
+	public ManagerReservationDetailResponseDto getReservationListByManager(Long reservationId) {
 
-    /**
-     * 사업자용 예약 상세조회
-     *
-     * @param reservationId 예약 ID
-     * @return ManagerReservationDetailResponseDto 예약 상세 정보
-     */
-    @Override
-    public ManagerReservationDetailResponseDto getReservationListByManager(Long reservationId) {
+		// AtomicBoolean을 사용하여 람다 내에서 값 변경 가능
+		AtomicBoolean allPaymentsCompleted = new AtomicBoolean(true);
 
-        // AtomicBoolean을 사용하여 람다 내에서 값 변경 가능
-        AtomicBoolean allPaymentsCompleted = new AtomicBoolean(true);
+		// 예약 정보 조회
+		Reservation reservation = reservationRepository.findById(reservationId)
+			.orElseThrow(() -> new ReservationNotFoundException("존재하지 않는 예약입니다."));
 
-        // 예약 정보 조회
-        Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new ReservationNotFoundException("존재하지 않는 예약입니다."));
+		// 주문 리스트 조회
+		List<Order> orderList = reservation.getOrders();
 
-        // 주문 리스트 조회
-        List<Order> orderList = reservation.getOrders();
+		// 주문 리스트를 메뉴 이름으로 그룹화하여 합침
+		Map<String, ReservationMenuResponseDto> menuMap = new HashMap<>();
 
-        // 주문 리스트를 메뉴 이름으로 그룹화하여 합침
-        Map<String, ReservationMenuResponseDto> menuMap = new HashMap<>();
+		orderList.forEach(order -> {
+			String menuName = order.getMenu().getName();
+			List<Integer> orderIdList = IntStream.range(0, order.getTotalCnt() - order.getServedCnt())
+				.mapToObj(i -> order.getOrderId().intValue())
+				.collect(Collectors.toList());
 
-        orderList.forEach(order -> {
-            String menuName = order.getMenu().getName();
-            List<Integer> orderIdList = IntStream.range(0, order.getTotalCnt() - order.getServedCnt())
-                    .mapToObj(i -> order.getOrderId().intValue())
-                    .collect(Collectors.toList());
+			// 서빙되지 않은 수량 계산: totalCnt - servedCnt
+			int notServedCnt = order.getTotalCnt() - order.getServedCnt();
 
-            // 서빙되지 않은 수량 계산: totalCnt - servedCnt
-            int notServedCnt = order.getTotalCnt() - order.getServedCnt();
+			// 결제 상태 확인 (모든 주문의 paidCnt가 totalCnt와 같지 않으면 결제 미완료로 판단)
+			if (order.getPaidCnt() < order.getTotalCnt()) {
+				allPaymentsCompleted.set(false);  // AtomicBoolean을 사용하여 값 설정
+			}
 
-            // 결제 상태 확인 (모든 주문의 paidCnt가 totalCnt와 같지 않으면 결제 미완료로 판단)
-            if (order.getPaidCnt() < order.getTotalCnt()) {
-                allPaymentsCompleted.set(false);  // AtomicBoolean을 사용하여 값 설정
-            }
+			if (menuMap.containsKey(menuName)) {
+				// 기존 메뉴에 데이터 추가
+				ReservationMenuResponseDto existingDto = menuMap.get(menuName);
+				existingDto.setNotServedCnt(existingDto.getNotServedCnt() + notServedCnt);
+				existingDto.setServedCnt(existingDto.getServedCnt() + order.getServedCnt());
+				existingDto.getOrderIdList().addAll(orderIdList);
+			} else {
+				// 새로운 메뉴 추가
+				ReservationMenuResponseDto newDto = ReservationMenuResponseDto.builder()
+					.menuName(menuName)
+					.notServedCnt(notServedCnt) // 서빙되지 않은 수량
+					.servedCnt(order.getServedCnt()) // 서빙된 수량
+					.orderIdList(orderIdList)
+					.build();
+				menuMap.put(menuName, newDto);
+			}
+		});
 
-            if (menuMap.containsKey(menuName)) {
-                // 기존 메뉴에 데이터 추가
-                ReservationMenuResponseDto existingDto = menuMap.get(menuName);
-                existingDto.setNotServedCnt(existingDto.getNotServedCnt() + notServedCnt);
-                existingDto.setServedCnt(existingDto.getServedCnt() + order.getServedCnt());
-                existingDto.getOrderIdList().addAll(orderIdList);
-            } else {
-                // 새로운 메뉴 추가
-                ReservationMenuResponseDto newDto = ReservationMenuResponseDto.builder()
-                        .menuName(menuName)
-                        .notServedCnt(notServedCnt) // 서빙되지 않은 수량
-                        .servedCnt(order.getServedCnt()) // 서빙된 수량
-                        .orderIdList(orderIdList)
-                        .build();
-                menuMap.put(menuName, newDto);
-            }
-        });
+		// 테이블 번호 리스트 추출 (Integer 타입으로 처리)
+		List<Integer> tableList = reservation.getReservationTables().stream()
+			.map(reservationTable -> reservationTable.getTableId()) // tableId는 int 타입으로 처리
+			.collect(Collectors.toList());
 
-        // 테이블 번호 리스트 추출 (Integer 타입으로 처리)
-        List<Integer> tableList = reservation.getReservationTables().stream()
-                .map(reservationTable -> reservationTable.getTableId()) // tableId는 int 타입으로 처리
-                .collect(Collectors.toList());
-
-        // ManagerReservationDetailResponseDto 생성 및 반환
-        return ManagerReservationDetailResponseDto.builder()
-                .reservationDate(reservation.getReservationDate().toString()) // 예약 날짜
-                .reservationStartTime(reservation.getStartTime().toString()) // 시작 시간
-                .reservationEndTime(reservation.getEndTime().toString()) // 종료 시간
-                .memberCnt(reservation.getMemberCnt()) // 인원 수
-                .memberName(reservation.getUser().getNickname()) // 예약자 이름
-                .allPaymentsCompleted(allPaymentsCompleted.get()) // AtomicBoolean의 값을 boolean으로 전달
-                .tableList(tableList) // 테이블 리스트 (List<Integer>)
-                .reservationMenuList(new ArrayList<>(menuMap.values())) // 메뉴 리스트
-                .build();
-    }
+		// ManagerReservationDetailResponseDto 생성 및 반환
+		return ManagerReservationDetailResponseDto.builder()
+			.reservationDate(reservation.getReservationDate().toString()) // 예약 날짜
+			.reservationStartTime(reservation.getStartTime().toString()) // 시작 시간
+			.reservationEndTime(reservation.getEndTime().toString()) // 종료 시간
+			.memberCnt(reservation.getMemberCnt()) // 인원 수
+			.memberName(reservation.getUser().getNickname()) // 예약자 이름
+			.allPaymentsCompleted(allPaymentsCompleted.get()) // AtomicBoolean의 값을 boolean으로 전달
+			.tableList(tableList) // 테이블 리스트 (List<Integer>)
+			.reservationMenuList(new ArrayList<>(menuMap.values())) // 메뉴 리스트
+			.build();
+	}
 
 }

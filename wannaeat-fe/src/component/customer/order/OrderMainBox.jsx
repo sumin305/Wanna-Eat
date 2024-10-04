@@ -6,6 +6,24 @@ import theme from '../../../style/common/theme.js';
 import { useNavigate } from 'react-router-dom';
 import useOrderStore from '../../../stores/customer/useOrderStore.js';
 import useChatStore from '../../../stores/customer/useChatStore.js';
+import {
+  FoodDiv,
+  FoodInfoBottomDiv,
+  FoodInfoCountDiv,
+  FoodInfoCountP,
+  FoodInfoDiv,
+  FoodInfoTopDiv,
+  FoodPriceP,
+  LineDiv,
+  MenuContainer,
+  MenuDiv,
+  MenuImg,
+  MenuNameP,
+  PeopleP,
+  TotalMenuP,
+  TotalPriceDiv,
+  TotalPriceP,
+} from './OrderCartBox.js';
 
 const OrderMainBox = ({ reservationUrl }) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -62,50 +80,98 @@ const OrderMainBox = ({ reservationUrl }) => {
         <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
         <div>
           <TopBox>
-            <p>총 메뉴 {activeTab === 0 ? myTotalCnt : allTotalCnt}개</p>
+            <MenuContainer>
+              <TotalMenuP>
+                총 메뉴 {activeTab === 0 ? myTotalCnt : allTotalCnt}개
+              </TotalMenuP>
+            </MenuContainer>
           </TopBox>
+          <MenuDiv>
+            {activeTab === 0 ? (
+              // 나의 메뉴
+              <div>
+                {myOrders.length > 0 && (
+                  <div>
+                    <PeopleP>
+                      {myOrders[0].reservationParticipantNickname || ''}
+                    </PeopleP>
+                    <LineDiv />
+                    {myOrders.map((order, index) => (
+                      <div key={index}>
+                        <FoodDiv>
+                          {order.menuImage && (
+                            <MenuImg src={order.menuImage} alt="메뉴사진" />
+                          )}
+                          <FoodInfoDiv>
+                            <FoodInfoTopDiv>
+                              <MenuNameP>{order.menuName}</MenuNameP>
+                            </FoodInfoTopDiv>
+                            <FoodInfoBottomDiv>
+                              <FoodInfoCountDiv>
+                                <PeopleP>총 주문:</PeopleP>
+                                <FoodInfoCountP>
+                                  {order.totalCnt}
+                                </FoodInfoCountP>
+                                <PeopleP>미결제 수량:</PeopleP>
+                                <FoodInfoCountP>
+                                  {order.totalCnt - order.paidCnt}
+                                </FoodInfoCountP>
+                              </FoodInfoCountDiv>
 
-          {activeTab === 0 ? (
-            // 나의 메뉴
-            <div>
-              {myOrders.length > 0 && (
-                <div>
-                  <h3>{myOrders[0].reservationParticipantNickname || ''}</h3>
-                  {myOrders.map((order, index) => (
-                    <div key={index}>
-                      <div>
-                        {order.menuImage && (
-                          <img src={order.menuImage} alt={order.menuName} />
-                        )}
-                        <p>{order.menuName}</p>
-                        <p>수량: {order.paidCnt}</p>
-                        <p>가격: {order.menuPrice}</p>
+                              <FoodPriceP>가격: {order.menuPrice}</FoodPriceP>
+                            </FoodInfoBottomDiv>
+                          </FoodInfoDiv>
+                        </FoodDiv>
+                        <LineDiv />
+                        <TotalPriceDiv>
+                          <TotalPriceP>
+                            총 가격: {order.totalCnt * order.menuPrice}
+                          </TotalPriceP>
+                        </TotalPriceDiv>
+                        <br />
                       </div>
-                      <p>총 가격: {order.totalCnt * order.menuPrice}</p>
-                      <br />
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              // 전체 메뉴
+              Object.entries(groupedOrders).map(([nickname, orders]) => (
+                <div key={nickname}>
+                  <PeopleP>{nickname}</PeopleP>
+                  <LineDiv />
+                  {orders.map((order, index) => (
+                    <div key={index}>
+                      <FoodDiv>
+                        <MenuImg src={order.menuImage} alt={order.menuName} />
+                        <FoodInfoDiv>
+                          <FoodInfoTopDiv>
+                            <MenuNameP>{order.menuName}</MenuNameP>
+                          </FoodInfoTopDiv>
+                          <FoodInfoBottomDiv>
+                            <FoodInfoCountDiv>
+                              <PeopleP>총 주문:</PeopleP>
+                              <FoodInfoCountP>{order.totalCnt}</FoodInfoCountP>
+                              <PeopleP>미결제 수량:</PeopleP>
+                              <FoodInfoCountP>
+                                {order.totalCnt - order.paidCnt}
+                              </FoodInfoCountP>
+                            </FoodInfoCountDiv>
+
+                            <FoodPriceP>
+                              {order.totalCnt * order.menuPrice}
+                            </FoodPriceP>
+                          </FoodInfoBottomDiv>
+                        </FoodInfoDiv>
+                      </FoodDiv>
+                      <LineDiv />
                     </div>
                   ))}
+                  <br />
                 </div>
-              )}
-            </div>
-          ) : (
-            // 전체 메뉴
-            Object.entries(groupedOrders).map(([nickname, orders]) => (
-              <div key={nickname}>
-                <h3>{nickname}</h3>
-                {orders.map((order, index) => (
-                  <div key={index}>
-                    <p>{order.menuName}</p>
-                    <img src={order.menuImage} alt={order.menuName} />
-                    <p>총 주문 수량: {order.totalCnt}</p>
-                    <p>결제해야 할 수량: {order.totalCnt - order.paidCnt}</p>
-                    <p>총 금액: {order.totalCnt * order.menuPrice}</p>
-                  </div>
-                ))}
-                <br />
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </MenuDiv>
         </div>
 
         <ButtonWrapper>

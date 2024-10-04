@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -29,11 +31,14 @@ import com.waterdragon.wannaeat.domain.payment.dto.request.PaymentMenuRequestDto
 import com.waterdragon.wannaeat.domain.payment.dto.request.SsafyPaymentDepositRequestDto;
 import com.waterdragon.wannaeat.domain.payment.dto.request.SsafyPaymentOrderRequestDto;
 import com.waterdragon.wannaeat.domain.payment.dto.response.SsafyPaymentResponseDto;
+import com.waterdragon.wannaeat.domain.payment.exception.error.InvalidPaymentException;
 import com.waterdragon.wannaeat.domain.payment.exception.error.InvalidPriceException;
 import com.waterdragon.wannaeat.domain.payment.exception.error.MenuCountRequestMoreThanUnpaidException;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
+import com.waterdragon.wannaeat.domain.reservation.service.ReservationService;
 import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
@@ -61,6 +66,7 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 
 	private final OrderRepository orderRepository;
 	private final OrderService orderService;
+	private final ReservationService reservationService;
 	private final EncryptService encryptService;
 
 	private final RestTemplate restTemplate = new RestTemplate();
@@ -187,6 +193,7 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 	 * @return SsafyPaymentResponseDto 결제 완료 정보
 	 */
 	@Override
+	@Transactional
 	public SsafyPaymentResponseDto ssafyPay(SsafyPaymentDepositRequestDto ssafyPaymentDepositRequestDto) {
 
 		// 결제 비밀번호 검증
@@ -209,6 +216,10 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 			log.info(ssafyPaymentDepositRequestDto.getPrice().toString());
 			throw new InvalidPriceException("보증금이 서버 정보와 일치하지 않습니다.");
 		}
+
+		// 예약 등록
+		ReservationDetailResponseDto reservationDetailResponseDto = reservationService.registerReservation(
+			ssafyPaymentDepositRequestDto.getReservationRegisterRequestDto());
 
 		// 오늘 날짜를 "yyyyMMdd" 형식으로 변환 (예: 20240408)
 		String transmissionDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -253,6 +264,16 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 			requestEntity,
 			SsafyPaymentResponseDto.class
 		);
+
+		System.out.println(response.getStatusCode());
+		System.out.println(response.getStatusCode() == HttpStatusCode.valueOf(200));
+
+		if(!(response.getStatusCode() == HttpStatusCode.valueOf(200))){
+			throw new InvalidPaymentException("결제 실패" + response.getStatusCode());
+		}
+		if(response.getStatusCode() == HttpStatusCode.valueOf(200)){
+			Objects.requireNonNull(response.getBody()).setReservationInfo(reservationDetailResponseDto);
+		}
 
 		// 응답 결과 반환
 		return response.getBody();

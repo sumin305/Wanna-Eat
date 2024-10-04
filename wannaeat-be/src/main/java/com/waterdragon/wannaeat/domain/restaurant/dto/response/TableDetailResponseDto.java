@@ -9,6 +9,8 @@ public class TableDetailResponseDto {
 
 	private int tableId;
 	private int assignedSeats;
+	private String itemId;
+	private String itemType;
 	private double x;
 	private double y;
 	private int floor;

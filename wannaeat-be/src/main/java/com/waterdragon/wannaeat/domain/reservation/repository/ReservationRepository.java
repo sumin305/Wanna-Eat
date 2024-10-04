@@ -24,6 +24,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
 	int countByUserAndRestaurant(User user, Restaurant restaurant);
 
+	Page<Reservation> findByRestaurantAndReservationDateAndCancelledIsFalse(Restaurant restaurant,
+		LocalDate reservationDate, Pageable pageable);
+
 	Optional<Reservation> findByReservationId(Long reservationId);
 
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -66,7 +69,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 		"AND r.cancelled = false " +
 		"AND FUNCTION('YEAR', r.reservationDate) = :year " +
 		"AND FUNCTION('MONTH', r.reservationDate) = :month")
-	List<Reservation> findNotCancelledReservationsByRestaurantAndYearAndMonth(@Param("restaurant") Restaurant restaurant,
+	List<Reservation> findNotCancelledReservationsByRestaurantAndYearAndMonth(
+		@Param("restaurant") Restaurant restaurant,
 		@Param("year") int year,
 		@Param("month") int month);
 

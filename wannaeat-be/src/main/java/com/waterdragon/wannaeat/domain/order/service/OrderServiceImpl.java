@@ -1,14 +1,14 @@
 package com.waterdragon.wannaeat.domain.order.service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.waterdragon.wannaeat.domain.order.dto.request.OrderServeRequestDto;
-import com.waterdragon.wannaeat.domain.order.dto.response.OrderServeResponseDto;
-import com.waterdragon.wannaeat.domain.order.exception.error.OrderAlreadyServedException;
-import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationMenuResponseDto;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
@@ -22,14 +22,18 @@ import com.waterdragon.wannaeat.domain.menu.repository.MenuRepository;
 import com.waterdragon.wannaeat.domain.order.domain.Order;
 import com.waterdragon.wannaeat.domain.order.dto.request.OrderPaidCntEditRequestDto;
 import com.waterdragon.wannaeat.domain.order.dto.request.OrderRegisterRequestDto;
+import com.waterdragon.wannaeat.domain.order.dto.request.OrderServeRequestDto;
 import com.waterdragon.wannaeat.domain.order.dto.response.OrderDetailResponseDto;
 import com.waterdragon.wannaeat.domain.order.dto.response.OrderListResponseDto;
 import com.waterdragon.wannaeat.domain.order.dto.response.OrderRegisterResponseDto;
+import com.waterdragon.wannaeat.domain.order.dto.response.OrderServeResponseDto;
+import com.waterdragon.wannaeat.domain.order.exception.error.OrderAlreadyServedException;
 import com.waterdragon.wannaeat.domain.order.exception.error.OrderNotFoundException;
 import com.waterdragon.wannaeat.domain.order.exception.error.TotalCntLowerThanPaidCntException;
 import com.waterdragon.wannaeat.domain.order.repository.OrderRepository;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.domain.ReservationParticipant;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationMenuResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationParticipantNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationParticipantRepository;
@@ -199,7 +203,6 @@ public class OrderServiceImpl implements OrderService {
 			.build();
 	}
 
-
 	/**
 	 * 사업자용 서빙 메서드
 	 *
@@ -214,13 +217,13 @@ public class OrderServiceImpl implements OrderService {
 
 		// 주문 ID 리스트를 Long 타입으로 변환
 		List<Long> orderIdList = orderServeRequestDto.getOrderIdList().stream()
-				.map(Long::valueOf)
-				.collect(Collectors.toList());
+			.map(Long::valueOf)
+			.collect(Collectors.toList());
 
 		// 각 주문에 대해 서빙 처리
 		orderIdList.forEach(orderId -> {
 			Order order = orderRepository.findById(orderId)
-					.orElseThrow(() -> new OrderNotFoundException("주문이 존재하지 않습니다. 주문 Id : " + orderId));
+				.orElseThrow(() -> new OrderNotFoundException("주문이 존재하지 않습니다. 주문 Id : " + orderId));
 			int servedCnt = order.getServedCnt();
 			int totalCnt = order.getTotalCnt();
 
@@ -238,7 +241,7 @@ public class OrderServiceImpl implements OrderService {
 
 		// 예약 정보 조회
 		Reservation reservation = reservationRepository.findById(reservationId)
-				.orElseThrow(() -> new ReservationNotFoundException("존재하지 않는 예약입니다."));
+			.orElseThrow(() -> new ReservationNotFoundException("존재하지 않는 예약입니다."));
 
 		// 주문 리스트 조회
 		List<Order> orderList = reservation.getOrders();
@@ -249,8 +252,8 @@ public class OrderServiceImpl implements OrderService {
 		orderList.forEach(order -> {
 			String menuName = order.getMenu().getName();
 			List<Integer> orderIdListAll = IntStream.range(0, order.getTotalCnt() - order.getServedCnt())
-					.mapToObj(i -> order.getOrderId().intValue())
-					.collect(Collectors.toList());
+				.mapToObj(i -> order.getOrderId().intValue())
+				.collect(Collectors.toList());
 
 			// 서빙되지 않은 수량 계산: totalCnt - servedCnt
 			int notServedCnt = order.getTotalCnt() - order.getServedCnt();
@@ -269,19 +272,19 @@ public class OrderServiceImpl implements OrderService {
 			} else {
 				// 새로운 메뉴 추가
 				ReservationMenuResponseDto newDto = ReservationMenuResponseDto.builder()
-						.menuName(menuName)
-						.notServedCnt(notServedCnt) // 서빙되지 않은 수량
-						.servedCnt(order.getServedCnt()) // 서빙된 수량
-						.orderIdList(orderIdListAll)
-						.build();
+					.menuName(menuName)
+					.notServedCnt(notServedCnt) // 서빙되지 않은 수량
+					.servedCnt(order.getServedCnt()) // 서빙된 수량
+					.orderIdList(orderIdListAll)
+					.build();
 				menuMap.put(menuName, newDto);
 			}
 		});
 
 		return OrderServeResponseDto.builder()
-				.allPaymentsCompleted(allPaymentsCompleted.get()) // AtomicBoolean의 값을 boolean으로 전달
-				.reservationMenuList(new ArrayList<>(menuMap.values())) // 메뉴 리스트
-				.build();
+			.allPaymentsCompleted(allPaymentsCompleted.get()) // AtomicBoolean의 값을 boolean으로 전달
+			.reservationMenuList(new ArrayList<>(menuMap.values())) // 메뉴 리스트
+			.build();
 
 	}
 }

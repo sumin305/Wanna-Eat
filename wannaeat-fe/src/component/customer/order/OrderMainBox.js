@@ -6,7 +6,7 @@ export const TopBox = styled.div`
 `;
 
 export const OrderContainer = styled.div`
-  height: 90%;
+  margin-bottom: 20%;
 `;
 
 export const ButtonWrapper = styled.div`

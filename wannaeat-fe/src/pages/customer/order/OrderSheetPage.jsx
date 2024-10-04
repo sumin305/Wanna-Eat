@@ -5,7 +5,8 @@ import useChatStore from 'stores/customer/useChatStore';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import useHeaderStore from 'stores/common/useHeaderStore';
-import WEButton from 'component/common/button/WEButton/WEButton.jsx';
+import useOrderStore from 'stores/customer/useOrderStore';
+import OrderSheetBox from 'component/customer/order/OrderSheetBox.jsx';
 
 const OrderSheetPage = () => {
   const { isConnected, setIsConnected, stompClient, setStompClient } =
@@ -20,11 +21,12 @@ const OrderSheetPage = () => {
     setActiveIcons,
     setIsShowBackIcon,
   } = useHeaderStore();
+  const { allOrdersInfo } = useOrderStore();
 
   // 웹소켓 초기 연결
   useEffect(() => {
     setIsCarrot(true);
-    setPageName('결제 내역');
+    setPageName('계산서');
     setIsShowLogo(false);
     setActiveIcons([3]);
     setIsShowBackIcon(true);
@@ -82,18 +84,13 @@ const OrderSheetPage = () => {
     );
   };
 
-  const clickGotoPay = () => {
-    nav(`/customer/pay/${reservationUrl}`);
-  };
-
   console.log('웹소켓연결확인:', stompClient);
   console.log('웹소켓연결확인:', isConnected);
 
   return (
-    <>
-      <div>결제 내역 페이지</div>
-      <WEButton onClick={clickGotoPay}>결제하기</WEButton>
-    </>
+    <div>
+      <OrderSheetBox reservationUrl={reservationUrl} />
+    </div>
   );
 };
 

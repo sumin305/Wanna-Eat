@@ -30,9 +30,11 @@ import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequest
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationSummaryResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationMenuResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationSummaryResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.AlreadyCancelledReservationException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.DuplicateReservationTableException;
@@ -392,21 +394,40 @@ public class ReservationServiceImpl implements ReservationService {
 	 * 일자별 예약 현황 조회 메소드
 	 *
 	 * @param date 검색 일자
-	 * @return 예약 목록 정보
+	 * @param pageable 페이징
+	 * @return 일자별 예약 현황
 	 */
 	@Override
-	public List<ReservationDetailResponseDto> getListReservationByDate(LocalDate date) {
+	public ManagerReservationSummaryResponseDto getListReservationByRestaurantAndDate(LocalDate date,
+		Pageable pageable) {
 		User user = authUtil.getAuthenticatedUser();
 		Restaurant restaurant = restaurantRepository.findByUser(user)
-			.orElseThrow(() -> new RestaurantNotFoundException(
-				"식당이 존재하지 않습니다."));
+			.orElseThrow(() -> new RestaurantNotFoundException("식당이 존재하지 않습니다."));
 
-		List<Reservation> reservations = reservationRepository.findByRestaurantAndReservationDate(restaurant, date);
+		// 예약 리스트 가져오기
+		Page<Reservation> reservations = reservationRepository.findByRestaurantAndReservationDateAndCancelledIsFalse(
+			restaurant, date, pageable);
 
-		// Reservation 리스트를 ReservationDetailResponseDto 리스트로 변환
-		return reservations.stream()
-			.map(ReservationDetailResponseDto::transferToReservationDetailResponseDto)  // 각 Reservation 객체를 DTO로 변환
-			.collect(Collectors.toList());  // List로 변환 후 리턴
+		// Page<Reservation>을 List<ReservationSummaryResponseDto>로 변환
+		List<ReservationSummaryResponseDto> reservationSummaryList = reservations.stream()
+			.map(reservation -> ReservationSummaryResponseDto.builder()
+				.reservationId(reservation.getReservationId())
+				.userName(reservation.getUser() != null ? reservation.getUser().getNickname() :
+					"비회원") // 사용자의 이름이 없으면 "비회원"으로 설정
+				.reservationStartTime(reservation.getStartTime())
+				.reservationEndTime(reservation.getEndTime())
+				.memberCnt(reservation.getMemberCnt())
+				.tableList(reservation.getReservationTables().stream()
+					.map(ReservationTable::getTableId) // 테이블의 좌석 번호 추출
+					.collect(Collectors.toList()))
+				.build())
+			.collect(Collectors.toList());
+
+		// ManagerReservationSummaryResponseDto 빌드 및 반환
+		return ManagerReservationSummaryResponseDto.builder()
+			.reservationDate(date) // 파라미터로 받은 날짜
+			.reservations(reservationSummaryList) // 변환된 예약 리스트
+			.build();
 	}
 
 	/**

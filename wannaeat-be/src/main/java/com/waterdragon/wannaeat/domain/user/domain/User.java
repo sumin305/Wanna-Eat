@@ -8,7 +8,7 @@ import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.restaurantlike.domain.RestaurantLike;
 import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
 import com.waterdragon.wannaeat.domain.user.domain.enums.SocialType;
-import com.waterdragon.wannaeat.domain.user.dto.request.UserEditRequestDto;
+import com.waterdragon.wannaeat.domain.user.dto.request.UserNicknameEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
 
 import jakarta.persistence.Column;
@@ -82,11 +82,10 @@ public class User {
 	public void edit(UserSignupRequestDto userSignupRequestDto) {
 		this.nickname = userSignupRequestDto.getNickname();
 		this.phone = userSignupRequestDto.getPhone();
-		this.paymentPassword = userSignupRequestDto.getPaymentPassword();
 		this.role = userSignupRequestDto.getRole();
 	}
 
-	public void edit(UserEditRequestDto userEditRequestDto) {
+	public void editNickname(UserNicknameEditRequestDto userEditRequestDto) {
 		this.nickname = userEditRequestDto.getNickname();
 	}
 }

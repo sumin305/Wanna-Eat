@@ -13,7 +13,7 @@ import com.waterdragon.wannaeat.domain.user.dto.request.FcmTokenEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.NicknameDuplicateCheckRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
-import com.waterdragon.wannaeat.domain.user.dto.request.UserEditRequestDto;
+import com.waterdragon.wannaeat.domain.user.dto.request.UserNicknameEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.response.UserDetailResponseDto;
 import com.waterdragon.wannaeat.domain.user.service.UserService;
@@ -58,9 +58,9 @@ public class UserController {
 	/**
 	 * 로그아웃 API
 	 *
-	 * @param request
-	 * @param response
-	 * @return
+	 * @param request 요청객체
+	 * @param response 응답객체
+	 * @return 로그아웃 결과
 	 */
 	@Operation(summary = "로그아웃 API")
 	@PostMapping("/users/signout")
@@ -95,20 +95,20 @@ public class UserController {
 	}
 
 	/**
-	 * 회원 정보 수정 API
+	 * 회원 닉네임 변경 API
 	 *
-	 * @param userEditRequestDto 수정할 회원 정보
-	 * @return
+	 * @param userNicknameEditRequestDto 변경할 닉네임 정보
+	 * @return 닉네임 변경 결과
 	 */
-	@Operation(summary = "회원 정보 수정 API")
-	@PatchMapping("/users")
-	public ResponseEntity<ResponseDto<Void>> editUser(
-		@Valid @RequestBody UserEditRequestDto userEditRequestDto) {
+	@Operation(summary = "회원 닉네임 변경 API")
+	@PatchMapping("/users/nickname")
+	public ResponseEntity<ResponseDto<Void>> editUserNickname(
+		@Valid @RequestBody UserNicknameEditRequestDto userNicknameEditRequestDto) {
 
-		userService.editUser(userEditRequestDto);
+		userService.editUserNickname(userNicknameEditRequestDto);
 		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
 			.status(HttpStatus.OK.value())
-			.message("회원 정보가 수정되었습니다.")
+			.message("닉네임이 변경되었습니다.")
 			.data(null)
 			.build();
 

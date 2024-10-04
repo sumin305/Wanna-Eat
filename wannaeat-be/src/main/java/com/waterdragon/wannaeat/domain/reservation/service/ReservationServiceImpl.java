@@ -202,7 +202,6 @@ public class ReservationServiceImpl implements ReservationService {
 			throw new DuplicateReservationTableException("이미 예약된 테이블입니다.");
 		}
 
-
 		User user = userRepository.findByUserId(reservationRegisterRequestDto.getUserId()).orElse(null);
 
 		Reservation reservation = reservationRepository.saveAndFlush(

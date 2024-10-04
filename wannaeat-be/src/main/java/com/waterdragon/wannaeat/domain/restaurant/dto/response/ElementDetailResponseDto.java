@@ -5,8 +5,10 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class KitchenDetailResponseDto {
+public class ElementDetailResponseDto {
 
+	private String itemId;
+	private String itemType;
 	private double x;
 	private double y;
 	private int floor;

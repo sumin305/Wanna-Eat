@@ -16,8 +16,6 @@ public class RestaurantStructureDetailResponseDto {
 	private Size size; // 매장 크기
 	private int floorCnt; // 매장 층수
 
-	private List<TableDetailResponseDto> tables; // 테이블 정보
-	private List<ToiletDetailResponseDto> toilets; // 화장실 정보
-	private List<CounterDetailResponseDto> counters; // 계산대 정보
-	private List<KitchenDetailResponseDto> kitchens; // 주방 정보
+	private List<TableDetailResponseDto> tableDetailResponseDtos;
+	private List<ElementDetailResponseDto> elementDetailResponseDtos;
 }

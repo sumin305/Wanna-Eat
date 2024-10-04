@@ -20,6 +20,10 @@ class WELine extends Component {
           zoom: {
             enabled: true,
           },
+          toolbar: {
+            show: true,
+            autoSelected: 'pan',
+          },
         },
         dataLabels: {
           enabled: false,

@@ -53,6 +53,9 @@ const StatisticsPage = () => {
         const monthLabels = Object.keys(data.monthStatistics).map(
           (month) => `${month}월`
         );
+
+        console.log(data);
+
         const monthSeries = Object.values(data.monthStatistics);
 
         const dayLabels = Object.keys(data.dayStatistics);
@@ -88,12 +91,23 @@ const StatisticsPage = () => {
       });
   }, []);
 
-  const [monthStatistics, setMonthStatistics] = useState([]);
-  const [dayStatistics, setDayStatistics] = useState([]);
-  const [hourStatistics, setHourStatistics] = useState([]);
+  const [monthStatistics, setMonthStatistics] = useState({
+    labels: [],
+    series: [],
+  });
+  const [dayStatistics, setDayStatistics] = useState({
+    labels: [],
+    series: [],
+  });
+  const [hourStatistics, setHourStatistics] = useState({
+    labels: [],
+    series: [],
+  });
   const [revenues, setRevenues] = useState([]);
   const [topMenuStatistics, setTopMenuStatistics] = useState([]);
   const [bottomMenuStatistics, setBottomMenuStatistics] = useState([]);
+
+  console.log(revenues.labels);
 
   // const BestImages = [
   //   {

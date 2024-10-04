@@ -15,6 +15,9 @@ class ColumnChart extends Component {
         chart: {
           height: 350,
           type: 'bar',
+          zoom: {
+            enabled: false,
+          },
         },
         plotOptions: {
           bar: {

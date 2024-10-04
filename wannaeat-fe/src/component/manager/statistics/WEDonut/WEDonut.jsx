@@ -19,9 +19,9 @@ class WEDonut extends Component {
         },
         fill: {
           colors: [
+            theme.color.statisticsPink,
             theme.color.statisticsSkyBlue,
             theme.color.statisticsBlue,
-            theme.color.statisticsPink,
           ],
         },
 
@@ -58,6 +58,21 @@ class WEDonut extends Component {
       },
       series: this.props.series || [44, 55, 41],
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.labels !== this.props.labels ||
+      prevProps.series !== this.props.series
+    ) {
+      this.setState({
+        options: {
+          ...this.state.options,
+          labels: this.props.labels || ['금', '화', '월'],
+        },
+        series: this.props.series || [44, 55, 41],
+      });
+    }
   }
 
   render() {

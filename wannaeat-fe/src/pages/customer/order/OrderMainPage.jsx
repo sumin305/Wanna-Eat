@@ -104,7 +104,7 @@ const OrderMainPage = () => {
     setAllOrdersInfo(allOrdersInfo.data);
     // 식당 아이디 저장
     // setRestaurantId(allOrderData.data.restaurantId);
-    console.log('zustand allMenus:', allOrdersInfo.data);
+    console.log('zustand allMenus:', allOrdersInfo);
     // console.log('zustand restaurantId:', restaurantId);
   };
 
@@ -112,6 +112,7 @@ const OrderMainPage = () => {
   useEffect(() => {
     if (isConnected) {
       fetchOrdersInfo();
+      console.log('allOrdersInfo', allOrdersInfo);
     }
   }, []);
 

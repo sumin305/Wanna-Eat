@@ -19,7 +19,7 @@ const MenuSelectPage = () => {
   const { isConnected, setIsConnected, stompClient, setStompClient } =
     useChatStore();
   const [activeTab, setActiveTab] = useState(0);
-  const myReservationParticipantId = 3;
+  const myReservationParticipantId = 4;
   const increment = 1; // 증가 갯수는 1로 설정
 
   const {
@@ -119,8 +119,8 @@ const MenuSelectPage = () => {
     allMenusData.menuListByCategoryResponseDtos[activeTab]
       ?.menuDetailResponseDtos;
 
-  const clickGotoOrder = () => {
-    nav(`/customer/order/${reservationUrl}`);
+  const clickGotoCart = () => {
+    nav(`/customer/order/cart/${reservationUrl}`);
   };
 
   const handleCartIconClick = (menuId) => {
@@ -169,7 +169,7 @@ const MenuSelectPage = () => {
           </div>
         ))}
 
-      <WEButton onClick={clickGotoOrder}>주문내역보기</WEButton>
+      <WEButton onClick={clickGotoCart}>장바구니 보기</WEButton>
     </>
   );
 };

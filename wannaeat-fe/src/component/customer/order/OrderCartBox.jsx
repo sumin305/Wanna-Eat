@@ -1,11 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 import {
   TopBox,
   OrderContainer,
-  // ButtonContainer,
   ButtonWrapper,
+  MenuContainer,
+  TotalMenuP,
+  DeleteDiv,
+  LineDiv,
+  PeopleP,
+  MenuDiv,
+  MenuImg,
+  FoodDiv,
+  FoodInfoDiv,
+  FoodInfoTopDiv,
+  FoodInfoBottomDiv,
+  FoodInfoCountLeftBtn,
+  FoodInfoCountRightBtn,
+  FoodInfoCountDiv,
+  FoodInfoCountP,
+  MenuNameP,
+  FoodPriceP,
+  TotalPriceDiv,
+  TotalPriceP,
 } from './OrderCartBox.js';
 import theme from '../../../style/common/theme.js';
 import { useNavigate } from 'react-router-dom';
@@ -19,37 +37,128 @@ const OrderCartBox = ({ reservationUrl }) => {
   const { allMenusInfo, setAllMenusInfo } = useOrderStore();
   const nav = useNavigate();
 
-  const reservationParticipantId = 3;
   const allMenus = allMenusInfo?.cartDetailResponseDto?.cartElements || [];
+
+  const reservationParticipantId = 8;
+  const [menuCounts, setMenuCounts] = useState([]);
 
   const { stompClient, isConnected } = useChatStore();
 
-  // 현재를 기준으로 예약시간이 지났는지 확인하는 함수
-  const isReservationTimePassed = (
-    reservationDate,
-    reservationStartTime,
-    reservationEndTime
+  // 주문 개수 변경하는 함수
+  useEffect(() => {
+    if (allMenus.length > 0) {
+      const updatedMenuCounts = allMenus.map((menu) => {
+        const menuInfo = Object.values(menu.menuInfo);
+        return menuInfo.map((item) => ({
+          menuCnt: item.menuCnt,
+          menuTotalPrice: item.menuCnt * item.menuPrice,
+          menuPrice: item.menuPrice,
+        }));
+      });
+      setMenuCounts(updatedMenuCounts);
+    }
+  }, [allMenus]);
+
+  const handleDecrease = (
+    menuIndex,
+    itemIndex,
+    menuId,
+    reservationParticipantId
   ) => {
-    const now = new Date();
-    const reservationStartDateTime = new Date(
-      `${reservationDate}T${reservationStartTime}`
+    setMenuCounts((prevCounts) =>
+      prevCounts.map((menu, index) =>
+        index === menuIndex
+          ? menu.map((item, idx) =>
+              idx === itemIndex && item.menuCnt > 1
+                ? {
+                    ...item,
+                    menuCnt: item.menuCnt - 1,
+                    menuTotalPrice: item.menuTotalPrice - item.menuPrice,
+                  }
+                : item
+            )
+          : menu
+      )
     );
 
-    if (now < reservationStartDateTime) {
-      console.log('예약시간 안됨: true');
-      return true;
+    // 장바구니 업데이트 로직 추가
+    const cartRegisterRequestDto = {
+      reservationUrl: reservationUrl,
+      reservationParticipantId: reservationParticipantId,
+      menuId: menuId,
+      menuPlusMinus: -1,
+    };
+
+    if (stompClient && isConnected) {
+      console.log('메뉴선택 웹소켓', stompClient);
+      console.log('메뉴선택 연결상태', isConnected);
+      try {
+        stompClient.send(
+          `/api/public/sockets/carts/register`,
+          {},
+          JSON.stringify(cartRegisterRequestDto)
+        );
+        console.log('장바구니 업데이트 내용:', cartRegisterRequestDto);
+      } catch (error) {
+        console.log('장바구니 업데이트 실패', error);
+      }
     } else {
-      console.log('예약시간 지남: false');
-      return false;
+      console.log('웹소켓 연결 실패');
+      alert('웹소켓 연결에 실패했습니다.');
     }
   };
 
-  const handleMenuViewButtonClick = () => {
-    nav(`/customer/order/menu-select/${reservationUrl}`);
+  const handleIncrease = (
+    menuIndex,
+    itemIndex,
+    menuId,
+    reservationParticipantId
+  ) => {
+    setMenuCounts((prevCounts) =>
+      prevCounts.map((menu, index) =>
+        index === menuIndex
+          ? menu.map((item, idx) =>
+              idx === itemIndex
+                ? {
+                    ...item,
+                    menuCnt: item.menuCnt + 1,
+                    menuTotalPrice: (item.menuCnt + 1) * item.menuPrice,
+                  }
+                : item
+            )
+          : menu
+      )
+    );
+
+    // 장바구니 업데이트 로직 추가
+    const cartRegisterRequestDto = {
+      reservationUrl: reservationUrl,
+      reservationParticipantId: reservationParticipantId,
+      menuId: menuId,
+      menuPlusMinus: 1,
+    };
+
+    if (stompClient && isConnected) {
+      console.log('메뉴선택 웹소켓', stompClient);
+      console.log('메뉴선택 연결상태', isConnected);
+      try {
+        stompClient.send(
+          `/api/public/sockets/carts/register`,
+          {},
+          JSON.stringify(cartRegisterRequestDto)
+        );
+        console.log('장바구니 업데이트 내용:', cartRegisterRequestDto);
+      } catch (error) {
+        console.log('장바구니 업데이트 실패', error);
+      }
+    } else {
+      console.log('웹소켓 연결 실패');
+      alert('웹소켓 연결에 실패했습니다.');
+    }
   };
 
-  const handleOrderSheetButtonClick = () => {
-    nav(`/customer/order/order-sheet/${reservationUrl}`);
+  const handleOrderMainClick = () => {
+    nav(`/customer/order/${reservationUrl}`);
   };
 
   const handleMenuDeleteButtonClick = async (reservationUrl) => {
@@ -77,6 +186,7 @@ const OrderCartBox = ({ reservationUrl }) => {
 
         // 카트 정보 초기화
         setAllMenusInfo({ cartDetailResponseDto: { cartElements: [] } });
+        setMenuCounts([]);
       } catch (error) {
         console.log('주문 실패:', error);
       }
@@ -85,30 +195,53 @@ const OrderCartBox = ({ reservationUrl }) => {
     }
   };
 
+  // 사람 당 총 금액 구하는 함수
+  const calculateTotalPrice = (menuIndex) => {
+    if (!menuCounts[menuIndex]) return 0;
+    return menuCounts[menuIndex].reduce(
+      (total, item) => total + item.menuTotalPrice,
+      0
+    );
+  };
+
+  // 주문 총 금액 구하는 함수
+  const calculateTotalMenuPrice = () => {
+    return menuCounts.reduce((totalMenuPrice, menu) => {
+      const menuTotal = menu.reduce(
+        (total, item) => total + item.menuTotalPrice,
+        0
+      );
+      return totalMenuPrice + menuTotal;
+    }, 0);
+  };
+
   return (
     <OrderContainer>
       <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
       <div>
         <TopBox>
-          <p>총 메뉴 {}개</p>
-          {activeTab === 0 ? (
-            <WEButton
-              width="14%"
-              height="5%"
-              outlined="true"
-              color={theme.color.disabled}
-              borderColor={theme.color.disabled}
-              fontSize={theme.fontSize.px11}
-              onClick={() => handleMenuDeleteButtonClick(reservationUrl)}
-            >
-              비우기
-            </WEButton>
-          ) : null}
+          <MenuContainer>
+            <TotalMenuP>총 메뉴 {}개</TotalMenuP>
+            <DeleteDiv>
+              {activeTab === 0 ? (
+                <WEButton
+                  width="100%"
+                  height="90%"
+                  outlined="true"
+                  color={theme.color.disabled}
+                  borderColor={theme.color.disabled}
+                  fontSize={theme.fontSize.px11}
+                  onClick={() => handleMenuDeleteButtonClick(reservationUrl)}
+                >
+                  비우기
+                </WEButton>
+              ) : null}
+            </DeleteDiv>
+          </MenuContainer>
         </TopBox>
-        {activeTab === 0 ? (
-          <>
-            <div>나의 메뉴 리스트</div>
-            <div>
+        <MenuDiv>
+          {activeTab === 0 ? (
+            <>
               {allMenus &&
                 allMenus
                   .filter(
@@ -116,109 +249,155 @@ const OrderCartBox = ({ reservationUrl }) => {
                       menus.reservationParticipantId ===
                       reservationParticipantId
                   )
-                  .map((menus, index) => (
-                    <div key={index}>
-                      <p>{menus.reservationParticipantNickname || ''}</p>
+                  .map((menus, menuIndex) => (
+                    <div key={menuIndex}>
+                      <LineDiv></LineDiv>
                       <div>
                         {menus.menuInfo ? (
-                          Object.values(menus.menuInfo).map((menu, index) => (
-                            <div key={index}>
-                              <p>{menu.menuImage}</p>
-                              <p>{menu.menuName}</p>
-                              <p>{menu.menuCnt}</p>
-                              <p>{menu.menuTotalPrice}</p>
-                            </div>
-                          ))
+                          Object.values(menus.menuInfo).map(
+                            (menu, itemIndex) => (
+                              <div key={itemIndex}>
+                                <FoodDiv>
+                                  <MenuImg src={menu.menuImage}></MenuImg>
+                                  <FoodInfoDiv>
+                                    <FoodInfoTopDiv>
+                                      <MenuNameP>{menu.menuName}</MenuNameP>
+                                    </FoodInfoTopDiv>
+                                    <FoodInfoBottomDiv>
+                                      <FoodInfoCountDiv>
+                                        <FoodInfoCountLeftBtn
+                                          onClick={() =>
+                                            handleDecrease(
+                                              menuIndex,
+                                              itemIndex,
+                                              menu.menuId,
+                                              reservationParticipantId
+                                            )
+                                          }
+                                          disabled={menu.menuCnt <= 0}
+                                        >
+                                          -
+                                        </FoodInfoCountLeftBtn>
+                                        <FoodInfoCountP>
+                                          {
+                                            menuCounts[menuIndex]?.[itemIndex]
+                                              ?.menuCnt
+                                          }
+                                        </FoodInfoCountP>
+                                        <FoodInfoCountRightBtn
+                                          onClick={() =>
+                                            handleIncrease(
+                                              menuIndex,
+                                              itemIndex,
+                                              menu.menuId,
+                                              reservationParticipantId
+                                            )
+                                          }
+                                        >
+                                          +
+                                        </FoodInfoCountRightBtn>
+                                      </FoodInfoCountDiv>
+                                      <FoodPriceP>
+                                        {
+                                          menuCounts[menuIndex]?.[itemIndex]
+                                            ?.menuTotalPrice
+                                        }
+                                        원
+                                      </FoodPriceP>
+                                    </FoodInfoBottomDiv>
+                                  </FoodInfoDiv>
+                                </FoodDiv>
+                                <LineDiv />
+                              </div>
+                            )
+                          )
                         ) : (
                           <p>메뉴 정보가 없습니다.</p>
                         )}
                       </div>
-                      <p>총:{menus.participantTotalPrice || ''}</p>
+                      <TotalPriceDiv>
+                        <TotalPriceP>
+                          총 {calculateTotalPrice(menuIndex) || ''}원
+                        </TotalPriceP>
+                      </TotalPriceDiv>
                       <br />
                     </div>
                   ))}
-            </div>
-          </>
-        ) : (
-          <>
-            <div>전체 메뉴 리스트</div>
-            <div>
+            </>
+          ) : (
+            <>
               {allMenus &&
-                allMenus.map((menus, index) => (
-                  <div key={index}>
-                    <p>{menus.reservationParticipantNickname || ''}</p>
+                allMenus.map((menus, menuIndex) => (
+                  <div key={menuIndex}>
+                    <PeopleP>
+                      {menus.reservationParticipantNickname || ''}
+                    </PeopleP>
+                    <LineDiv />
                     <div>
                       {menus.menuInfo ? ( // menus.menuInfo가 객체이므로 Object.values로 배열상태로 변경
-                        Object.values(menus.menuInfo).map((menu, index) => (
-                          <div key={index}>
-                            <p>{menu.menuImage}</p>
-                            <p>{menu.menuName}</p>
-                            <p>{menu.menuCnt}</p>
-                            <p>{menu.menuTotalPrice}</p>
+                        Object.values(menus.menuInfo).map((menu, itemIndex) => (
+                          <div key={itemIndex}>
+                            <FoodDiv>
+                              <MenuImg src={menu.menuImage}></MenuImg>
+                              <FoodInfoDiv>
+                                <FoodInfoTopDiv>
+                                  <MenuNameP>{menu.menuName}</MenuNameP>
+                                </FoodInfoTopDiv>
+                                <FoodInfoBottomDiv>
+                                  <FoodInfoCountDiv>
+                                    <FoodInfoCountP>
+                                      {
+                                        menuCounts[menuIndex]?.[itemIndex]
+                                          ?.menuCnt
+                                      }
+                                    </FoodInfoCountP>
+                                  </FoodInfoCountDiv>
+                                  <FoodPriceP>
+                                    {
+                                      menuCounts[menuIndex]?.[itemIndex]
+                                        ?.menuTotalPrice
+                                    }
+                                    원
+                                  </FoodPriceP>
+                                </FoodInfoBottomDiv>
+                              </FoodInfoDiv>
+                            </FoodDiv>
+                            <LineDiv />
                           </div>
                         ))
                       ) : (
                         <p>메뉴 정보가 없습니다.</p>
                       )}
                     </div>
-                    <p>총:{menus.participantTotalPrice || ''}</p>
+                    <TotalPriceDiv>
+                      <TotalPriceP>
+                        총 {calculateTotalPrice(menuIndex) || ''}원
+                      </TotalPriceP>
+                    </TotalPriceDiv>
                     <br />
                   </div>
                 ))}
-              {allMenusInfo?.cartDetailResponseDto ? (
-                <p>
-                  총:{allMenusInfo.cartDetailResponseDto.cartTotalPrice || ''}
-                </p>
-              ) : null}
-            </div>
-          </>
-        )}
+              <TotalPriceDiv>
+                {menuCounts.length > 0 ? (
+                  <TotalPriceP>총: {calculateTotalMenuPrice()}원</TotalPriceP>
+                ) : null}
+              </TotalPriceDiv>
+            </>
+          )}
+        </MenuDiv>
       </div>
-      {isReservationTimePassed(
-        allMenusInfo.reservationDate,
-        allMenusInfo.reservationStartTime
-      ) ? (
-        // 예약시간 전
-        <>
-          <ButtonWrapper>
-            <WEButton
-              size="medium"
-              outlined="true"
-              onClick={handleOrderSheetButtonClick}
-            >
-              주문서
-            </WEButton>
-            <WEButton
-              size="medium"
-              outlined="true"
-              onClick={handleOrderButtonClick}
-            >
-              주문하기
-            </WEButton>
-          </ButtonWrapper>
-        </>
-      ) : (
-        // 예약시간 후
-        <ButtonWrapper>
-          <WEButton
-            size="medium"
-            outlined="true"
-            onClick={handleMenuViewButtonClick}
-          >
-            장바구니 보기
-          </WEButton>
-          <WEButton
-            size="medium"
-            outlined="true"
-            onClick={handleOrderSheetButtonClick}
-          >
-            결제하기
-          </WEButton>
-        </ButtonWrapper>
-      )}
-      <div>1</div>
-      <div>1</div>
-      <div>1</div>
+      <ButtonWrapper>
+        <WEButton size="medium" outlined="true" onClick={handleOrderMainClick}>
+          주문서
+        </WEButton>
+        <WEButton
+          size="medium"
+          outlined="true"
+          onClick={handleOrderButtonClick}
+        >
+          주문하기
+        </WEButton>
+      </ButtonWrapper>
     </OrderContainer>
   );
 };

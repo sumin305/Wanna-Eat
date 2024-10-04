@@ -13,7 +13,7 @@ const OrderMainBox = ({ reservationUrl }) => {
   const { allOrdersInfo } = useOrderStore();
   const nav = useNavigate();
 
-  const reservationParticipantId = 3; // 나의 메뉴에 해당하는 ID 설정
+  const reservationParticipantId = 1; // 나의 메뉴에 해당하는 ID 설정
   const allOrders =
     allOrdersInfo?.orderListResponseDto?.orderDetailResponseDtos || [];
 
@@ -27,60 +27,84 @@ const OrderMainBox = ({ reservationUrl }) => {
     nav(`/customer/order/order-sheet/${reservationUrl}`);
   };
 
+  // 닉네임 별로 그룹화 하는 함수
+  const groupByNickname = (orders) => {
+    return orders.reduce((acc, order) => {
+      const nickname = order.reservationParticipantNickname;
+      if (!acc[nickname]) {
+        acc[nickname] = [];
+      }
+      acc[nickname].push(order);
+      return acc;
+    }, {});
+  };
+
+  const groupedOrders = groupByNickname(allOrders);
+
+  // totalCnt를 계산하는 함수
+  const calculateTotalCnt = (orders) => {
+    return orders.reduce((acc, order) => acc + order.totalCnt, 0);
+  };
+
+  // 나의 메뉴만 필터링
+  const myOrders = allOrders.filter(
+    (order) => order.reservationParticipantId === reservationParticipantId
+  );
+
+  // 나의 메뉴의 totalCnt
+  const myTotalCnt = calculateTotalCnt(myOrders);
+  // 전체 메뉴의 totalCnt
+  const allTotalCnt = calculateTotalCnt(allOrders);
+
   return (
     <>
       <OrderContainer>
         <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
         <div>
           <TopBox>
-            <p>총 메뉴 {}개</p>
+            <p>총 메뉴 {activeTab === 0 ? myTotalCnt : allTotalCnt}개</p>
           </TopBox>
+
           {activeTab === 0 ? (
-            // 나의 메뉴를 필터링하여 보여줌
+            // 나의 메뉴
             <div>
-              {allOrders &&
-                allOrders
-                  .filter(
-                    (orders) =>
-                      orders.reservationParticipantId ===
-                      reservationParticipantId
-                  )
-                  .map((orders, index) => (
+              {myOrders.length > 0 && (
+                <div>
+                  <h3>{myOrders[0].reservationParticipantNickname || ''}</h3>
+                  {myOrders.map((order, index) => (
                     <div key={index}>
-                      <p>{orders.reservationParticipantNickname || ''}</p>
                       <div>
-                        {orders.menuImage && (
-                          <img src={orders.menuImage} alt={orders.menuName} />
+                        {order.menuImage && (
+                          <img src={order.menuImage} alt={order.menuName} />
                         )}
-                        <p>{orders.menuName}</p>
-                        <p>수량: {orders.paidCnt}</p>
-                        <p>가격: {orders.menuPrice}</p>
+                        <p>{order.menuName}</p>
+                        <p>수량: {order.paidCnt}</p>
+                        <p>가격: {order.menuPrice}</p>
                       </div>
-                      <p>총 가격: {orders.totalCnt * orders.menuPrice}</p>
+                      <p>총 가격: {order.totalCnt * order.menuPrice}</p>
                       <br />
                     </div>
                   ))}
+                </div>
+              )}
             </div>
           ) : (
-            // 전체 메뉴를 보여줌
-            <div>
-              {allOrders &&
-                allOrders.map((orders, index) => (
+            // 전체 메뉴
+            Object.entries(groupedOrders).map(([nickname, orders]) => (
+              <div key={nickname}>
+                <h3>{nickname}</h3>
+                {orders.map((order, index) => (
                   <div key={index}>
-                    <p>{orders.reservationParticipantNickname || ''}</p>
-                    <div>
-                      {orders.menuImage && (
-                        <img src={orders.menuImage} alt={orders.menuName} />
-                      )}
-                      <p>{orders.menuName}</p>
-                      <p>수량: {orders.paidCnt}</p>
-                      <p>가격: {orders.menuPrice}</p>
-                    </div>
-                    <p>총 가격: {orders.totalCnt * orders.menuPrice}</p>
-                    <br />
+                    <p>{order.menuName}</p>
+                    <img src={order.menuImage} alt={order.menuName} />
+                    <p>총 주문 수량: {order.totalCnt}</p>
+                    <p>결제해야 할 수량: {order.totalCnt - order.paidCnt}</p>
+                    <p>총 금액: {order.totalCnt * order.menuPrice}</p>
                   </div>
                 ))}
-            </div>
+                <br />
+              </div>
+            ))
           )}
         </div>
 
@@ -100,9 +124,6 @@ const OrderMainBox = ({ reservationUrl }) => {
             결제하기
           </WEButton>
         </ButtonWrapper>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
       </OrderContainer>
     </>
   );

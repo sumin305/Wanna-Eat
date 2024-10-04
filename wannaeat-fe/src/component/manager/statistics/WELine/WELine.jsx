@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import Chart from 'react-apexcharts';
+import theme from 'style/common/theme.js';
 
 class WELine extends Component {
   constructor(props) {
@@ -14,11 +15,18 @@ class WELine extends Component {
             data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
           },
         ],
+        fill: {
+          colors: [theme.color.primary],
+        },
         chart: {
           height: 350,
           type: 'line',
           zoom: {
             enabled: true,
+          },
+          toolbar: {
+            show: true,
+            autoSelected: 'pan',
           },
         },
         dataLabels: {

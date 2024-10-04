@@ -241,7 +241,11 @@ const ManagerReservationDetailPage = () => {
         {/* 서빙 전일 때만 서빙 완료 및 전체 완료 버튼 표시 */}
         {filter === 'before' && (
           <>
-            <CompleteButton onClick={handleCompleteServe} disabled={isServing}>
+            <CompleteButton
+              onClick={handleCompleteServe}
+              disabled={isServing}
+              style={{ marginRight: '-50px' }} // 인라인으로 margin-right 적용
+            >
               {isServing ? '서빙 중' : '완료'}
             </CompleteButton>
             <CompleteButton onClick={handleServeAll} disabled={isServing}>
@@ -263,7 +267,7 @@ const ManagerReservationDetailPage = () => {
               <MenuControls>
                 {filter === 'before' ? (
                   <>
-                    <p style={{ fontSize: '10px' }}>{menu.notServedCnt} 개</p>
+                    <p style={{ fontSize: '13px' }}>{menu.notServedCnt} 개</p>
                     <ButtonGroup>
                       <DecrementButton
                         onClick={() =>
@@ -283,7 +287,7 @@ const ManagerReservationDetailPage = () => {
                     </ButtonGroup>
                   </>
                 ) : (
-                  <p style={{ marginTop: '10px', fontSize: '10px' }}>
+                  <p style={{ marginTop: '10px', fontSize: '13px' }}>
                     {menu.servedCnt} 개
                   </p>
                 )}
@@ -291,7 +295,7 @@ const ManagerReservationDetailPage = () => {
             </MenuItem>
           ))
         ) : (
-          <p style={{ color: 'gray', fontSize: '12px' }}>
+          <p style={{ color: 'gray', fontSize: '15px', marginTop: '20px' }}>
             {filter === 'before'
               ? '서빙 전인 메뉴가 없습니다.'
               : '서빙 후인 메뉴가 없습니다.'}

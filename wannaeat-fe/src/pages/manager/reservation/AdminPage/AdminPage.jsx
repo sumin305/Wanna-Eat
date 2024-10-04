@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import useHeaderStore from '../../../../stores/common/useHeaderStore';
 import styled from '@emotion/styled/macro';
 import moment from 'moment';
@@ -7,6 +7,7 @@ import Calendar from 'react-calendar';
 import WETab from '../../../../component/common/tab/WETab/WETab.jsx';
 import { getReservationInfoByDay } from 'api/manager/reservation/reservation.js';
 import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore';
+import { useNavigate } from 'react-router-dom';
 const AdminPage = () => {
   const {
     setIsCarrot,
@@ -20,6 +21,7 @@ const AdminPage = () => {
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ['방문 예정', '방문 중', '방문 완료'];
   const [reservationList, setReservationList] = useState([]);
+  const navigate = useNavigate();
   const dayList = [
     '2024-10-10',
     '2024-10-11',
@@ -86,50 +88,87 @@ const AdminPage = () => {
   }, []);
 
   useEffect(() => {
-    if (activeTab === 0) {
-      // 방문 예정인 예약들만 담는다.
-      setReservationList(
-        reservationDetails.filter((reservation) => {
-          // 현재 시각과 비교
-          if (
-            reservation.reservationDate ===
-            moment(new Date()).format('YYYY-MM-DD')
-          ) {
-            return (
-              reservation.reservationStartTime <
-              moment(new Date()).format('HH:mm')
-            );
-          }
-          return (
-            reservation.reservationDate <
-            moment(new Date()).format('YYYY-MM-DD')
-          );
-        })
-      );
-    } else if (activeTab === 1) {
-      setReservationList(
-        reservationDetails.filter((reservation) => {
-          if (
-            reservation.reservationDate ===
-              moment(new Date()).format('YYYY-MM-DD') &&
-            reservation.reservationStartTime <
-              moment(new Date()).format('HH:mm') &&
-            reservation.endTime > moment(new Date()).format('HH:mm')
-          ) {
-            return true;
-          }
-        })
-      );
-    } else {
-      setReservationList(
-        reservationDetails.filter((reservation) => {
-          if (reservation.reservationDate > moment(new Date()).format('YYYY-MM-DD') && reservation.reservationEndTime <
-          moment(new Date()).format('HH:mm') &&
-) return true;
-        })
-      );
-    }
+    setReservationList([
+      {
+        reservationId: 0,
+        reservationStartTime: '11:00',
+        reservationEndTime: '11:30',
+        reservationTableList: [2],
+        memberCount: 5,
+      },
+      {
+        reservationId: 1,
+        reservationStartTime: '12:00',
+        reservationEndTime: '13:30',
+        reservationTableList: [2],
+        memberCount: 5,
+      },
+      {
+        reservationId: 2,
+        reservationStartTime: '13:00',
+        reservationEndTime: '14:00',
+        reservationTableList: [3],
+        memberCount: 3,
+      },
+      {
+        reservationId: 3,
+        reservationStartTime: '14:00',
+        reservationEndTime: '15:00',
+        reservationTableList: [3],
+        memberCount: 3,
+      },
+    ]);
+    //     if (activeTab === 0) {
+    //       // 방문 예정인 예약들만 담는다.
+    //       setReservationList(
+    //         reservationDetails.filter((reservation) => {
+    //           // 현재 시각과 비교
+    //           if (
+    //             reservation.reservationDate ===
+    //             moment(new Date()).format('YYYY-MM-DD')
+    //           ) {
+    //             return (
+    //               reservation.reservationStartTime <
+    //               moment(new Date()).format('HH:mm')
+    //             );
+    //           }
+    //           return (
+    //             reservation.reservationDate <
+    //             moment(new Date()).format('YYYY-MM-DD')
+    //           );
+    //         })
+    //       );
+    //     } else if (activeTab === 1) {
+    //       setReservationList(
+    //         reservationDetails.filter((reservation) => {
+    //           if (
+    //             reservation.reservationDate ===
+    //               moment(new Date()).format('YYYY-MM-DD') &&
+    //             reservation.reservationStartTime <
+    //               moment(new Date()).format('HH:mm') &&
+    //             reservation.endTime > moment(new Date()).format('HH:mm')
+    //           ) {
+    //             return true;
+    //           }
+    //         })
+    //       );
+    //     } else {
+    //       setReservationList(
+    //         reservationDetails.filter((reservation) => {
+    //           if (reservation.reservationDate > moment(new Date()).format('YYYY-MM-DD') && reservation.reservationEndTime <
+    //           moment(new Date()).format('HH:mm') &&
+    // ) return true;
+    //         })
+    //       );
+    //     }
   }, [activeTab]);
+
+  // 스크롤이 발생 시 페이지ㅣ 이동
+  const onScrollFunction = (e) => {
+    if (e.deltaY > 0) {
+      navigate('/manager/admin/detail');
+    }
+  };
 
   // 날짜가 선택될 때마다 실행되는 함수
   const handleDateChange = (date) => {
@@ -150,7 +189,10 @@ const AdminPage = () => {
   };
 
   return (
-    <ReservationManagePageContainer>
+    <ReservationManagePageContainer
+      id="scroll"
+      onWheel={(e) => onScrollFunction(e)}
+    >
       <CalendarWrapper>
         <CalendarStyled
           showNeighboringMonth={false}
@@ -160,153 +202,55 @@ const AdminPage = () => {
           formatDay={(locale, date) => moment(date).format('DD')}
         />
       </CalendarWrapper>
-      <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+      <TabContainer>
+        <Tab onClick={() => setActiveTab(0)} active={activeTab === 0}>
+          <p>방문 예정</p>
+          <hr></hr>
+        </Tab>
+        <Tab onClick={() => setActiveTab(1)} active={activeTab === 1}>
+          <p>방문중</p>
+          <hr></hr>
+        </Tab>
+        <Tab onClick={() => setActiveTab(2)} active={activeTab === 2}>
+          <p>방문 완료</p>
+          <hr></hr>
+        </Tab>
+      </TabContainer>
+      <ReservationInfoContainer>
+        {reservationList.map((reservation) => (
+          <ReservationInfoItem key={reservation.reservationId}>
+            <ReservationInfoImage />
+            <ReservationInfoText>
+              <ReservationTopInfo>
+                <ReservationText>
+                  [
+                  {activeTab === 0
+                    ? '방문 예정'
+                    : activeTab === 1
+                      ? '방문 중'
+                      : '방문 완료'}
+                  ]
+                </ReservationText>
+                <ReservationText>
+                  {reservation.reservationStartTime}~
+                  {reservation.reservationEndTime}
+                </ReservationText>
+              </ReservationTopInfo>
+              <ReservationBottomInfo>
+                <ReservationText>
+                  {reservation.reservationTableList.map((table) => (
+                    <ReservationText>{table} </ReservationText>
+                  ))}{' '}
+                </ReservationText>{' '}
+                <ReservationText>번 테이블&nbsp;</ReservationText>
+                <ReservationText>{reservation.memberCount}명</ReservationText>
+              </ReservationBottomInfo>
+            </ReservationInfoText>
+          </ReservationInfoItem>
+        ))}
+      </ReservationInfoContainer>
     </ReservationManagePageContainer>
   );
 };
 
 export default AdminPage;
-
-const CircleWrapper = styled.div`
-  display: flex;
-  margin: 0 3px;
-`;
-const CarrotCircle = styled.div`
-  width: 7px;
-  height: 7px;
-  background-color: ${theme.color.statisticsPink};
-  border-radius: 50%;
-  margin-right: 4px;
-  @media (min-width: 480px) {
-    width: 10px;
-    height: 10px;
-  }
-`;
-const GrayCircle = styled.div`
-  width: 7px;
-  height: 7px;
-  background-color: ${theme.color.disabled};
-  border-radius: 50%;
-  margin-right: 4px;
-  @media (min-width: 480px) {
-    width: 10px;
-    height: 10px;
-  }
-`;
-
-const CountText = styled.p`
-  font-size: 8px;
-  font-weight: bold;
-
-  @media (min-width: 480px) {
-    font-size: 10px;
-  }
-`;
-const ReservationManagePageContainer = styled.div``;
-
-const CalendarWrapper = styled.div`
-  text-align: -webkit-center;
-  border-radius: 8px;
-  margin: 10px;
-  border: 1px solid ${theme.color.gray};
-`;
-
-const CalendarStyled = styled(Calendar)`
-  .react-calendar {
-    width: 90%;
-    max-width: 100%;
-    background-color: #fff;
-    color: #222;
-    border-radius: 8px;
-    line-height: 1.125em;
-    text-align: -webkit-center;
-  }
-  .react-calendar__navigation button {
-    color: #ff6528;
-    min-width: 30px;
-    background: none;
-    font-size: 16px;
-    margin-top: 8px;
-    border: none;
-    height: 50px;
-  }
-
-  .react-calendar__navigation__label__labelText {
-    font-weight: bold;
-    color: black;
-    border: none;
-  }
-
-  .react-calendar__navigation button:enabled:hover,
-  .react-calendar__navigation button:enabled:focus {
-    background-color: #f8f8fa;
-    border: none;
-  }
-  .react-calendar__navigation button[disabled] {
-    background-color: #f0f0f0;
-    border: none;
-  }
-  abbr[title] {
-    text-decoration: none;
-    border: none;
-  }
-
-  .react-calendar__tile {
-    border: 0.5px solid ${theme.color.gray};
-    background: white;
-    height: 2.5rem;
-    width: 40px;
-    font-weight: bold;
-    font-size: 10px;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    padding: 5px;
-    @media (min-width: 480px) {
-      height: 4rem;
-      font-size: 15px;
-    }
-  }
-  .react-calendar__tile:enabled:hover,
-  .react-calendar__tile:enabled:focus {
-    background: #ff6528;
-    color: white;
-    border-radius: 6px;
-    border: none;
-    font-weight: bold;
-  }
-  .react-calendar__tile--now {
-    background: #fff1aa;
-    border-radius: 6px;
-    font-weight: bold;
-    color: black;
-    border: none;
-  }
-  .react-calendar__tile--now:enabled:hover,
-  .react-calendar__tile--now:enabled:focus {
-    background: #ff6528;
-    color: white;
-    border-radius: 6px;
-    border: none;
-    font-weight: bold;
-  }
-  .react-calendar__tile--hasActive:enabled:hover,
-  .react-calendar__tile--hasActive:enabled:focus {
-    background: #ff6528;
-    border: none;
-  }
-  .react-calendar__tile--active {
-    background: #ff6528;
-    border-radius: 6px;
-    font-weight: bold;
-    color: white;
-    border: none;
-  }
-  .react-calendar__tile--active:enabled:hover,
-  .react-calendar__tile--active:enabled:focus {
-    background: #ff6528;
-    color: white;
-    border: none;
-    font-weight: bold;
-  }
-`;

@@ -30,6 +30,9 @@ import useRestaurantStore from 'stores/customer/useRestaurantStore';
 const RestaurantDetailPage = () => {
   const params = useParams();
   const nav = useNavigate();
+  const [activeMenus, setActiveMenus] = useState([]);
+  const [activeTab, setActiveTab] = useState(0);
+
   const handleReservationButtonClick = () => {
     nav('/customer/reservation/time-select');
   };
@@ -53,23 +56,44 @@ const RestaurantDetailPage = () => {
     restaurantOpenTime,
     restaurantPhone,
     setRestaurant,
+    setRestaurantId,
+    menuCategories,
   } = useRestaurantStore();
 
   useEffect(() => {
+    const fetchRestaurant = async () => {
+      await setRestaurant(params.id);
+      await setRestaurantId(params.id);
+    };
     setRestaurant(params.id);
     setIsCarrot(true);
     setPageName(restaurantName ? restaurantName : '맛있는 식당');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
     setActiveIcons([3]);
+    fetchRestaurant();
   }, []);
 
-  const [activeTab, setActiveTab] = useState(0);
+  useEffect(() => {
+    setPageName(restaurantName ? restaurantName : '맛있는 식당');
+    setActiveMenus(
+      menuCategories.length === 0
+        ? []
+        : menus.filter(
+            (menu) => menu.menuCategoryName === menuCategories[activeTab]
+          )[0].menuDetailResponseDtos
+    );
+  }, [restaurantName]);
 
-  const categories = Object.keys(menus);
-  console.log(categories);
-  const activeMenus =
-    categories.length === 0 ? [] : menus[categories[activeTab]];
+  useEffect(() => {
+    setActiveMenus(
+      !menuCategories || menuCategories.length === 0
+        ? []
+        : menus.filter(
+            (menu) => menu.menuCategoryName === menuCategories[activeTab]
+          )[0].menuDetailResponseDtos
+    );
+  }, [activeTab]);
 
   return (
     <Box>
@@ -103,14 +127,14 @@ const RestaurantDetailPage = () => {
       </InformationContainer>
       <WETabContainer>
         <WETab
-          tabs={categories}
+          tabs={menuCategories}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
       </WETabContainer>
       <MenuContainer>
-        {activeMenus.map((menu) => (
-          <MenuBox key={menu.menuId}>
+        {activeMenus.map((menu, index) => (
+          <MenuBox key={index}>
             <ImageBox key={menu.menuId}>
               <MenuImg src={menu.menuImage} alt={menu.menuName} width="100" />
             </ImageBox>

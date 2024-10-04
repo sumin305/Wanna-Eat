@@ -53,6 +53,7 @@ const StatisticsPage = () => {
         const monthLabels = Object.keys(data.monthStatistics).map(
           (month) => `${month}월`
         );
+
         const monthSeries = Object.values(data.monthStatistics);
 
         const dayLabels = Object.keys(data.dayStatistics);
@@ -88,64 +89,21 @@ const StatisticsPage = () => {
       });
   }, []);
 
-  const [monthStatistics, setMonthStatistics] = useState([]);
-  const [dayStatistics, setDayStatistics] = useState([]);
-  const [hourStatistics, setHourStatistics] = useState([]);
+  const [monthStatistics, setMonthStatistics] = useState({
+    labels: [],
+    series: [],
+  });
+  const [dayStatistics, setDayStatistics] = useState({
+    labels: [],
+    series: [],
+  });
+  const [hourStatistics, setHourStatistics] = useState({
+    labels: [],
+    series: [],
+  });
   const [revenues, setRevenues] = useState([]);
   const [topMenuStatistics, setTopMenuStatistics] = useState([]);
   const [bottomMenuStatistics, setBottomMenuStatistics] = useState([]);
-
-  // const BestImages = [
-  //   {
-  //     url: testImage1,
-  //     label: '아이스카페모카',
-  //     numberOfOrders: '123456789',
-  //   },
-  //   {
-  //     url: testImage2,
-  //     label: 'CafeMocha',
-  //     numberOfOrders: '12345',
-  //   },
-  //   {
-  //     url: testImage3,
-  //     label: 'Mint Latte',
-  //     numberOfOrders: '12345',
-  //   },
-  // ];
-
-  // const WorstImages = [
-  //   {
-  //     url: testImage3,
-  //     label: 'Mint Latte',
-  //     numberOfOrders: '12345',
-  //   },
-  //   {
-  //     url: testImage2,
-  //     label: 'CafeMocha',
-  //     numberOfOrders: '12345',
-  //   },
-  //   {
-  //     url: testImage1,
-  //     label: '아이스카페모카',
-  //     numberOfOrders: '123456789',
-  //   },
-  // ];
-
-  // const monthLabels = ['6', '12', '4'];
-  // const monthSeries = [100, 60, 30];
-
-  // const dayLabels = ['금', '화', '월'];
-  // const daySeries = [100, 40, 30];
-  // const timeLabels = ['18:00', '17:00', '12:00'];
-  // const timeSeries = [30, 50, 10];
-
-  // const categories = ['9/29', '9/30', '10/1', '10/2', '10/3'];
-  // const series = [
-  //   {
-  //     name: '매출',
-  //     data: [50, 20, 180, 150, 140],
-  //   },
-  // ];
 
   return (
     <StatisticsStyled>
@@ -185,7 +143,7 @@ const StatisticsPage = () => {
       </StatisticsDonutWrapperStyled>
       <StatisticsColumnWrapperStyled>
         <StatisticsHeaderStyled>
-          <TitleStyled>일 매출 현황</TitleStyled>
+          <TitleStyled>일 매출 현황 (만원)</TitleStyled>
           <GoToDetailStyled
             onClick={() => navigate('/manager/statistics/sales-detail')}
           >
@@ -195,6 +153,7 @@ const StatisticsPage = () => {
         <WEColumn
           categories={revenues.labels}
           series={[{ name: '매출', data: revenues.series }]}
+          isRevenue={true}
         />
       </StatisticsColumnWrapperStyled>
       <StatisticsMenuWrapperStyled>

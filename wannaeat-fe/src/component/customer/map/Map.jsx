@@ -23,7 +23,7 @@ const MapContainer = () => {
     setCenterLatLng,
     getRestaurantPositions,
   } = useMapStore();
-  const { setRestaurantId, setRestaurant } = useRestaurantStore();
+
   const { reservationDate, startTime, endTime, memberCount } =
     useReservationStore;
   const { categoryId, keyword } = useMapFilterStore();
@@ -177,8 +177,6 @@ const MapContainer = () => {
   // 마커 클릭 시 해당 레스토랑 정보 상세보기로 이동
   const handleMarkerClick = async (id) => {
     console.log('handleMarkerClick', id);
-    await setRestaurant(id);
-    await setRestaurantId(id);
     navigate(`/customer/reservation/restaurant-detail/${id}`);
   };
 

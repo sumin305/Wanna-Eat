@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckContainer, CheckImg } from './WECheck';
+import { CheckContainer, CheckImg } from './WECheck.js';
 import CheckPrimary from '../../../assets/icons/common/check-primary.svg';
 import CheckWhite from '../../../assets/icons/common/check-white.svg';
 

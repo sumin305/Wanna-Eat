@@ -12,6 +12,7 @@ const useRestaurantStore = create((set) => ({
   minMemberCount: 0,
   maxReservationTime: '',
   menus: {},
+  menuCategories: [],
   restaurantAddress: '',
   restaurantBusinessNumber: '',
   restaurantCategoryName: '',
@@ -49,7 +50,12 @@ const useRestaurantStore = create((set) => ({
         maxReservationTime: restaurant.maxReservationTime
           ? restaurant.maxReservationTime
           : '',
-        menus: restaurant.menuListResponseDto.menusMap || {},
+        menus:
+          restaurant.menuListResponseDto.menuListByCategoryResponseDtos || [],
+        menuCategories:
+          restaurant.menuListResponseDto.menuListByCategoryResponseDtos.map(
+            (menu) => menu.menuCategoryName
+          ) || [],
         restaurantAddress: restaurant.restaurantAddress || '',
         restaurantBusinessNumber: restaurant.restaurantBusinessNumber || '',
         restaurantCategoryName: restaurant.restaurantCategoryName || '',

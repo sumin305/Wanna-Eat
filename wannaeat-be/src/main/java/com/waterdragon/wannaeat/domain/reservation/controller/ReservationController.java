@@ -25,6 +25,7 @@ import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequest
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationSummaryResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
@@ -157,16 +158,16 @@ public class ReservationController {
 	 * @return 해당 일자의 예약 목록 정보
 	 */
 	@Operation(summary = "일별 예약 조회 API")
-	@GetMapping("/restaurants/{restaurantId}/reservation")
-	public ResponseEntity<ResponseDto<List<ReservationDetailResponseDto>>> getListReservation(
-		@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+	@GetMapping("/restaurants/reservation")
+	public ResponseEntity<ResponseDto<ManagerReservationSummaryResponseDto>> getListReservation(
+		@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, Pageable pageable) {
 
-		List<ReservationDetailResponseDto> reservationDetailResponseDtos = reservationService.getListReservationByDate(
-			date);
-		ResponseDto<List<ReservationDetailResponseDto>> responseDto = ResponseDto.<List<ReservationDetailResponseDto>>builder()
+		ManagerReservationSummaryResponseDto managerReservationSummaryResponseDto = reservationService.getListReservationByRestaurantAndDate(
+			date, pageable);
+		ResponseDto<ManagerReservationSummaryResponseDto> responseDto = ResponseDto.<ManagerReservationSummaryResponseDto>builder()
 			.status(HttpStatus.OK.value())
 			.message("일별 예약 조회 목록")
-			.data(reservationDetailResponseDtos)
+			.data(managerReservationSummaryResponseDto)
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);

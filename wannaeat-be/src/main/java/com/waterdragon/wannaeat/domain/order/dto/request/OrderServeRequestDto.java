@@ -1,16 +1,16 @@
 package com.waterdragon.wannaeat.domain.order.dto.request;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderServeRequestDto {
-    private List<Integer> orderIdList;
+	private List<Integer> orderIdList;
 }

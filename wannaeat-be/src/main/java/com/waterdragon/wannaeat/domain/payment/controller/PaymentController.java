@@ -61,6 +61,7 @@ public class PaymentController {
 	 * @param kakaoPaymentOrderRequestDto 음식비 결제 요청 정보
 	 * @return KakaoPaymentReadyResponseDto tid, redirect_uri(카카오페이측 제공)
 	 */
+	@Transactional
 	@Operation(summary = "음식비 결제 요청 API(카카오페이)")
 	@PostMapping("/public/payments/menus/kakao")
 	public ResponseEntity<ResponseDto<KakaoPaymentReadyResponseDto>> kakaoPayReady(
@@ -95,6 +96,7 @@ public class PaymentController {
 	 * @param kakaoPaymentDepositRequestDto 보증금 결제 요청 정보
 	 * @return KakaoPaymentReadyResponseDto tid, redirect_uri(카카오페이측 제공)
 	 */
+	@Transactional
 	@Operation(summary = "보증금 결제 요청 API(카카오페이)")
 	@PostMapping("/public/payments/deposit/kakao")
 	public ResponseEntity<ResponseDto<KakaoPaymentReadyResponseDto>> kakaoPayReady(
@@ -199,7 +201,7 @@ public class PaymentController {
 			// 카카오 결제 요청하기
 			KakaoPaymentApproveResponseDto kakaoPaymentApproveResponseDto = kakaoPaymentService.kakaoPayApprove(tid,
 				pgToken, paymentId);
-			kakaoPaymentApproveResponseDto.setReservation_info(reservationDetailResponseDto);
+			kakaoPaymentApproveResponseDto.setReservationInfo(reservationDetailResponseDto);
 
 			ResponseDto<KakaoPaymentApproveResponseDto> responseDto = ResponseDto.<KakaoPaymentApproveResponseDto>builder()
 				.status(HttpStatus.OK.value())
@@ -218,6 +220,7 @@ public class PaymentController {
 	 *
 	 * @return 결제 취소 메시지
 	 */
+	@Transactional
 	@Operation(summary = "결제 취소시 호출되는 API")
 	@GetMapping("/public/payments/cancel/kakao")
 	public ResponseEntity<ResponseDto<Void>> kakaoPayCancel() {
@@ -235,6 +238,7 @@ public class PaymentController {
 	 *
 	 * @return 결제 실패 메시지
 	 */
+	@Transactional
 	@Operation(summary = "결제 실패시 호출되는 API")
 	@GetMapping("/public/payments/fail/kakao")
 	public ResponseEntity<ResponseDto<Void>> kakaoPayFail() {
@@ -253,6 +257,7 @@ public class PaymentController {
 	 * @param ssafyPaymentOrderRequestDto 음식비 결제 요청 정보
 	 * @return 싸피페이 결제완료 정보
 	 */
+	@Transactional
 	@Operation(summary = "음식비 결제 API(싸피페이)")
 	@PostMapping("/payments/menus/ssafy")
 	public ResponseEntity<ResponseDto<SsafyPaymentResponseDto>> ssafyPay(
@@ -274,6 +279,7 @@ public class PaymentController {
 	 * @param ssafyPaymentDepositRequestDto 보증금 결제요청 정보
 	 * @return 싸피페이 결제완료 정보
 	 */
+	@Transactional
 	@Operation(summary = "보증금 결제 API(싸피페이)")
 	@PostMapping("/payments/deposit/ssafy")
 	public ResponseEntity<ResponseDto<SsafyPaymentResponseDto>> ssafyPay(

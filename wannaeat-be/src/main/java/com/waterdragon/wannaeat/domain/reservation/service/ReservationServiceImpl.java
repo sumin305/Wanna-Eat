@@ -191,18 +191,17 @@ public class ReservationServiceImpl implements ReservationService {
 			.orElseThrow(() -> new RestaurantStructureNotFoundException("매장 구조 정보가 존재하지 않습니다."));
 
 		// 예약 테이블을 필터링하는 쿼리 실행
-		List<ReservationTable> reservatedTables = reservationTableRepository.findReservedTables(
+		List<ReservationTable> reservedTables = reservationTableRepository.findReservedTables(
 			restaurant.getRestaurantId(),
 			reservationRegisterRequestDto.getReservationDate(),
 			reservationRegisterRequestDto.getReservationStartTime(),
 			reservationRegisterRequestDto.getReservationEndTime());
 
 		// 예약된 테이블이 있을 경우 예외 처리
-		if (!reservatedTables.isEmpty()) {
+		if (!reservedTables.isEmpty()) {
 			throw new DuplicateReservationTableException("이미 예약된 테이블입니다.");
 		}
 
-		log.info(reservatedTables.toString());
 
 		User user = userRepository.findByUserId(reservationRegisterRequestDto.getUserId()).orElse(null);
 

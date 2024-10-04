@@ -37,6 +37,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
 
   const tabs = ['결제 전', '결제 완료'];
   const [activeTab, setActiveTab] = useState(0);
+  const [isChecked, setIsChecked] = useState(false);
 
   // 결제완료 주문
   const completeOrders = allOrders.filter(
@@ -74,6 +75,10 @@ const OrderSheetBox = ({ reservationUrl }) => {
     console.log('모든 주문 내용', allOrdersInfo);
   }, []);
 
+  const handleAllCheckButtonClick = () => {
+    setIsChecked(!isChecked);
+  };
+
   return (
     <OrderContainer>
       <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -84,7 +89,10 @@ const OrderSheetBox = ({ reservationUrl }) => {
             <DeleteDiv>
               {activeTab === 0 ? (
                 <>
-                  <WECheck />
+                  <WECheck
+                    onClick={handleAllCheckButtonClick}
+                    isChecked={isChecked}
+                  />
                   <CheckText>전체선택</CheckText>
                 </>
               ) : null}

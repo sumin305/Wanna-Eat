@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class TableRegisterRequestDto {
+public class ElementRegisterRequestDto {
 
 	@NotEmpty(message = "아이템 id(UUID)는 필수 입력값입니다.")
 	private String itemId;
@@ -23,10 +23,4 @@ public class TableRegisterRequestDto {
 
 	@NotNull(message = "층수는 필수 입력값입니다.")
 	private Integer floor;
-
-	// 테이블 타입일 때만 필요한 필드들
-	@NotNull(message = "테이블 id는 필수 입력값입니다.")
-	private Integer tableId;
-	@NotNull(message = "좌석 수는 필수 입력값입니다.")
-	private Integer assignedSeats;
 }

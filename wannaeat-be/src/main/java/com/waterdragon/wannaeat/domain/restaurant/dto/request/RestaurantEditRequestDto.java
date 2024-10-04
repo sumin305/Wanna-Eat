@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class RestaurantEditRequestDto {
 
 	@NotEmpty(message = "사업자 번호는 필수 입력값입니다.")

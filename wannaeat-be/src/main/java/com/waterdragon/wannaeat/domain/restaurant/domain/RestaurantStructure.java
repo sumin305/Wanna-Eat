@@ -19,11 +19,9 @@ public class RestaurantStructure {
 
 	private Long restaurantId;
 
-	private Size size; // 매장 크기
-	private int floorCnt; // 매장 층수
+	private Size size;
+	private int floorCnt;
 
-	private List<Table> tables; // 테이블 정보
-	private List<Toilet> toilets; // 화장실 정보
-	private List<Counter> counters; // 계산대 정보
-	private List<Kitchen> kitchens; // 주방 정보
+	private List<Table> tables;
+	private List<Element> elements;
 }

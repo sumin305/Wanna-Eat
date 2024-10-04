@@ -5,8 +5,10 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class Toilet {
+public class Element {
 
+	private String itemId;
+	private ItemType itemType;
 	private double x;
 	private double y;
 	private int floor;

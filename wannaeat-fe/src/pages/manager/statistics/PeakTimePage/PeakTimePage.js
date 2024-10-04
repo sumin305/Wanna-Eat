@@ -155,13 +155,13 @@ const TurnoverValueStyled = styled.div`
   text-align: start;
   font-size: ${theme.fontSize.px23};
   font-weight: ${theme.fontWeight.bold};
-  color: ${theme.color.statisticsBlue};
+  color: ${theme.color.primary};
 
   @media (min-width: 480px) {
     text-align: start;
     font-size: ${theme.fontSize.px40};
     font-weight: ${theme.fontWeight.bold};
-    color: ${theme.color.statisticsBlue};
+    color: ${theme.color.primary};
   }
 `;
 

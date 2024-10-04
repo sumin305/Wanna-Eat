@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.waterdragon.wannaeat.domain.cart.exception.error.CartMenuCntMinusException;
+import com.waterdragon.wannaeat.domain.cart.exception.error.CartMenuNotFoundException;
 import com.waterdragon.wannaeat.domain.cart.exception.error.CartMenuPlusMinusException;
 import com.waterdragon.wannaeat.domain.cart.exception.error.CartNotFoundException;
 import com.waterdragon.wannaeat.domain.cart.exception.error.ReservationParticipantNotMatchReservationException;
@@ -48,5 +49,14 @@ public class CartExceptionHandler {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Reservation Participant Not Match Reservation", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+	}
+
+	// 장바구니 메뉴 존재 안함.
+	@ExceptionHandler(CartMenuNotFoundException.class)
+	public final ResponseEntity<ErrorResponseDto> handleCartMenuNotFoundException(
+		CartMenuNotFoundException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Cart Menu Not Found", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 	}
 }

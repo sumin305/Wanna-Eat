@@ -21,7 +21,7 @@ const OrderSheetPage = () => {
     setActiveIcons,
     setIsShowBackIcon,
   } = useHeaderStore();
-  const allMenusInfo = useOrderStore();
+  const { allOrdersInfo } = useOrderStore();
 
   // 웹소켓 초기 연결
   useEffect(() => {
@@ -87,15 +87,8 @@ const OrderSheetPage = () => {
   console.log('웹소켓연결확인:', stompClient);
   console.log('웹소켓연결확인:', isConnected);
 
-  useEffect(() => {
-    if (isConnected) {
-      console.log(allMenusInfo);
-    }
-  }, [isConnected]);
-
   return (
     <>
-      <div>결제 내역 페이지</div>
       <OrderSheetBox reservationUrl={reservationUrl} />
     </>
   );

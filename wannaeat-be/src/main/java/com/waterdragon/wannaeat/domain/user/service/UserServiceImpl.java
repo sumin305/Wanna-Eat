@@ -82,7 +82,6 @@ public class UserServiceImpl implements UserService {
 			throw new DuplicateUserException("이미 가입된 계정입니다. 다시 로그인 해 주세요.");
 		}
 		userSignupRequestDto.setPhone(encryptService.encryptData(userSignupRequestDto.getPhone()));
-		userSignupRequestDto.setPaymentPassword(encryptService.encryptData(userSignupRequestDto.getPaymentPassword()));
 		user.editUser(userSignupRequestDto);
 		userRepository.save(user);
 	}
@@ -147,6 +146,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void editUserPaymentPassword(UserPaymentPasswordEditRequestDto userPaymentPasswordEditRequestDto) {
 		User user = authUtil.getAuthenticatedUser();
+		userPaymentPasswordEditRequestDto.setPaymentPassword(
+			encryptService.encryptData(userPaymentPasswordEditRequestDto.getPaymentPassword()));
 		user.editPaymentPassword(userPaymentPasswordEditRequestDto);
 		userRepository.save(user);
 	}

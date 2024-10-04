@@ -19,6 +19,7 @@ import com.waterdragon.wannaeat.domain.user.dto.request.FcmTokenEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserNicknameEditRequestDto;
+import com.waterdragon.wannaeat.domain.user.dto.request.UserPaymentPasswordEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.response.UserDetailResponseDto;
 import com.waterdragon.wannaeat.domain.user.exception.error.DuplicateNicknameException;
@@ -82,7 +83,7 @@ public class UserServiceImpl implements UserService {
 		}
 		userSignupRequestDto.setPhone(encryptService.encryptData(userSignupRequestDto.getPhone()));
 		userSignupRequestDto.setPaymentPassword(encryptService.encryptData(userSignupRequestDto.getPaymentPassword()));
-		user.edit(userSignupRequestDto);
+		user.editUser(userSignupRequestDto);
 		userRepository.save(user);
 	}
 
@@ -126,15 +127,27 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-	 * 로그인 유저 닉네임을 수정하는 메소드
+	 * 로그인 유저 닉네임을 변경하는 메소드
 	 *
-	 * @param userNicknameEditRequestDto 수정할 유저 정보
+	 * @param userNicknameEditRequestDto 변경할 유저 정보
 	 */
 	@Override
 	public void editUserNickname(UserNicknameEditRequestDto userNicknameEditRequestDto) {
 		checkNicknameDuplicate(userNicknameEditRequestDto.getNickname());
 		User user = authUtil.getAuthenticatedUser();
 		user.editNickname(userNicknameEditRequestDto);
+		userRepository.save(user);
+	}
+
+	/**
+	 * 로그인 유저 결제 비밀번호를 변경하는 메소드
+	 *
+	 * @param userPaymentPasswordEditRequestDto 변경할 결제 비밀번호 정보
+	 */
+	@Override
+	public void editUserPaymentPassword(UserPaymentPasswordEditRequestDto userPaymentPasswordEditRequestDto) {
+		User user = authUtil.getAuthenticatedUser();
+		user.editPaymentPassword(userPaymentPasswordEditRequestDto);
 		userRepository.save(user);
 	}
 

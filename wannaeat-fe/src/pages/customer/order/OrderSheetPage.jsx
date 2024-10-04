@@ -26,7 +26,7 @@ const OrderSheetPage = () => {
   // 웹소켓 초기 연결
   useEffect(() => {
     setIsCarrot(true);
-    setPageName('결제 내역');
+    setPageName('계산서');
     setIsShowLogo(false);
     setActiveIcons([3]);
     setIsShowBackIcon(true);
@@ -88,9 +88,9 @@ const OrderSheetPage = () => {
   console.log('웹소켓연결확인:', isConnected);
 
   return (
-    <>
+    <div>
       <OrderSheetBox reservationUrl={reservationUrl} />
-    </>
+    </div>
   );
 };
 

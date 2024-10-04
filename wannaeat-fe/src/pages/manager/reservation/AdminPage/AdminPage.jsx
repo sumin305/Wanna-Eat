@@ -4,6 +4,8 @@ import moment from 'moment';
 import { getReservationInfoByDay } from 'api/manager/reservation/reservation.js';
 import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import {
   CircleWrapper,
   CarrotCircle,
@@ -22,6 +24,8 @@ import {
   ReservationText,
   ReservationBottomInfo,
 } from './AdminPage.js';
+import useAnimationStore from 'stores/common/useAnimationStore';
+
 const AdminPage = () => {
   const {
     setIsCarrot,
@@ -33,9 +37,22 @@ const AdminPage = () => {
   const { reservationDetails, setReservationDetails } = useMyRestaurantStore();
   const [selectedDate, setSelectedDate] = useState('');
   const [activeTab, setActiveTab] = useState(0);
-  const tabs = ['방문 예정', '방문 중', '방문 완료'];
   const [reservationList, setReservationList] = useState([]);
   const navigate = useNavigate();
+
+  const prevLocation = useRef(null); // 이전 URL을 저장할 변수
+  const location = useLocation();
+  const { beforeUrl } = useAnimationStore();
+
+  useEffect(() => {
+    // 컴포넌트가 처음 렌더링될 때 이전 URL을 기록
+    prevLocation.current = location.pathname;
+    console.log('prevLocation.current', prevLocation.current);
+    setIsCommingFromDetailPage(
+      prevLocation.current === '/manager/admin/detail'
+    );
+  }, [location]);
+  const [isCommingFromDetailPage, setIsCommingFromDetailPage] = useState(false);
   const dayList = [
     '2024-10-10',
     '2024-10-11',
@@ -99,6 +116,12 @@ const AdminPage = () => {
     setActiveIcons([0]);
     setIsUnderLine(true);
     setIsShowLogo(false);
+
+    if (beforeUrl === '/manager/admin/detail') {
+      setIsCommingFromDetailPage(true);
+    } else {
+      setIsCommingFromDetailPage(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -179,6 +202,7 @@ const AdminPage = () => {
 
   // 스크롤이 발생 시 페이지ㅣ 이동
   const onScrollFunction = (e) => {
+    console.log(e.deltaY);
     if (e.deltaY > 0) {
       navigate('/manager/admin/detail');
     }
@@ -201,70 +225,154 @@ const AdminPage = () => {
 
     fetchReservationDateByDate(formattedDate);
   };
+  // 예약 상세 페이지로 이동
+  const handleReservationInfoClick = (id) => {
+    navigate('/manager/reservation/reservation-detail/id');
+  };
 
   return (
-    <ReservationManagePageContainer
-      id="scroll"
-      onWheel={(e) => onScrollFunction(e)}
-    >
-      <CalendarWrapper>
-        <CalendarStyled
-          showNeighboringMonth={false}
-          onChange={handleDateChange}
-          value={selectedDate}
-          tileContent={addContent}
-          formatDay={(locale, date) => moment(date).format('DD')}
-        />
-      </CalendarWrapper>
-      <TabContainer>
-        <Tab onClick={() => setActiveTab(0)} active={activeTab === 0}>
-          <p>방문 예정</p>
-          <hr></hr>
-        </Tab>
-        <Tab onClick={() => setActiveTab(1)} active={activeTab === 1}>
-          <p>방문중</p>
-          <hr></hr>
-        </Tab>
-        <Tab onClick={() => setActiveTab(2)} active={activeTab === 2}>
-          <p>방문 완료</p>
-          <hr></hr>
-        </Tab>
-      </TabContainer>
-      <ReservationInfoContainer>
-        {reservationList.map((reservation) => (
-          <ReservationInfoItem key={reservation.reservationId}>
-            <ReservationInfoImage />
-            <ReservationInfoText>
-              <ReservationTopInfo>
-                <ReservationText>
-                  [
-                  {activeTab === 0
-                    ? '방문 예정'
-                    : activeTab === 1
-                      ? '방문 중'
-                      : '방문 완료'}
-                  ]
-                </ReservationText>
-                <ReservationText>
-                  {reservation.reservationStartTime}~
-                  {reservation.reservationEndTime}
-                </ReservationText>
-              </ReservationTopInfo>
-              <ReservationBottomInfo>
-                <ReservationText>
-                  {reservation.reservationTableList.map((table) => (
-                    <ReservationText>{table} </ReservationText>
-                  ))}{' '}
-                </ReservationText>{' '}
-                <ReservationText>번 테이블&nbsp;</ReservationText>
-                <ReservationText>{reservation.memberCount}명</ReservationText>
-              </ReservationBottomInfo>
-            </ReservationInfoText>
-          </ReservationInfoItem>
-        ))}
-      </ReservationInfoContainer>
-    </ReservationManagePageContainer>
+    <>
+      {isCommingFromDetailPage ? (
+        <motion.div
+          initial={{ y: '-100%' }}
+          animate={{ y: 0 }}
+          exit={{ y: '100%' }}
+          transition={{ duration: 0.5 }}
+          onWheel={(e) => onScrollFunction(e)}
+          id="scroll"
+        >
+          <CalendarWrapper>
+            <CalendarStyled
+              showNeighboringMonth={false}
+              onChange={handleDateChange}
+              value={selectedDate}
+              tileContent={addContent}
+              formatDay={(locale, date) => moment(date).format('DD')}
+            />
+          </CalendarWrapper>
+          <TabContainer>
+            <Tab onClick={() => setActiveTab(0)} active={activeTab === 0}>
+              <p>방문 예정</p>
+              <hr></hr>
+            </Tab>
+            <Tab onClick={() => setActiveTab(1)} active={activeTab === 1}>
+              <p>방문중</p>
+              <hr></hr>
+            </Tab>
+            <Tab onClick={() => setActiveTab(2)} active={activeTab === 2}>
+              <p>방문 완료</p>
+              <hr></hr>
+            </Tab>
+          </TabContainer>
+          <ReservationInfoContainer>
+            {reservationList.map((reservation) => (
+              <ReservationInfoItem
+                onClick={() =>
+                  handleReservationInfoClick(reservation.reservationId)
+                }
+                key={reservation.reservationId}
+              >
+                <ReservationInfoImage />
+                <ReservationInfoText>
+                  <ReservationTopInfo>
+                    <ReservationText>
+                      [
+                      {activeTab === 0
+                        ? '방문 예정'
+                        : activeTab === 1
+                          ? '방문 중'
+                          : '방문 완료'}
+                      ]
+                    </ReservationText>
+                    <ReservationText>
+                      {reservation.reservationStartTime}~
+                      {reservation.reservationEndTime}
+                    </ReservationText>
+                  </ReservationTopInfo>
+                  <ReservationBottomInfo>
+                    <ReservationText>
+                      {reservation.reservationTableList.map((table) => (
+                        <ReservationText key={table}>{table} </ReservationText>
+                      ))}
+                    </ReservationText>
+                    <ReservationText>번 테이블&nbsp;</ReservationText>
+                    <ReservationText>
+                      {reservation.memberCount}명
+                    </ReservationText>
+                  </ReservationBottomInfo>
+                </ReservationInfoText>
+              </ReservationInfoItem>
+            ))}
+          </ReservationInfoContainer>
+        </motion.div>
+      ) : (
+        <div onWheel={(e) => onScrollFunction(e)} id="scroll">
+          <CalendarWrapper>
+            <CalendarStyled
+              showNeighboringMonth={false}
+              onChange={handleDateChange}
+              value={selectedDate}
+              tileContent={addContent}
+              formatDay={(locale, date) => moment(date).format('DD')}
+            />
+          </CalendarWrapper>
+          <TabContainer>
+            <Tab onClick={() => setActiveTab(0)} active={activeTab === 0}>
+              <p>방문 예정</p>
+              <hr></hr>
+            </Tab>
+            <Tab onClick={() => setActiveTab(1)} active={activeTab === 1}>
+              <p>방문중</p>
+              <hr></hr>
+            </Tab>
+            <Tab onClick={() => setActiveTab(2)} active={activeTab === 2}>
+              <p>방문 완료</p>
+              <hr></hr>
+            </Tab>
+          </TabContainer>
+          <ReservationInfoContainer>
+            {reservationList.map((reservation) => (
+              <ReservationInfoItem
+                onClick={() =>
+                  handleReservationInfoClick(reservation.reservationId)
+                }
+                key={reservation.reservationId}
+              >
+                <ReservationInfoImage />
+                <ReservationInfoText>
+                  <ReservationTopInfo>
+                    <ReservationText>
+                      [
+                      {activeTab === 0
+                        ? '방문 예정'
+                        : activeTab === 1
+                          ? '방문 중'
+                          : '방문 완료'}
+                      ]
+                    </ReservationText>
+                    <ReservationText>
+                      {reservation.reservationStartTime}~
+                      {reservation.reservationEndTime}
+                    </ReservationText>
+                  </ReservationTopInfo>
+                  <ReservationBottomInfo>
+                    <ReservationText>
+                      {reservation.reservationTableList.map((table) => (
+                        <ReservationText key={table}>{table} </ReservationText>
+                      ))}
+                    </ReservationText>
+                    <ReservationText>번 테이블&nbsp;</ReservationText>
+                    <ReservationText>
+                      {reservation.memberCount}명
+                    </ReservationText>
+                  </ReservationBottomInfo>
+                </ReservationInfoText>
+              </ReservationInfoItem>
+            ))}
+          </ReservationInfoContainer>
+        </div>
+      )}
+    </>
   );
 };
-
 export default AdminPage;

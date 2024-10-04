@@ -20,7 +20,7 @@ const TabContainer = styled.div`
 `;
 const Tab = styled.div`
   flex: 0 auto;
-  padding: 0.625rem 1rem;
+  padding: 0.625rem;
 
   font-size: ${theme.fontSize.px11};
   > p {
@@ -48,11 +48,15 @@ const ReservationInfoText = styled.div`
   margin: 0 1rem;
 `;
 const ReservationInfoItem = styled.div`
-  margin: 0.5rem 1rem;
-
+  padding: 0.5rem 1rem;
   display: flex;
   height: 3rem;
   align-items: center;
+  border-top: 1px solid ${theme.color.gray}; /* 상단에 2px 두께의 검은색 테두리 */
+  border-bottom: 1px solid ${theme.color.gray}; /* 하단에 2px 두께의 검은색 테두리 */
+  @media (min-width: 480px) {
+    height: 4rem;
+  }
 `;
 const CircleWrapper = styled.div`
   display: flex;
@@ -68,10 +72,10 @@ const ReservationTopInfo = styled.div`
   display: flex;
 `;
 const ReservationText = styled.p`
-  font-size: 9px;
+  font-size: 11px;
   font-weight: bold;
   @media (min-width: 480px) {
-    font-size: 11px;
+    font-size: 13px;
   }
 `;
 const ReservationBottomInfo = styled.div`
@@ -109,7 +113,7 @@ const CountText = styled.p`
   }
 `;
 const ReservationManagePageContainer = styled.div`
-  overflow-y: auto; /* 세로 스크롤 가능하게 설정 */
+  overflow-y: auto;
 `;
 
 const CalendarWrapper = styled.div`

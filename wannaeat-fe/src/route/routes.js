@@ -14,7 +14,7 @@ import StatisticsPage from '../pages/manager/statistics/StatisticsPage';
 import RestaurantRegistPage from '../pages/manager/restaurant/RestaurantRegistPage/RestaurantRegistPage.jsx';
 import NotificationPage from '../pages/manager/notification/NotificationPage.jsx';
 import ReservationDetailPage from '../pages/manager/reservation/ReservationDetailPage.jsx';
-
+import AdminDetailPage from 'pages/manager/reservation/AdminDetailPage/AdminDetailPage.jsx';
 // 손님 관련 페이지
 import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
 import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage.jsx';
@@ -50,6 +50,7 @@ const AppRoutes = () => {
         <Route path="/password-regist" element={<PasswordRegistPage />} />
         <Route path="/manager" element={<ManagerMainPage />} />
         <Route path="/manager/admin" element={<AdminPage />} />
+        <Route path="/manager/admin/detail" element={<AdminDetailPage />} />
         <Route
           path="/manager/restaurant/seat-decorate"
           element={<SeatDecoratePage />}

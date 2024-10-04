@@ -14,6 +14,7 @@ import com.waterdragon.wannaeat.domain.user.dto.request.NicknameDuplicateCheckRe
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserNicknameEditRequestDto;
+import com.waterdragon.wannaeat.domain.user.dto.request.UserPaymentPasswordEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.response.UserDetailResponseDto;
 import com.waterdragon.wannaeat.domain.user.service.UserService;
@@ -109,6 +110,27 @@ public class UserController {
 		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
 			.status(HttpStatus.OK.value())
 			.message("닉네임이 변경되었습니다.")
+			.data(null)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	/**
+	 * 회원 결제 비밀번호 변경 API
+	 *
+	 * @param userPaymentPasswordEditRequestDto 변경할 결제 비밀번호 정보
+	 * @return 결제 비밀번호 변경 결과
+	 */
+	@Operation(summary = "회원 결제 비밀번호 변경 API")
+	@PatchMapping("/users/password")
+	public ResponseEntity<ResponseDto<Void>> editUserPaymentPassword(
+		@Valid @RequestBody UserPaymentPasswordEditRequestDto userPaymentPasswordEditRequestDto) {
+
+		userService.editUserPaymentPassword(userPaymentPasswordEditRequestDto);
+		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+			.status(HttpStatus.OK.value())
+			.message("결제 비밀번호가 변경되었습니다.")
 			.data(null)
 			.build();
 

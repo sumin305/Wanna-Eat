@@ -39,7 +39,7 @@ const OrderCartBox = ({ reservationUrl }) => {
 
   const allMenus = allMenusInfo?.cartDetailResponseDto?.cartElements || [];
 
-  const reservationParticipantId = 8;
+  const reservationParticipantId = 4;
   const [menuCounts, setMenuCounts] = useState([]);
 
   const { stompClient, isConnected } = useChatStore();
@@ -68,15 +68,21 @@ const OrderCartBox = ({ reservationUrl }) => {
     setMenuCounts((prevCounts) =>
       prevCounts.map((menu, index) =>
         index === menuIndex
-          ? menu.map((item, idx) =>
-              idx === itemIndex && item.menuCnt > 1
-                ? {
+          ? menu.map((item, idx) => {
+              if (idx === itemIndex) {
+                if (item.menuCnt > 1) {
+                  return {
                     ...item,
                     menuCnt: item.menuCnt - 1,
                     menuTotalPrice: item.menuTotalPrice - item.menuPrice,
-                  }
-                : item
-            )
+                  };
+                } else {
+                  alert('메뉴 수량은 0 이하로 줄일 수 없습니다.');
+                  return item;
+                }
+              }
+              return item;
+            })
           : menu
       )
     );

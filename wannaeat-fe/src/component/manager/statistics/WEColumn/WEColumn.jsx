@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import Chart from 'react-apexcharts';
 import { ColumnWrapperStyled } from './WEColumn.js';
+import theme from 'style/common/theme.js';
 
 class ColumnChart extends Component {
   constructor(props) {
@@ -10,7 +11,7 @@ class ColumnChart extends Component {
       isWeb: window.matchMedia('(min-width: 480px)').matches,
       options: {
         fill: {
-          colors: ['#344BFD'],
+          colors: [theme.color.primary],
         },
         chart: {
           height: 350,
@@ -30,7 +31,11 @@ class ColumnChart extends Component {
         dataLabels: {
           enabled: true,
           formatter: function (val) {
-            return val;
+            if (props.isRevenue) {
+              return (val / 10000).toFixed(2);
+            } else {
+              return val;
+            }
           },
           offsetY: -20,
           style: {
@@ -39,7 +44,7 @@ class ColumnChart extends Component {
           },
         },
         xaxis: {
-          categories: this.props.categories || ['0', '0', '0', '0', '0'],
+          categories: this.props.categories || [],
           position: 'top',
           axisBorder: {
             show: false,
@@ -73,7 +78,15 @@ class ColumnChart extends Component {
           labels: {
             show: false,
             formatter: function (val) {
-              return val + '만원';
+              if (props.isRevenue) {
+                if (val >= 10000) {
+                  return (val / 10000).toFixed(2) + '만원';
+                } else {
+                  return val + '원';
+                }
+              } else {
+                return val + '건';
+              }
             },
           },
         },
@@ -90,18 +103,41 @@ class ColumnChart extends Component {
       series: [
         {
           name: '',
-          data: [0, 0, 0, 0, 0],
+          data: [],
         },
       ],
     };
   }
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.categories !== this.props.categories ||
+      prevProps.series !== this.props.series
+    ) {
+      this.setState({
+        options: {
+          ...this.state.options,
+          xaxis: {
+            ...this.state.options.xaxis,
+            categories: this.props.categories || [],
+          },
+        },
+        series: this.props.series || this.state.series,
+      });
+    }
+  }
 
   render() {
     const columnHeight = this.state.isWeb ? 300 : 200;
+
+    if (!this.props.categories || !this.props.series) {
+      return <div>Loading...</div>;
+    }
+
     return (
       <ColumnWrapperStyled>
         <Chart
           options={this.state.options}
+          categories={this.props.categories || this.state.categories}
           series={this.props.series || this.state.series}
           type="bar"
           height={columnHeight}

@@ -62,9 +62,15 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 		@Param("startDate") LocalDate startDate,
 		@Param("endDate") LocalDate endDate);
 
-
 	@Query("SELECT r FROM Reservation r WHERE r.restaurant = :restaurant " +
 		"AND r.cancelled = false " +
+		"AND FUNCTION('YEAR', r.reservationDate) = :year " +
+		"AND FUNCTION('MONTH', r.reservationDate) = :month")
+	List<Reservation> findNotCancelledReservationsByRestaurantAndYearAndMonth(@Param("restaurant") Restaurant restaurant,
+		@Param("year") int year,
+		@Param("month") int month);
+
+	@Query("SELECT r FROM Reservation r WHERE r.restaurant = :restaurant " +
 		"AND FUNCTION('YEAR', r.reservationDate) = :year " +
 		"AND FUNCTION('MONTH', r.reservationDate) = :month")
 	List<Reservation> findReservationsByRestaurantAndYearAndMonth(@Param("restaurant") Restaurant restaurant,

@@ -32,6 +32,8 @@ import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructure
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MainStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.MenuStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.PeekStatisticResponseDto;
+import com.waterdragon.wannaeat.domain.statistic.dto.response.ReservationCountPerDayResponseDto;
+import com.waterdragon.wannaeat.domain.statistic.dto.response.ReservationCountStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.RevenuePerDayResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.RevenueStatisticResponseDto;
 
@@ -86,7 +88,7 @@ public class StatisticServiceImpl implements StatisticService {
 	 */
 	@Override
 	public PeekStatisticResponseDto getStatisticsByPeek(Restaurant restaurant, int year, int month) {
-		List<Reservation> reservations = reservationRepository.findReservationsByRestaurantAndYearAndMonth(restaurant,
+		List<Reservation> reservations = reservationRepository.findNotCancelledReservationsByRestaurantAndYearAndMonth(restaurant,
 			year, month);
 
 		Map<String, Long> dayStatistics = getDayOfWeekStatsByMonths(reservations);
@@ -115,9 +117,8 @@ public class StatisticServiceImpl implements StatisticService {
 	 */
 	@Override
 	public RevenueStatisticResponseDto getStatisticsByRevenue(Restaurant restaurant, int year, int month) {
-		List<Reservation> reservations = reservationRepository.findReservationsByRestaurantAndYearAndMonth(restaurant,
+		List<Reservation> reservations = reservationRepository.findNotCancelledReservationsByRestaurantAndYearAndMonth(restaurant,
 			year, month);
-
 		Map<LocalDate, RevenuePerDayResponseDto> dailySalesMap = new HashMap<>();
 		long totalRevenue = 0;
 
@@ -158,6 +159,52 @@ public class StatisticServiceImpl implements StatisticService {
 		return RevenueStatisticResponseDto.builder()
 			.totalRevenue(totalRevenue)
 			.revenues(sortedDailySalesMap)
+			.build();
+	}
+
+	@Override
+	public ReservationCountStatisticResponseDto getReservationCountStatistics(Restaurant restaurant, int year,
+		int month) {
+		List<Reservation> reservations = reservationRepository.findReservationsByRestaurantAndYearAndMonth(restaurant,
+			year, month);
+
+		Map<LocalDate, ReservationCountPerDayResponseDto> dailyReservationCountMap = new HashMap<>();
+
+		// 각 예약별로 일자별 예약 수와 취소된 예약 수 계산
+		for (Reservation reservation : reservations) {
+			LocalDate reservationDate = reservation.getReservationDate();
+			ReservationCountPerDayResponseDto dailyData = dailyReservationCountMap.getOrDefault(reservationDate,
+				new ReservationCountPerDayResponseDto(0L, 0));
+
+			// 예약 상태에 따라 reserved 또는 cancelled 값 증가
+			if (reservation.isCancelled()) {
+				dailyData = ReservationCountPerDayResponseDto.builder()
+					.reserved(dailyData.getReserved()) // 취소된 예약은 예약된 수에 영향을 주지 않음
+					.cancelled(dailyData.getCancelled() + 1) // 취소된 예약 수 증가
+					.build();
+			} else {
+				dailyData = ReservationCountPerDayResponseDto.builder()
+					.reserved(dailyData.getReserved() + 1) // 예약된 수 증가
+					.cancelled(dailyData.getCancelled()) // 취소된 예약 수는 유지
+					.build();
+			}
+
+			dailyReservationCountMap.put(reservationDate, dailyData);
+		}
+
+		// LocalDate 순으로 정렬
+		Map<LocalDate, ReservationCountPerDayResponseDto> sortedReservationCountMap = dailyReservationCountMap.entrySet()
+			.stream()
+			.sorted(Map.Entry.comparingByKey()) // LocalDate로 정렬
+			.collect(Collectors.toMap(
+				Map.Entry::getKey,
+				Map.Entry::getValue,
+				(oldValue, newValue) -> oldValue,
+				LinkedHashMap::new // 순서를 유지하는 LinkedHashMap으로 변환
+			));
+
+		return ReservationCountStatisticResponseDto.builder()
+			.reservationCounts(sortedReservationCountMap)
 			.build();
 	}
 

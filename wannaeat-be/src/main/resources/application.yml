@@ -64,8 +64,12 @@ file:
   upload-dir: ${FILE_UPLOAD_DIR}
 
 # 카카오페이 Secret Key
-pay:
+kakaopay:
   secret-key: ${KAKAOPAY_SECRET_KEY}
+
+# 싸피페이 API Key
+ssafypay:
+  api-key: ${SSAFYPAY_API_KEY}
 
 # FCM Secret Key 파일 경로
 firebase:

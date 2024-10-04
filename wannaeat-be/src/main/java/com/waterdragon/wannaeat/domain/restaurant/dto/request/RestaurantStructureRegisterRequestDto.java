@@ -18,8 +18,6 @@ public class RestaurantStructureRegisterRequestDto {
 	@NotNull(message = "층수는 필수 입력값입니다.")
 	private Integer floorCnt;
 
-	private List<TableRegisterRequestDto> tables; // 테이블 정보
-	private List<ToiletRegisterRequestDto> toilets; // 화장실 정보
-	private List<CounterRegisterRequestDto> counters; // 카운터 정보
-	private List<KitchenRegisterRequestDto> kitchens; // 주방 정보
+	private List<TableRegisterRequestDto> tableRegisterRequestDtos;
+	private List<ElementRegisterRequestDto> elementRegisterRequestDtos;
 }

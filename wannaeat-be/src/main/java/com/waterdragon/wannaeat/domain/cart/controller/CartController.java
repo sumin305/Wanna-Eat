@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waterdragon.wannaeat.domain.cart.dto.request.CartClearRequestDto;
+import com.waterdragon.wannaeat.domain.cart.dto.request.CartDeleteRequestDto;
 import com.waterdragon.wannaeat.domain.cart.dto.request.CartRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.cart.service.CartService;
 import com.waterdragon.wannaeat.global.response.ResponseDto;
@@ -29,6 +31,23 @@ public class CartController {
 	public void registerCart(CartRegisterRequestDto cartRegisterRequestDto) {
 
 		cartService.registerCart(cartRegisterRequestDto);
+	}
+
+	/**
+	 * 장바구니 메뉴 휴지통 API
+	 * 
+	 * @param cartDeleteRequestDto
+	 */
+	@MessageMapping("/carts/delete")
+	public void deleteCart(CartDeleteRequestDto cartDeleteRequestDto) {
+
+		cartService.deleteCart(cartDeleteRequestDto);
+	}
+
+	@MessageMapping("/carts/clear")
+	public void clearCart(CartClearRequestDto cartClearRequestDto) {
+
+		cartService.clearCart(cartClearRequestDto);
 	}
 
 	/**

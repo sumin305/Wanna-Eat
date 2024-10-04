@@ -5,7 +5,7 @@ export const ReservationPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh; /* 페이지를 화면 꽉 채우도록 */
-  padding: 20px;
+  padding: 10px;
   box-sizing: border-box;
 `;
 
@@ -13,7 +13,7 @@ export const ReservationPageContainer = styled.div`
 export const ReservationHeader = styled.div`
   margin-bottom: 20px;
   h2 {
-    font-size: 10px;
+    font-size: 15px;
     color: #333;
   }
 `;
@@ -33,7 +33,7 @@ export const InfoRowContainer = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 5px;
-  gap: 30px; /* 아이콘 간격 조정 */
+  gap: 45px; /* 아이콘 간격 조정 */
 `;
 
 // 아이콘과 텍스트를 세로로 정렬
@@ -43,7 +43,7 @@ export const InfoRow = styled.div`
   align-items: center;
   span {
     margin-top: 8px;
-    font-size: 8px;
+    font-size: 12px;
     font-weight: bold;
     color: #333;
   }
@@ -64,7 +64,7 @@ export const InfoDetails = styled.div`
   padding: 5px;
   p {
     margin: 5px 0;
-    font-size: 10px;
+    font-size: 13px;
     color: #333;
   }
 `;
@@ -76,7 +76,7 @@ export const ReservationMenuList = styled.div`
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   h3 {
-    font-size: 10px;
+    font-size: 15px;
     margin-bottom: 10px;
     font-weight: bold;
   }
@@ -108,7 +108,7 @@ export const MenuItem = styled.div`
 // 메뉴 이름 스타일
 export const MenuName = styled.span`
   font-weight: bold; /* 진하게 표시 */
-  font-size: 8px; /* 원하는 경우 크기도 약간 조정 가능 */
+  font-size: 13px; /* 원하는 경우 크기도 약간 조정 가능 */
   color: #333; /* 색상 조정 */
 `;
 
@@ -130,8 +130,8 @@ export const IncrementButton = styled.button`
     background-color: #e67e22;
     color: white;
     border: 1px solid #e67e22;
-    padding: 5px 5px;
-    font-size: 10px;
+    padding: 5px 7px;
+    font-size: 13px;
     font-weight: bold;
     border-radius: 20px; /* 둥글게 만듦 */
     cursor: pointer;
@@ -148,12 +148,12 @@ export const DecrementButton = styled.button`
     background-color: #e67e22;
     color: white;
     border: 1px solid #e67e22;
-    padding: 5px 5px;
-    font-size: 10px;
+    padding: 5px 8px;
+    font-size: 13px;
     font-weight: bold;
     border-radius: 20px; /* 둥글게 만듦 */
     cursor: pointer;
-    margin-left: 5px;
+    margin-left: 3px;
     transition: all 0.3s ease;
 
     &:hover {
@@ -164,7 +164,7 @@ export const DecrementButton = styled.button`
 
 // 서빙 수량 표시 스타일
 export const ServeCountDisplay = styled.div`
-  font-size: 10px;
+  font-size: 13px;
   font-weight: bold;
   padding: 0 10px;
 `;
@@ -184,7 +184,7 @@ export const FilterButton = styled.button`
   border: none;
   padding: 5px 10px;
   margin: 0 5px;
-  font-size: 10px;
+  font-size: 15px;
   font-weight: ${(props) => (props.active ? 'bold' : 'normal')};
   color: ${(props) => (props.active ? '#e67e22' : '#ccc')};
   position: relative;
@@ -211,8 +211,8 @@ export const CompleteButton = styled.button`
   background-color: #e67e22;
   color: white;
   border: 1px solid #e67e22;
-  padding: 2px 5px;
-  font-size: 10px;
+  padding: 5px 5px;
+  font-size: 13px;
   font-weight: bold;
   border-radius: 20px; /* 둥글게 만듦 */
   cursor: pointer;

@@ -9,6 +9,7 @@ import com.waterdragon.wannaeat.domain.restaurantlike.domain.RestaurantLike;
 import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
 import com.waterdragon.wannaeat.domain.user.domain.enums.SocialType;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserNicknameEditRequestDto;
+import com.waterdragon.wannaeat.domain.user.dto.request.UserPaymentPasswordEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
 
 import jakarta.persistence.Column;
@@ -79,7 +80,7 @@ public class User {
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<RestaurantLike> restaurantLikes;
 
-	public void edit(UserSignupRequestDto userSignupRequestDto) {
+	public void editUser(UserSignupRequestDto userSignupRequestDto) {
 		this.nickname = userSignupRequestDto.getNickname();
 		this.phone = userSignupRequestDto.getPhone();
 		this.role = userSignupRequestDto.getRole();
@@ -87,5 +88,9 @@ public class User {
 
 	public void editNickname(UserNicknameEditRequestDto userEditRequestDto) {
 		this.nickname = userEditRequestDto.getNickname();
+	}
+
+	public void editPaymentPassword(UserPaymentPasswordEditRequestDto userPaymentPasswordEditRequestDto) {
+		this.paymentPassword = userPaymentPasswordEditRequestDto.getPaymentPassword();
 	}
 }

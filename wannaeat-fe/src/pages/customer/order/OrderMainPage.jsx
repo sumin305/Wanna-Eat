@@ -112,6 +112,7 @@ const OrderMainPage = () => {
   useEffect(() => {
     if (isConnected) {
       fetchOrdersInfo();
+      console.log('allOrdersInfo', allOrdersInfo);
     }
   }, []);
 

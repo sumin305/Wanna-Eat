@@ -12,8 +12,8 @@ export const getRestaurants = async (searchCondition) => {
 
 // 매장 정보 상세 조회 api
 export const getRestaurantInfo = async (restaurantId) => {
-  return await clientInstance
-    .get('/api/public/restaurants/' + restaurantId)
+  return await authClientInstance
+    .get('/api/restaurants/' + restaurantId)
     .then((result) => result)
     .catch((error) => error);
 };

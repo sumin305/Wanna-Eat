@@ -18,7 +18,8 @@ import com.waterdragon.wannaeat.domain.user.domain.enums.SocialType;
 import com.waterdragon.wannaeat.domain.user.dto.request.FcmTokenEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeSendRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.PhoneCodeVerifyRequestDto;
-import com.waterdragon.wannaeat.domain.user.dto.request.UserEditRequestDto;
+import com.waterdragon.wannaeat.domain.user.dto.request.UserNicknameEditRequestDto;
+import com.waterdragon.wannaeat.domain.user.dto.request.UserPaymentPasswordEditRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.request.UserSignupRequestDto;
 import com.waterdragon.wannaeat.domain.user.dto.response.UserDetailResponseDto;
 import com.waterdragon.wannaeat.domain.user.exception.error.DuplicateNicknameException;
@@ -81,8 +82,7 @@ public class UserServiceImpl implements UserService {
 			throw new DuplicateUserException("이미 가입된 계정입니다. 다시 로그인 해 주세요.");
 		}
 		userSignupRequestDto.setPhone(encryptService.encryptData(userSignupRequestDto.getPhone()));
-		userSignupRequestDto.setPaymentPassword(encryptService.encryptData(userSignupRequestDto.getPaymentPassword()));
-		user.edit(userSignupRequestDto);
+		user.editUser(userSignupRequestDto);
 		userRepository.save(user);
 	}
 
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
 	 * 로그아웃 메소드
 	 * DB의 Refresh와 FcmToken을 삭제, 헤더와 쿠키의 Access, RefreshToken 삭제
 	 *
-	 * @param response
+	 * @param response 응답 객체
 	 */
 	@Override
 	public void signout(HttpServletResponse response) {
@@ -126,15 +126,29 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-	 * 로그인 유저 정보를 수정하는 메소드
+	 * 로그인 유저 닉네임을 변경하는 메소드
 	 *
-	 * @param userEditRequestDto 수정할 유저 정보
+	 * @param userNicknameEditRequestDto 변경할 유저 정보
 	 */
 	@Override
-	public void editUser(UserEditRequestDto userEditRequestDto) {
-		checkNicknameDuplicate(userEditRequestDto.getNickname());
+	public void editUserNickname(UserNicknameEditRequestDto userNicknameEditRequestDto) {
+		checkNicknameDuplicate(userNicknameEditRequestDto.getNickname());
 		User user = authUtil.getAuthenticatedUser();
-		user.edit(userEditRequestDto);
+		user.editNickname(userNicknameEditRequestDto);
+		userRepository.save(user);
+	}
+
+	/**
+	 * 로그인 유저 결제 비밀번호를 변경하는 메소드
+	 *
+	 * @param userPaymentPasswordEditRequestDto 변경할 결제 비밀번호 정보
+	 */
+	@Override
+	public void editUserPaymentPassword(UserPaymentPasswordEditRequestDto userPaymentPasswordEditRequestDto) {
+		User user = authUtil.getAuthenticatedUser();
+		userPaymentPasswordEditRequestDto.setPaymentPassword(
+			encryptService.encryptData(userPaymentPasswordEditRequestDto.getPaymentPassword()));
+		user.editPaymentPassword(userPaymentPasswordEditRequestDto);
 		userRepository.save(user);
 	}
 

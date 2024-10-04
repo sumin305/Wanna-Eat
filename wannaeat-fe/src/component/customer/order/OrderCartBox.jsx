@@ -37,32 +37,12 @@ const OrderCartBox = ({ reservationUrl }) => {
   const { allMenusInfo, setAllMenusInfo } = useOrderStore();
   const nav = useNavigate();
 
-  const reservationParticipantId = 3;
   const allMenus = allMenusInfo?.cartDetailResponseDto?.cartElements || [];
 
+  const reservationParticipantId = 8;
   const [menuCounts, setMenuCounts] = useState([]);
 
   const { stompClient, isConnected } = useChatStore();
-
-  // 현재를 기준으로 예약시간이 지났는지 확인하는 함수
-  const isReservationTimePassed = (
-    reservationDate,
-    reservationStartTime,
-    reservationEndTime
-  ) => {
-    const now = new Date();
-    const reservationStartDateTime = new Date(
-      `${reservationDate}T${reservationStartTime}`
-    );
-
-    if (now < reservationStartDateTime) {
-      console.log('예약시간 안됨: true');
-      return true;
-    } else {
-      console.log('예약시간 지남: false');
-      return false;
-    }
-  };
 
   // 주문 개수 변경하는 함수
   useEffect(() => {
@@ -72,13 +52,19 @@ const OrderCartBox = ({ reservationUrl }) => {
         return menuInfo.map((item) => ({
           menuCnt: item.menuCnt,
           menuTotalPrice: item.menuCnt * item.menuPrice,
+          menuPrice: item.menuPrice,
         }));
       });
       setMenuCounts(updatedMenuCounts);
     }
   }, [allMenus]);
 
-  const handleDecrease = (menuIndex, itemIndex) => {
+  const handleDecrease = (
+    menuIndex,
+    itemIndex,
+    menuId,
+    reservationParticipantId
+  ) => {
     setMenuCounts((prevCounts) =>
       prevCounts.map((menu, index) =>
         index === menuIndex
@@ -87,16 +73,47 @@ const OrderCartBox = ({ reservationUrl }) => {
                 ? {
                     ...item,
                     menuCnt: item.menuCnt - 1,
-                    menuTotalPrice: (item.menuCnt - 1) * item.menuPrice,
+                    menuTotalPrice: item.menuTotalPrice - item.menuPrice,
                   }
                 : item
             )
           : menu
       )
     );
+
+    // 장바구니 업데이트 로직 추가
+    const cartRegisterRequestDto = {
+      reservationUrl: reservationUrl,
+      reservationParticipantId: reservationParticipantId,
+      menuId: menuId,
+      menuPlusMinus: -1,
+    };
+
+    if (stompClient && isConnected) {
+      console.log('메뉴선택 웹소켓', stompClient);
+      console.log('메뉴선택 연결상태', isConnected);
+      try {
+        stompClient.send(
+          `/api/public/sockets/carts/register`,
+          {},
+          JSON.stringify(cartRegisterRequestDto)
+        );
+        console.log('장바구니 업데이트 내용:', cartRegisterRequestDto);
+      } catch (error) {
+        console.log('장바구니 업데이트 실패', error);
+      }
+    } else {
+      console.log('웹소켓 연결 실패');
+      alert('웹소켓 연결에 실패했습니다.');
+    }
   };
 
-  const handleIncrease = (menuIndex, itemIndex) => {
+  const handleIncrease = (
+    menuIndex,
+    itemIndex,
+    menuId,
+    reservationParticipantId
+  ) => {
     setMenuCounts((prevCounts) =>
       prevCounts.map((menu, index) =>
         index === menuIndex
@@ -112,17 +129,36 @@ const OrderCartBox = ({ reservationUrl }) => {
           : menu
       )
     );
-  };
 
-  const handleMenuViewButtonClick = () => {
-    nav(`/customer/order/menu-select/${reservationUrl}`);
+    // 장바구니 업데이트 로직 추가
+    const cartRegisterRequestDto = {
+      reservationUrl: reservationUrl,
+      reservationParticipantId: reservationParticipantId,
+      menuId: menuId,
+      menuPlusMinus: 1,
+    };
+
+    if (stompClient && isConnected) {
+      console.log('메뉴선택 웹소켓', stompClient);
+      console.log('메뉴선택 연결상태', isConnected);
+      try {
+        stompClient.send(
+          `/api/public/sockets/carts/register`,
+          {},
+          JSON.stringify(cartRegisterRequestDto)
+        );
+        console.log('장바구니 업데이트 내용:', cartRegisterRequestDto);
+      } catch (error) {
+        console.log('장바구니 업데이트 실패', error);
+      }
+    } else {
+      console.log('웹소켓 연결 실패');
+      alert('웹소켓 연결에 실패했습니다.');
+    }
   };
 
   const handleOrderMainClick = () => {
     nav(`/customer/order/${reservationUrl}`);
-  };
-  const handleOrderSheetButtonClick = () => {
-    nav(`/customer/order/order-sheet/${reservationUrl}`);
   };
 
   const handleMenuDeleteButtonClick = async (reservationUrl) => {
@@ -150,12 +186,33 @@ const OrderCartBox = ({ reservationUrl }) => {
 
         // 카트 정보 초기화
         setAllMenusInfo({ cartDetailResponseDto: { cartElements: [] } });
+        setMenuCounts([]);
       } catch (error) {
         console.log('주문 실패:', error);
       }
     } else {
       console.log('stompClient is not initialized or not connected');
     }
+  };
+
+  // 사람 당 총 금액 구하는 함수
+  const calculateTotalPrice = (menuIndex) => {
+    if (!menuCounts[menuIndex]) return 0;
+    return menuCounts[menuIndex].reduce(
+      (total, item) => total + item.menuTotalPrice,
+      0
+    );
+  };
+
+  // 주문 총 금액 구하는 함수
+  const calculateTotalMenuPrice = () => {
+    return menuCounts.reduce((totalMenuPrice, menu) => {
+      const menuTotal = menu.reduce(
+        (total, item) => total + item.menuTotalPrice,
+        0
+      );
+      return totalMenuPrice + menuTotal;
+    }, 0);
   };
 
   return (
@@ -185,94 +242,18 @@ const OrderCartBox = ({ reservationUrl }) => {
         <MenuDiv>
           {activeTab === 0 ? (
             <>
-              <div>
-                {allMenus &&
-                  allMenus
-                    .filter(
-                      (menus) =>
-                        menus.reservationParticipantId ===
-                        reservationParticipantId
-                    )
-                    .map((menus, menuIndex) => (
-                      <div key={menuIndex}>
-                        <LineDiv></LineDiv>
-                        <div>
-                          {menus.menuInfo ? (
-                            Object.values(menus.menuInfo).map(
-                              (menu, itemIndex) => (
-                                <div key={itemIndex}>
-                                  <FoodDiv>
-                                    <MenuImg src={menu.menuImage}></MenuImg>
-                                    <FoodInfoDiv>
-                                      <FoodInfoTopDiv>
-                                        <MenuNameP>{menu.menuName}</MenuNameP>
-                                      </FoodInfoTopDiv>
-                                      <FoodInfoBottomDiv>
-                                        <FoodInfoCountDiv>
-                                          <FoodInfoCountLeftBtn
-                                            onClick={() =>
-                                              handleDecrease(
-                                                menuIndex,
-                                                itemIndex
-                                              )
-                                            }
-                                            disabled={menu.menuCnt <= 0}
-                                          >
-                                            -
-                                          </FoodInfoCountLeftBtn>
-                                          <FoodInfoCountP>
-                                            {
-                                              menuCounts[menuIndex]?.[itemIndex]
-                                                ?.menuCnt
-                                            }
-                                          </FoodInfoCountP>
-                                          <FoodInfoCountRightBtn
-                                            onClick={() =>
-                                              handleIncrease(
-                                                menuIndex,
-                                                itemIndex
-                                              )
-                                            }
-                                          >
-                                            +
-                                          </FoodInfoCountRightBtn>
-                                        </FoodInfoCountDiv>
-                                        <FoodPriceP>
-                                          {menu.menuTotalPrice}원
-                                        </FoodPriceP>
-                                      </FoodInfoBottomDiv>
-                                    </FoodInfoDiv>
-                                  </FoodDiv>
-                                  <LineDiv />
-                                </div>
-                              )
-                            )
-                          ) : (
-                            <p>메뉴 정보가 없습니다.</p>
-                          )}
-                        </div>
-                        <TotalPriceDiv>
-                          <TotalPriceP>
-                            총 {menus.participantTotalPrice || ''}원
-                          </TotalPriceP>
-                        </TotalPriceDiv>
-                        <br />
-                      </div>
-                    ))}
-              </div>
-            </>
-          ) : (
-            <>
-              <div>
-                {allMenus &&
-                  allMenus.map((menus, menuIndex) => (
+              {allMenus &&
+                allMenus
+                  .filter(
+                    (menus) =>
+                      menus.reservationParticipantId ===
+                      reservationParticipantId
+                  )
+                  .map((menus, menuIndex) => (
                     <div key={menuIndex}>
-                      <PeopleP>
-                        {menus.reservationParticipantNickname || ''}
-                      </PeopleP>
-                      <LineDiv />
+                      <LineDiv></LineDiv>
                       <div>
-                        {menus.menuInfo ? ( // menus.menuInfo가 객체이므로 Object.values로 배열상태로 변경
+                        {menus.menuInfo ? (
                           Object.values(menus.menuInfo).map(
                             (menu, itemIndex) => (
                               <div key={itemIndex}>
@@ -286,7 +267,12 @@ const OrderCartBox = ({ reservationUrl }) => {
                                       <FoodInfoCountDiv>
                                         <FoodInfoCountLeftBtn
                                           onClick={() =>
-                                            handleDecrease(menuIndex, itemIndex)
+                                            handleDecrease(
+                                              menuIndex,
+                                              itemIndex,
+                                              menu.menuId,
+                                              reservationParticipantId
+                                            )
                                           }
                                           disabled={menu.menuCnt <= 0}
                                         >
@@ -300,14 +286,23 @@ const OrderCartBox = ({ reservationUrl }) => {
                                         </FoodInfoCountP>
                                         <FoodInfoCountRightBtn
                                           onClick={() =>
-                                            handleIncrease(menuIndex, itemIndex)
+                                            handleIncrease(
+                                              menuIndex,
+                                              itemIndex,
+                                              menu.menuId,
+                                              reservationParticipantId
+                                            )
                                           }
                                         >
                                           +
                                         </FoodInfoCountRightBtn>
                                       </FoodInfoCountDiv>
                                       <FoodPriceP>
-                                        {menu.menuTotalPrice}원
+                                        {
+                                          menuCounts[menuIndex]?.[itemIndex]
+                                            ?.menuTotalPrice
+                                        }
+                                        원
                                       </FoodPriceP>
                                     </FoodInfoBottomDiv>
                                   </FoodInfoDiv>
@@ -322,59 +317,87 @@ const OrderCartBox = ({ reservationUrl }) => {
                       </div>
                       <TotalPriceDiv>
                         <TotalPriceP>
-                          총 {menus.participantTotalPrice || ''}원
+                          총 {calculateTotalPrice(menuIndex) || ''}원
                         </TotalPriceP>
                       </TotalPriceDiv>
                       <br />
                     </div>
                   ))}
-              </div>
+            </>
+          ) : (
+            <>
+              {allMenus &&
+                allMenus.map((menus, menuIndex) => (
+                  <div key={menuIndex}>
+                    <PeopleP>
+                      {menus.reservationParticipantNickname || ''}
+                    </PeopleP>
+                    <LineDiv />
+                    <div>
+                      {menus.menuInfo ? ( // menus.menuInfo가 객체이므로 Object.values로 배열상태로 변경
+                        Object.values(menus.menuInfo).map((menu, itemIndex) => (
+                          <div key={itemIndex}>
+                            <FoodDiv>
+                              <MenuImg src={menu.menuImage}></MenuImg>
+                              <FoodInfoDiv>
+                                <FoodInfoTopDiv>
+                                  <MenuNameP>{menu.menuName}</MenuNameP>
+                                </FoodInfoTopDiv>
+                                <FoodInfoBottomDiv>
+                                  <FoodInfoCountDiv>
+                                    <FoodInfoCountP>
+                                      {
+                                        menuCounts[menuIndex]?.[itemIndex]
+                                          ?.menuCnt
+                                      }
+                                    </FoodInfoCountP>
+                                  </FoodInfoCountDiv>
+                                  <FoodPriceP>
+                                    {
+                                      menuCounts[menuIndex]?.[itemIndex]
+                                        ?.menuTotalPrice
+                                    }
+                                    원
+                                  </FoodPriceP>
+                                </FoodInfoBottomDiv>
+                              </FoodInfoDiv>
+                            </FoodDiv>
+                            <LineDiv />
+                          </div>
+                        ))
+                      ) : (
+                        <p>메뉴 정보가 없습니다.</p>
+                      )}
+                    </div>
+                    <TotalPriceDiv>
+                      <TotalPriceP>
+                        총 {calculateTotalPrice(menuIndex) || ''}원
+                      </TotalPriceP>
+                    </TotalPriceDiv>
+                    <br />
+                  </div>
+                ))}
+              <TotalPriceDiv>
+                {menuCounts.length > 0 ? (
+                  <TotalPriceP>총: {calculateTotalMenuPrice()}원</TotalPriceP>
+                ) : null}
+              </TotalPriceDiv>
             </>
           )}
         </MenuDiv>
       </div>
-      {isReservationTimePassed(
-        allMenusInfo.reservationDate,
-        allMenusInfo.reservationStartTime
-      ) ? ( // 예약시간 전
-        <>
-          <ButtonWrapper>
-            <WEButton
-              size="medium"
-              outlined="true"
-              onClick={handleOrderMainClick}
-            >
-              주문서
-            </WEButton>
-            <WEButton
-              size="medium"
-              outlined="true"
-              onClick={handleOrderButtonClick}
-            >
-              주문하기
-            </WEButton>
-          </ButtonWrapper>
-        </>
-      ) : (
-        // 예약시간 후
-
-        <ButtonWrapper>
-          <WEButton
-            size="medium"
-            outlined="true"
-            onClick={handleMenuViewButtonClick}
-          >
-            장바구니 보기
-          </WEButton>
-          <WEButton
-            size="medium"
-            outlined="true"
-            onClick={handleOrderSheetButtonClick}
-          >
-            결제하기
-          </WEButton>
-        </ButtonWrapper>
-      )}
+      <ButtonWrapper>
+        <WEButton size="medium" outlined="true" onClick={handleOrderMainClick}>
+          주문서
+        </WEButton>
+        <WEButton
+          size="medium"
+          outlined="true"
+          onClick={handleOrderButtonClick}
+        >
+          주문하기
+        </WEButton>
+      </ButtonWrapper>
     </OrderContainer>
   );
 };

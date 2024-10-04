@@ -1,0 +1,94 @@
+import styled from '@emotion/styled';
+import theme from 'style/common/theme.js';
+
+const SalesPageStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 115vh;
+  margin-bottom: 10vh;
+
+  @media (min-width: 480px) {
+    height: 150vh;
+    margin-bottom: 10vh;
+  }
+`;
+
+const SalesPageWrapperStyled = styled.div`
+  width: 90%;
+  height: 96%;
+
+  padding-inline: 2%;
+
+  border-radius: 0.625rem;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+
+  @media (min-width: 480px) {
+    width: 95%;
+    height: 95%;
+
+    padding-inline: 2%;
+  }
+`;
+
+const SalesPageHeaderStyled = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 10px;
+  margin-bottom: 15px;
+
+  .arrow {
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+  }
+
+  @media (min-width: 480px) {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 6px;
+    margin-bottom: 10px;
+
+    .arrow {
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+    }
+  }
+`;
+
+const DateStyled = styled.div`
+  font-size: ${theme.fontSize.px13};
+  margin-inline: 10px;
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px17};
+    margin-inline: 10px;
+  }
+`;
+
+const TotalRevenueStyled = styled.div`
+  width: 100%;
+  text-align: center;
+  font-size: ${theme.fontSize.px15};
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px21};
+    margin-block: 20px;
+  }
+`;
+
+export {
+  SalesPageStyled,
+  SalesPageWrapperStyled,
+  SalesPageHeaderStyled,
+  DateStyled,
+  TotalRevenueStyled,
+};

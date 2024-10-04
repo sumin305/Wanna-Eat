@@ -16,7 +16,7 @@ import PeakTimePage from 'pages/manager/statistics/PeakTimePage/PeakTimePage.jsx
 import SalesPage from 'pages/manager/statistics/SalesPage/SalesPage.jsx';
 import NotificationPage from '../pages/manager/notification/NotificationPage.jsx';
 import ManagerReservationDetailPage from '../pages/manager/reservation/ManagerReservationDetailPage.jsx';
-
+import AdminDetailPage from 'pages/manager/reservation/AdminDetailPage/AdminDetailPage.jsx';
 // 손님 관련 페이지
 import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
 import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage.jsx';

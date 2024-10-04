@@ -27,7 +27,6 @@ import Location from '../../../../../assets/icons/reservation/location.svg';
 import Clock from '../../../../../assets/icons/reservation/clock.svg';
 import Phone from '../../../../../assets/icons/reservation/phone.svg';
 import useRestaurantStore from 'stores/customer/useRestaurantStore';
-import { addZzimRestaurant } from 'api/customer/zzim.js';
 const RestaurantDetailPage = () => {
   const params = useParams();
   const nav = useNavigate();
@@ -44,7 +43,6 @@ const RestaurantDetailPage = () => {
     setIsShowLogo,
     setActiveIcons,
     setIsShowBackIcon,
-    setIconAction,
   } = useHeaderStore();
 
   const {
@@ -63,22 +61,43 @@ const RestaurantDetailPage = () => {
   } = useRestaurantStore();
 
   useEffect(() => {
+    const fetchRestaurant = async () => {
+      await setRestaurant(params.id);
+      await setRestaurantId(params.id);
+    };
     setRestaurant(params.id);
     setIsCarrot(true);
+    setPageName(restaurantName ? restaurantName : '맛있는 식당');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
     setActiveIcons([3]);
+    fetchRestaurant();
   }, []);
 
-  const [activeTab, setActiveTab] = useState(0);
+  useEffect(() => {
+    setPageName(restaurantName ? restaurantName : '맛있는 식당');
+    setActiveMenus(
+      menuCategories.length === 0
+        ? []
+        : menus.filter(
+            (menu) => menu.menuCategoryName === menuCategories[activeTab]
+          )[0].menuDetailResponseDtos
+    );
+  }, [restaurantName]);
 
-  const categories = Object.keys(menus);
-  console.log(categories);
-  const activeMenus =
-    categories.length === 0 ? [] : menus[categories[activeTab]];
+  useEffect(() => {
+    setActiveMenus(
+      !menuCategories || menuCategories.length === 0
+        ? []
+        : menus.filter(
+            (menu) => menu.menuCategoryName === menuCategories[activeTab]
+          )[0].menuDetailResponseDtos
+    );
+  }, [activeTab]);
 
   return (
     <Box>
+      {/* <div> {params.id}번 가게 상세페이지</div> */}
       <RestaurantImageBox src={RestaurantImg} />
       <InformationContainer>
         <InformationText>

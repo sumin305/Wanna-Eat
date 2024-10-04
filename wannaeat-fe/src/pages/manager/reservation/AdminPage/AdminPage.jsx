@@ -52,6 +52,39 @@ const AdminPage = () => {
       prevLocation.current === '/manager/admin/detail'
     );
   }, [location]);
+
+  useEffect(() => {
+    setReservationList([
+      {
+        reservationId: 0,
+        reservationStartTime: '11:00',
+        reservationEndTime: '11:30',
+        reservationTableList: [2],
+        memberCount: 5,
+      },
+      {
+        reservationId: 1,
+        reservationStartTime: '12:00',
+        reservationEndTime: '13:30',
+        reservationTableList: [2],
+        memberCount: 5,
+      },
+      {
+        reservationId: 2,
+        reservationStartTime: '13:00',
+        reservationEndTime: '14:00',
+        reservationTableList: [3],
+        memberCount: 3,
+      },
+      {
+        reservationId: 3,
+        reservationStartTime: '14:00',
+        reservationEndTime: '15:00',
+        reservationTableList: [3],
+        memberCount: 3,
+      },
+    ]);
+  }, []);
   const [isCommingFromDetailPage, setIsCommingFromDetailPage] = useState(false);
   const dayList = [
     '2024-10-10',
@@ -155,6 +188,13 @@ const AdminPage = () => {
     navigate('/manager/reservation/reservation-detail/id');
   };
 
+  // 스크롤이 발생 시 페이지ㅣ 이동
+  const onScrollFunction = (e) => {
+    console.log(e.deltaY);
+    if (e.deltaY > 0) {
+      navigate('/manager/admin/detail');
+    }
+  };
   return (
     <>
       {isCommingFromDetailPage ? (

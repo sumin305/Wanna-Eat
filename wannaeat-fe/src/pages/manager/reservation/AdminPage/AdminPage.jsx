@@ -1,13 +1,27 @@
 import { useEffect, useState, useRef } from 'react';
 import useHeaderStore from '../../../../stores/common/useHeaderStore';
-import styled from '@emotion/styled/macro';
 import moment from 'moment';
-import theme from '../../../../style/common/theme';
-import Calendar from 'react-calendar';
-import WETab from '../../../../component/common/tab/WETab/WETab.jsx';
 import { getReservationInfoByDay } from 'api/manager/reservation/reservation.js';
 import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore';
 import { useNavigate } from 'react-router-dom';
+import {
+  CircleWrapper,
+  CarrotCircle,
+  GrayCircle,
+  CountText,
+  ReservationManagePageContainer,
+  CalendarWrapper,
+  CalendarStyled,
+  TabContainer,
+  Tab,
+  ReservationInfoContainer,
+  ReservationInfoItem,
+  ReservationInfoImage,
+  ReservationInfoText,
+  ReservationTopInfo,
+  ReservationText,
+  ReservationBottomInfo,
+} from './AdminPage.js';
 const AdminPage = () => {
   const {
     setIsCarrot,

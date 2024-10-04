@@ -124,89 +124,14 @@ const AdminPage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    setReservationList([
-      {
-        reservationId: 0,
-        reservationStartTime: '11:00',
-        reservationEndTime: '11:30',
-        reservationTableList: [2],
-        memberCount: 5,
-      },
-      {
-        reservationId: 1,
-        reservationStartTime: '12:00',
-        reservationEndTime: '13:30',
-        reservationTableList: [2],
-        memberCount: 5,
-      },
-      {
-        reservationId: 2,
-        reservationStartTime: '13:00',
-        reservationEndTime: '14:00',
-        reservationTableList: [3],
-        memberCount: 3,
-      },
-      {
-        reservationId: 3,
-        reservationStartTime: '14:00',
-        reservationEndTime: '15:00',
-        reservationTableList: [3],
-        memberCount: 3,
-      },
-    ]);
-    //     if (activeTab === 0) {
-    //       // 방문 예정인 예약들만 담는다.
-    //       setReservationList(
-    //         reservationDetails.filter((reservation) => {
-    //           // 현재 시각과 비교
-    //           if (
-    //             reservation.reservationDate ===
-    //             moment(new Date()).format('YYYY-MM-DD')
-    //           ) {
-    //             return (
-    //               reservation.reservationStartTime <
-    //               moment(new Date()).format('HH:mm')
-    //             );
-    //           }
-    //           return (
-    //             reservation.reservationDate <
-    //             moment(new Date()).format('YYYY-MM-DD')
-    //           );
-    //         })
-    //       );
-    //     } else if (activeTab === 1) {
-    //       setReservationList(
-    //         reservationDetails.filter((reservation) => {
-    //           if (
-    //             reservation.reservationDate ===
-    //               moment(new Date()).format('YYYY-MM-DD') &&
-    //             reservation.reservationStartTime <
-    //               moment(new Date()).format('HH:mm') &&
-    //             reservation.endTime > moment(new Date()).format('HH:mm')
-    //           ) {
-    //             return true;
-    //           }
-    //         })
-    //       );
-    //     } else {
-    //       setReservationList(
-    //         reservationDetails.filter((reservation) => {
-    //           if (reservation.reservationDate > moment(new Date()).format('YYYY-MM-DD') && reservation.reservationEndTime <
-    //           moment(new Date()).format('HH:mm') &&
-    // ) return true;
-    //         })
-    //       );
-    //     }
-  }, [activeTab]);
-
-  // 스크롤이 발생 시 페이지ㅣ 이동
-  const onScrollFunction = (e) => {
-    console.log(e.deltaY);
-    if (e.deltaY > 0) {
-      navigate('/manager/admin/detail');
-    }
-  };
+  // useEffect(() => {
+  //   // 방문 예정
+  //   if (activeTab === 0) {
+  //     setReservationList(reservationDetails.filter((reservation) => {}));
+  //   } else if (activeTab === 1) {
+  //   } else {
+  //   }
+  // }, [activeTab]);
 
   // 날짜가 선택될 때마다 실행되는 함수
   const handleDateChange = (date) => {

@@ -11,6 +11,7 @@ import {
   NotificationContent,
   NotificationType,
   NotificationTime,
+  NotificationEmptyMessage
 } from './NotificationPage'; // 스타일 파일에서 컴포넌트 임포트
 
 const NotificationPage = () => {
@@ -70,11 +71,11 @@ const NotificationPage = () => {
   return (
     <NotificationPageContainer>
       <NotificationHeader>
-        <h3>
+        <p>
           {selectedCategory === '전체'
             ? '전체'
             : translateAlarmType(selectedCategory)}
-        </h3>
+        </p>
         {/* 카테고리 선택 탭 */}
         <NotificationTabs>
           <span
@@ -91,13 +92,17 @@ const NotificationPage = () => {
           </span>
           <span
             onClick={() => handleCategoryChange('RESERVATION_CONFIRMED')}
-            className={selectedCategory === 'RESERVATION_CONFIRMED' ? 'active' : ''}
+            className={
+              selectedCategory === 'RESERVATION_CONFIRMED' ? 'active' : ''
+            }
           >
             예약신청
           </span>
           <span
             onClick={() => handleCategoryChange('RESERVATION_CANCELED')}
-            className={selectedCategory === 'RESERVATION_CANCELED' ? 'active' : ''}
+            className={
+              selectedCategory === 'RESERVATION_CANCELED' ? 'active' : ''
+            }
           >
             예약취소
           </span>
@@ -113,21 +118,27 @@ const NotificationPage = () => {
       {/* 알림 리스트 */}
       <NotificationList>
         {filteredNotifications.length === 0 ? (
-          <li>해당 카테고리에 알림이 없습니다.</li>
+          <NotificationEmptyMessage>
+            해당 카테고리에 알림이 없습니다.
+          </NotificationEmptyMessage>
         ) : (
           filteredNotifications.map((notification, index) => (
-            <Link 
-              to={`/manager/reservation/reservation-detail/${notification.reservationId}`} 
+            <Link
+              to={`/manager/reservation/reservation-detail/${notification.reservationId}`}
               key={`${notification.reservationId}-${index}`} // 고유 키 설정
               style={{ textDecoration: 'none', color: 'inherit' }} // 링크 스타일
             >
               <NotificationItem>
-                <NotificationIcon src={notification.imageUrl} alt="알림 아이콘" />
+                <NotificationIcon
+                  src={notification.imageUrl}
+                  alt="알림 아이콘"
+                />
                 <NotificationContent>
                   <NotificationType>
                     [{translateAlarmType(notification.alarmType)}]
                   </NotificationType>
-                  <div>예약 인원: {notification.memberCnt}명</div> {/* 예약 인원 표시 */}
+                  <div>예약 인원: {notification.memberCnt}명</div>{' '}
+                  {/* 예약 인원 표시 */}
                   {notification.menuName && ( // 메뉴가 있을 때만 렌더링
                     <div>{notification.menuName} 추가</div>
                   )}

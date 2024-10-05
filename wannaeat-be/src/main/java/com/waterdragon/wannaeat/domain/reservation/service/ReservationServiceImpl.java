@@ -21,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.waterdragon.wannaeat.domain.alarm.domain.enums.AlarmType;
+import com.waterdragon.wannaeat.domain.alarm.service.AlarmService;
 import com.waterdragon.wannaeat.domain.cart.exception.error.ReservationParticipantNotMatchReservationException;
 import com.waterdragon.wannaeat.domain.order.domain.Order;
 import com.waterdragon.wannaeat.domain.order.repository.OrderRepository;
@@ -77,6 +79,7 @@ public class ReservationServiceImpl implements ReservationService {
 	private final AuthUtil authUtil;
 	private final QrUtil qrUtil;
 	private final RedisService redisService;
+	private final AlarmService alarmService;
 	private final OrderRepository orderRepository;
 	@Value("${redirectURL}")
 	private String REDIRECT_URL;
@@ -220,6 +223,8 @@ public class ReservationServiceImpl implements ReservationService {
 				.build());
 
 		registerReservationTable(reservation, reservationRegisterRequestDto.getTableList());
+
+		alarmService.registerAlarm(reservation, AlarmType.RESERVATION_CONFIRMED);
 
 		return ReservationDetailResponseDto.transferToReservationDetailResponseDto(reservation,
 			reservationRegisterRequestDto.getTableList());

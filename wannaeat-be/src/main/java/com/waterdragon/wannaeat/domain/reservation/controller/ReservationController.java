@@ -26,6 +26,7 @@ import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegist
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationSummaryResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.RecentReservationResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
@@ -127,6 +128,25 @@ public class ReservationController {
 			.status(HttpStatus.OK.value())
 			.message("예약 리스트 조회 목록")
 			.data(reservations)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	/**
+	 * 최우선 방문예정 식당을 리턴하는 API
+	 *
+	 * @return 최우선 방문 예정 식당
+	 */
+	@Operation(summary = "최우선 방문 예정 식당 조회 API")
+	@GetMapping("/users/reservations/recent")
+	public ResponseEntity<ResponseDto<RecentReservationResponseDto>> getRecentReservation() {
+		RecentReservationResponseDto reservation = reservationService.getRecentReservation();
+
+		ResponseDto<RecentReservationResponseDto> responseDto = ResponseDto.<RecentReservationResponseDto>builder()
+			.status(HttpStatus.OK.value())
+			.message("예약 리스트 조회 목록")
+			.data(reservation)
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);

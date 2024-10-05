@@ -2,14 +2,14 @@ import { create } from 'zustand';
 
 const useOrderStore = create((set) => ({
   allMenusInfo: { cartDetailResponseDto: { cartElements: [] } },
-  menuCounts: [], // 메뉴 수량을 관리하는 상태 추가
+  allSortedMenusInfo: { cartDetailResponseDto: { cartElements: [] } },
   allOrdersInfo: { orderListResponseDto: { orderDetailResponseDtos: [] } },
   reservationId: '',
   allMenusData: { menuListByCategoryResponseDtos: [] },
   content: {},
   setAllMenusInfo: (menusInfo) => set(() => ({ allMenusInfo: menusInfo })),
-  setMenuCounts: (updatedMenuCounts) =>
-    set(() => ({ menuCounts: updatedMenuCounts })),
+  setAllMenusSortInfo: (sortedMenusInfo) =>
+    set(() => ({ allSortedMenusInfo: sortedMenusInfo })),
   setAllOrdersInfo: (ordersInfo) => set(() => ({ allOrdersInfo: ordersInfo })),
   setReservationId: (reservationId) =>
     set(() => ({ reservationId: reservationId })),

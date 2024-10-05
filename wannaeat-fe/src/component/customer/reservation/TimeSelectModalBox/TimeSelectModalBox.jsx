@@ -29,7 +29,7 @@ const TimeSelectModalBox = () => {
   const [memCnt, setMemCnt] = useState(0);
 
   useEffect(() => {
-    setMemCnt(memberCount);
+    setMemCnt(memberCount === -1 ? 0 : memberCount);
   }, []);
   const handleHeadCountChange = (e) => {
     if (e.target.value === '') {

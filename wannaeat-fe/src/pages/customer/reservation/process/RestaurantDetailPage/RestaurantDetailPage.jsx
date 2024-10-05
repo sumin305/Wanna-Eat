@@ -22,11 +22,11 @@ import {
 import RestaurantImg from '../../../../../assets/customer/restaurant.jpeg';
 import WETab from '../../../../../component/common/tab/WETab/WETab.jsx';
 import Button from '../../../../../component/common/button/WEButton/WEButton.jsx';
-import FoodImg from '../../../../../assets/icons/common/food.png';
 import Location from '../../../../../assets/icons/reservation/location.svg';
-import Clock from '../../../../../assets/icons/reservation/clock.svg';
+import Clock from '../../../../../assets/icons/reservation/clock-white.svg';
 import Phone from '../../../../../assets/icons/reservation/phone.svg';
 import useRestaurantStore from 'stores/customer/useRestaurantStore';
+import { addZzimRestaurant, removeZzimRestaurant } from 'api/customer/zzim.js';
 const RestaurantDetailPage = () => {
   const params = useParams();
   const nav = useNavigate();
@@ -43,6 +43,7 @@ const RestaurantDetailPage = () => {
     setIsShowLogo,
     setActiveIcons,
     setIsShowBackIcon,
+    setIconAction,
   } = useHeaderStore();
 
   const {
@@ -58,6 +59,8 @@ const RestaurantDetailPage = () => {
     setRestaurant,
     setRestaurantId,
     menuCategories,
+    restaurantLike,
+    setRestaurantLike,
   } = useRestaurantStore();
 
   useEffect(() => {
@@ -70,7 +73,6 @@ const RestaurantDetailPage = () => {
     setPageName(restaurantName ? restaurantName : '맛있는 식당');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
-    setActiveIcons([3]);
     fetchRestaurant();
   }, []);
 
@@ -83,8 +85,30 @@ const RestaurantDetailPage = () => {
             (menu) => menu.menuCategoryName === menuCategories[activeTab]
           )[0].menuDetailResponseDtos
     );
+    setRestaurant(params.id);
   }, [restaurantName]);
 
+  useEffect(() => {
+    const addZzim = async () => {
+      const result = await addZzimRestaurant(params.id);
+      if (result.status === 201) {
+        setRestaurantLike(true);
+      }
+    };
+    const removeZzim = async () => {
+      const result = await removeZzimRestaurant(params.id);
+      if (result.status === 200) {
+        setRestaurantLike(false);
+      }
+    };
+    if (restaurantLike) {
+      setActiveIcons([7]);
+      setIconAction([removeZzim]);
+    } else {
+      setActiveIcons([6]);
+      setIconAction([addZzim]);
+    }
+  }, [restaurantLike]);
   useEffect(() => {
     setActiveMenus(
       !menuCategories || menuCategories.length === 0

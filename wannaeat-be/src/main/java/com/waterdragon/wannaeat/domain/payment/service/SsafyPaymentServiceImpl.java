@@ -91,6 +91,19 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 			.orElseThrow(() -> new ReservationNotFoundException(
 				"해당 url의 예약은 존재하지 않습니다. 예약 url : " + ssafyPaymentOrderRequestDto.getReservationUrl()));
 
+		// 식당 존재여부 확인
+		Restaurant restaurant;
+		try{
+			restaurant = orderRepository.findByOrderId(ssafyPaymentOrderRequestDto.getPaymentMenuRequestDtos().get(0).getOrderId()).get().getReservation().getRestaurant();
+			if(restaurant == null){
+				throw new RestaurantNotFoundException("해당 식당이 존재하지 않습니다.");
+			}
+		} catch (Exception e){
+			throw new RestaurantNotFoundException("해당 식당이 존재하지 않습니다.");
+		}
+
+
+
 		// 결제 비밀번호 검증
 		User user = authUtil.getAuthenticatedUser();
 		if (!encryptService.encryptData(ssafyPaymentOrderRequestDto.getUserPassword()).equals(
@@ -172,7 +185,7 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 		requestBody.put("Header", header);
 		requestBody.put("cardNo", ssafyPaymentOrderRequestDto.getCardNo());
 		requestBody.put("cvc", ssafyPaymentOrderRequestDto.getCvc());
-		requestBody.put("merchantId", ssafyPaymentOrderRequestDto.getMerchantId());
+		requestBody.put("merchantId", restaurant.getMerchantId());
 		requestBody.put("paymentBalance", String.valueOf(totalPrice));
 
 		// HttpEntity에 헤더와 본문 데이터 설정
@@ -255,7 +268,7 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 		requestBody.put("Header", header);
 		requestBody.put("cardNo", ssafyPaymentDepositRequestDto.getCardNo());
 		requestBody.put("cvc", ssafyPaymentDepositRequestDto.getCvc());
-		requestBody.put("merchantId", ssafyPaymentDepositRequestDto.getMerchantId());
+		requestBody.put("merchantId", restaurant.getMerchantId());
 		requestBody.put("paymentBalance", String.valueOf(totalPrice));
 
 		// HttpEntity에 헤더와 본문 데이터 설정

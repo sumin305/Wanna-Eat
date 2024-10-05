@@ -19,9 +19,6 @@ public class SsafyPaymentRequestDto {
 	@NotEmpty(message = "cvc는 필수 입력값입니다.")
 	private String cvc;
 
-	@NotNull(message = "가맹점 Id는 필수 입력값입니다.")
-	private String merchantId;
-
 	@NotEmpty(message = "유저 Key는 필수 입력값입니다.")
 	private String userKey;
 

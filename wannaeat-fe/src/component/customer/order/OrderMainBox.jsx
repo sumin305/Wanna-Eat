@@ -45,19 +45,34 @@ const OrderMainBox = ({ reservationUrl }) => {
     nav(`/customer/order/order-sheet/${reservationUrl}`);
   };
 
-  // 닉네임 별로 그룹화 하는 함수
-  const groupByNickname = (orders) => {
+  // 닉네임 별로 그룹화, 총 금액 구하는 함수
+  const groupByNicknameWithTotalPrice = (orders) => {
     return orders.reduce((acc, order) => {
       const nickname = order.reservationParticipantNickname;
+      const totalPriceForOrder = order.totalCnt * order.menuPrice;
+
       if (!acc[nickname]) {
-        acc[nickname] = [];
+        acc[nickname] = {
+          orders: [],
+          totalPrice: 0,
+        };
       }
-      acc[nickname].push(order);
+      acc[nickname].orders.push(order);
+      acc[nickname].totalPrice += totalPriceForOrder;
+
       return acc;
     }, {});
   };
 
-  const groupedOrders = groupByNickname(allOrders);
+  const groupedOrders = groupByNicknameWithTotalPrice(allOrders);
+
+  // 닉네임 별 합계 금액 계산
+  const calculateTotalPriceForAll = (group) => {
+    return Object.values(group).reduce(
+      (acc, group) => acc + group.totalPrice,
+      0
+    );
+  };
 
   // totalCnt를 계산하는 함수
   const calculateTotalCnt = (orders) => {
@@ -73,6 +88,15 @@ const OrderMainBox = ({ reservationUrl }) => {
   const myTotalCnt = calculateTotalCnt(myOrders);
   // 전체 메뉴의 totalCnt
   const allTotalCnt = calculateTotalCnt(allOrders);
+
+  // 나의 메뉴 합계 금액 계산
+  const myTotalPrice = myOrders.reduce(
+    (acc, order) => acc + order.totalCnt * order.menuPrice,
+    0
+  );
+
+  // 전체 메뉴의 합계 금액
+  const allTotalPrice = calculateTotalPriceForAll(groupedOrders);
 
   return (
     <>
@@ -92,10 +116,6 @@ const OrderMainBox = ({ reservationUrl }) => {
               <div>
                 {myOrders.length > 0 && (
                   <div>
-                    <PeopleP>
-                      {myOrders[0].reservationParticipantNickname || ''}
-                    </PeopleP>
-                    <LineDiv />
                     {myOrders.map((order, index) => (
                       <div key={index}>
                         <FoodDiv>
@@ -118,58 +138,84 @@ const OrderMainBox = ({ reservationUrl }) => {
                                 </FoodInfoCountP>
                               </FoodInfoCountDiv>
 
-                              <FoodPriceP>가격: {order.menuPrice}</FoodPriceP>
+                              <FoodPriceP>{order.menuPrice}원</FoodPriceP>
                             </FoodInfoBottomDiv>
                           </FoodInfoDiv>
                         </FoodDiv>
                         <LineDiv />
-                        <TotalPriceDiv>
-                          <TotalPriceP>
-                            총 가격: {order.totalCnt * order.menuPrice}
-                          </TotalPriceP>
-                        </TotalPriceDiv>
-                        <br />
                       </div>
                     ))}
+                    <TotalPriceDiv>
+                      <TotalPriceP>
+                        총: {myTotalPrice.toLocaleString('ko-KR')} 원
+                      </TotalPriceP>
+                    </TotalPriceDiv>
                   </div>
                 )}
               </div>
             ) : (
               // 전체 메뉴
-              Object.entries(groupedOrders).map(([nickname, orders]) => (
-                <div key={nickname}>
-                  <PeopleP>{nickname}</PeopleP>
-                  <LineDiv />
-                  {orders.map((order, index) => (
-                    <div key={index}>
-                      <FoodDiv>
-                        <MenuImg src={order.menuImage} alt={order.menuName} />
-                        <FoodInfoDiv>
-                          <FoodInfoTopDiv>
-                            <MenuNameP>{order.menuName}</MenuNameP>
-                          </FoodInfoTopDiv>
-                          <FoodInfoBottomDiv>
-                            <FoodInfoCountDiv>
-                              <PeopleP>총 주문:</PeopleP>
-                              <FoodInfoCountP>{order.totalCnt}</FoodInfoCountP>
-                              <PeopleP>미결제 수량:</PeopleP>
-                              <FoodInfoCountP>
-                                {order.totalCnt - order.paidCnt}
-                              </FoodInfoCountP>
-                            </FoodInfoCountDiv>
+              <div>
+                {Object.entries(groupedOrders).map(([nickname, group]) => (
+                  <div key={nickname}>
+                    <PeopleP>{nickname}</PeopleP>
+                    <LineDiv />
+                    {Array.isArray(group.orders) && group.orders.length > 0 ? (
+                      group.orders.map((order, index) => (
+                        <div key={index}>
+                          <FoodDiv>
+                            {order.menuImage && (
+                              <MenuImg
+                                src={order.menuImage}
+                                alt={order.menuName}
+                              />
+                            )}
+                            <FoodInfoDiv>
+                              <FoodInfoTopDiv>
+                                <MenuNameP>{order.menuName}</MenuNameP>
+                              </FoodInfoTopDiv>
+                              <FoodInfoBottomDiv>
+                                <FoodInfoCountDiv>
+                                  <PeopleP>총 주문:</PeopleP>
+                                  <FoodInfoCountP>
+                                    {order.totalCnt}
+                                  </FoodInfoCountP>
+                                  <PeopleP>미결제 수량:</PeopleP>
+                                  <FoodInfoCountP>
+                                    {order.totalCnt - order.paidCnt}
+                                  </FoodInfoCountP>
+                                </FoodInfoCountDiv>
 
-                            <FoodPriceP>
-                              {order.totalCnt * order.menuPrice}
-                            </FoodPriceP>
-                          </FoodInfoBottomDiv>
-                        </FoodInfoDiv>
-                      </FoodDiv>
-                      <LineDiv />
-                    </div>
-                  ))}
-                  <br />
-                </div>
-              ))
+                                <FoodPriceP>
+                                  {(
+                                    order.totalCnt * order.menuPrice
+                                  ).toLocaleString('ko-KR')}{' '}
+                                  원
+                                </FoodPriceP>
+                              </FoodInfoBottomDiv>
+                            </FoodInfoDiv>
+                          </FoodDiv>
+                          <LineDiv />
+                        </div>
+                      ))
+                    ) : (
+                      <div>주문이 없습니다.</div>
+                    )}
+
+                    <TotalPriceDiv>
+                      <TotalPriceP>
+                        총: {group.totalPrice.toLocaleString('ko-KR')} 원
+                      </TotalPriceP>
+                    </TotalPriceDiv>
+                    <br />
+                  </div>
+                ))}
+                <TotalPriceDiv>
+                  <TotalPriceP>
+                    총: {allTotalPrice.toLocaleString('ko-KR')} 원
+                  </TotalPriceP>
+                </TotalPriceDiv>
+              </div>
             )}
           </MenuDiv>
         </div>

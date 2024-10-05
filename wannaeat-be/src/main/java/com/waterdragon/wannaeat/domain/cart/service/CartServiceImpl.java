@@ -71,7 +71,8 @@ public class CartServiceImpl implements CartService {
 		Reservation reservation = validateReservationUrl(cartRegisterRequestDto.getReservationUrl());
 
 		// reservationParticipantId 유효성 확인
-		ReservationParticipant reservationParticipant = validateReservationParticipantId(cartRegisterRequestDto.getReservationParticipantId());
+		ReservationParticipant reservationParticipant = validateReservationParticipantId(
+			cartRegisterRequestDto.getReservationParticipantId());
 
 		if (!reservationParticipant.getReservation().getReservationId().equals(reservation.getReservationId())) {
 			throw new ReservationParticipantNotMatchReservationException(
@@ -279,7 +280,7 @@ public class CartServiceImpl implements CartService {
 
 	/**
 	 * 장바구니 휴지통
-	 * 
+	 *
 	 * @param cartDeleteRequestDto 장바구니 휴지통 목록
 	 */
 	@Override
@@ -289,7 +290,8 @@ public class CartServiceImpl implements CartService {
 		Reservation reservation = validateReservationUrl(cartDeleteRequestDto.getReservationUrl());
 
 		// reservationParticipantId 유효성 확인
-		ReservationParticipant reservationParticipant = validateReservationParticipantId(cartDeleteRequestDto.getReservationParticipantId());
+		ReservationParticipant reservationParticipant = validateReservationParticipantId(
+			cartDeleteRequestDto.getReservationParticipantId());
 
 		if (!reservationParticipant.getReservation().getReservationId().equals(reservation.getReservationId())) {
 			throw new ReservationParticipantNotMatchReservationException(
@@ -408,7 +410,7 @@ public class CartServiceImpl implements CartService {
 
 	/**
 	 * 내 장바구니 비우기
-	 * 
+	 *
 	 * @param cartClearRequestDto
 	 */
 	@Override
@@ -416,12 +418,14 @@ public class CartServiceImpl implements CartService {
 
 		// 예약 url 유효성 검증
 		Reservation reservation = reservationRepository.findByReservationUrl(cartClearRequestDto.getReservationUrl())
-			.orElseThrow(() -> new ReservationNotFoundException("해당 url의 예약이 존재하지 않습니다. 예약 url : " + cartClearRequestDto.getReservationUrl()));
+			.orElseThrow(() -> new ReservationNotFoundException(
+				"해당 url의 예약이 존재하지 않습니다. 예약 url : " + cartClearRequestDto.getReservationUrl()));
 
 		// 예약 참가자 id 유효성 검증
 		ReservationParticipant reservationParticipant = reservationParticipantRepository.findByReservationParticipantId(
-			cartClearRequestDto.getReservationParticipantId())
-			.orElseThrow(() -> new ReservationParticipantNotFoundException("해당 참가자가 존재하지 않습니다. 참가자 id : " + cartClearRequestDto.getReservationParticipantId()));
+				cartClearRequestDto.getReservationParticipantId())
+			.orElseThrow(() -> new ReservationParticipantNotFoundException(
+				"해당 참가자가 존재하지 않습니다. 참가자 id : " + cartClearRequestDto.getReservationParticipantId()));
 
 		// 예약, 예약 참가자 매칭 확인
 		if (!reservationParticipant.getReservation().getReservationId().equals(reservation.getReservationId())) {
@@ -460,7 +464,8 @@ public class CartServiceImpl implements CartService {
 		List<CartElementResponseDto> cartElementResponseDtos = cart.getCartElements().entrySet().stream()
 			.map(entry -> {
 				Long orderParticipantId = entry.getKey();
-				ReservationParticipant orderParticipant = reservationParticipantRepository.findByReservationParticipantId(orderParticipantId)
+				ReservationParticipant orderParticipant = reservationParticipantRepository.findByReservationParticipantId(
+						orderParticipantId)
 					.orElseThrow(() -> new ReservationParticipantNotFoundException(
 						"장바구니의 reservationParticipantId: " + orderParticipantId + " 의 주문 인원이 존재하지 않습니다."));
 

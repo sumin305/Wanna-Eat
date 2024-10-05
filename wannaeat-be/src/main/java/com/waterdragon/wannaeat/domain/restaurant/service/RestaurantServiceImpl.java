@@ -8,8 +8,15 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.waterdragon.wannaeat.domain.menu.dto.response.MenuListResponseDto;
@@ -31,12 +38,16 @@ import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantCategor
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantDetailResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantMapDetailResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantMapListResponseDto;
+import com.waterdragon.wannaeat.domain.restaurant.dto.response.SsafyRestaurantResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.DuplicateBusinessNumberException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.FailureRegistRestaurantToSsafyException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidBreakStartEndTimeException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidFilterReservationDateException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidFilterTimeSequenceException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidMerchantNameException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantOpenCloseTimeException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidUserLocationException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantAlreadyExistException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantCategoryNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.TimeRequestWithoutDateException;
@@ -47,6 +58,7 @@ import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepositor
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructureRepository;
 import com.waterdragon.wannaeat.domain.restaurantlike.repository.RestaurantLikeRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
+import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
 import com.waterdragon.wannaeat.global.exception.error.FileUploadMoreThanTenException;
 import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
@@ -60,6 +72,15 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class RestaurantServiceImpl implements RestaurantService {
+
+	@Value("${ssafypay.api-key}")
+	private String API_KEY;
+
+	@Value("${ssafypay.merchant-register-merchant-url}")
+	private String MERCHANT_REGISTER_URL;
+
+	@Value("${ssafypay.category-id}")
+	private String CATEGORY_ID;
 
 	// 시간 형식을 정의 ("HH:mm" 형식)
 	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
@@ -77,6 +98,8 @@ public class RestaurantServiceImpl implements RestaurantService {
 	private final MenuService menuService;
 	private final RestaurantLikeRepository restaurantLikeRepository;
 
+	private final RestTemplate restTemplate = new RestTemplate();
+
 	/**
 	 * 매장 등록 메소드
 	 *
@@ -90,6 +113,14 @@ public class RestaurantServiceImpl implements RestaurantService {
 		// 인증 회원객체
 		User user = authUtil.getAuthenticatedUser();
 
+		if (user.getRole() != Role.MANAGER) {
+			throw new NotAuthorizedException("식당은 사업자만 등록할 수 있습니다.");
+		}
+
+		if (user.getRestaurant() != null) {
+			throw new RestaurantAlreadyExistException("한 아이디 당 하나의 식당만 등록 가능합니다.");
+		}
+
 		// 사업자 등록번호 중복 체크
 		String businessNumber = restaurantRegisterRequestDto.getRestaurantBusinessNumber();
 		restaurantRepository.findByBusinessNumber(businessNumber)
@@ -102,6 +133,13 @@ public class RestaurantServiceImpl implements RestaurantService {
 		RestaurantCategory restaurantCategory = restaurantCategoryRepository.findByCategoryId(categoryId)
 			.orElseThrow(() -> new RestaurantCategoryNotFoundException("미유효 식당 카테고리 번호 : " + categoryId));
 
+		String restaurantName = restaurantRegisterRequestDto.getRestaurantName();
+		//SsafyPay에 가맹점 등록
+		SsafyRestaurantResponseDto ssafyRestaurantResponseDto = registerSsafyRestaurant(restaurantName);
+
+		// 등록된 가맹점 코드 가져오기
+		Long merchantId = getMerchantId(restaurantName, ssafyRestaurantResponseDto);
+
 		// Restaurant 엔티티 생성 후 저장
 		Restaurant restaurant = Restaurant.builder()
 			.user(user)
@@ -111,6 +149,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.phone(restaurantRegisterRequestDto.getRestaurantPhone())
 			.name(restaurantRegisterRequestDto.getRestaurantName())
 			.category(restaurantCategory)
+			.merchantId(merchantId)
 			.build();
 		restaurantRepository.save(restaurant);
 	}
@@ -385,6 +424,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.restaurantDescription(restaurant.getDescription())
 			.latitude(restaurant.getLatitude())
 			.longitude(restaurant.getLongitude())
+			.merchantId(restaurant.getMerchantId())
 			.menuListResponseDto(menuListResponseDto)
 			.restaurantLike(isLiking)
 			.build();
@@ -518,5 +558,82 @@ public class RestaurantServiceImpl implements RestaurantService {
 	// 시간(LocalTime)을 "HH:mm" 형식으로 포맷하는 메소드
 	private String formatTime(LocalTime time) {
 		return time != null ? time.format(TIME_FORMATTER) : null;
+	}
+
+	@Override
+	public SsafyRestaurantResponseDto registerSsafyRestaurant(String restaurantName) {
+		// 오늘 날짜를 "yyyyMMdd" 형식으로 변환 (예: 20240408)
+		String transmissionDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		// 현재 시각을 "HHmmss" 형식으로 변환 (예: 135601)
+		String transmissionTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HHmmss"));
+		// 20자리 난수
+		String randomString = generateUUIDBasedNumber(20);
+
+		// 요청할 API의 URL
+		String url = MERCHANT_REGISTER_URL;
+
+		// 요청 헤더 설정
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Content-Type", "application/json"); // 요청의 Content-Type을 JSON으로 설정
+
+		// 요청 본문 데이터 설정
+		Map<String, Object> requestBody = new HashMap<>();
+		Map<String, String> header = new HashMap<>();
+		header.put("apiName", "createMerchant");
+		header.put("transmissionDate", transmissionDate);
+		header.put("transmissionTime", transmissionTime);
+		header.put("institutionCode", "00100");
+		header.put("fintechAppNo", "001");
+		header.put("apiServiceCode", "createMerchant");
+		header.put("institutionTransactionUniqueNo", randomString);
+		header.put("apiKey", API_KEY);
+
+		requestBody.put("Header", header);
+		requestBody.put("categoryId", CATEGORY_ID);
+		requestBody.put("merchantName", restaurantName);
+
+		// HttpEntity에 헤더와 본문 데이터 설정
+		HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+		// POST 요청 보내기
+		ResponseEntity<SsafyRestaurantResponseDto> response = restTemplate.exchange(
+			url,
+			HttpMethod.POST,
+			requestEntity,
+			SsafyRestaurantResponseDto.class
+		);
+
+		if (!response.getBody().getHeader().getResponseCode().equals("H0000")) {
+			throw new FailureRegistRestaurantToSsafyException(
+				"SsafyPay 가맹점 등록 실패:" + response.getBody().getHeader().getResponseCode());
+		}
+
+		return response.getBody();
+	}
+
+	@Override
+	public Long getMerchantId(String restaurantName, SsafyRestaurantResponseDto response) {
+		SsafyRestaurantResponseDto.ResponseRec responseRec = response.getRecs().get(response.getRecs().size() - 1);
+		if (!responseRec.getMerchantName().equals(restaurantName))
+			throw new InvalidMerchantNameException("등록하려는 식당명과 가맹점 명이 일치하지 않습니다.");
+		return responseRec.getMerchantId();
+	}
+
+	// 20자리 난수 생성 메소드
+	public String generateUUIDBasedNumber(int length) {
+		// UUID 생성
+		UUID uuid = UUID.randomUUID();
+
+		// UUID의 숫자 부분을 추출하고 숫자만 남긴다.
+		String numericUUID = uuid.toString().replaceAll("[^0-9]", "");
+
+		// 만약 UUID에서 나온 숫자가 부족하면 UUID를 다시 생성해서 합칠 수 있습니다.
+		while (numericUUID.length() < length) {
+			uuid = UUID.randomUUID();
+			numericUUID += uuid.toString().replaceAll("[^0-9]", "");
+		}
+
+		// 20자리로 자르기
+		return numericUUID.substring(0, length);
 	}
 }

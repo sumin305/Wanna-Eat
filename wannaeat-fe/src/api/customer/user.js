@@ -19,3 +19,11 @@ export const editMyInfo = async (nickname) => {
     .then((result) => result)
     .catch((error) => error);
 };
+
+// 결제 비밀번호 등록
+export const registPassword = async (password) => {
+  return await authClientInstance
+    .patch('/api/users/password', { paymentPassword: password })
+    .then((result) => result)
+    .catch((error) => error);
+};

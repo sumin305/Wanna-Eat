@@ -14,9 +14,10 @@ import RestaurantRegistPage from '../pages/manager/restaurant/RestaurantRegistPa
 import StatisticsPage from 'pages/manager/statistics/StatisticsPage/StatisticsPage.jsx';
 import PeakTimePage from 'pages/manager/statistics/PeakTimePage/PeakTimePage.jsx';
 import SalesPage from 'pages/manager/statistics/SalesPage/SalesPage.jsx';
-import NotificationPage from '../pages/manager/notification/NotificationPage.jsx';
-import ManagerReservationDetailPage from '../pages/manager/reservation/ManagerReservationDetailPage.jsx';
+import AlarmPage from '../pages/manager/alarm/alarm.jsx';
+import ManagerReservationDetailPage from '../pages/manager/reservation/ManagerReservationDetailPage/ManagerReservationDetailPage.jsx';
 import AdminDetailPage from 'pages/manager/reservation/AdminDetailPage/AdminDetailPage.jsx';
+import MenuViewPage from 'pages/manager/menu/MenuViewPage/MenuViewPage.jsx'
 // 손님 관련 페이지
 import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
 import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage.jsx';
@@ -76,7 +77,9 @@ const AppRoutes = () => {
           element={<SalesPage />}
         />
 
-        <Route path="/manager/notification" element={<NotificationPage />} />
+        {/* 장정현 */} 
+        <Route path="/manager/alarm" element={<AlarmPage />} />
+        <Route path="/manager/menu" element={<MenuViewPage />} />
         <Route
           path="/manager/reservation/reservation-detail/:id"
           element={<ManagerReservationDetailPage />}

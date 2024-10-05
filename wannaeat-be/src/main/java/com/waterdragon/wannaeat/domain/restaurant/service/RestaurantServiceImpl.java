@@ -149,6 +149,8 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.phone(restaurantRegisterRequestDto.getRestaurantPhone())
 			.name(restaurantRegisterRequestDto.getRestaurantName())
 			.category(restaurantCategory)
+			.latitude(restaurantRegisterRequestDto.getLatitude())
+			.longitude(restaurantRegisterRequestDto.getLongitude())
 			.merchantId(merchantId)
 			.build();
 		restaurantRepository.save(restaurant);

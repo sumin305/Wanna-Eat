@@ -79,6 +79,7 @@ public class Reservation {
 	private List<Order> orders;
 
 	public void remove() {
+		this.reservationUrl = null;
 		this.cancelled = true;
 	}
 

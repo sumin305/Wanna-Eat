@@ -19,9 +19,9 @@ class WEDonut extends Component {
         },
         fill: {
           colors: [
+            theme.color.statisticsPink,
             theme.color.statisticsSkyBlue,
             theme.color.statisticsBlue,
-            theme.color.statisticsPink,
           ],
         },
 
@@ -60,8 +60,24 @@ class WEDonut extends Component {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.labels !== this.props.labels ||
+      prevProps.series !== this.props.series
+    ) {
+      this.setState({
+        options: {
+          ...this.state.options,
+          labels: this.props.labels || ['금', '화', '월'],
+        },
+        series: this.props.series || [44, 55, 41],
+      });
+    }
+  }
+
   render() {
     const donutWidth = this.state.isWeb ? 130 : 90;
+
     const donutFontSize =
       this.props.type === 'time'
         ? this.state.isWeb
@@ -81,6 +97,10 @@ class WEDonut extends Component {
         },
       },
     };
+
+    if (!this.props.labels || !this.props.series) {
+      return <div>Loading...</div>;
+    }
 
     return (
       <DonutWrapperStyled>

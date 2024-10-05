@@ -1,4 +1,6 @@
 import { PasswordInputContainer } from './PasswordAuthPage';
+import { payDepositPaymentBySsafyPay } from 'api/common/payment.js';
+
 import {
   BlackOutLayout,
   PasswordTitle,
@@ -11,12 +13,9 @@ import { useState, useEffect } from 'react';
 import FingerPrint from 'assets/icons/common/fingerprint.svg';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from 'stores/customer/useAuthStore';
-import {
-  payDepositPaymentByKakaoPay,
-  payDepositPaymentBySsafyPay,
-} from 'api/common/payment.js';
 import useRestaurantStore from 'stores/customer/useRestaurantStore';
 import useReservationStore from '../../../../../stores/customer/useReservationStore.js';
+import useMapFilterStore from 'stores/map/useMapFilterStore.js';
 const PasswordAuthPage = () => {
   const [title, setTitle] = useState('결제 비밀번호를 입력해주세요');
   const [inputNumber, setInputNumber] = useState('');
@@ -26,15 +25,8 @@ const PasswordAuthPage = () => {
   const { isSupported, isPasskeyRegistered, setIsAuthenticated } =
     useAuthStore();
   const { depositPerMember, restaurantId } = useRestaurantStore();
-  const {
-    reservationDate,
-    startTime,
-    endTime,
-    memberCount,
-    selectedCard,
-    setSelectedCard,
-  } = useReservationStore();
-
+  const { reservationDate, startTime, endTime, memberCount, selectedCard } =
+    useReservationStore();
   useEffect(() => {
     suffleNumber();
   }, [inputNumber]);
@@ -86,46 +78,14 @@ const PasswordAuthPage = () => {
       setPassword(inputNumber);
       setInputNumber('');
 
-      // 카카오페이 결제
-      if (selectedCard && selectedCard.cardNo === '0') {
-        kakaoPayment(
-          depositPerMember * memberCount === 0
-            ? 50000
-            : depositPerMember * memberCount
-        );
-      } else {
-        // 싸피페이 결제
-        ssafyPayment(
-          depositPerMember * memberCount === 0
-            ? 50000
-            : depositPerMember * memberCount,
-          inputNumber + num
-        );
-      }
+      // 싸피페이 결제
+      ssafyPayment(
+        depositPerMember * memberCount === 0
+          ? 50000
+          : depositPerMember * memberCount,
+        inputNumber + num
+      );
     }
-  };
-
-  const kakaoPayment = async (price) => {
-    const result = await payDepositPaymentByKakaoPay({
-      price: price,
-      restaurantId: restaurantId,
-      reservationRegisterRequestDto: {
-        restaurantId: restaurantId,
-        reservationDate: reservationDate,
-        reservationStartTime: startTime,
-        reservationEndTime: endTime,
-        memberCnt: memberCount,
-        tableList: [],
-      },
-    });
-
-    console.log(result);
-    if (result.status !== 200) {
-      alert('결제에 실패했습니다.');
-    }
-
-    window.location.href = result.data.data.next_redirect_mobile_url;
-    return;
   };
 
   const ssafyPayment = async (price, password) => {

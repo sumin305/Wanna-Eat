@@ -22,6 +22,7 @@ import { useState, useEffect } from 'react';
 import useCommonStore from '../../../../../stores/common/useCommonStore.js';
 import { cardMaps } from 'assets';
 import useAuthStore from 'stores/customer/useAuthStore';
+import { payDepositPaymentByKakaoPay } from 'api/common/payment.js';
 
 const DepositPaymentPage = () => {
   const navigate = useNavigate();
@@ -30,7 +31,14 @@ const DepositPaymentPage = () => {
   const [cards, setCards] = useState([]);
   const [goToSlide, setGoToSlide] = useState(null);
   const [selectedardIndex, setSelectedCardIndex] = useState(0);
-  const { selectedCard, setSelectedCard, memberCount } = useReservationStore();
+  const {
+    selectedCard,
+    setSelectedCard,
+    memberCount,
+    reservationDate,
+    startTime,
+    endTime,
+  } = useReservationStore();
 
   useEffect(() => {
     setSelectedCard(cards[selectedardIndex]);
@@ -52,6 +60,8 @@ const DepositPaymentPage = () => {
         : depositPerMember * memberCount
     );
     fetchCards();
+
+    // 카카오페이 후 redirect 되었을 경우,
   }, []);
 
   const slides = cards.map((card, index) => ({
@@ -80,14 +90,49 @@ const DepositPaymentPage = () => {
     navigate(-1);
   };
 
+  const kakaoPayment = async (price) => {
+    const result = await payDepositPaymentByKakaoPay({
+      price: price,
+      restaurantId: restaurantId,
+      reservationRegisterRequestDto: {
+        restaurantId: restaurantId,
+        reservationDate: reservationDate,
+        reservationStartTime: startTime,
+        reservationEndTime: endTime,
+        memberCnt: memberCount,
+        tableList: [],
+      },
+    });
+
+    console.log(result);
+    if (result.status !== 200) {
+      alert('결제에 실패했습니다.');
+    }
+
+    window.location.href = result.data.data.next_redirect_mobile_url;
+    return;
+  };
+
   // 결제 버튼 클릭
   const handleNextButtonClick = async () => {
     if (!selectedCard) {
       setSelectedCard(cards[0]);
     }
 
+    // 카카오페이 시
+    if (selectedCard && selectedCard.cardNo === '0') {
+      kakaoPayment(
+        depositPerMember * memberCount === 0
+          ? 50000
+          : depositPerMember * memberCount
+      );
+      return;
+    }
+
+    // 싸피페이 시
     navigate('/customer/password-auth');
   };
+
   return (
     <DepositPaymentPageContainer>
       <WEStep index={2} />

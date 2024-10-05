@@ -1,4 +1,4 @@
-import { clientInstance, authClientInstance } from '../../utils/http-client';
+import { clientInstance, authClientInstance } from 'utils/http-client';
 
 export const getAlarms = async () => {
     return await authClientInstance

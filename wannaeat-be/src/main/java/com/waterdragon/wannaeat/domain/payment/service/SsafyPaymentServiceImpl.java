@@ -59,6 +59,9 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 	@Value("${ssafypay.api-key}")
 	private String API_KEY;
 
+	@Value("${ssafypay.payment-request-url}")
+	private String PAYMENT_REQUEST_URL;
+
 	private final AuthUtil authUtil;
 	private final MenuRepository menuRepository;
 	private final RestaurantRepository restaurantRepository;
@@ -146,7 +149,7 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 		String randomString = generateUUIDBasedNumber(20);
 
 		// 요청할 API의 URL
-		String url = "https://finopenapi.ssafy.io/ssafy/api/v1/edu/creditCard/createCreditCardTransaction";
+		String url = PAYMENT_REQUEST_URL;
 
 		// 요청 헤더 설정
 		HttpHeaders headers = new HttpHeaders();
@@ -229,7 +232,7 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 		String randomString = generateUUIDBasedNumber(20);
 
 		// 요청할 API의 URL
-		String url = "https://finopenapi.ssafy.io/ssafy/api/v1/edu/creditCard/createCreditCardTransaction";
+		String url = PAYMENT_REQUEST_URL;
 
 		// 요청 헤더 설정
 		HttpHeaders headers = new HttpHeaders();

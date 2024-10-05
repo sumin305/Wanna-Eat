@@ -43,6 +43,8 @@ public class RestaurantDetailResponseDto {
 
 	private Double longitude;
 
+	private Long merchantId;
+
 	private Boolean restaurantLike;
 
 	private MenuListResponseDto menuListResponseDto;

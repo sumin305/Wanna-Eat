@@ -414,6 +414,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.restaurantDescription(restaurant.getDescription())
 			.latitude(restaurant.getLatitude())
 			.longitude(restaurant.getLongitude())
+			.merchantId(restaurant.getMerchantId())
 			.menuListResponseDto(menuListResponseDto)
 			.restaurantLike(isLiking)
 			.build();

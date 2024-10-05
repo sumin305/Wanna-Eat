@@ -28,6 +28,8 @@ public interface ReservationService {
 
 	Page<ReservationDetailResponseDto> getListReservation(Pageable pageable);
 
+	ReservationDetailResponseDto getDetailReservationByUser(Long reservationId);
+
 	ManagerReservationSummaryResponseDto getListReservationByRestaurantAndDate(LocalDate date, Pageable pageable);
 
 	List<ReservationCountResponseDto> getListReservationCount(int year, int month);

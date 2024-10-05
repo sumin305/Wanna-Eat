@@ -73,30 +73,54 @@ const OrderSheetBox = ({ reservationUrl }) => {
     allOrders.filter((order) => order.totalCnt - order.paidCnt === 0)
   );
 
+  // 결제 전 총 메뉴 수 계산 함수
+  const calculateTotalPendingMenuCount = () => {
+    return allOrders
+      .filter((order) => order.totalCnt - order.paidCnt > 0)
+      .reduce((acc, order) => acc + (order.totalCnt - order.paidCnt), 0);
+  };
+
+  // 결제 완료 총 메뉴 수 계산 함수
+  const calculateTotalCompleteMenuCount = () => {
+    return allOrders
+      .filter((order) => order.totalCnt - order.paidCnt === 0)
+      .reduce((acc, order) => acc + order.totalCnt, 0);
+  };
+
   // 수량 증가 함수
-  const handleIncrease = (orderId, menuId) => {
-    setOrderCounts((prev) => ({
-      ...prev,
-      [orderId]: {
-        ...prev[orderId],
-        count: (prev[orderId]?.count || 0) + 1,
-        menuId: menuId,
-        orderId: orderId,
-      },
-    }));
+  const handleIncrease = (orderId, menuId, availableCount) => {
+    const currentCount = orderCounts[orderId]?.count || 0;
+    if (currentCount < availableCount) {
+      setOrderCounts((prev) => ({
+        ...prev,
+        [orderId]: {
+          ...prev[orderId],
+          count: (prev[orderId]?.count || 0) + 1,
+          menuId: menuId,
+          orderId: orderId,
+        },
+      }));
+    } else {
+      alert('더 이상 추가할 수 없습니다.');
+    }
   };
 
   // 수량 감소 함수
   const handleDecrease = (orderId, menuId) => {
-    setOrderCounts((prev) => ({
-      ...prev,
-      [orderId]: {
-        ...prev[orderId],
-        count: (prev[orderId]?.count || 0) - 1,
-        menuId: menuId,
-        orderId: orderId,
-      },
-    }));
+    const currentCount = orderCounts[orderId].count || 0;
+    if (currentCount > 0) {
+      setOrderCounts((prev) => ({
+        ...prev,
+        [orderId]: {
+          ...prev[orderId],
+          count: (prev[orderId]?.count || 0) - 1,
+          menuId: menuId,
+          orderId: orderId,
+        },
+      }));
+    } else {
+      alert('수량은 0보다 작을 수 없습니다.');
+    }
   };
 
   // 총 금액 계산
@@ -160,7 +184,11 @@ const OrderSheetBox = ({ reservationUrl }) => {
         <TopBox>
           <MenuContainer>
             <TotalMenuP>
-              총 메뉴 {Object.keys(groupedPendingOrdersWithTotalPrice).length}개
+              총 메뉴{' '}
+              {activeTab === 0
+                ? calculateTotalPendingMenuCount()
+                : calculateTotalCompleteMenuCount()}
+              개
             </TotalMenuP>
             <DeleteDiv>
               {activeTab === 0 ? (
@@ -219,7 +247,8 @@ const OrderSheetBox = ({ reservationUrl }) => {
                                     onClick={() =>
                                       handleIncrease(
                                         order.orderId,
-                                        order.menuId
+                                        order.menuId,
+                                        order.totalCnt - order.paidCnt
                                       )
                                     }
                                   >

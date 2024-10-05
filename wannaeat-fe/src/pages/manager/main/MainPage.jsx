@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   MainPageStyled,
@@ -36,6 +36,7 @@ const MainPage = () => {
 
   const navigate = useNavigate();
 
+  const [dropdownId, setDropdownId] = useState(1);
   const { setItems, setWidth, setSelectedId } = useDropdownStore();
 
   useEffect(() => {
@@ -44,14 +45,49 @@ const MainPage = () => {
     setSelectedId(1);
   }, [setItems, setWidth, setSelectedId]);
 
+  const handleDropdownOnSelect = (selectedValue) => {
+    let mappedIndex;
+
+    switch (selectedValue) {
+      case '소형 (50m² 이하)':
+        mappedIndex = 0;
+        break;
+      case '중형 (50m² ~ 150m²)':
+        mappedIndex = 1;
+        break;
+      case '대형 (150m² 이상)':
+        mappedIndex = 2;
+        break;
+      default:
+        mappedIndex = 1;
+        break;
+    }
+
+    setDropdownId(mappedIndex);
+  };
+
   const {
     open,
-    // close,
+    close,
     setModalType,
     setTitle,
     setChildren,
-    // setHandleButtonClick,
+    setHandleButtonClick,
   } = useModalStore();
+
+  const handleSubmit = () => {
+    console.log(
+      'dropdownId:' + dropdownId + ' floor:' + floor + ' 제출되었습니다.'
+    );
+    close();
+    navigate('/manager/restaurant/seat-decorate');
+  };
+
+  const [floor, setFloor] = useState(1);
+
+  useEffect(() => {
+    setHandleButtonClick(handleSubmit);
+  }, [dropdownId, floor, setHandleButtonClick]);
 
   const handleModalOpen = () => {
     setModalType('setting');
@@ -62,7 +98,10 @@ const MainPage = () => {
         <InputWrapperStyled>
           <LabelStyled>크기</LabelStyled>
           <div>
-            <WEDropdown useDropdownStore={useDropdownStore} />
+            <WEDropdown
+              useDropdownStore={useDropdownStore}
+              onSelect={handleDropdownOnSelect}
+            />
           </div>
         </InputWrapperStyled>
         <InputWrapperStyled>
@@ -72,7 +111,7 @@ const MainPage = () => {
               type="number"
               min={1}
               max={5}
-              defaultValue={1}
+              value={floor}
               inputMode="numeric"
               onInput={(e) => {
                 const value = e.target.value;
@@ -81,6 +120,9 @@ const MainPage = () => {
                 } else if (value > 5) {
                   e.target.value = 5;
                 }
+              }}
+              onChange={(e) => {
+                setFloor(e.target.value);
               }}
             />
             <div className="floor-label">층</div>

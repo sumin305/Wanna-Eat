@@ -12,6 +12,8 @@ import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequest
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationSummaryResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.RecentReservationResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
@@ -26,7 +28,9 @@ public interface ReservationService {
 
 	Page<ReservationDetailResponseDto> getListReservation(Pageable pageable);
 
-	List<ReservationDetailResponseDto> getListReservationByDate(LocalDate date);
+	ReservationDetailResponseDto getDetailReservationByUser(Long reservationId);
+
+	ManagerReservationSummaryResponseDto getListReservationByRestaurantAndDate(LocalDate date, Pageable pageable);
 
 	List<ReservationCountResponseDto> getListReservationCount(int year, int month);
 
@@ -46,4 +50,6 @@ public interface ReservationService {
 	String generateRandomString();
 
 	ManagerReservationDetailResponseDto getReservationListByManager(Long reservationId);
+
+	RecentReservationResponseDto getRecentReservation();
 }

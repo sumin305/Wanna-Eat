@@ -1,7 +1,6 @@
 package com.waterdragon.wannaeat.domain.payment.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,9 +17,6 @@ public class SsafyPaymentRequestDto {
 
 	@NotEmpty(message = "cvc는 필수 입력값입니다.")
 	private String cvc;
-
-	@NotNull(message = "가맹점 Id는 필수 입력값입니다.")
-	private String merchantId;
 
 	@NotEmpty(message = "유저 Key는 필수 입력값입니다.")
 	private String userKey;

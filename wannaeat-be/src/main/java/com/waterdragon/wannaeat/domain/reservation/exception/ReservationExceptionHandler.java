@@ -87,6 +87,6 @@ public class ReservationExceptionHandler {
 		InvalidQrTokenException ex) {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Qr Token Exception", ex.getMessage());
-		return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 	}
 }

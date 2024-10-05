@@ -25,6 +25,8 @@ import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequest
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationSummaryResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.RecentReservationResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
@@ -98,6 +100,8 @@ public class ReservationController {
 		ReservationRegisterRequestDto reservationRegisterRequestDto) {
 
 		reservationService.validateQr(token);
+
+		reservationRegisterRequestDto.setUserId(null);
 		ReservationDetailResponseDto reservationDetailResponseDto = reservationService.registerReservation(
 			reservationRegisterRequestDto);
 		ResponseDto<ReservationDetailResponseDto> responseDto = ResponseDto.<ReservationDetailResponseDto>builder()
@@ -124,6 +128,25 @@ public class ReservationController {
 			.status(HttpStatus.OK.value())
 			.message("예약 리스트 조회 목록")
 			.data(reservations)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	/**
+	 * 최우선 방문예정 식당을 리턴하는 API
+	 *
+	 * @return 최우선 방문 예정 식당
+	 */
+	@Operation(summary = "최우선 방문 예정 식당 조회 API")
+	@GetMapping("/users/reservations/recent")
+	public ResponseEntity<ResponseDto<RecentReservationResponseDto>> getRecentReservation() {
+		RecentReservationResponseDto reservation = reservationService.getRecentReservation();
+
+		ResponseDto<RecentReservationResponseDto> responseDto = ResponseDto.<RecentReservationResponseDto>builder()
+			.status(HttpStatus.OK.value())
+			.message("예약 리스트 조회 목록")
+			.data(reservation)
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -157,16 +180,16 @@ public class ReservationController {
 	 * @return 해당 일자의 예약 목록 정보
 	 */
 	@Operation(summary = "일별 예약 조회 API")
-	@GetMapping("/restaurants/{restaurantId}/reservation")
-	public ResponseEntity<ResponseDto<List<ReservationDetailResponseDto>>> getListReservation(
-		@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+	@GetMapping("/restaurants/reservation")
+	public ResponseEntity<ResponseDto<ManagerReservationSummaryResponseDto>> getListReservation(
+		@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, Pageable pageable) {
 
-		List<ReservationDetailResponseDto> reservationDetailResponseDtos = reservationService.getListReservationByDate(
-			date);
-		ResponseDto<List<ReservationDetailResponseDto>> responseDto = ResponseDto.<List<ReservationDetailResponseDto>>builder()
+		ManagerReservationSummaryResponseDto managerReservationSummaryResponseDto = reservationService.getListReservationByRestaurantAndDate(
+			date, pageable);
+		ResponseDto<ManagerReservationSummaryResponseDto> responseDto = ResponseDto.<ManagerReservationSummaryResponseDto>builder()
 			.status(HttpStatus.OK.value())
 			.message("일별 예약 조회 목록")
-			.data(reservationDetailResponseDtos)
+			.data(managerReservationSummaryResponseDto)
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -291,6 +314,32 @@ public class ReservationController {
 		return ResponseEntity.ok()
 			.contentType(MediaType.IMAGE_PNG)
 			.body(qr);
+	}
+
+	/**
+	 * 고객용 예약 상세조회 API 구현
+	 *
+	 * @param reservationId 예약 아이디
+	 * @return 예약 상세 조회 정보
+	 */
+	@Operation(summary = "고객용 예약 상세조회 API")
+	@Transactional
+	@GetMapping("/users/reservations/{reservationId}")
+	public ResponseEntity<ResponseDto<ReservationDetailResponseDto>> getDetailReservationByUser(
+		@PathVariable Long reservationId) {
+
+		// 예약 상세 정보 조회
+		ReservationDetailResponseDto reservationDetailResponseDto = reservationService.getDetailReservationByUser(
+			reservationId);
+
+		// 응답 객체 생성
+		ResponseDto<ReservationDetailResponseDto> responseDto = ResponseDto.<ReservationDetailResponseDto>builder()
+			.status(HttpStatus.OK.value())
+			.message("예약 상세 정보가 성공적으로 조회되었습니다.")
+			.data(reservationDetailResponseDto)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**

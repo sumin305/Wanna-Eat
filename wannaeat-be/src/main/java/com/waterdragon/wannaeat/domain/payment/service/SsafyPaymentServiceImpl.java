@@ -32,6 +32,7 @@ import com.waterdragon.wannaeat.domain.payment.dto.request.SsafyPaymentDepositRe
 import com.waterdragon.wannaeat.domain.payment.dto.request.SsafyPaymentOrderRequestDto;
 import com.waterdragon.wannaeat.domain.payment.dto.response.SsafyPaymentResponseDto;
 import com.waterdragon.wannaeat.domain.payment.exception.error.InvalidPaymentException;
+import com.waterdragon.wannaeat.domain.payment.exception.error.InvalidPaymentPasswordException;
 import com.waterdragon.wannaeat.domain.payment.exception.error.InvalidPriceException;
 import com.waterdragon.wannaeat.domain.payment.exception.error.MenuCountRequestMoreThanUnpaidException;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
@@ -44,7 +45,6 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotF
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 import com.waterdragon.wannaeat.global.auth.oauth2.service.EncryptService;
-import com.waterdragon.wannaeat.global.exception.error.NotAuthenticatedException;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
 
 import jakarta.transaction.Transactional;
@@ -58,6 +58,9 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 
 	@Value("${ssafypay.api-key}")
 	private String API_KEY;
+
+	@Value("${ssafypay.payment-request-url}")
+	private String PAYMENT_REQUEST_URL;
 
 	private final AuthUtil authUtil;
 	private final MenuRepository menuRepository;
@@ -87,11 +90,26 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 			.orElseThrow(() -> new ReservationNotFoundException(
 				"해당 url의 예약은 존재하지 않습니다. 예약 url : " + ssafyPaymentOrderRequestDto.getReservationUrl()));
 
+		// 식당 존재여부 확인
+		Restaurant restaurant;
+		try {
+			restaurant = orderRepository.findByOrderId(
+					ssafyPaymentOrderRequestDto.getPaymentMenuRequestDtos().get(0).getOrderId())
+				.get()
+				.getReservation()
+				.getRestaurant();
+			if (restaurant == null) {
+				throw new RestaurantNotFoundException("해당 식당이 존재하지 않습니다.");
+			}
+		} catch (Exception e) {
+			throw new RestaurantNotFoundException("해당 식당이 존재하지 않습니다.");
+		}
+
 		// 결제 비밀번호 검증
 		User user = authUtil.getAuthenticatedUser();
 		if (!encryptService.encryptData(ssafyPaymentOrderRequestDto.getUserPassword()).equals(
 			user.getPaymentPassword())) {
-			throw new NotAuthenticatedException("결제 비밀번호가 틀립니다.");
+			throw new InvalidPaymentPasswordException("결제 비밀번호가 일치하지 않습니다.");
 		}
 
 		// 우선 결제 요청에 대한 모든 orderIds 추출
@@ -146,7 +164,7 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 		String randomString = generateUUIDBasedNumber(20);
 
 		// 요청할 API의 URL
-		String url = "https://finopenapi.ssafy.io/ssafy/api/v1/edu/creditCard/createCreditCardTransaction";
+		String url = PAYMENT_REQUEST_URL;
 
 		// 요청 헤더 설정
 		HttpHeaders headers = new HttpHeaders();
@@ -168,7 +186,7 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 		requestBody.put("Header", header);
 		requestBody.put("cardNo", ssafyPaymentOrderRequestDto.getCardNo());
 		requestBody.put("cvc", ssafyPaymentOrderRequestDto.getCvc());
-		requestBody.put("merchantId", ssafyPaymentOrderRequestDto.getMerchantId());
+		requestBody.put("merchantId", restaurant.getMerchantId());
 		requestBody.put("paymentBalance", String.valueOf(totalPrice));
 
 		// HttpEntity에 헤더와 본문 데이터 설정
@@ -200,7 +218,7 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 		User user = authUtil.getAuthenticatedUser();
 		if (!encryptService.encryptData(ssafyPaymentDepositRequestDto.getUserPassword()).equals(
 			user.getPaymentPassword())) {
-			throw new NotAuthenticatedException("결제 비밀번호가 틀립니다.");
+			throw new InvalidPaymentPasswordException("결제 비밀번호가 일치하지 않습니다.");
 		}
 
 		// 식당 존재여부 확인
@@ -229,7 +247,7 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 		String randomString = generateUUIDBasedNumber(20);
 
 		// 요청할 API의 URL
-		String url = "https://finopenapi.ssafy.io/ssafy/api/v1/edu/creditCard/createCreditCardTransaction";
+		String url = PAYMENT_REQUEST_URL;
 
 		// 요청 헤더 설정
 		HttpHeaders headers = new HttpHeaders();
@@ -251,7 +269,7 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 		requestBody.put("Header", header);
 		requestBody.put("cardNo", ssafyPaymentDepositRequestDto.getCardNo());
 		requestBody.put("cvc", ssafyPaymentDepositRequestDto.getCvc());
-		requestBody.put("merchantId", ssafyPaymentDepositRequestDto.getMerchantId());
+		requestBody.put("merchantId", restaurant.getMerchantId());
 		requestBody.put("paymentBalance", String.valueOf(totalPrice));
 
 		// HttpEntity에 헤더와 본문 데이터 설정
@@ -268,12 +286,11 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 		System.out.println(response.getStatusCode());
 		System.out.println(response.getStatusCode() == HttpStatusCode.valueOf(200));
 
-		if (!(response.getStatusCode() == HttpStatusCode.valueOf(200))) {
-			throw new InvalidPaymentException("결제 실패" + response.getStatusCode());
+		if (!response.getBody().getHeader().getResponseCode().equals("H0000")) {
+			throw new InvalidPaymentException("SsafyPay 결제 실패" + response.getBody().getHeader().getResponseCode());
 		}
-		if (response.getStatusCode() == HttpStatusCode.valueOf(200)) {
-			Objects.requireNonNull(response.getBody()).setReservationInfo(reservationDetailResponseDto);
-		}
+
+		Objects.requireNonNull(response.getBody()).setReservationInfo(reservationDetailResponseDto);
 
 		// 응답 결과 반환
 		return response.getBody();

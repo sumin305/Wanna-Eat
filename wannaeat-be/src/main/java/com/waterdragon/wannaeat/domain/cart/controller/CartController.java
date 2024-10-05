@@ -35,7 +35,7 @@ public class CartController {
 
 	/**
 	 * 장바구니 메뉴 휴지통 API
-	 * 
+	 *
 	 * @param cartDeleteRequestDto
 	 */
 	@MessageMapping("/carts/delete")

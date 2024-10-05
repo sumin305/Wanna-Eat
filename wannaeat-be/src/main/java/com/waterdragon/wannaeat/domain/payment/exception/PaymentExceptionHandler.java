@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.waterdragon.wannaeat.domain.payment.exception.error.InvalidPaymentException;
+import com.waterdragon.wannaeat.domain.payment.exception.error.InvalidPaymentPasswordException;
 import com.waterdragon.wannaeat.domain.payment.exception.error.InvalidPriceException;
 import com.waterdragon.wannaeat.domain.payment.exception.error.MenuCountRequestMoreThanUnpaidException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
@@ -37,6 +38,15 @@ public class PaymentExceptionHandler {
 		MenuCountRequestMoreThanUnpaidException ex) {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("MenuCount Request More Than Unpaid", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+	}
+
+	// 결제 비밀번호 불일치
+	@ExceptionHandler(InvalidPaymentPasswordException.class)
+	public final ResponseEntity<ErrorResponseDto> handleInvalidPaymentPasswordException(
+		InvalidPaymentPasswordException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Invalid Payment Password Exception", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 	}
 }

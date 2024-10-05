@@ -39,7 +39,7 @@ const OrderCartBox = ({ reservationUrl }) => {
 
   const allMenus = allMenusInfo?.cartDetailResponseDto?.cartElements || [];
 
-  const reservationParticipantId = 8;
+  const reservationParticipantId = 6;
   const [menuCounts, setMenuCounts] = useState([]);
 
   const { stompClient, isConnected } = useChatStore();
@@ -68,15 +68,21 @@ const OrderCartBox = ({ reservationUrl }) => {
     setMenuCounts((prevCounts) =>
       prevCounts.map((menu, index) =>
         index === menuIndex
-          ? menu.map((item, idx) =>
-              idx === itemIndex && item.menuCnt > 1
-                ? {
+          ? menu.map((item, idx) => {
+              if (idx === itemIndex) {
+                if (item.menuCnt > 1) {
+                  return {
                     ...item,
                     menuCnt: item.menuCnt - 1,
                     menuTotalPrice: item.menuTotalPrice - item.menuPrice,
-                  }
-                : item
-            )
+                  };
+                } else {
+                  alert('메뉴 수량은 0 이하로 줄일 수 없습니다.');
+                  return item;
+                }
+              }
+              return item;
+            })
           : menu
       )
     );
@@ -161,8 +167,28 @@ const OrderCartBox = ({ reservationUrl }) => {
     nav(`/customer/order/${reservationUrl}`);
   };
 
-  const handleMenuDeleteButtonClick = async (reservationUrl) => {
-    await deleteCarts(reservationUrl);
+  const handleMenuDeleteButtonClick = () => {
+    const cartClearRequestDto = {
+      reservationUrl: reservationUrl,
+      reservationParticipantId: reservationParticipantId,
+    };
+
+    if (stompClient && isConnected) {
+      console.log('메뉴선택 웹소켓', stompClient);
+      console.log('메뉴선택 연결상태', isConnected);
+      try {
+        stompClient.send(
+          `/api/public/sockets/carts/clear`,
+          {},
+          JSON.stringify(cartClearRequestDto)
+        );
+      } catch (error) {
+        console.log('장바구니 목록지우기 실패', error);
+      }
+    } else {
+      console.log('웹소켓 연결 실패');
+      alert('웹소켓 연결에 실패했습니다.');
+    }
 
     setAllMenusInfo({
       cartDetailResponseDto: { cartElements: [], cartTotalPrice: 0 },
@@ -251,6 +277,7 @@ const OrderCartBox = ({ reservationUrl }) => {
                   )
                   .map((menus, menuIndex) => (
                     <div key={menuIndex}>
+                      <PeopleP>{menus.reservationParticipantNickname}</PeopleP>
                       <LineDiv></LineDiv>
                       <div>
                         {menus.menuInfo ? (
@@ -298,10 +325,11 @@ const OrderCartBox = ({ reservationUrl }) => {
                                         </FoodInfoCountRightBtn>
                                       </FoodInfoCountDiv>
                                       <FoodPriceP>
-                                        {
-                                          menuCounts[menuIndex]?.[itemIndex]
-                                            ?.menuTotalPrice
-                                        }
+                                        {menuCounts[menuIndex]?.[
+                                          itemIndex
+                                        ]?.menuTotalPrice.toLocaleString(
+                                          'ko-KR'
+                                        )}{' '}
                                         원
                                       </FoodPriceP>
                                     </FoodInfoBottomDiv>
@@ -317,7 +345,11 @@ const OrderCartBox = ({ reservationUrl }) => {
                       </div>
                       <TotalPriceDiv>
                         <TotalPriceP>
-                          총 {calculateTotalPrice(menuIndex) || ''}원
+                          총:{' '}
+                          {calculateTotalPrice(menuIndex).toLocaleString(
+                            'ko-KR'
+                          ) || ''}{' '}
+                          원
                         </TotalPriceP>
                       </TotalPriceDiv>
                       <br />
@@ -353,10 +385,9 @@ const OrderCartBox = ({ reservationUrl }) => {
                                     </FoodInfoCountP>
                                   </FoodInfoCountDiv>
                                   <FoodPriceP>
-                                    {
-                                      menuCounts[menuIndex]?.[itemIndex]
-                                        ?.menuTotalPrice
-                                    }
+                                    {menuCounts[menuIndex]?.[
+                                      itemIndex
+                                    ]?.menuTotalPrice.toLocaleString('ko-KR')}
                                     원
                                   </FoodPriceP>
                                 </FoodInfoBottomDiv>
@@ -371,15 +402,22 @@ const OrderCartBox = ({ reservationUrl }) => {
                     </div>
                     <TotalPriceDiv>
                       <TotalPriceP>
-                        총 {calculateTotalPrice(menuIndex) || ''}원
+                        총:{' '}
+                        {calculateTotalPrice(menuIndex).toLocaleString(
+                          'ko-KR'
+                        ) || ''}
+                        원
                       </TotalPriceP>
                     </TotalPriceDiv>
                     <br />
                   </div>
                 ))}
+              <LineDiv />
               <TotalPriceDiv>
                 {menuCounts.length > 0 ? (
-                  <TotalPriceP>총: {calculateTotalMenuPrice()}원</TotalPriceP>
+                  <TotalPriceP>
+                    총: {calculateTotalMenuPrice().toLocaleString('ko-KR')}원
+                  </TotalPriceP>
                 ) : null}
               </TotalPriceDiv>
             </>

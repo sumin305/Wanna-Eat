@@ -16,27 +16,31 @@ const ModalStyled = styled.div`
   transform: translate(-50%, -50%);
 
   @media (min-width: 480px) {
+    padding: 0;
+    width: 80%;
+
     width: 336px;
     justify-content: center;
   }
 `;
 
 const TitleStyled = styled.div`
-  font-size: ${theme.fontSize.px13}rem;
+  font-size: ${theme.fontSize.px13};
   margin-top: 10px;
   text-align: center;
   grid-row: 3;
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px17};
+  }
 `;
 
 const OneButtonContainerStyled = styled.div`
   grid-row: 6;
 `;
 const ButtonContainerStyled = styled.div`
-  display: grid;
-  grid-template-columns: 3fr 3fr;
+  display: flex;
   grid-row: 6;
-  column-gap: 10%;
-  justify-content: center;
+  gap: 1rem; /* 버튼 사이의 간격 추가 */
 `;
 
 export {

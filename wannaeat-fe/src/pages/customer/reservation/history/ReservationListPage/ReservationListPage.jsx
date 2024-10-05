@@ -39,7 +39,7 @@ const ListPage = () => {
 
       if (result.status === 200) {
         console.log('내 예약 정보 불러오기 성공');
-        // setMyReservationList(result.data.content);
+        setMyReservationList(result.data.content);
       } else {
         console.log('내 예약 정보 불러오기 실패');
       }
@@ -47,41 +47,13 @@ const ListPage = () => {
     setPageName('예약 내역');
     setIsShowBackIcon(false);
     setIsShowLogo(false);
-    setIsShowBackIcon(false);
     setActiveIcons([]);
 
     fetchMyReservationList();
-
-    // 데이터 생기면 삭제
-    setMyReservationList([
-      {
-        restaurantId: 1,
-        restaurantName: '그린브라우니 한밭대점',
-        restaurantImage: '',
-        memberCount: 3,
-        reservationStartTime: new Date(),
-      },
-      {
-        restaurantId: 2,
-        restaurantName: '경곤식당',
-        restaurantImage: '',
-        memberCount: 2,
-        reservationStartTime: new Date(),
-      },
-      {
-        restaurantId: 3,
-        restaurantName: '하나로식당',
-        restaurantImage: '',
-        memberCount: 1,
-        reservationStartTime: new Date(),
-      },
-    ]);
   }, []);
 
   const formatRemainingTime = () => {
-    console.log('remainingTime', remainingTime);
     const splitArry = remainingTime.split(':');
-    console.log('splitArry', splitArry);
     const day = removeZero(splitArry[0]) ?? '00';
     const hour = removeZero(splitArry[1]) ?? '00';
     const min = removeZero(splitArry[2]) ?? '00';
@@ -107,7 +79,7 @@ const ListPage = () => {
   };
 
   const handleReservationDetailButtonClick = (id) => {
-    navigate('/customer/reservation/detail' + id);
+    navigate('/customer/reservation/detail/' + id);
   };
 
   return (
@@ -131,23 +103,24 @@ const ListPage = () => {
         </ReservationiInfoButtonWrapper>
       </ReservationAlertWrapper>
       {myReservationList.map((reservation) => (
-        <ReservationItem key={reservation.id}>
+        <ReservationItem key={reservation.reservationId}>
           <ReservationItemInfo>
-            <ReservationItemImage />
+            <ReservationItemImage src={reservation.restaurantImage} />
             <ReservationItemText>
               <ReservationItemTitle>
                 {reservation.restaurantName}
               </ReservationItemTitle>
               <ReservationItemSubTitle>
-                {reservation.memberCount}명 |&nbsp;
-                {moment(reservation.reservationStartTime).format(
-                  'YYYY-MM-DD(ddd) HH:mm'
-                )}
+                {reservation.memberCnt}명 |&nbsp;
+                {moment(reservation.reservationDate).format('YYYY-MM-DD')}&nbsp;
+                {reservation.reservationStartTime.split(':')[0] +
+                  ':' +
+                  reservation.reservationStartTime.split(':')[1]}
               </ReservationItemSubTitle>
             </ReservationItemText>
             <ReservationDetailButton
               onClick={() =>
-                handleReservationDetailButtonClick(reservation.restaurantId)
+                handleReservationDetailButtonClick(reservation.reservationId)
               }
             >
               예약상세

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import useHeaderStore from '../../../../stores/common/useHeaderStore.js';
+import moment from 'moment/moment.js';
 import {
   MainPageContainer,
   SearchWrapper,
@@ -31,12 +32,11 @@ import searchIcon from '../../../../assets/icons/common/search.svg';
 import tableIcon from '../../../../assets/icons/common/table.svg';
 import arrowRightIcon from '../../../../assets/icons/common/arrow-right.svg';
 import blackArrowRightIcon from '../../../../assets/icons/common/black-arrow-right.svg';
-import foodImage from '../../../../assets/icons/common/food.png';
 import { useNavigate } from 'react-router-dom';
 import useMapFilterStore from 'stores/map/useMapFilterStore.js';
 import { getMyReservation } from 'api/customer/reservation.js';
 const MainPage = () => {
-  const { setKeyword, keyword } = useMapFilterStore();
+  const { setKeyword } = useMapFilterStore();
   const { setIsShowLogo, setActiveIcons, setPageName } = useHeaderStore();
   const navigate = useNavigate();
   const [restaurantCategories, setRestaurantCategories] = useState([]);
@@ -144,11 +144,16 @@ const MainPage = () => {
               </RestaurantInfoName>
               <RestaurantDetailWrapper>
                 <RestaurantMyReservation>
-                  내 예약 {restaurant.myReservationCount}회
+                  {restaurant.reservationDate}
                 </RestaurantMyReservation>
-                <RestaurantTotalReservation>
-                  총 예약 {restaurant.totalReservationCount}회
-                </RestaurantTotalReservation>
+                <RestaurantMyReservation>
+                  {restaurant.reservationStartTime.split(':')[0] +
+                    ':' +
+                    restaurant.reservationEndTime.split(':')[1]}
+                </RestaurantMyReservation>
+                <RestaurantMyReservation>
+                  {restaurant.memberCnt}명
+                </RestaurantMyReservation>
               </RestaurantDetailWrapper>
             </RestaurantInfoBox>
           ))}

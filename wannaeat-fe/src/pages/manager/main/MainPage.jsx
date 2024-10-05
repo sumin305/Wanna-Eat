@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import theme from 'style/common/theme.js';
 import {
   MainPageStyled,
   GoToSeatDecorateStyled,
@@ -9,10 +10,17 @@ import {
   InputWrapperStyled,
   InputFloorWrapperStyled,
   InputFloorStyled,
+  SettingModalContainer,
+  ButtonWrapper,
+  HrStyled,
+  ModalTitleStyled,
+  ModalContentWrapper,
+  ModalOverlayStyled,
 } from './MainPage.js';
 
+import Button from 'component/common/button/WEButton/WEButton.jsx';
+
 import useHeaderStore from '../../../stores/common/useHeaderStore.js';
-import useModalStore from 'stores/common/useModalStore.js';
 import { useDropdownStore } from 'stores/common/useDropdownStore.js';
 
 import WEDropdown from 'component/common/dropdown/WEDropdown.jsx';
@@ -66,15 +74,6 @@ const MainPage = () => {
     setDropdownId(mappedIndex);
   };
 
-  const {
-    open,
-    close,
-    setModalType,
-    setTitle,
-    setChildren,
-    setHandleButtonClick,
-  } = useModalStore();
-
   const handleSubmit = () => {
     console.log(
       'dropdownId:' + dropdownId + ' floor:' + floor + ' 제출되었습니다.'
@@ -85,52 +84,14 @@ const MainPage = () => {
 
   const [floor, setFloor] = useState(1);
 
-  useEffect(() => {
-    setHandleButtonClick(handleSubmit);
-  }, [dropdownId, floor, setHandleButtonClick]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleModalOpen = () => {
-    setModalType('setting');
-    setTitle('매장 크기와 층 수를 선택해 주세요');
+    setIsModalOpen(true);
+  };
 
-    setChildren(
-      <InfoFormStyled>
-        <InputWrapperStyled>
-          <LabelStyled>크기</LabelStyled>
-          <div>
-            <WEDropdown
-              useDropdownStore={useDropdownStore}
-              onSelect={handleDropdownOnSelect}
-            />
-          </div>
-        </InputWrapperStyled>
-        <InputWrapperStyled>
-          <LabelStyled>층 수</LabelStyled>
-          <InputFloorWrapperStyled>
-            <InputFloorStyled
-              type="number"
-              min={1}
-              max={5}
-              value={floor}
-              inputMode="numeric"
-              onInput={(e) => {
-                const value = e.target.value;
-                if (value < 1) {
-                  e.target.value = 1;
-                } else if (value > 5) {
-                  e.target.value = 5;
-                }
-              }}
-              onChange={(e) => {
-                setFloor(e.target.value);
-              }}
-            />
-            <div className="floor-label">층</div>
-          </InputFloorWrapperStyled>
-        </InputWrapperStyled>
-      </InfoFormStyled>
-    );
-    open();
+  const close = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -142,6 +103,61 @@ const MainPage = () => {
           매장 꾸미기
         </GoToSeatDecorateButtonStyled>
       </GoToSeatDecorateStyled>
+
+      {isModalOpen && (
+        <ModalOverlayStyled isModalOpen={isModalOpen} onClick={close}>
+          <SettingModalContainer>
+            <ModalContentWrapper>
+              <ModalTitleStyled fontSize={theme.fontSize.px13}>
+                매장 크기와 층 수를 선택해 주세요
+              </ModalTitleStyled>
+              <HrStyled></HrStyled>
+              <div>
+                <InfoFormStyled>
+                  <InputWrapperStyled>
+                    <LabelStyled>크기</LabelStyled>
+                    <div>
+                      <WEDropdown
+                        useDropdownStore={useDropdownStore}
+                        onSelect={handleDropdownOnSelect}
+                      />
+                    </div>
+                  </InputWrapperStyled>
+                  <InputWrapperStyled>
+                    <LabelStyled>층 수</LabelStyled>
+                    <InputFloorWrapperStyled>
+                      <InputFloorStyled
+                        type="number"
+                        min={1}
+                        max={5}
+                        value={floor}
+                        inputMode="numeric"
+                        onInput={(e) => {
+                          const value = e.target.value;
+                          if (value < 1) {
+                            e.target.value = 1;
+                          } else if (value > 5) {
+                            e.target.value = 5;
+                          }
+                        }}
+                        onChange={(e) => {
+                          setFloor(e.target.value);
+                        }}
+                      />
+                      <div className="floor-label">층</div>
+                    </InputFloorWrapperStyled>
+                  </InputWrapperStyled>
+                </InfoFormStyled>
+              </div>
+            </ModalContentWrapper>
+            <ButtonWrapper>
+              <Button size="long" onClick={handleSubmit}>
+                확인
+              </Button>
+            </ButtonWrapper>
+          </SettingModalContainer>
+        </ModalOverlayStyled>
+      )}
     </MainPageStyled>
   );
 };

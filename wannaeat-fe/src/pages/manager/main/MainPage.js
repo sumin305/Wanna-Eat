@@ -115,6 +115,72 @@ const InputFloorStyled = styled.input`
   }
 `;
 
+const SettingModalContainer = styled.div`
+  background-color: ${theme.color.white};
+  position: fixed;
+  top: 25%;
+  height: 40%;
+  width: 80%;
+  justify-self: center;
+
+  border-radius: ${theme.borderRadius.default};
+  padding: 0.5rem 0;
+  @media (min-width: 480px) {
+    width: 400px;
+    justify-self: center;
+  }
+
+  justify-content: space-between;
+`;
+
+const ButtonWrapper = styled.div`
+  margin-top: auto;
+`;
+
+const HrStyled = styled.hr`
+  color: ${theme.color.primary};
+  background: ${theme.color.primary};
+  height: 2px;
+  width: 100%;
+  border: none;
+  margin-bottom: 0.5rem;
+  align-self: center;
+`;
+
+const ModalTitleStyled = styled.div`
+  font-size: ${(props) => {
+    return props.fontSize;
+  }};
+  font-weight: ${theme.fontWeight.bold};
+  height: 1.5rem;
+`;
+
+const ModalContentWrapper = styled.div`
+  padding: 1rem;
+`;
+
+const ModalOverlayStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: ${theme.zIndex.blackLayout};
+  background-color: rgba(0, 0, 0, 0.65);
+  width: 100%;
+  height: 100%;
+  display: ${({ isModalOpen }) => {
+    if (!isModalOpen) return 'none';
+  }};
+  @media (min-width: 480px) {
+    width: 480px;
+    justify-content: center;
+  }
+`;
+
 export {
   MainPageStyled,
   GoToSeatDecorateStyled,
@@ -124,4 +190,10 @@ export {
   InputWrapperStyled,
   InputFloorWrapperStyled,
   InputFloorStyled,
+  SettingModalContainer,
+  ButtonWrapper,
+  HrStyled,
+  ModalTitleStyled,
+  ModalContentWrapper,
+  ModalOverlayStyled,
 };

@@ -32,6 +32,7 @@ import com.waterdragon.wannaeat.domain.payment.dto.request.SsafyPaymentDepositRe
 import com.waterdragon.wannaeat.domain.payment.dto.request.SsafyPaymentOrderRequestDto;
 import com.waterdragon.wannaeat.domain.payment.dto.response.SsafyPaymentResponseDto;
 import com.waterdragon.wannaeat.domain.payment.exception.error.InvalidPaymentException;
+import com.waterdragon.wannaeat.domain.payment.exception.error.InvalidPaymentPasswordException;
 import com.waterdragon.wannaeat.domain.payment.exception.error.InvalidPriceException;
 import com.waterdragon.wannaeat.domain.payment.exception.error.MenuCountRequestMoreThanUnpaidException;
 import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
@@ -94,7 +95,7 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 		User user = authUtil.getAuthenticatedUser();
 		if (!encryptService.encryptData(ssafyPaymentOrderRequestDto.getUserPassword()).equals(
 			user.getPaymentPassword())) {
-			throw new NotAuthenticatedException("결제 비밀번호가 틀립니다.");
+			throw new InvalidPaymentPasswordException("결제 비밀번호가 일치하지 않습니다.");
 		}
 
 		// 우선 결제 요청에 대한 모든 orderIds 추출
@@ -203,7 +204,7 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 		User user = authUtil.getAuthenticatedUser();
 		if (!encryptService.encryptData(ssafyPaymentDepositRequestDto.getUserPassword()).equals(
 			user.getPaymentPassword())) {
-			throw new NotAuthenticatedException("결제 비밀번호가 틀립니다.");
+			throw new InvalidPaymentPasswordException("결제 비밀번호가 일치하지 않습니다.");
 		}
 
 		// 식당 존재여부 확인

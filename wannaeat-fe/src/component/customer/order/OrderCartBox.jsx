@@ -50,7 +50,7 @@ const OrderCartBox = ({ reservationUrl }) => {
   const sortedMenus =
     allSortedMenusInfo?.cartDetailResponseDto?.cartElements || [];
 
-  const reservationParticipantId = 2;
+  const reservationParticipantId = 7;
   const [menuCounts, setMenuCounts] = useState([]);
 
   const { stompClient, isConnected } = useChatStore();

@@ -8,8 +8,14 @@ import WEButton from '../../button/WEButton/WEButton';
 import theme from '../../../../style/common/theme';
 import useModalStore from '../../../../stores/common/useModalStore';
 const WEAlertModal = () => {
-  const { alertText, cancelText, confirmText, close, isOneButton } =
-    useModalStore();
+  const {
+    alertText,
+    cancelText,
+    confirmText,
+    close,
+    isOneButton,
+    handleButtonClick,
+  } = useModalStore();
   return (
     <ModalStyled>
       <TitleStyled>{alertText}</TitleStyled>
@@ -29,7 +35,7 @@ const WEAlertModal = () => {
           >
             {cancelText}
           </WEButton>
-          <WEButton size="modal" onClick={close}>
+          <WEButton size="modal" onClick={() => handleButtonClick()}>
             {confirmText}
           </WEButton>
         </ButtonContainerStyled>

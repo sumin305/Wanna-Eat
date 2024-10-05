@@ -96,17 +96,15 @@ const MainPage = () => {
 
   return (
     <MainPageStyled>
-      <GoToSeatDecorateStyled onClick={handleModalOpen}>
-        <GoToSeatDecorateButtonStyled
-          onClick={() => navigate('/manager/restaurant/seat-decorate')}
-        >
+      <GoToSeatDecorateStyled>
+        <GoToSeatDecorateButtonStyled onClick={handleModalOpen}>
           매장 꾸미기
         </GoToSeatDecorateButtonStyled>
       </GoToSeatDecorateStyled>
 
       {isModalOpen && (
         <ModalOverlayStyled isModalOpen={isModalOpen} onClick={close}>
-          <SettingModalContainer>
+          <SettingModalContainer onClick={(e) => e.stopPropagation()}>
             <ModalContentWrapper>
               <ModalTitleStyled fontSize={theme.fontSize.px13}>
                 매장 크기와 층 수를 선택해 주세요

@@ -156,6 +156,7 @@ const ModalTitleStyled = styled.div`
 `;
 
 const ModalContentWrapper = styled.div`
+  z-index: ${theme.zIndex.modal};
   padding: 1rem;
 `;
 

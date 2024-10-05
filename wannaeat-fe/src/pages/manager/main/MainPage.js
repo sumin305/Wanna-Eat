@@ -73,9 +73,15 @@ const InputWrapperStyled = styled.div`
 `;
 
 const LabelStyled = styled.div`
-  font-size: ${theme.fontSize.px17};
+  font-size: ${theme.fontSize.px11};
   font-weight: ${theme.fontWeight.bold};
-  margin-block: 35px;
+  margin-block: 25px;
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px17};
+    font-weight: ${theme.fontWeight.bold};
+    margin-block: 35px;
+  }
 `;
 
 const InputFloorWrapperStyled = styled.div`
@@ -84,15 +90,27 @@ const InputFloorWrapperStyled = styled.div`
   align-items: center;
 
   .floor-label {
-    font-size: ${theme.fontSize.px17};
+    font-size: ${theme.fontSize.px11};
     font-weight: ${theme.fontWeight.bold};
-    margin-left: 10px;
+    margin-left: 8px;
+  }
+
+  @media (min-width: 480px) {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .floor-label {
+      font-size: ${theme.fontSize.px17};
+      font-weight: ${theme.fontWeight.bold};
+      margin-left: 10px;
+    }
   }
 `;
 
 const InputFloorStyled = styled.input`
-  width: 6.75rem;
-  height: 30px;
+  width: 5.75rem;
+  height: 25px;
   border: 0.5px solid #d4d4d4;
   border-radius: 0.3rem;
   font-size: 0.813rem;
@@ -112,6 +130,31 @@ const InputFloorStyled = styled.input`
   :focus {
     outline-color: ${theme.color.primary};
     border-color: ${theme.color.primary};
+  }
+
+  @media (min-width: 480px) {
+    width: 6.75rem;
+    height: 30px;
+    border: 0.5px solid #d4d4d4;
+    border-radius: 0.3rem;
+    font-size: 0.813rem;
+    padding: 0 10px;
+    text-align: center;
+
+    :active {
+      outline-color: ${theme.color.primary};
+      border-color: ${theme.color.primary};
+    }
+
+    :hover {
+      outline-color: ${theme.color.primary};
+      border-color: ${theme.color.primary};
+    }
+
+    :focus {
+      outline-color: ${theme.color.primary};
+      border-color: ${theme.color.primary};
+    }
   }
 `;
 
@@ -148,11 +191,17 @@ const HrStyled = styled.hr`
 `;
 
 const ModalTitleStyled = styled.div`
-  font-size: ${(props) => {
-    return props.fontSize;
-  }};
+  font-size: ${theme.fontSize.px11};
   font-weight: ${theme.fontWeight.bold};
   height: 1.5rem;
+
+  @media (min-width: 480px) {
+    text-align: start;
+    font-size: ${theme.fontSize.px13};
+
+    font-weight: ${theme.fontWeight.bold};
+    height: 1.5rem;
+  }
 `;
 
 const ModalContentWrapper = styled.div`

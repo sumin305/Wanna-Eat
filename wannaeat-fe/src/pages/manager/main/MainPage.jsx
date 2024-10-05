@@ -106,7 +106,7 @@ const MainPage = () => {
         <ModalOverlayStyled isModalOpen={isModalOpen} onClick={close}>
           <SettingModalContainer onClick={(e) => e.stopPropagation()}>
             <ModalContentWrapper>
-              <ModalTitleStyled fontSize={theme.fontSize.px13}>
+              <ModalTitleStyled>
                 매장 크기와 층 수를 선택해 주세요
               </ModalTitleStyled>
               <HrStyled></HrStyled>

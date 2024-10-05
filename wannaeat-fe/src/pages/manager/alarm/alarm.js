@@ -1,17 +1,16 @@
 import styled from '@emotion/styled';
-import theme from 'style/common/theme';
 // ${theme.color.primary}
 
 // 페이지 전체 스타일
-const NotificationPageContainer = styled.div`
+const AlarmPageContainer = styled.div`
   margin-top: 20px;
-  margin-bottom: 10%
+  margin-bottom: 10%;
   padding: 10px;
   font-family: Arial, sans-serif;
 `;
 
 // 헤더 스타일 (탭 포함)
-const NotificationHeader = styled.div`
+const AlarmHeader = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
@@ -25,7 +24,7 @@ const NotificationHeader = styled.div`
 `;
 
 // 탭 스타일
-const NotificationTabs = styled.div`
+const AlarmTabs = styled.div`
   display: flex;
   span {
     margin-right: 10px;
@@ -49,7 +48,7 @@ const NotificationTabs = styled.div`
 `;
 
 // 알림 리스트 스타일 (스크롤 가능)
-const NotificationList = styled.ul`
+const AlarmList = styled.ul`
   list-style-type: none;
   margin-top: 3px;
   padding: 0;
@@ -68,7 +67,7 @@ const NotificationList = styled.ul`
 `;
 
 // 알림 항목 스타일 
-const NotificationItem = styled.li`
+const AlarmItem = styled.li`
   display: flex;
   align-items: center;
   padding: 15px;
@@ -86,7 +85,7 @@ const NotificationItem = styled.li`
 `;
 
 // 알림 아이콘 스타일 (왼쪽에 고정, 가운데 정렬)
-const NotificationIcon = styled.img`
+const AlarmIcon = styled.img`
   width: 60px;
   height: 60px;
   margin-right: 5px;
@@ -95,7 +94,7 @@ const NotificationIcon = styled.img`
 `;
 
 // 알림 내용 스타일 (가운데 정렬)
-const NotificationContent = styled.div`
+const AlarmContent = styled.div`
   flex-grow: 1;
   font-size: 15px;
   margin-left: 30px;
@@ -105,20 +104,20 @@ const NotificationContent = styled.div`
 `;
 
 // 알림 타입 스타일 (알림 제목)
-const NotificationType = styled.div`
+const AlarmType = styled.div`
   font-weight: bold;
   font-size: 17px;
   margin-bottom: 5px;
 `;
 
 // 세부 내용 스타일 (테이블 정보와 세부 사항)
-const NotificationDetails = styled.div`
+const AlarmDetails = styled.div`
   color: #666;
   font-size: 14px;
 `;
 
 // 알림 시간 스타일 (우측에 위치)
-const NotificationTime = styled.div`
+const AlarmTime = styled.div`
   color: #888;
   font-size: 13px;
   text-align: right;
@@ -126,8 +125,8 @@ const NotificationTime = styled.div`
   margin-top: 10px;
 `;
 
-// NotificationEmptyMessage 스타일 추가
-const NotificationEmptyMessage = styled.div`
+// AlarmEmptyMessage 스타일 추가
+const AlarmEmptyMessage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -137,15 +136,15 @@ const NotificationEmptyMessage = styled.div`
 `;
 
 export {
-  NotificationPageContainer,
-  NotificationHeader,
-  NotificationTabs,
-  NotificationList,
-  NotificationItem,
-  NotificationIcon,
-  NotificationContent,
-  NotificationType,
-  NotificationDetails,
-  NotificationTime,
-  NotificationEmptyMessage
+  AlarmPageContainer,
+  AlarmHeader,
+  AlarmTabs,
+  AlarmList,
+  AlarmItem,
+  AlarmIcon,
+  AlarmContent,
+  AlarmType,
+  AlarmDetails,
+  AlarmTime,
+  AlarmEmptyMessage
 };

@@ -13,6 +13,8 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.waterdragon.wannaeat.domain.alarm.domain.enums.AlarmType;
+import com.waterdragon.wannaeat.domain.alarm.service.AlarmService;
 import com.waterdragon.wannaeat.domain.cart.domain.Cart;
 import com.waterdragon.wannaeat.domain.cart.domain.CartMenu;
 import com.waterdragon.wannaeat.domain.cart.exception.error.CartNotFoundException;
@@ -53,6 +55,7 @@ public class OrderServiceImpl implements OrderService {
 	private final OrderRepository orderRepository;
 	private static final String CART_KEY_PREFIX = "cart_";
 	private final RedisService redisService;
+	private final AlarmService alarmService;
 	private final ReservationParticipantRepository reservationParticipantRepository;
 	private final ReservationRepository reservationRepository;
 	private final MenuRepository menuRepository;
@@ -152,6 +155,8 @@ public class OrderServiceImpl implements OrderService {
 
 				// 주문 저장
 				orderRepository.save(order);
+
+				alarmService.registerAlarm(reservation, menu, AlarmType.ORDER_ADDED);
 			}
 		}
 

@@ -1,4 +1,4 @@
-package com.waterdragon.wannaeat.domain.alarm.domain.repository;
+package com.waterdragon.wannaeat.domain.alarm.repository;
 
 import java.util.List;
 import java.util.Optional;

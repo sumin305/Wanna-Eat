@@ -192,6 +192,7 @@ const OrderCartBox = ({ reservationUrl }) => {
     nav(`/customer/order/${reservationUrl}`);
   };
 
+  // 비우기 버튼 클릭시 실행되는 함수
   const handleMenuDeleteButtonClick = () => {
     const cartClearRequestDto = {
       reservationUrl: reservationUrl,
@@ -212,11 +213,19 @@ const OrderCartBox = ({ reservationUrl }) => {
       alert('웹소켓 연결에 실패했습니다.');
     }
 
-    setAllMenusInfo({
-      cartDetailResponseDto: { cartElements: [], cartTotalPrice: 0 },
+    // 다른 사람들의 메뉴만 필터링해서 저장
+    const filteredMenus = sortedMenus.filter(
+      (menu) => menu.reservationParticipantId !== reservationParticipantId
+    );
+
+    setAllMenusSortInfo({
+      cartDetailResponseDto: {
+        cartElements: filteredMenus,
+      },
     });
   };
 
+  // 주문하기 버튼 클릭시 실행되는 함수
   const handleOrderButtonClick = () => {
     const orderRegisterRequestDto = {
       reservationUrl: reservationUrl,

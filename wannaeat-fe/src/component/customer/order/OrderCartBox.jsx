@@ -260,6 +260,8 @@ const OrderCartBox = ({ reservationUrl }) => {
     }, 0);
   };
 
+  console.log(sortedMenus);
+  const [floor, setFloor] = useState(1);
   return (
     <OrderContainer>
       <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />

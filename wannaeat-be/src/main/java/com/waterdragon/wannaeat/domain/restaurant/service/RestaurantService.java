@@ -11,6 +11,7 @@ import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantRegister
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantCategoryListResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantDetailResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantMapListResponseDto;
+import com.waterdragon.wannaeat.domain.restaurant.dto.response.SsafyRestaurantResponseDto;
 
 public interface RestaurantService {
 
@@ -25,4 +26,9 @@ public interface RestaurantService {
 
 	void editRestaurant(Long restaurantId, RestaurantEditRequestDto restaurantEditRequestDto,
 		List<MultipartFile> multipartFiles);
+
+	SsafyRestaurantResponseDto registerSsafyRestaurant(String restaurantName);
+
+	Long getMerchantId(String restaurantName, SsafyRestaurantResponseDto response);
+
 }

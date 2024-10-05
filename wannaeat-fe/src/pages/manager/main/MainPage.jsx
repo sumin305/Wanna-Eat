@@ -4,6 +4,9 @@ import {
   GoToSeatDecorateStyled,
   GoToSeatDecorateButtonStyled,
 } from './MainPage.js';
+
+import { useNavigate } from 'react-router-dom';
+
 import useHeaderStore from '../../../stores/common/useHeaderStore.js';
 
 const MainPage = () => {
@@ -23,10 +26,16 @@ const MainPage = () => {
     setPageName('');
   }, []);
 
+  const navigate = useNavigate();
+
   return (
     <MainPageStyled>
       <GoToSeatDecorateStyled>
-        <GoToSeatDecorateButtonStyled>매장 꾸미기</GoToSeatDecorateButtonStyled>
+        <GoToSeatDecorateButtonStyled
+          onClick={() => navigate('/manager/restaurant/seat-decorate')}
+        >
+          매장 꾸미기
+        </GoToSeatDecorateButtonStyled>
       </GoToSeatDecorateStyled>
     </MainPageStyled>
   );

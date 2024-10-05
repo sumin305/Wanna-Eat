@@ -34,7 +34,7 @@ const GoToSeatDecorateButtonStyled = styled.div`
   height: 70%;
   background-color: white;
   border-radius: 11px;
-  font-size: ${theme.fontSize.px25};
+  font-size: ${theme.fontSize.px17};
   font-weight: ${theme.fontWeight.bold};
   color: ${theme.color.primary};
   cursor: pointer;
@@ -43,6 +43,23 @@ const GoToSeatDecorateButtonStyled = styled.div`
   &:active {
     cursor: pointer;
     transform: scale(0.98);
+  }
+
+  @media (min-width: 480px) {
+    width: 90%;
+    height: 70%;
+    background-color: white;
+    border-radius: 11px;
+    font-size: ${theme.fontSize.px25};
+    font-weight: ${theme.fontWeight.bold};
+    color: ${theme.color.primary};
+    cursor: pointer;
+    user-select: none;
+
+    &:active {
+      cursor: pointer;
+      transform: scale(0.98);
+    }
   }
 `;
 

@@ -48,7 +48,7 @@ public class UserExceptionHandler {
 		InvalidCodeException ex) {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Auth Code", ex.getMessage());
-		return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 	}
 
 	// 동일 플랫폼, 전화번호로 가입된 계정 존재

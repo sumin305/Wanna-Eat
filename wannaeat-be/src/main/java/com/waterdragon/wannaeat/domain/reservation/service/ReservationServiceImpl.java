@@ -16,10 +16,13 @@ import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.waterdragon.wannaeat.domain.alarm.domain.enums.AlarmType;
+import com.waterdragon.wannaeat.domain.alarm.service.AlarmService;
 import com.waterdragon.wannaeat.domain.cart.exception.error.ReservationParticipantNotMatchReservationException;
 import com.waterdragon.wannaeat.domain.order.domain.Order;
 import com.waterdragon.wannaeat.domain.order.repository.OrderRepository;
@@ -30,9 +33,12 @@ import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequest
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationSummaryResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.RecentReservationResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationMenuResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationSummaryResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.AlreadyCancelledReservationException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.DuplicateReservationTableException;
@@ -73,6 +79,7 @@ public class ReservationServiceImpl implements ReservationService {
 	private final AuthUtil authUtil;
 	private final QrUtil qrUtil;
 	private final RedisService redisService;
+	private final AlarmService alarmService;
 	private final OrderRepository orderRepository;
 	@Value("${redirectURL}")
 	private String REDIRECT_URL;
@@ -217,6 +224,8 @@ public class ReservationServiceImpl implements ReservationService {
 
 		registerReservationTable(reservation, reservationRegisterRequestDto.getTableList());
 
+		alarmService.registerAlarm(reservation, AlarmType.RESERVATION_CONFIRMED);
+
 		return ReservationDetailResponseDto.transferToReservationDetailResponseDto(reservation,
 			reservationRegisterRequestDto.getTableList());
 	}
@@ -356,7 +365,7 @@ public class ReservationServiceImpl implements ReservationService {
 		}
 
 		// restaurantId가 Long 형식으로 저장되어 있을 경우 String을 Long으로 변환
-		Long restaurantId;
+		long restaurantId;
 		try {
 			restaurantId = Long.parseLong(redisValue);
 		} catch (NumberFormatException e) {
@@ -389,24 +398,66 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	/**
+	 * 고객 예약 상세 정보를 리턴하는 메소드
+	 *
+	 * @param reservationId 예약 아이디
+	 * @return 예약 상세 정보
+	 */
+	@Override
+	public ReservationDetailResponseDto getDetailReservationByUser(Long reservationId) {
+		if (reservationId == null) {
+			throw new ReservationNotFoundException("해당 예약이 존재하지 않습니다.");
+		}
+		User user = authUtil.getAuthenticatedUser();
+
+		Reservation reservation = reservationRepository.findByReservationIdWithLock(reservationId)
+			.orElseThrow(() -> new ReservationNotFoundException(
+				"해당 예약이 존재하지 않습니다."));
+
+		if(reservation.getUser() != user){
+			throw new NotAuthorizedException("접근 권한이 없습니다.");
+		}
+		return ReservationDetailResponseDto.transferToReservationDetailResponseDto(reservation);
+	}
+
+	/**
 	 * 일자별 예약 현황 조회 메소드
 	 *
 	 * @param date 검색 일자
-	 * @return 예약 목록 정보
+	 * @param pageable 페이징
+	 * @return 일자별 예약 현황
 	 */
 	@Override
-	public List<ReservationDetailResponseDto> getListReservationByDate(LocalDate date) {
+	public ManagerReservationSummaryResponseDto getListReservationByRestaurantAndDate(LocalDate date,
+		Pageable pageable) {
 		User user = authUtil.getAuthenticatedUser();
 		Restaurant restaurant = restaurantRepository.findByUser(user)
-			.orElseThrow(() -> new RestaurantNotFoundException(
-				"식당이 존재하지 않습니다."));
+			.orElseThrow(() -> new RestaurantNotFoundException("식당이 존재하지 않습니다."));
 
-		List<Reservation> reservations = reservationRepository.findByRestaurantAndReservationDate(restaurant, date);
+		// 예약 리스트 가져오기
+		Page<Reservation> reservations = reservationRepository.findByRestaurantAndReservationDateAndCancelledIsFalse(
+			restaurant, date, pageable);
 
-		// Reservation 리스트를 ReservationDetailResponseDto 리스트로 변환
-		return reservations.stream()
-			.map(ReservationDetailResponseDto::transferToReservationDetailResponseDto)  // 각 Reservation 객체를 DTO로 변환
-			.collect(Collectors.toList());  // List로 변환 후 리턴
+		// Page<Reservation>을 List<ReservationSummaryResponseDto>로 변환
+		List<ReservationSummaryResponseDto> reservationSummaryList = reservations.stream()
+			.map(reservation -> ReservationSummaryResponseDto.builder()
+				.reservationId(reservation.getReservationId())
+				.userName(reservation.getUser() != null ? reservation.getUser().getNickname() :
+					"비회원") // 사용자의 이름이 없으면 "비회원"으로 설정
+				.reservationStartTime(reservation.getStartTime())
+				.reservationEndTime(reservation.getEndTime())
+				.memberCnt(reservation.getMemberCnt())
+				.tableList(reservation.getReservationTables().stream()
+					.map(ReservationTable::getTableId) // 테이블의 좌석 번호 추출
+					.collect(Collectors.toList()))
+				.build())
+			.collect(Collectors.toList());
+
+		// ManagerReservationSummaryResponseDto 빌드 및 반환
+		return ManagerReservationSummaryResponseDto.builder()
+			.reservationDate(date) // 파라미터로 받은 날짜
+			.reservations(reservationSummaryList) // 변환된 예약 리스트
+			.build();
 	}
 
 	/**
@@ -447,11 +498,7 @@ public class ReservationServiceImpl implements ReservationService {
 			throw new AlreadyCancelledReservationException("이미 취소된 예약입니다.");
 		}
 
-		if (user.getRole() == Role.CUSTOMER && !user.equals(reservation.getUser())) {
-			throw new NotAuthorizedException("권한이 없습니다.");
-		}
-
-		if (user.getRole() == Role.MANAGER && !user.equals(reservation.getRestaurant().getUser())) {
+		if (!user.equals(reservation.getUser()) && !user.equals(reservation.getRestaurant().getUser())) {
 			throw new NotAuthorizedException("권한이 없습니다.");
 		}
 
@@ -465,8 +512,9 @@ public class ReservationServiceImpl implements ReservationService {
 
 		// 예약 정보 수정 후 저장
 		reservation.remove();
-		log.info(reservation.toString());
 		reservationRepository.save(reservation);
+
+		alarmService.registerAlarm(reservation, AlarmType.RESERVATION_CANCELED);
 	}
 
 	/**
@@ -489,6 +537,8 @@ public class ReservationServiceImpl implements ReservationService {
 
 		reservation.edit();
 		reservationRepository.save(reservation);
+
+		alarmService.registerAlarm(reservation, AlarmType.EXIT_COMPLETED);
 
 	}
 
@@ -570,7 +620,7 @@ public class ReservationServiceImpl implements ReservationService {
 
 		// 테이블 번호 리스트 추출 (Integer 타입으로 처리)
 		List<Integer> tableList = reservation.getReservationTables().stream()
-			.map(reservationTable -> reservationTable.getTableId()) // tableId는 int 타입으로 처리
+			.map(ReservationTable::getTableId) // tableId는 int 타입으로 처리
 			.collect(Collectors.toList());
 
 		// ManagerReservationDetailResponseDto 생성 및 반환
@@ -584,6 +634,58 @@ public class ReservationServiceImpl implements ReservationService {
 			.tableList(tableList) // 테이블 리스트 (List<Integer>)
 			.reservationMenuList(new ArrayList<>(menuMap.values())) // 메뉴 리스트
 			.build();
+	}
+
+	/**
+	 * 최우선 방문 예약을 리턴하는 메소드
+	 * 최우선 방문 예약이 없는 경우, 현재 이용중인 예약을 리턴
+	 *
+	 * @return 최우선 방문 예약
+	 */
+	@Override
+	public RecentReservationResponseDto getRecentReservation() {
+		User user = authUtil.getAuthenticatedUser();
+		Pageable pageable = PageRequest.of(0, 1);
+		LocalDate today = LocalDate.now();
+		LocalTime now = LocalTime.now();
+
+		Reservation reservation;
+
+		Page<Reservation> upcomingReservation = reservationRepository.findFirstUpcomingReservation(user, today, now,
+			pageable);
+
+		// 방문 예정인 식당 찾아서 리턴
+		if (upcomingReservation.hasContent()) {
+			reservation = upcomingReservation.getContent().get(0); // 가장 첫 번째 예약 반환
+			return RecentReservationResponseDto.builder()
+				.status("방문 예정")
+				.reservationId(reservation.getReservationId())
+				.restaurantName(reservation.getRestaurant().getName())
+				.reservationDate(reservation.getReservationDate())
+				.reservationStartTime(reservation.getStartTime())
+				.reservationEndTime(reservation.getEndTime())
+				.memberCnt(reservation.getMemberCnt())
+				.build();
+		}
+
+		// 방문 예정 식당이 없다면, 현재 방문중인 식당 찾아서 리턴
+		Page<Reservation> ongoingReservation = reservationRepository.findFirstOngoingReservation(user, today, now,
+			pageable);
+		if (ongoingReservation.hasContent()) {
+			reservation = ongoingReservation.getContent().get(0);
+			return RecentReservationResponseDto.builder()
+				.status("방문중")
+				.reservationId(reservation.getReservationId())
+				.restaurantName(reservation.getRestaurant().getName())
+				.reservationDate(reservation.getReservationDate())
+				.reservationStartTime(reservation.getStartTime())
+				.reservationEndTime(reservation.getEndTime())
+				.memberCnt(reservation.getMemberCnt())
+				.build();
+		}
+
+		// 두 쿼리에서 모두 결과가 없으면 null 반환
+		return null;
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.waterdragon.wannaeat.domain.reservation.repository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +24,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	Page<Reservation> findByUser(User user, Pageable pageable);
 
 	int countByUserAndRestaurant(User user, Restaurant restaurant);
+
+	Page<Reservation> findByRestaurantAndReservationDateAndCancelledIsFalse(Restaurant restaurant,
+		LocalDate reservationDate, Pageable pageable);
 
 	Optional<Reservation> findByReservationId(Long reservationId);
 
@@ -66,7 +70,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 		"AND r.cancelled = false " +
 		"AND FUNCTION('YEAR', r.reservationDate) = :year " +
 		"AND FUNCTION('MONTH', r.reservationDate) = :month")
-	List<Reservation> findNotCancelledReservationsByRestaurantAndYearAndMonth(@Param("restaurant") Restaurant restaurant,
+	List<Reservation> findNotCancelledReservationsByRestaurantAndYearAndMonth(
+		@Param("restaurant") Restaurant restaurant,
 		@Param("year") int year,
 		@Param("month") int month);
 
@@ -76,4 +81,16 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	List<Reservation> findReservationsByRestaurantAndYearAndMonth(@Param("restaurant") Restaurant restaurant,
 		@Param("year") int year,
 		@Param("month") int month);
+
+	// 오늘 이후 예약 중 가장 빠른 예약을 찾음 (reservationDate + startTime 기준)
+	@Query("SELECT r FROM Reservation r WHERE r.user = :user AND r.reservationUrl IS NOT NULL AND r.cancelled = false "
+		+ "AND (r.reservationDate > :today OR (r.reservationDate = :today AND r.startTime > :now)) "
+		+ "ORDER BY r.reservationDate ASC, r.startTime ASC")
+	Page<Reservation> findFirstUpcomingReservation(@Param("user") User user, @Param("today") LocalDate today, @Param("now") LocalTime now, Pageable pageable);
+
+	// 오늘 현재 시간 범위 내에 있는 예약 중 가장 빠른 예약을 찾음 (reservationDate + startTime 기준)
+	@Query("SELECT r FROM Reservation r WHERE r.user = :user AND r.reservationDate = :today "
+		+ "AND r.startTime <= :now AND r.endTime >= :now "
+		+ "ORDER BY r.reservationDate ASC, r.startTime ASC")
+	Page<Reservation> findFirstOngoingReservation(@Param("user") User user, @Param("today") LocalDate today, @Param("now") LocalTime now, Pageable pageable);
 }

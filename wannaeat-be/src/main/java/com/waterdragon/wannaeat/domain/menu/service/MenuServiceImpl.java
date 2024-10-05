@@ -184,19 +184,24 @@ public class MenuServiceImpl implements MenuService {
 			throw new MenuNotBelongToRestaurantException("해당 메뉴는 식당에 존재하지 않음. : " + menuCategory.getCategoryName());
 		}
 
-		// 기존 메뉴 사진 삭제
-		if (menu.getImage() != null) {
-			fileUtil.deleteFile(menu.getImage());
-			log.info("deleted file : " + menu.getImage());
+		String menuImage = menu.getImage();
+
+		if(multipartFile != null) {
+			// 기존 메뉴 사진 삭제
+			if (menu.getImage() != null) {
+				fileUtil.deleteFile(menu.getImage());
+				log.info("deleted file : " + menu.getImage());
+			}
+
+			// 새로운 메뉴 사진 등록
+			menuImage= fileUtil.uploadFile(multipartFile);
+			log.info("uplaoded file : " + menu.getImage());
 		}
 
-		// 새로운 메뉴 사진 등록
-		String uploadedMenuImageFileName = fileUtil.uploadFile(multipartFile);
-		log.info("uplaoded file : " + menu.getImage());
 
 		// 메뉴 엔티티 수정 후 저장
 		menu.update(menuCategory, menuEditRequestDto.getMenuName(), menuEditRequestDto.getMenuPrice(),
-			uploadedMenuImageFileName, menuEditRequestDto.getMenuDescription());
+			menuImage, menuEditRequestDto.getMenuDescription());
 		menuRepository.save(menu);
 	}
 

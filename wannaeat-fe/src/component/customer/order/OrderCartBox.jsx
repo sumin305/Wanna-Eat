@@ -333,6 +333,36 @@ const OrderCartBox = ({ reservationUrl }) => {
     }, 0);
   };
 
+  // 나의 메뉴 개수 계산
+  const calculateMyMenuCount = () => {
+    return sortedMenus
+      .filter(
+        (menu) => menu.reservationParticipantId === reservationParticipantId
+      )
+      .reduce((total, menu) => {
+        return (
+          total +
+          Object.values(menu.menuInfo).reduce(
+            (count, menuItem) => count + menuItem.menuCnt,
+            0
+          )
+        );
+      }, 0);
+  };
+
+  // 전체 메뉴 개수 계산
+  const calculateTotalMenuCount = () => {
+    return sortedMenus.reduce((total, menu) => {
+      return (
+        total +
+        Object.values(menu.menuInfo).reduce(
+          (count, menuItem) => count + menuItem.menuCnt,
+          0
+        )
+      );
+    }, 0);
+  };
+
   console.log(sortedMenus);
   return (
     <OrderContainer>
@@ -340,7 +370,11 @@ const OrderCartBox = ({ reservationUrl }) => {
       <div>
         <TopBox>
           <MenuContainer>
-            <TotalMenuP>총 메뉴 {sortedMenus.length}개</TotalMenuP>
+            <TotalMenuP>
+              {activeTab === 0
+                ? `총 메뉴 ${calculateMyMenuCount()}개`
+                : `총 메뉴 ${calculateTotalMenuCount()}개`}
+            </TotalMenuP>
             <DeleteDiv>
               {activeTab === 0 ? (
                 <WEButton

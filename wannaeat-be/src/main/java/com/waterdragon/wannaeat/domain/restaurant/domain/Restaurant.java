@@ -95,6 +95,9 @@ public class Restaurant {
 	@Column(name = "longitude")
 	private Double longitude;
 
+	@Column(name = "merchant_id")
+	private Long merchantId;
+
 	@OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
 	private List<Menu> menus;
 

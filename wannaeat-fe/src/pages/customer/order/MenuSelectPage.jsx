@@ -11,6 +11,19 @@ import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 import { useState } from 'react';
 import CartIcon from 'assets/icons/order/cart.svg';
+import {
+  MenuPageContainer,
+  WETabContainer,
+  TabText,
+  MenuItems,
+  MenuItem,
+  MenuImage,
+  MenuInfo,
+  MenuTitle,
+  MenuDescription,
+  MenuPrice,
+  CartImg,
+} from './MenuSelectPage.js';
 
 const MenuSelectPage = () => {
   const nav = useNavigate();
@@ -19,7 +32,7 @@ const MenuSelectPage = () => {
   const { isConnected, setIsConnected, stompClient, setStompClient } =
     useChatStore();
   const [activeTab, setActiveTab] = useState(0);
-  const reservationParticipantId = 6;
+  const reservationParticipantId = 8;
   const increment = 1; // 증가 갯수는 1로 설정
 
   const {
@@ -151,26 +164,34 @@ const MenuSelectPage = () => {
   };
 
   return (
-    <>
-      <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
-      {tabs[activeTab]}
-      {currentMenuDetails &&
-        currentMenuDetails.map((menu, menuId) => (
-          <div key={menuId}>
-            <p>{menu.menuImage}</p>
-            <p>{menu.menuName}</p>
-            <p>{menu.menuPrice.toLocaleString('ko-KR')}원</p>
-            <p>{menu.menuDescription}</p>
-            <img
-              src={CartIcon}
-              alt="담기 아이콘"
-              onClick={() => handleCartIconClick(menu.menuId)}
-            />
-          </div>
-        ))}
+    <MenuPageContainer>
+      <WETabContainer>
+        <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+      </WETabContainer>
+      <TabText>{tabs[activeTab]}</TabText>
+      <MenuItems>
+        {currentMenuDetails &&
+          currentMenuDetails.map((menu, menuId) => (
+            <MenuItem key={menuId}>
+              <MenuImage src={menu.menuImage}></MenuImage>
+              <MenuInfo>
+                <MenuTitle>{menu.menuName}</MenuTitle>
+                <MenuPrice>
+                  {menu.menuPrice.toLocaleString('ko-KR')}원
+                </MenuPrice>
+                <MenuDescription>{menu.menuDescription}</MenuDescription>
+              </MenuInfo>
+              <CartImg
+                src={CartIcon}
+                alt="담기 아이콘"
+                onClick={() => handleCartIconClick(menu.menuId)}
+              />
+            </MenuItem>
+          ))}
 
-      <WEButton onClick={clickGotoCart}>장바구니 보기</WEButton>
-    </>
+        <WEButton onClick={clickGotoCart}>장바구니 보기</WEButton>
+      </MenuItems>
+    </MenuPageContainer>
   );
 };
 

@@ -605,7 +605,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 		if (!response.getBody().getHeader().getResponseCode().equals("H0000")) {
 			throw new FailureRegistRestaurantToSsafyException(
-				"Ssafy pay 가맹점 등록 실패:" + response.getBody().getHeader().getResponseCode());
+				"SsafyPay 가맹점 등록 실패:" + response.getBody().getHeader().getResponseCode());
 		}
 
 		return response.getBody();

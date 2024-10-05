@@ -82,7 +82,7 @@ firebase:
   path: ${FCM_SECRET_KEY_PATH}
 
 # Redirect URL
-redirectURL : ${REDIRECT_URL}
+redirectURL: ${REDIRECT_URL}
 
 aws:
   region: ${AWS_REGION}  # AWS S3 리전 설정 (서울 리전 예시)

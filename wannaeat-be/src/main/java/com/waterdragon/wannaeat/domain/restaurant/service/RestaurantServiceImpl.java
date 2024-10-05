@@ -113,11 +113,11 @@ public class RestaurantServiceImpl implements RestaurantService {
 		// 인증 회원객체
 		User user = authUtil.getAuthenticatedUser();
 
-		if(user.getRole() != Role.MANAGER){
+		if (user.getRole() != Role.MANAGER) {
 			throw new NotAuthorizedException("식당은 사업자만 등록할 수 있습니다.");
 		}
 
-		if(user.getRestaurant() != null){
+		if (user.getRestaurant() != null) {
 			throw new RestaurantAlreadyExistException("한 아이디 당 하나의 식당만 등록 가능합니다.");
 		}
 

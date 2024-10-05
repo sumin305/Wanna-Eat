@@ -45,7 +45,6 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotF
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 import com.waterdragon.wannaeat.global.auth.oauth2.service.EncryptService;
-import com.waterdragon.wannaeat.global.exception.error.NotAuthenticatedException;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
 
 import jakarta.transaction.Transactional;
@@ -93,16 +92,18 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 
 		// 식당 존재여부 확인
 		Restaurant restaurant;
-		try{
-			restaurant = orderRepository.findByOrderId(ssafyPaymentOrderRequestDto.getPaymentMenuRequestDtos().get(0).getOrderId()).get().getReservation().getRestaurant();
-			if(restaurant == null){
+		try {
+			restaurant = orderRepository.findByOrderId(
+					ssafyPaymentOrderRequestDto.getPaymentMenuRequestDtos().get(0).getOrderId())
+				.get()
+				.getReservation()
+				.getRestaurant();
+			if (restaurant == null) {
 				throw new RestaurantNotFoundException("해당 식당이 존재하지 않습니다.");
 			}
-		} catch (Exception e){
+		} catch (Exception e) {
 			throw new RestaurantNotFoundException("해당 식당이 존재하지 않습니다.");
 		}
-
-
 
 		// 결제 비밀번호 검증
 		User user = authUtil.getAuthenticatedUser();
@@ -290,7 +291,6 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 		}
 
 		Objects.requireNonNull(response.getBody()).setReservationInfo(reservationDetailResponseDto);
-
 
 		// 응답 결과 반환
 		return response.getBody();

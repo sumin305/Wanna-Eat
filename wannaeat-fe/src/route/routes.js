@@ -6,7 +6,7 @@ import LoginPage from '../pages/common/LoginPage/LoginPage.jsx';
 import SignUpPage from '../pages/common/SignUpPage/SignUpPage.jsx';
 import PasswordRegistPage from 'pages/common/PasswordRegistPage/PasswordRegistPage.jsx';
 // 사업자 관련 페이지
-import ManagerMainPage from '../pages/manager/main/MainPage';
+import ManagerMainPage from '../pages/manager/main/MainPage.jsx';
 import AdminPage from '../pages/manager/reservation/AdminPage/AdminPage.jsx';
 import SeatDecoratePage from '../pages/manager/restaurant/SeatDecoratePage/SeatDecoratePage.jsx';
 import RestaurantViewPage from '../pages/manager/restaurant/RestaurantViewPage';

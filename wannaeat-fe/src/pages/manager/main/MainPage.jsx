@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
-import WEHeader from '../../../layout/common/WEHeader/WEHeader.jsx';
-import WEExtraHeader from '../../../layout/common/WEHeader/WEExtraHeader.jsx';
+import {
+  MainPageStyled,
+  GoToSeatDecorateStyled,
+  GoToSeatDecorateButtonStyled,
+} from './MainPage.js';
 import useHeaderStore from '../../../stores/common/useHeaderStore.js';
 
 const MainPage = () => {
@@ -14,16 +17,18 @@ const MainPage = () => {
 
   useEffect(() => {
     setIsCarrot(true);
-    setActiveIcons([0]);
+    setActiveIcons([3]);
     setIsUnderLine(false);
     setIsShowLogo(true);
     setPageName('');
   }, []);
 
   return (
-    <>
-      <div>사장님 메인페이지</div>
-    </>
+    <MainPageStyled>
+      <GoToSeatDecorateStyled>
+        <GoToSeatDecorateButtonStyled>매장 꾸미기</GoToSeatDecorateButtonStyled>
+      </GoToSeatDecorateStyled>
+    </MainPageStyled>
   );
 };
 

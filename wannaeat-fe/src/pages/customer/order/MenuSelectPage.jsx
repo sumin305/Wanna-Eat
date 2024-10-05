@@ -19,7 +19,7 @@ const MenuSelectPage = () => {
   const { isConnected, setIsConnected, stompClient, setStompClient } =
     useChatStore();
   const [activeTab, setActiveTab] = useState(0);
-  const myReservationParticipantId = 4;
+  const reservationParticipantId = 6;
   const increment = 1; // 증가 갯수는 1로 설정
 
   const {
@@ -126,7 +126,7 @@ const MenuSelectPage = () => {
   const handleCartIconClick = (menuId) => {
     const cartRegisterRequestDto = {
       reservationUrl: reservationUrl,
-      reservationParticipantId: myReservationParticipantId,
+      reservationParticipantId: reservationParticipantId,
       menuId: menuId,
       menuPlusMinus: increment,
     };
@@ -159,7 +159,7 @@ const MenuSelectPage = () => {
           <div key={menuId}>
             <p>{menu.menuImage}</p>
             <p>{menu.menuName}</p>
-            <p>{menu.menuPrice}</p>
+            <p>{menu.menuPrice.toLocaleString('ko-KR')}원</p>
             <p>{menu.menuDescription}</p>
             <img
               src={CartIcon}

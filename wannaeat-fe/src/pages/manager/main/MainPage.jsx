@@ -128,18 +128,24 @@ const MainPage = () => {
                         type="number"
                         min={1}
                         max={5}
-                        value={floor}
+                        value={floor || ''}
                         inputMode="numeric"
-                        onInput={(e) => {
-                          const value = e.target.value;
-                          if (value < 1) {
-                            e.target.value = 1;
-                          } else if (value > 5) {
-                            e.target.value = 5;
-                          }
-                        }}
                         onChange={(e) => {
-                          setFloor(e.target.value);
+                          const value = e.target.value;
+
+                          if (value === '') {
+                            setFloor('');
+                          } else {
+                            const numericValue = parseInt(value, 10);
+
+                            if (numericValue >= 1 && numericValue <= 5) {
+                              setFloor(numericValue);
+                            } else if (numericValue < 1) {
+                              setFloor(1);
+                            } else if (numericValue > 5) {
+                              setFloor(5);
+                            }
+                          }
                         }}
                       />
                       <div className="floor-label">층</div>

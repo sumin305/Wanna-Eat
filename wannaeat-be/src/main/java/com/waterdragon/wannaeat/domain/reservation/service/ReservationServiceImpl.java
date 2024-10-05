@@ -498,11 +498,7 @@ public class ReservationServiceImpl implements ReservationService {
 			throw new AlreadyCancelledReservationException("이미 취소된 예약입니다.");
 		}
 
-		if (user.getRole() == Role.CUSTOMER && !user.equals(reservation.getUser())) {
-			throw new NotAuthorizedException("권한이 없습니다.");
-		}
-
-		if (user.getRole() == Role.MANAGER && !user.equals(reservation.getRestaurant().getUser())) {
+		if (!user.equals(reservation.getUser()) && !user.equals(reservation.getRestaurant().getUser())) {
 			throw new NotAuthorizedException("권한이 없습니다.");
 		}
 

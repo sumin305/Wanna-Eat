@@ -24,6 +24,7 @@ import {
   MenuPrice,
   CartImg,
 } from './MenuSelectPage.js';
+import useAlert from 'utils/alert.js';
 
 const MenuSelectPage = () => {
   const nav = useNavigate();
@@ -48,6 +49,7 @@ const MenuSelectPage = () => {
 
   const { allMenusData, setAllMenusData } = useOrderStore();
 
+  const showAlert = useAlert();
   // useEffect(() => {
   //   const chatOn = () => {
   //     nav(`/customer/order/chat/${reservationUrl}`);
@@ -156,6 +158,7 @@ const MenuSelectPage = () => {
   };
 
   const handleCartIconClick = (menuId) => {
+    showAlert('메뉴가 장바구니에 추가되었습니다.');
     const cartRegisterRequestDto = {
       reservationUrl: reservationUrl,
       reservationParticipantId: reservationParticipantId,

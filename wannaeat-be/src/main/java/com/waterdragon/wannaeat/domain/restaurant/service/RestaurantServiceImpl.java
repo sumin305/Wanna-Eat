@@ -47,6 +47,7 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidFilterT
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidMerchantNameException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantOpenCloseTimeException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidUserLocationException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantAlreadyExistException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantCategoryNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.TimeRequestWithoutDateException;
@@ -57,6 +58,7 @@ import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepositor
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructureRepository;
 import com.waterdragon.wannaeat.domain.restaurantlike.repository.RestaurantLikeRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
+import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
 import com.waterdragon.wannaeat.global.exception.error.FileUploadMoreThanTenException;
 import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
@@ -110,6 +112,14 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 		// 인증 회원객체
 		User user = authUtil.getAuthenticatedUser();
+
+		if(user.getRole() != Role.MANAGER){
+			throw new NotAuthorizedException("식당은 사업자만 등록할 수 있습니다.");
+		}
+
+		if(user.getRestaurant() != null){
+			throw new RestaurantAlreadyExistException("한 아이디 당 하나의 식당만 등록 가능합니다.");
+		}
 
 		// 사업자 등록번호 중복 체크
 		String businessNumber = restaurantRegisterRequestDto.getRestaurantBusinessNumber();

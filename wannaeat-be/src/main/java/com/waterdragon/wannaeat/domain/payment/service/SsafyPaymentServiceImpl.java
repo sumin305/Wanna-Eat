@@ -285,12 +285,12 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 		System.out.println(response.getStatusCode());
 		System.out.println(response.getStatusCode() == HttpStatusCode.valueOf(200));
 
-		if (!(response.getStatusCode() == HttpStatusCode.valueOf(200))) {
-			throw new InvalidPaymentException("결제 실패" + response.getStatusCode());
+		if (!response.getBody().getHeader().getResponseCode().equals("H0000")) {
+			throw new InvalidPaymentException("SsafyPay 결제 실패" + response.getBody().getHeader().getResponseCode());
 		}
-		if (response.getStatusCode() == HttpStatusCode.valueOf(200)) {
-			Objects.requireNonNull(response.getBody()).setReservationInfo(reservationDetailResponseDto);
-		}
+
+		Objects.requireNonNull(response.getBody()).setReservationInfo(reservationDetailResponseDto);
+
 
 		// 응답 결과 반환
 		return response.getBody();

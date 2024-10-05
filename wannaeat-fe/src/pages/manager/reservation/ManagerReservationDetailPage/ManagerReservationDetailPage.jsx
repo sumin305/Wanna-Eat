@@ -3,11 +3,11 @@ import { useParams } from 'react-router-dom';
 import {
   getReservationDetail,
   serveOrder,
-} from '../../../api/manager/reservation';
-import useAlert from '../../../utils/alert';
-import calendarIcon from '../../../assets/icons/reservation/calendar.svg';
-import clockIcon from '../../../assets/icons/reservation/clock.svg';
-import userIcon from '../../../assets/icons/reservation/user.svg';
+} from '../../../../api/manager/reservation/reservation';
+import useAlert from '../../../../utils/alert';
+import calendarIcon from '../../../../assets/icons/reservation/calendar.svg';
+import clockIcon from '../../../../assets/icons/reservation/clock.svg';
+import userIcon from '../../../../assets/icons/reservation/user.svg';
 import {
   ReservationPageContainer,
   ReservationInfo,
@@ -56,6 +56,10 @@ const ManagerReservationDetailPage = () => {
   }, [id]);
 
   const filteredMenuList = () => {
+    if (!reservation || !reservation.reservationMenuList) {
+      return []; // reservation이나 reservationMenuList가 없으면 빈 배열 반환
+    }
+
     if (filter === 'before') {
       return reservation.reservationMenuList.filter(
         (menu) => menu.notServedCnt > 0
@@ -114,23 +118,45 @@ const ManagerReservationDetailPage = () => {
     setIsServing(true);
     try {
       const response = await serveOrder(id, orderIdList);
-      const updatedReservation = {
-        ...reservation,
-        reservationMenuList: response.data.reservationMenuList,
-        allPaymentsCompleted: response.data.allPaymentsCompleted,
-      };
-      setReservation(updatedReservation);
-      const resetServeCounts = reservation.reservationMenuList.reduce(
-        (acc, menu) => {
+
+      // 유효한 데이터인지 확인
+      if (
+        response.data &&
+        response.data.data &&
+        Array.isArray(response.data.data.reservationMenuList)
+      ) {
+        console.log('서빙 후 받아온 데이터:', response.data);
+
+        // 상태 업데이트
+        const updatedReservation = {
+          ...reservation,
+          reservationMenuList: response.data.data.reservationMenuList || [], // 빈 배열 처리
+          allPaymentsCompleted: response.data.data.allPaymentsCompleted,
+        };
+        setReservation(updatedReservation);
+
+        // 배열이 존재하는지 확인 후 reduce 실행
+        const resetServeCounts = (
+          response.data.data.reservationMenuList || []
+        ).reduce((acc, menu) => {
           acc[menu.menuName] = 0;
           return acc;
-        },
-        {}
-      );
-      setServeCounts(resetServeCounts);
-      showAlert('서빙이 완료되었습니다!');
+        }, {});
+
+        setServeCounts(resetServeCounts); // 서빙 갯수 초기화
+        showAlert('서빙이 완료되었습니다!');
+      } else {
+        // 데이터가 없을 때 처리
+        setReservation({
+          ...reservation,
+          reservationMenuList: [],
+        });
+        setServeCounts({});
+        showAlert('서빙할 메뉴가 없습니다.');
+      }
     } catch (error) {
       console.error('서빙 처리 중 오류 발생:', error);
+      showAlert('서빙 처리 중 오류가 발생했습니다.');
     } finally {
       setIsServing(false);
     }

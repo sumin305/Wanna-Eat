@@ -87,7 +87,7 @@ const TimeSelectPage = () => {
           fontSize={'1rem'}
         >
           {moment(reservationDate).format('YYYY-MM-DD')} {startTime} ~ {endTime}{' '}
-          {memberCount === -1 ? 0 : memberCount}명
+          {!memberCount || memberCount === -1 ? 0 : memberCount}명
         </Button>
         <CalendarWrapper>
           <CalendarStyled

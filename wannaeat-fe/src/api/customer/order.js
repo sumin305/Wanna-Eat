@@ -41,15 +41,3 @@ export const getMenuData = async (restaurantId) => {
     console.log('데이터 불러오기 실패', error);
   }
 };
-
-// 장바구니 삭제 함수
-export const deleteCarts = async (reservationUrl) => {
-  try {
-    const result = await clientInstance.delete(
-      `/api/public/carts/${reservationUrl}`
-    );
-    console.log('장바구니 삭제 성공', result);
-  } catch (error) {
-    console.log('장바구니 삭제 실패', error);
-  }
-};

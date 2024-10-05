@@ -1,8 +1,3 @@
-import CardImage1 from 'assets/customer/카카오페이카드.png';
-import CardImage2 from 'assets/customer/농협카드.png';
-import CardImage3 from 'assets/customer/신한카드.png';
-import CardImage4 from 'assets/customer/우리카드.png';
-import CardImage5 from 'assets/customer/국민카드.png';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMyCreditCardList } from 'api/common/ssafyPay/card.js';

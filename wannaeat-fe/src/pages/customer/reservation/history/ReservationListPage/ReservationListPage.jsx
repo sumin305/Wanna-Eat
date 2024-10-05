@@ -47,7 +47,6 @@ const ListPage = () => {
     setPageName('예약 내역');
     setIsShowBackIcon(false);
     setIsShowLogo(false);
-    setIsShowBackIcon(false);
     setActiveIcons([]);
 
     fetchMyReservationList();
@@ -80,7 +79,7 @@ const ListPage = () => {
   };
 
   const handleReservationDetailButtonClick = (id) => {
-    navigate('/customer/reservation/detail' + id);
+    navigate('/customer/reservation/detail/' + id);
   };
 
   return (
@@ -121,7 +120,7 @@ const ListPage = () => {
             </ReservationItemText>
             <ReservationDetailButton
               onClick={() =>
-                handleReservationDetailButtonClick(reservation.restaurantId)
+                handleReservationDetailButtonClick(reservation.reservationId)
               }
             >
               예약상세

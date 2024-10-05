@@ -167,8 +167,19 @@ const OrderCartBox = ({ reservationUrl }) => {
     nav(`/customer/order/${reservationUrl}`);
   };
 
-  const handleMenuDeleteButtonClick = async (reservationUrl) => {
-    await deleteCarts(reservationUrl);
+  const handleMenuDeleteButtonClick = () => {
+    if (stompClient && isConnected) {
+      console.log('메뉴선택 웹소켓', stompClient);
+      console.log('메뉴선택 연결상태', isConnected);
+      try {
+        stompClient.send(`/api/public/sockets/carts/clear`, {});
+      } catch (error) {
+        console.log('장바구니 목록지우기 실패', error);
+      }
+    } else {
+      console.log('웹소켓 연결 실패');
+      alert('웹소켓 연결에 실패했습니다.');
+    }
 
     setAllMenusInfo({
       cartDetailResponseDto: { cartElements: [], cartTotalPrice: 0 },

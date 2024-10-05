@@ -516,8 +516,9 @@ public class ReservationServiceImpl implements ReservationService {
 
 		// 예약 정보 수정 후 저장
 		reservation.remove();
-		log.info(reservation.toString());
 		reservationRepository.save(reservation);
+
+		alarmService.registerAlarm(reservation, AlarmType.RESERVATION_CANCELED);
 	}
 
 	/**

@@ -21,6 +21,7 @@ import {
   FoodInfoCountDiv,
   FoodInfoCountP,
   MenuNameP,
+  DeleteImg,
   FoodPriceP,
   TotalPriceDiv,
   TotalPriceP,
@@ -29,6 +30,7 @@ import theme from '../../../style/common/theme.js';
 import { useNavigate } from 'react-router-dom';
 import useOrderStore from '../../../stores/customer/useOrderStore.js';
 import useChatStore from '../../../stores/customer/useChatStore.js';
+import DeleteIcon from 'assets/icons/order/delete.svg';
 
 const OrderCartBox = ({ reservationUrl }) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -252,6 +254,67 @@ const OrderCartBox = ({ reservationUrl }) => {
     }
   };
 
+  const handleDeleteMenuButton = (menuId) => {
+    const cartDeleteRequestDto = {
+      reservationUrl: reservationUrl,
+      reservationParticipantId: reservationParticipantId,
+      menuId: menuId,
+    };
+    if (stompClient && isConnected) {
+      try {
+        stompClient.send(
+          `/api/public/sockets/carts/delete`,
+          {},
+          JSON.stringify(cartDeleteRequestDto)
+        );
+        console.log('메뉴삭제에 보내는 내용:', cartDeleteRequestDto);
+
+        // Zustand에서 현재 메뉴 리스트를 가져와서 나의 메뉴에서 해당 menuId를 삭제
+        const updatedMenus = sortedMenus
+          .map((menuGroup) => {
+            if (
+              menuGroup.reservationParticipantId === reservationParticipantId
+            ) {
+              const updatedMenuInfo = Object.values(menuGroup.menuInfo).filter(
+                (menu) => menu.menuId !== menuId
+              );
+
+              return {
+                ...menuGroup,
+                menuInfo: updatedMenuInfo.length > 0 ? updatedMenuInfo : [],
+              };
+            }
+            return menuGroup;
+          })
+          .filter((menuGroup) => menuGroup.menuInfo.length > 0); // 빈 메뉴 그룹은 제거
+
+        // 메뉴를 삭제한 결과를 상태에 저장
+        setAllMenusSortInfo({
+          cartDetailResponseDto: {
+            cartElements: updatedMenus,
+          },
+        });
+
+        // menuCounts도 업데이트
+        const updatedMenuCounts = updatedMenus.map((menuGroup) => {
+          return Object.values(menuGroup.menuInfo).map((menu) => ({
+            menuCnt: menu.menuCnt,
+            menuTotalPrice: menu.menuCnt * menu.menuPrice,
+            menuPrice: menu.menuPrice,
+          }));
+        });
+
+        setMenuCounts(updatedMenuCounts);
+      } catch (error) {
+        console.log('메뉴삭제 실패:', error);
+        alert('메뉴삭제실패');
+      }
+    } else {
+      console.log('stompClient is not initialized or not connected');
+      alert('웹소켓 연결이 끊겼습니다.');
+    }
+  };
+
   const calculateTotalPrice = (menuIndex) => {
     if (!menuCounts[menuIndex]) return 0;
     return menuCounts[menuIndex].reduce(
@@ -319,6 +382,13 @@ const OrderCartBox = ({ reservationUrl }) => {
                                   <FoodInfoDiv>
                                     <FoodInfoTopDiv>
                                       <MenuNameP>{menu.menuName}</MenuNameP>
+                                      <DeleteImg
+                                        src={DeleteIcon}
+                                        alt="삭제버튼"
+                                        onClick={() =>
+                                          handleDeleteMenuButton(menu.menuId)
+                                        }
+                                      />
                                     </FoodInfoTopDiv>
                                     <FoodInfoBottomDiv>
                                       <FoodInfoCountDiv>

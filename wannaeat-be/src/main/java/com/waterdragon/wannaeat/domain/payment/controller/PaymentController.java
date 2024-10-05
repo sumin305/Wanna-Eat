@@ -101,7 +101,7 @@ public class PaymentController {
 	 */
 	@Transactional
 	@Operation(summary = "보증금 결제 요청 API(카카오페이)")
-	@PostMapping("/public/payments/deposit/kakao")
+	@PostMapping("/payments/deposit/kakao")
 	public ResponseEntity<ResponseDto<KakaoPaymentReadyResponseDto>> kakaoPayReady(
 		@Valid @RequestBody KakaoPaymentDepositRequestDto kakaoPaymentDepositRequestDto) {
 

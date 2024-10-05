@@ -168,11 +168,20 @@ const OrderCartBox = ({ reservationUrl }) => {
   };
 
   const handleMenuDeleteButtonClick = () => {
+    const cartClearRequestDto = {
+      reservationUrl: reservationUrl,
+      reservationParticipantId: reservationParticipantId,
+    };
+
     if (stompClient && isConnected) {
       console.log('메뉴선택 웹소켓', stompClient);
       console.log('메뉴선택 연결상태', isConnected);
       try {
-        stompClient.send(`/api/public/sockets/carts/clear`, {});
+        stompClient.send(
+          `/api/public/sockets/carts/clear`,
+          {},
+          JSON.stringify(cartClearRequestDto)
+        );
       } catch (error) {
         console.log('장바구니 목록지우기 실패', error);
       }

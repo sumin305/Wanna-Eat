@@ -5,12 +5,24 @@ import {
   cancelReservation,
 } from 'api/customer/reservation';
 import useHeaderStore from 'stores/common/useHeaderStore';
-import styled from '@emotion/styled';
-import theme from '../../../../../style/common/theme';
 import paper from '../../../.././../assets/icons/common/paper.svg';
 import Button from '../../../../../component/common/button/WEButton/WEButton';
 import moment from 'moment';
 import useModalStore from 'stores/common/useModalStore';
+import {
+  ReservationDetailPageContainer,
+  ReservationTitleWrapper,
+  ReservationTitleText,
+  ReservationTitleButton,
+  ReservationInfoTitle,
+  SeatDecorateInfo,
+  LinkInfoWrapper,
+  LinkInfoTitle,
+  LinkInfoTextWrapper,
+  LinkInfoText,
+  LinkInfoButton,
+  ButtonWrapper,
+} from './ReservationDetailPage.js';
 const ReservationDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();

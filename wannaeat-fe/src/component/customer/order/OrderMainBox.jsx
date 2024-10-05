@@ -139,7 +139,10 @@ const OrderMainBox = ({ reservationUrl }) => {
                               </FoodInfoCountDiv>
 
                               <FoodPriceP>
-                                {order.menuPrice.toLocaleString('ko-KR')}원
+                                {(
+                                  order.menuPrice * order.totalCnt
+                                ).toLocaleString('ko-KR')}
+                                원
                               </FoodPriceP>
                             </FoodInfoBottomDiv>
                           </FoodInfoDiv>

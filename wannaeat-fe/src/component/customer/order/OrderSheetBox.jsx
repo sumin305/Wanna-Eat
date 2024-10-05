@@ -129,8 +129,28 @@ const OrderSheetBox = ({ reservationUrl }) => {
     console.log('수량 증가 버튼 클릭', orderCounts);
   }, [orderCounts]);
 
+  // 전체 선택 버튼 클릭 시, 각 주문의 paidCnt 값만큼 수량을 채우기
   const handleAllCheckButtonClick = () => {
     setIsChecked(!isChecked);
+
+    if (!isChecked) {
+      // 전체 선택이 체크되었을 때 각 주문의 paidCnt만큼 count 채움
+      const updatedOrderCounts = allOrders.reduce((acc, order) => {
+        if (order.totalCnt - order.paidCnt > 0) {
+          acc[order.orderId] = {
+            count: order.totalCnt - order.paidCnt, // paidCnt 값만큼 채우기
+            menuId: order.menuId,
+            orderId: order.orderId,
+          };
+        }
+        return acc;
+      }, {});
+
+      setOrderCounts(updatedOrderCounts);
+    } else {
+      // 전체 선택 해제 시 초기화
+      setOrderCounts({});
+    }
   };
 
   return (

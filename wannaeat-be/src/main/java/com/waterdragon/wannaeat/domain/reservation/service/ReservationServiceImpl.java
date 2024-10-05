@@ -542,6 +542,8 @@ public class ReservationServiceImpl implements ReservationService {
 		reservation.edit();
 		reservationRepository.save(reservation);
 
+		alarmService.registerAlarm(reservation, AlarmType.EXIT_COMPLETED);
+
 	}
 
 	/**

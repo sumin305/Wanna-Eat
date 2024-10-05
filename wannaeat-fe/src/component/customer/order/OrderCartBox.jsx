@@ -28,26 +28,61 @@ import {
 import theme from '../../../style/common/theme.js';
 import { useNavigate } from 'react-router-dom';
 import useOrderStore from '../../../stores/customer/useOrderStore.js';
-import { deleteCarts } from 'api/customer/order.js';
 import useChatStore from '../../../stores/customer/useChatStore.js';
 
 const OrderCartBox = ({ reservationUrl }) => {
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ['나의 메뉴', '전체 메뉴'];
-  const { allMenusInfo, setAllMenusInfo } = useOrderStore();
+
+  // Zustand에서 필요한 상태와 함수를 가져옴
+  const {
+    allMenusInfo,
+    setAllMenusInfo,
+    allSortedMenusInfo,
+    setAllMenusSortInfo,
+  } = useOrderStore();
   const nav = useNavigate();
 
+  // 정렬되지 않은 메뉴 데이터를 가져옴
   const allMenus = allMenusInfo?.cartDetailResponseDto?.cartElements || [];
 
-  const reservationParticipantId = 6;
+  // 정렬된 메뉴 데이터를 Zustand에서 가져옴
+  const sortedMenus =
+    allSortedMenusInfo?.cartDetailResponseDto?.cartElements || [];
+
+  const reservationParticipantId = 2;
   const [menuCounts, setMenuCounts] = useState([]);
 
   const { stompClient, isConnected } = useChatStore();
 
-  // 주문 개수 변경하는 함수
+  // allMenus를 reservationParticipantId 기준으로 정렬하는 함수
+  const sortMenusByParticipantId = (menus, targetId) => {
+    return [...menus].sort((a, b) => {
+      // targetId(예: reservationParticipantId)와 동일한 것이 먼저 오게 정렬
+      if (a.reservationParticipantId === targetId) return -1;
+      if (b.reservationParticipantId === targetId) return 1;
+      // 그 외에는 기존대로 정렬
+      return a.reservationParticipantId - b.reservationParticipantId;
+    });
+  };
+
+  // 메뉴 정렬 후 Zustand에 저장
   useEffect(() => {
     if (allMenus.length > 0) {
-      const updatedMenuCounts = allMenus.map((menu) => {
+      const sorted = sortMenusByParticipantId(
+        allMenus,
+        reservationParticipantId
+      );
+
+      // 정렬된 메뉴를 Zustand에 저장
+      setAllMenusSortInfo({
+        cartDetailResponseDto: {
+          cartElements: sorted,
+        },
+      });
+
+      // menuCounts 업데이트
+      const updatedMenuCounts = sorted.map((menu) => {
         const menuInfo = Object.values(menu.menuInfo);
         return menuInfo.map((item) => ({
           menuCnt: item.menuCnt,
@@ -57,7 +92,7 @@ const OrderCartBox = ({ reservationUrl }) => {
       });
       setMenuCounts(updatedMenuCounts);
     }
-  }, [allMenus]);
+  }, [allMenus, reservationParticipantId, setAllMenusSortInfo]);
 
   const handleDecrease = (
     menuIndex,
@@ -87,7 +122,6 @@ const OrderCartBox = ({ reservationUrl }) => {
       )
     );
 
-    // 장바구니 업데이트 로직 추가
     const cartRegisterRequestDto = {
       reservationUrl: reservationUrl,
       reservationParticipantId: reservationParticipantId,
@@ -96,20 +130,16 @@ const OrderCartBox = ({ reservationUrl }) => {
     };
 
     if (stompClient && isConnected) {
-      console.log('메뉴선택 웹소켓', stompClient);
-      console.log('메뉴선택 연결상태', isConnected);
       try {
         stompClient.send(
           `/api/public/sockets/carts/register`,
           {},
           JSON.stringify(cartRegisterRequestDto)
         );
-        console.log('장바구니 업데이트 내용:', cartRegisterRequestDto);
       } catch (error) {
         console.log('장바구니 업데이트 실패', error);
       }
     } else {
-      console.log('웹소켓 연결 실패');
       alert('웹소켓 연결에 실패했습니다.');
     }
   };
@@ -136,7 +166,6 @@ const OrderCartBox = ({ reservationUrl }) => {
       )
     );
 
-    // 장바구니 업데이트 로직 추가
     const cartRegisterRequestDto = {
       reservationUrl: reservationUrl,
       reservationParticipantId: reservationParticipantId,
@@ -145,20 +174,16 @@ const OrderCartBox = ({ reservationUrl }) => {
     };
 
     if (stompClient && isConnected) {
-      console.log('메뉴선택 웹소켓', stompClient);
-      console.log('메뉴선택 연결상태', isConnected);
       try {
         stompClient.send(
           `/api/public/sockets/carts/register`,
           {},
           JSON.stringify(cartRegisterRequestDto)
         );
-        console.log('장바구니 업데이트 내용:', cartRegisterRequestDto);
       } catch (error) {
         console.log('장바구니 업데이트 실패', error);
       }
     } else {
-      console.log('웹소켓 연결 실패');
       alert('웹소켓 연결에 실패했습니다.');
     }
   };
@@ -174,8 +199,6 @@ const OrderCartBox = ({ reservationUrl }) => {
     };
 
     if (stompClient && isConnected) {
-      console.log('메뉴선택 웹소켓', stompClient);
-      console.log('메뉴선택 연결상태', isConnected);
       try {
         stompClient.send(
           `/api/public/sockets/carts/clear`,
@@ -186,7 +209,6 @@ const OrderCartBox = ({ reservationUrl }) => {
         console.log('장바구니 목록지우기 실패', error);
       }
     } else {
-      console.log('웹소켓 연결 실패');
       alert('웹소켓 연결에 실패했습니다.');
     }
 
@@ -210,7 +232,6 @@ const OrderCartBox = ({ reservationUrl }) => {
         );
         console.log('주문에 보내는 내용:', orderRegisterRequestDto);
 
-        // 카트 정보 초기화
         setAllMenusInfo({ cartDetailResponseDto: { cartElements: [] } });
         setMenuCounts([]);
       } catch (error) {
@@ -221,7 +242,6 @@ const OrderCartBox = ({ reservationUrl }) => {
     }
   };
 
-  // 사람 당 총 금액 구하는 함수
   const calculateTotalPrice = (menuIndex) => {
     if (!menuCounts[menuIndex]) return 0;
     return menuCounts[menuIndex].reduce(
@@ -230,7 +250,6 @@ const OrderCartBox = ({ reservationUrl }) => {
     );
   };
 
-  // 주문 총 금액 구하는 함수
   const calculateTotalMenuPrice = () => {
     return menuCounts.reduce((totalMenuPrice, menu) => {
       const menuTotal = menu.reduce(
@@ -247,7 +266,7 @@ const OrderCartBox = ({ reservationUrl }) => {
       <div>
         <TopBox>
           <MenuContainer>
-            <TotalMenuP>총 메뉴 {}개</TotalMenuP>
+            <TotalMenuP>총 메뉴 {sortedMenus.length}개</TotalMenuP>
             <DeleteDiv>
               {activeTab === 0 ? (
                 <WEButton
@@ -268,105 +287,17 @@ const OrderCartBox = ({ reservationUrl }) => {
         <MenuDiv>
           {activeTab === 0 ? (
             <>
-              {allMenus &&
-                allMenus
-                  .filter(
-                    (menus) =>
-                      menus.reservationParticipantId ===
-                      reservationParticipantId
-                  )
-                  .map((menus, menuIndex) => (
-                    <div key={menuIndex}>
-                      <PeopleP>{menus.reservationParticipantNickname}</PeopleP>
-                      <LineDiv></LineDiv>
-                      <div>
-                        {menus.menuInfo ? (
-                          Object.values(menus.menuInfo).map(
-                            (menu, itemIndex) => (
-                              <div key={itemIndex}>
-                                <FoodDiv>
-                                  <MenuImg src={menu.menuImage}></MenuImg>
-                                  <FoodInfoDiv>
-                                    <FoodInfoTopDiv>
-                                      <MenuNameP>{menu.menuName}</MenuNameP>
-                                    </FoodInfoTopDiv>
-                                    <FoodInfoBottomDiv>
-                                      <FoodInfoCountDiv>
-                                        <FoodInfoCountLeftBtn
-                                          onClick={() =>
-                                            handleDecrease(
-                                              menuIndex,
-                                              itemIndex,
-                                              menu.menuId,
-                                              reservationParticipantId
-                                            )
-                                          }
-                                          disabled={menu.menuCnt <= 0}
-                                        >
-                                          -
-                                        </FoodInfoCountLeftBtn>
-                                        <FoodInfoCountP>
-                                          {
-                                            menuCounts[menuIndex]?.[itemIndex]
-                                              ?.menuCnt
-                                          }
-                                        </FoodInfoCountP>
-                                        <FoodInfoCountRightBtn
-                                          onClick={() =>
-                                            handleIncrease(
-                                              menuIndex,
-                                              itemIndex,
-                                              menu.menuId,
-                                              reservationParticipantId
-                                            )
-                                          }
-                                        >
-                                          +
-                                        </FoodInfoCountRightBtn>
-                                      </FoodInfoCountDiv>
-                                      <FoodPriceP>
-                                        {menuCounts[menuIndex]?.[
-                                          itemIndex
-                                        ]?.menuTotalPrice.toLocaleString(
-                                          'ko-KR'
-                                        )}{' '}
-                                        원
-                                      </FoodPriceP>
-                                    </FoodInfoBottomDiv>
-                                  </FoodInfoDiv>
-                                </FoodDiv>
-                                <LineDiv />
-                              </div>
-                            )
-                          )
-                        ) : (
-                          <p>메뉴 정보가 없습니다.</p>
-                        )}
-                      </div>
-                      <TotalPriceDiv>
-                        <TotalPriceP>
-                          총:{' '}
-                          {calculateTotalPrice(menuIndex).toLocaleString(
-                            'ko-KR'
-                          ) || ''}{' '}
-                          원
-                        </TotalPriceP>
-                      </TotalPriceDiv>
-                      <br />
-                    </div>
-                  ))}
-            </>
-          ) : (
-            <>
-              {allMenus &&
-                allMenus.map((menus, menuIndex) => (
+              {sortedMenus
+                .filter(
+                  (menus) =>
+                    menus.reservationParticipantId === reservationParticipantId
+                )
+                .map((menus, menuIndex) => (
                   <div key={menuIndex}>
-                    <PeopleP>
-                      {menus.reservationParticipantNickname || ''}
-                    </PeopleP>
-                    <LineDiv />
+                    <PeopleP>{menus.reservationParticipantNickname}</PeopleP>
+                    <LineDiv></LineDiv>
                     <div>
-                      {menus.menuInfo ? ( // menus.menuInfo가 객체이므로 Object.values로 배열상태로 변경
+                      {menus.menuInfo ? (
                         Object.values(menus.menuInfo).map((menu, itemIndex) => (
                           <div key={itemIndex}>
                             <FoodDiv>
@@ -377,17 +308,44 @@ const OrderCartBox = ({ reservationUrl }) => {
                                 </FoodInfoTopDiv>
                                 <FoodInfoBottomDiv>
                                   <FoodInfoCountDiv>
+                                    <FoodInfoCountLeftBtn
+                                      onClick={() =>
+                                        handleDecrease(
+                                          menuIndex,
+                                          itemIndex,
+                                          menu.menuId,
+                                          reservationParticipantId
+                                        )
+                                      }
+                                      disabled={menu.menuCnt <= 0}
+                                    >
+                                      -
+                                    </FoodInfoCountLeftBtn>
                                     <FoodInfoCountP>
                                       {
                                         menuCounts[menuIndex]?.[itemIndex]
                                           ?.menuCnt
                                       }
                                     </FoodInfoCountP>
+                                    <FoodInfoCountRightBtn
+                                      onClick={() =>
+                                        handleIncrease(
+                                          menuIndex,
+                                          itemIndex,
+                                          menu.menuId,
+                                          reservationParticipantId
+                                        )
+                                      }
+                                    >
+                                      +
+                                    </FoodInfoCountRightBtn>
                                   </FoodInfoCountDiv>
                                   <FoodPriceP>
                                     {menuCounts[menuIndex]?.[
                                       itemIndex
-                                    ]?.menuTotalPrice.toLocaleString('ko-KR')}
+                                    ]?.menuTotalPrice.toLocaleString(
+                                      'ko-KR'
+                                    )}{' '}
                                     원
                                   </FoodPriceP>
                                 </FoodInfoBottomDiv>
@@ -405,13 +363,68 @@ const OrderCartBox = ({ reservationUrl }) => {
                         총:{' '}
                         {calculateTotalPrice(menuIndex).toLocaleString(
                           'ko-KR'
-                        ) || ''}
+                        ) || ''}{' '}
                         원
                       </TotalPriceP>
                     </TotalPriceDiv>
                     <br />
                   </div>
                 ))}
+            </>
+          ) : (
+            <>
+              {sortedMenus.map((menus, menuIndex) => (
+                <div key={menuIndex}>
+                  <PeopleP>
+                    {menus.reservationParticipantNickname || ''}
+                  </PeopleP>
+                  <LineDiv />
+                  <div>
+                    {menus.menuInfo ? (
+                      Object.values(menus.menuInfo).map((menu, itemIndex) => (
+                        <div key={itemIndex}>
+                          <FoodDiv>
+                            <MenuImg src={menu.menuImage}></MenuImg>
+                            <FoodInfoDiv>
+                              <FoodInfoTopDiv>
+                                <MenuNameP>{menu.menuName}</MenuNameP>
+                              </FoodInfoTopDiv>
+                              <FoodInfoBottomDiv>
+                                <FoodInfoCountDiv>
+                                  <FoodInfoCountP>
+                                    {
+                                      menuCounts[menuIndex]?.[itemIndex]
+                                        ?.menuCnt
+                                    }
+                                  </FoodInfoCountP>
+                                </FoodInfoCountDiv>
+                                <FoodPriceP>
+                                  {menuCounts[menuIndex]?.[
+                                    itemIndex
+                                  ]?.menuTotalPrice.toLocaleString('ko-KR')}
+                                  원
+                                </FoodPriceP>
+                              </FoodInfoBottomDiv>
+                            </FoodInfoDiv>
+                          </FoodDiv>
+                          <LineDiv />
+                        </div>
+                      ))
+                    ) : (
+                      <p>메뉴 정보가 없습니다.</p>
+                    )}
+                  </div>
+                  <TotalPriceDiv>
+                    <TotalPriceP>
+                      총:{' '}
+                      {calculateTotalPrice(menuIndex).toLocaleString('ko-KR') ||
+                        ''}
+                      원
+                    </TotalPriceP>
+                  </TotalPriceDiv>
+                  <br />
+                </div>
+              ))}
               <LineDiv />
               <TotalPriceDiv>
                 {menuCounts.length > 0 ? (

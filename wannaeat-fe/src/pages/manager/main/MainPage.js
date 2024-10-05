@@ -63,4 +63,65 @@ const GoToSeatDecorateButtonStyled = styled.div`
   }
 `;
 
-export { MainPageStyled, GoToSeatDecorateStyled, GoToSeatDecorateButtonStyled };
+const InfoFormStyled = styled.div``;
+
+const InputWrapperStyled = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const LabelStyled = styled.div`
+  font-size: ${theme.fontSize.px17};
+  font-weight: ${theme.fontWeight.bold};
+  margin-block: 35px;
+`;
+
+const InputFloorWrapperStyled = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .floor-label {
+    font-size: ${theme.fontSize.px17};
+    font-weight: ${theme.fontWeight.bold};
+    margin-left: 10px;
+  }
+`;
+
+const InputFloorStyled = styled.input`
+  width: 6.75rem;
+  height: 30px;
+  border: 0.5px solid #d4d4d4;
+  border-radius: 0.3rem;
+  font-size: 0.813rem;
+  padding: 0 10px;
+  text-align: center;
+
+  :active {
+    outline-color: ${theme.color.primary};
+    border-color: ${theme.color.primary};
+  }
+
+  :hover {
+    outline-color: ${theme.color.primary};
+    border-color: ${theme.color.primary};
+  }
+
+  :focus {
+    outline-color: ${theme.color.primary};
+    border-color: ${theme.color.primary};
+  }
+`;
+
+export {
+  MainPageStyled,
+  GoToSeatDecorateStyled,
+  GoToSeatDecorateButtonStyled,
+  InfoFormStyled,
+  LabelStyled,
+  InputWrapperStyled,
+  InputFloorWrapperStyled,
+  InputFloorStyled,
+};

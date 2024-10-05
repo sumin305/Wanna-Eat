@@ -317,6 +317,32 @@ public class ReservationController {
 	}
 
 	/**
+	 * 고객용 예약 상세조회 API 구현
+	 *
+	 * @param reservationId 예약 아이디
+	 * @return 예약 상세 조회 정보
+	 */
+	@Operation(summary = "고객용 예약 상세조회 API")
+	@Transactional
+	@GetMapping("/users/reservations/{reservationId}")
+	public ResponseEntity<ResponseDto<ReservationDetailResponseDto>> getDetailReservationByUser(
+		@PathVariable Long reservationId) {
+
+		// 예약 상세 정보 조회
+		ReservationDetailResponseDto reservationDetailResponseDto = reservationService.getDetailReservationByUser(
+			reservationId);
+
+		// 응답 객체 생성
+		ResponseDto<ReservationDetailResponseDto> responseDto = ResponseDto.<ReservationDetailResponseDto>builder()
+			.status(HttpStatus.OK.value())
+			.message("예약 상세 정보가 성공적으로 조회되었습니다.")
+			.data(reservationDetailResponseDto)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	/**
 	 * 사업자용 예약 상세조회 API
 	 *
 	 * @param reservationId 예약 ID

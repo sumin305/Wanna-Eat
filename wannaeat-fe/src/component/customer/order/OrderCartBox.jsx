@@ -39,7 +39,7 @@ const OrderCartBox = ({ reservationUrl }) => {
 
   const allMenus = allMenusInfo?.cartDetailResponseDto?.cartElements || [];
 
-  const reservationParticipantId = 4;
+  const reservationParticipantId = 6;
   const [menuCounts, setMenuCounts] = useState([]);
 
   const { stompClient, isConnected } = useChatStore();
@@ -268,6 +268,7 @@ const OrderCartBox = ({ reservationUrl }) => {
                   )
                   .map((menus, menuIndex) => (
                     <div key={menuIndex}>
+                      <PeopleP>{menus.reservationParticipantNickname}</PeopleP>
                       <LineDiv></LineDiv>
                       <div>
                         {menus.menuInfo ? (
@@ -315,10 +316,11 @@ const OrderCartBox = ({ reservationUrl }) => {
                                         </FoodInfoCountRightBtn>
                                       </FoodInfoCountDiv>
                                       <FoodPriceP>
-                                        {
-                                          menuCounts[menuIndex]?.[itemIndex]
-                                            ?.menuTotalPrice
-                                        }
+                                        {menuCounts[menuIndex]?.[
+                                          itemIndex
+                                        ]?.menuTotalPrice.toLocaleString(
+                                          'ko-KR'
+                                        )}{' '}
                                         원
                                       </FoodPriceP>
                                     </FoodInfoBottomDiv>
@@ -334,7 +336,11 @@ const OrderCartBox = ({ reservationUrl }) => {
                       </div>
                       <TotalPriceDiv>
                         <TotalPriceP>
-                          총 {calculateTotalPrice(menuIndex) || ''}원
+                          총:{' '}
+                          {calculateTotalPrice(menuIndex).toLocaleString(
+                            'ko-KR'
+                          ) || ''}{' '}
+                          원
                         </TotalPriceP>
                       </TotalPriceDiv>
                       <br />
@@ -370,10 +376,9 @@ const OrderCartBox = ({ reservationUrl }) => {
                                     </FoodInfoCountP>
                                   </FoodInfoCountDiv>
                                   <FoodPriceP>
-                                    {
-                                      menuCounts[menuIndex]?.[itemIndex]
-                                        ?.menuTotalPrice
-                                    }
+                                    {menuCounts[menuIndex]?.[
+                                      itemIndex
+                                    ]?.menuTotalPrice.toLocaleString('ko-KR')}
                                     원
                                   </FoodPriceP>
                                 </FoodInfoBottomDiv>
@@ -388,15 +393,22 @@ const OrderCartBox = ({ reservationUrl }) => {
                     </div>
                     <TotalPriceDiv>
                       <TotalPriceP>
-                        총 {calculateTotalPrice(menuIndex) || ''}원
+                        총:{' '}
+                        {calculateTotalPrice(menuIndex).toLocaleString(
+                          'ko-KR'
+                        ) || ''}
+                        원
                       </TotalPriceP>
                     </TotalPriceDiv>
                     <br />
                   </div>
                 ))}
+              <LineDiv />
               <TotalPriceDiv>
                 {menuCounts.length > 0 ? (
-                  <TotalPriceP>총: {calculateTotalMenuPrice()}원</TotalPriceP>
+                  <TotalPriceP>
+                    총: {calculateTotalMenuPrice().toLocaleString('ko-KR')}원
+                  </TotalPriceP>
                 ) : null}
               </TotalPriceDiv>
             </>

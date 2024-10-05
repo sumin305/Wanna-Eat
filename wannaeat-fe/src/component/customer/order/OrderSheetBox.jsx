@@ -17,7 +17,6 @@ import {
   FoodPriceP,
   LineDiv,
   MenuContainer,
-  MenuDiv,
   MenuImg,
   MenuNameP,
   OrderContainer,
@@ -27,7 +26,7 @@ import {
   TotalPriceDiv,
   TotalPriceP,
 } from './OrderCartBox';
-import { TotalPriceText } from './OrderSheetBox.js';
+import { TotalPriceText, MenuDiv } from './OrderSheetBox.js';
 import WECheck from '../../common/check/WECheck.jsx';
 
 const OrderSheetBox = ({ reservationUrl }) => {

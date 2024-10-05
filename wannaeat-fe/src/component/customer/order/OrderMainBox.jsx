@@ -31,7 +31,7 @@ const OrderMainBox = ({ reservationUrl }) => {
   const { allOrdersInfo } = useOrderStore();
   const nav = useNavigate();
 
-  const reservationParticipantId = 1; // 나의 메뉴에 해당하는 ID 설정
+  const reservationParticipantId = 6; // 나의 메뉴에 해당하는 ID 설정
   const allOrders =
     allOrdersInfo?.orderListResponseDto?.orderDetailResponseDtos || [];
 
@@ -138,7 +138,9 @@ const OrderMainBox = ({ reservationUrl }) => {
                                 </FoodInfoCountP>
                               </FoodInfoCountDiv>
 
-                              <FoodPriceP>{order.menuPrice}원</FoodPriceP>
+                              <FoodPriceP>
+                                {order.menuPrice.toLocaleString('ko-KR')}원
+                              </FoodPriceP>
                             </FoodInfoBottomDiv>
                           </FoodInfoDiv>
                         </FoodDiv>

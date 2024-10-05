@@ -13,6 +13,7 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidFilterT
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidMerchantNameException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidRestaurantOpenCloseTimeException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.InvalidUserLocationException;
+import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantAlreadyExistException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantCategoryNotFoundException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantElementOutOfRangeException;
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantNotFoundException;
@@ -148,5 +149,14 @@ public class RestaurantExceptionHandler {
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Merchant Name Exception", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	// 이미 해당 계정으로 등록된 식당 존재
+	@ExceptionHandler(RestaurantAlreadyExistException.class)
+	public final ResponseEntity<ErrorResponseDto> handleRestaurantAlreadyExistException(
+		RestaurantAlreadyExistException ex) {
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Restaurant Already Exist Exception", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
 	}
 }

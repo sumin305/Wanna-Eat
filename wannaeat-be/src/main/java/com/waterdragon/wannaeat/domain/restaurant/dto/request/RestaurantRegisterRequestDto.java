@@ -29,4 +29,10 @@ public class RestaurantRegisterRequestDto {
 	@NotNull(message = "매장 카테고리 id는 필수 입력값입니다.")
 	private Long restaurantCategoryId;
 
+	@NotNull(message = "위, 경도는 필수 입력값입니다.")
+	private Double latitude;
+
+	@NotNull(message = "위, 경도는 필수 입력값입니다.")
+	private Double longitude;
+
 }

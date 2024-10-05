@@ -518,11 +518,14 @@ public class RestaurantServiceImpl implements RestaurantService {
 			restaurantEditRequestDto.getLongitude());
 		restaurantRepository.save(restaurant);
 
-		// 기존 사진 삭제 (파일, db 모두)
-		deleteExistingRestaurantImage(restaurant);
+		if (multipartFiles != null && !multipartFiles.isEmpty()) {
+			// 기존 사진 삭제 (파일, db 모두)
+			deleteExistingRestaurantImage(restaurant);
 
-		// 매장 사진 등록 및 수정
-		uploadNewRestaurantImages(restaurant, multipartFiles);
+			// 매장 사진 등록 및 수정
+			uploadNewRestaurantImages(restaurant, multipartFiles);
+		}
+
 	}
 
 	// 기존 매장 사진 삭제 메소드

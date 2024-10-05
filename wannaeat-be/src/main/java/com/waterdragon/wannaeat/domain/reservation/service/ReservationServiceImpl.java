@@ -16,6 +16,7 @@ import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegist
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationSummaryResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.RecentReservationResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationMenuResponseDto;
@@ -605,6 +607,52 @@ public class ReservationServiceImpl implements ReservationService {
 			.tableList(tableList) // 테이블 리스트 (List<Integer>)
 			.reservationMenuList(new ArrayList<>(menuMap.values())) // 메뉴 리스트
 			.build();
+	}
+
+	@Override
+	public RecentReservationResponseDto getRecentReservation() {
+		User user = authUtil.getAuthenticatedUser();
+		Pageable pageable = PageRequest.of(0, 1);
+		LocalDate today = LocalDate.now();
+		LocalTime now = LocalTime.now();
+
+		Reservation reservation;
+
+		Page<Reservation> upcomingReservation = reservationRepository.findFirstUpcomingReservation(user, today, now,
+			pageable);
+
+		// 방문 예정인 식당 찾아서 리턴
+		if (upcomingReservation.hasContent()) {
+			reservation = upcomingReservation.getContent().get(0); // 가장 첫 번째 예약 반환
+			return RecentReservationResponseDto.builder()
+				.status("방문 예정")
+				.reservationId(reservation.getReservationId())
+				.restaurantName(reservation.getRestaurant().getName())
+				.reservationDate(reservation.getReservationDate())
+				.reservationStartTime(reservation.getStartTime())
+				.reservationEndTime(reservation.getEndTime())
+				.memberCnt(reservation.getMemberCnt())
+				.build();
+		}
+
+		// 방문 예정 식당이 없다면, 현재 방문중인 식당 찾아서 리턴
+		Page<Reservation> ongoingReservation = reservationRepository.findFirstOngoingReservation(user, today, now,
+			pageable);
+		if (ongoingReservation.hasContent()) {
+			reservation = ongoingReservation.getContent().get(0);
+			return RecentReservationResponseDto.builder()
+				.status("방문중")
+				.reservationId(reservation.getReservationId())
+				.restaurantName(reservation.getRestaurant().getName())
+				.reservationDate(reservation.getReservationDate())
+				.reservationStartTime(reservation.getStartTime())
+				.reservationEndTime(reservation.getEndTime())
+				.memberCnt(reservation.getMemberCnt())
+				.build();
+		}
+
+		// 두 쿼리에서 모두 결과가 없으면 null 반환
+		return null;
 	}
 
 }

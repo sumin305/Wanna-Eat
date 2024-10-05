@@ -13,6 +13,7 @@ import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegist
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationSummaryResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.RecentReservationResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationCountResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.UrlValidationResponseDto;
@@ -47,4 +48,6 @@ public interface ReservationService {
 	String generateRandomString();
 
 	ManagerReservationDetailResponseDto getReservationListByManager(Long reservationId);
+
+	RecentReservationResponseDto getRecentReservation();
 }

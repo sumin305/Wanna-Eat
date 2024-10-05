@@ -393,6 +393,29 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	/**
+	 * 고객 예약 상세 정보를 리턴하는 메소드
+	 *
+	 * @param reservationId 예약 아이디
+	 * @return 예약 상세 정보
+	 */
+	@Override
+	public ReservationDetailResponseDto getDetailReservationByUser(Long reservationId) {
+		if (reservationId == null) {
+			throw new ReservationNotFoundException("해당 예약이 존재하지 않습니다.");
+		}
+		User user = authUtil.getAuthenticatedUser();
+
+		Reservation reservation = reservationRepository.findByReservationIdWithLock(reservationId)
+			.orElseThrow(() -> new ReservationNotFoundException(
+				"해당 예약이 존재하지 않습니다."));
+
+		if(reservation.getUser() != user){
+			throw new NotAuthorizedException("접근 권한이 없습니다.");
+		}
+		return ReservationDetailResponseDto.transferToReservationDetailResponseDto(reservation);
+	}
+
+	/**
 	 * 일자별 예약 현황 조회 메소드
 	 *
 	 * @param date 검색 일자

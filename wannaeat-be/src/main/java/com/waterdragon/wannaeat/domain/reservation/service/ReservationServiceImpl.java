@@ -609,6 +609,12 @@ public class ReservationServiceImpl implements ReservationService {
 			.build();
 	}
 
+	/**
+	 * 최우선 방문 예약을 리턴하는 메소드
+	 * 최우선 방문 예약이 없는 경우, 현재 이용중인 예약을 리턴
+	 *
+	 * @return 최우선 방문 예약
+	 */
 	@Override
 	public RecentReservationResponseDto getRecentReservation() {
 		User user = authUtil.getAuthenticatedUser();

@@ -24,18 +24,17 @@ const useRestaurantStore = create((set) => ({
   restaurantPhone: '',
   restaurantImage: '',
   reservationDetails: [],
+  restaurantLike: false,
   setRestaurantId: (id) => set({ restaurantId: id }),
   setReservationDetails: (details) => set({ reservationDetails: details }),
+  setRestaurantLike: (like) => set({ restaurantLike: like }),
   setRestaurant: async (id) => {
     const result = await getRestaurantInfo(id);
-    console.log(result);
 
     if (result.status === 200) {
       const restaurant = result.data.data;
-      console.log(restaurant);
       set({
         restaurant: restaurant,
-        restaurantId: restaurant.restaurantId || -1,
         breakEndTime: restaurant.breakEndTime
           ? restaurant.breakEndTime.substring(0, 5)
           : '',
@@ -70,6 +69,7 @@ const useRestaurantStore = create((set) => ({
         restaurantOwnerName: restaurant.restaurantOwnerName || '',
         restaurantPhone: restaurant.restaurantPhone || '',
         restaurantImage: restaurant.restaurantImage || '',
+        restaurantLike: restaurant.restaurantLike || false,
       });
     } else {
       console.log('매장 상세 정보 조회 실패');

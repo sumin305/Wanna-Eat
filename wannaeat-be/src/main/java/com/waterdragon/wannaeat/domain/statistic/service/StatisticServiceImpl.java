@@ -88,7 +88,8 @@ public class StatisticServiceImpl implements StatisticService {
 	 */
 	@Override
 	public PeekStatisticResponseDto getStatisticsByPeek(Restaurant restaurant, int year, int month) {
-		List<Reservation> reservations = reservationRepository.findNotCancelledReservationsByRestaurantAndYearAndMonth(restaurant,
+		List<Reservation> reservations = reservationRepository.findNotCancelledReservationsByRestaurantAndYearAndMonth(
+			restaurant,
 			year, month);
 
 		Map<String, Long> dayStatistics = getDayOfWeekStatsByMonths(reservations);
@@ -117,7 +118,8 @@ public class StatisticServiceImpl implements StatisticService {
 	 */
 	@Override
 	public RevenueStatisticResponseDto getStatisticsByRevenue(Restaurant restaurant, int year, int month) {
-		List<Reservation> reservations = reservationRepository.findNotCancelledReservationsByRestaurantAndYearAndMonth(restaurant,
+		List<Reservation> reservations = reservationRepository.findNotCancelledReservationsByRestaurantAndYearAndMonth(
+			restaurant,
 			year, month);
 		Map<LocalDate, RevenuePerDayResponseDto> dailySalesMap = new HashMap<>();
 		long totalRevenue = 0;

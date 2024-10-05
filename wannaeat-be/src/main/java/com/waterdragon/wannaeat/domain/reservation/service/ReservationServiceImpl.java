@@ -358,7 +358,7 @@ public class ReservationServiceImpl implements ReservationService {
 		}
 
 		// restaurantId가 Long 형식으로 저장되어 있을 경우 String을 Long으로 변환
-		Long restaurantId;
+		long restaurantId;
 		try {
 			restaurantId = Long.parseLong(redisValue);
 		} catch (NumberFormatException e) {
@@ -591,7 +591,7 @@ public class ReservationServiceImpl implements ReservationService {
 
 		// 테이블 번호 리스트 추출 (Integer 타입으로 처리)
 		List<Integer> tableList = reservation.getReservationTables().stream()
-			.map(reservationTable -> reservationTable.getTableId()) // tableId는 int 타입으로 처리
+			.map(ReservationTable::getTableId) // tableId는 int 타입으로 처리
 			.collect(Collectors.toList());
 
 		// ManagerReservationDetailResponseDto 생성 및 반환

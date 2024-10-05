@@ -99,6 +99,8 @@ public class ReservationController {
 		ReservationRegisterRequestDto reservationRegisterRequestDto) {
 
 		reservationService.validateQr(token);
+
+		reservationRegisterRequestDto.setUserId(null);
 		ReservationDetailResponseDto reservationDetailResponseDto = reservationService.registerReservation(
 			reservationRegisterRequestDto);
 		ResponseDto<ReservationDetailResponseDto> responseDto = ResponseDto.<ReservationDetailResponseDto>builder()

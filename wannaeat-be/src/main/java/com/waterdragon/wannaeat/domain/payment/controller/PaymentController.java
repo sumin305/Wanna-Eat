@@ -29,9 +29,11 @@ import com.waterdragon.wannaeat.domain.payment.service.KakaoPaymentService;
 import com.waterdragon.wannaeat.domain.payment.service.SsafyPaymentService;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.service.ReservationService;
+import com.waterdragon.wannaeat.domain.user.domain.User;
 import com.waterdragon.wannaeat.global.config.CustomObjectMapper;
 import com.waterdragon.wannaeat.global.redis.service.RedisService;
 import com.waterdragon.wannaeat.global.response.ResponseDto;
+import com.waterdragon.wannaeat.global.util.AuthUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
@@ -46,6 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PaymentController {
 
 	private final OrderRepository orderRepository;
+	private final AuthUtil authUtil;
 	@Value("${spring.kakaopay-tid-expiration-millis}")
 	private int kakaopayTidExpirationMillis;
 
@@ -98,9 +101,12 @@ public class PaymentController {
 	 */
 	@Transactional
 	@Operation(summary = "보증금 결제 요청 API(카카오페이)")
-	@PostMapping("/public/payments/deposit/kakao")
+	@PostMapping("/payments/deposit/kakao")
 	public ResponseEntity<ResponseDto<KakaoPaymentReadyResponseDto>> kakaoPayReady(
 		@Valid @RequestBody KakaoPaymentDepositRequestDto kakaoPaymentDepositRequestDto) {
+
+		User user = authUtil.getAuthenticatedUser();
+		kakaoPaymentDepositRequestDto.getReservationRegisterRequestDto().setUserId(user.getUserId());
 
 		// 랜덤한 payment_id 생성
 		String paymentId = UUID.randomUUID().toString();
@@ -284,6 +290,9 @@ public class PaymentController {
 	@PostMapping("/payments/deposit/ssafy")
 	public ResponseEntity<ResponseDto<SsafyPaymentResponseDto>> ssafyPay(
 		@Valid @RequestBody SsafyPaymentDepositRequestDto ssafyPaymentDepositRequestDto) {
+
+		User user = authUtil.getAuthenticatedUser();
+		ssafyPaymentDepositRequestDto.getReservationRegisterRequestDto().setUserId(user.getUserId());
 
 		SsafyPaymentResponseDto ssafyPaymentResponseDto = ssafyPaymentService.ssafyPay(ssafyPaymentDepositRequestDto);
 		ResponseDto<SsafyPaymentResponseDto> responseDto = ResponseDto.<SsafyPaymentResponseDto>builder()

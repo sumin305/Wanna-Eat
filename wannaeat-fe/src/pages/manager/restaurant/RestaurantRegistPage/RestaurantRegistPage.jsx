@@ -21,6 +21,7 @@ import { registRestaurant } from 'api/manager/restaurant/restaurant.js';
 import WEDropdown from '../../../../component/common/dropdown/WEDropdown.jsx';
 import useMapFilterStore from 'stores/map/useMapFilterStore.js';
 import { useDropdownStore } from '../../../../stores/common/useDropdownStore.js';
+import useAlert from 'utils/alert.js';
 
 const RestaurantRegistPage = () => {
   const tabs = ['사업자', '매장'];
@@ -31,6 +32,8 @@ const RestaurantRegistPage = () => {
 
   const { setCategoryId } = useMapFilterStore();
   const { setItems } = useDropdownStore();
+
+  const showAlert = useAlert();
 
   const handleAddressClick = () => {
     setIsMapModalOpen(true);
@@ -63,7 +66,11 @@ const RestaurantRegistPage = () => {
       longitude: restaurantFormData.lng,
     });
     console.log(response);
-    console.log(response.data);
+    if (response.status === 201) {
+      showAlert(response.data.message);
+    } else {
+      showAlert(response.response.data.message);
+    }
   };
 
   // 카테고리가 선택되면 호출되는 함수
@@ -178,15 +185,6 @@ const RestaurantRegistPage = () => {
                   placeholder="카테고리를 선택하세요"
                   onSelect={handleCategoryOnSelect}
                 />
-                {/* <WETextField
-                  name="restaurantRegist-businessType"
-                  placeholder="업종을 입력하세요."
-                  value={restaurantFormData.businessType}
-                  showErrorMessageSpace={true}
-                  onChange={(e) =>
-                    setRestaurantFormData('businessType', e.target.value)
-                  }
-                /> */}
               </InputWithLabelStyled>
             </InputWrapperStyled>
           </ContentWrapperStyled>

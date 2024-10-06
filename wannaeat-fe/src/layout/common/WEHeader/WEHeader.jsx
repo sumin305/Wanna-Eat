@@ -36,8 +36,6 @@ const WEHeader = () => {
 
   const handleHeaderIconClick = (index) => {
     const action = iconAction[index];
-    console.log('typeof action', typeof action);
-    console.log('action', action);
     action();
   };
   return (

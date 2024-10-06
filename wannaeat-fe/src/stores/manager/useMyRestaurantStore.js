@@ -3,6 +3,7 @@ import { create } from 'zustand';
 const useMyRestaurantStore = create((set) => ({
   restaurantFormData: {
     name: '',
+    number: '',
     address: '',
     phone: '',
     restaurantName: '',

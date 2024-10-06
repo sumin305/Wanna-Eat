@@ -25,6 +25,10 @@ const RestaurantRegistPage = () => {
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
+  // const validateName = () => {
+  //   if (restaurantFormData.name === )
+  // }
+
   const handleAddressClick = () => {
     setIsMapModalOpen(true);
   };
@@ -82,6 +86,21 @@ const RestaurantRegistPage = () => {
                   isOpen={isMapModalOpen}
                   onClose={() => setIsMapModalOpen(false)}
                   onConfirm={handleMapConfirm}
+                />
+              </InputWithLabelStyled>
+            </InputWrapperStyled>
+
+            <InputWrapperStyled>
+              <InputWithLabelStyled>
+                <label>사업자등록번호</label>
+                <WETextField
+                  name="restaurantRegist-Number"
+                  placeholder="사업자등록번호를 입력하세요."
+                  value={restaurantFormData.number}
+                  showErrorMessageSpace={true}
+                  onChange={(e) =>
+                    setRestaurantFormData('number', e.target.value)
+                  }
                 />
               </InputWithLabelStyled>
             </InputWrapperStyled>

@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 const RestaurantRegistPageStyled = styled.div`
   min-height: calc(100vh + 3.125rem);
   overflow-y: auto;
+  margin-bottom: 20%;
 
   @media (min-width: 480px) {
     width: 480px;

@@ -12,7 +12,7 @@ const useMyRestaurantStore = create((set) => ({
     lng: 0,
   },
   reservationDetails: [],
-  restaurantId: -1,
+  restaurantId: '',
   setRestaurantFormData: (field, value) =>
     set((state) => ({
       restaurantFormData: {

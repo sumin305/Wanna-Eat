@@ -26,7 +26,12 @@ import useAlert from 'utils/alert.js';
 const RestaurantRegistPage = () => {
   const tabs = ['사업자', '매장'];
   const { setIsCarrot, setPageName, setIsUnderLine } = useHeaderStore();
-  const { restaurantFormData, setRestaurantFormData } = useMyRestaurantStore();
+  const {
+    restaurantFormData,
+    setRestaurantFormData,
+    restaurantId,
+    setRestaurantId,
+  } = useMyRestaurantStore();
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
@@ -47,12 +52,6 @@ const RestaurantRegistPage = () => {
   };
   console.log('레스토랑 정보', restaurantFormData);
 
-  useEffect(() => {
-    setIsCarrot(false);
-    setIsUnderLine(true);
-    setPageName('매장 정보 입력');
-  }, [setIsCarrot, setIsUnderLine, setPageName]);
-
   // 확인 버튼을 누르면 호출되는 함수
   const handleRegistButtonClick = async () => {
     const response = await registRestaurant({
@@ -67,7 +66,11 @@ const RestaurantRegistPage = () => {
     });
     console.log(response);
     if (response.status === 201) {
+      const restaurantId = response.data.data;
+      setRestaurantId(restaurantId);
       showAlert(response.data.message);
+    } else if (response.status === 400) {
+      showAlert('값을 형식에 맞게 입력하세요.');
     } else {
       showAlert(response.response.data.message);
     }
@@ -84,6 +87,15 @@ const RestaurantRegistPage = () => {
   };
 
   useEffect(() => {
+    setIsCarrot(false);
+    setIsUnderLine(true);
+    setPageName('매장 정보 입력');
+  }, []);
+
+  useEffect(() => {
+    if (restaurantId) {
+      setActiveTab(1);
+    }
     setItems(
       JSON.parse(localStorage.getItem('categories')).map(
         (category) => category.restaurantCategoryName
@@ -137,7 +149,7 @@ const RestaurantRegistPage = () => {
                 <label>사업자등록번호</label>
                 <WETextField
                   name="restaurantRegist-Number"
-                  placeholder="사업자등록번호를 입력하세요."
+                  placeholder="xxx-xx-xxxxx"
                   value={restaurantFormData.number}
                   showErrorMessageSpace={true}
                   onChange={(e) =>
@@ -152,7 +164,7 @@ const RestaurantRegistPage = () => {
                 <label>전화번호</label>
                 <WETextField
                   name="restaurantRegist-phone"
-                  placeholder="전화번호를 입력하세요."
+                  placeholder="000-0000-0000"
                   value={restaurantFormData.phone}
                   showErrorMessageSpace={true}
                   onChange={(e) =>
@@ -181,6 +193,7 @@ const RestaurantRegistPage = () => {
               <InputWithLabelStyled>
                 <label>업종</label>
                 <WEDropdown
+                  width="70%"
                   useDropdownStore={useDropdownStore}
                   placeholder="카테고리를 선택하세요"
                   onSelect={handleCategoryOnSelect}
@@ -264,7 +277,11 @@ const RestaurantRegistPage = () => {
           <WETab
             tabs={tabs}
             activeTab={activeTab}
-            setActiveTab={setActiveTab}
+            setActiveTab={(index) => {
+              if (!restaurantId || index !== 0) {
+                setActiveTab(index);
+              }
+            }}
           />
         </TabWrapperStyled>
         <WEButton className="testButton" size={'menu'}>

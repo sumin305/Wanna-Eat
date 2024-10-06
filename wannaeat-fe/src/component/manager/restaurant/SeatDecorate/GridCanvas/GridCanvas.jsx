@@ -152,11 +152,46 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   }, []);
 
   useEffect(() => {
-    const restaurantId = 1; // 임시 id
+    const restaurantId = 10; // 임시 id
     authClientInstance
-      .get(`/api/restaurants/${restaurantId}/structure`)
+      .get(`/api/public/restaurants/${restaurantId}/structure`)
       .then((response) => {
-        setItemsByFloor(currentFloor, response.data);
+        const {
+          tableRegisterRequestDtos = [],
+          elementRegisterRequestDtos = [],
+        } = response.data;
+
+        const itemsByFloor = {};
+
+        tableRegisterRequestDtos.forEach((table) => {
+          const floor = table.floor;
+          if (!itemsByFloor[floor]) {
+            itemsByFloor[floor] = [];
+          }
+          itemsByFloor[floor].push({
+            itemId: table.itemId,
+            itemType: table.itemType,
+            x: table.x,
+            y: table.y,
+            tableId: table.tableId,
+            assignedSeats: table.assignedSeats,
+          });
+        });
+
+        elementRegisterRequestDtos.forEach((element) => {
+          const floor = element.floor;
+          if (!itemsByFloor[floor]) {
+            itemsByFloor[floor] = [];
+          }
+          itemsByFloor[floor].push({
+            itemId: element.itemId,
+            itemType: element.itemType,
+            x: element.x,
+            y: element.y,
+          });
+        });
+
+        setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
         console.error('성공: ', response);
       })
       .catch((error) => {
@@ -258,7 +293,6 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
             x,
             y,
             icon: selectedItem.icon,
-            label: selectedItem.label,
           });
 
           if (
@@ -272,7 +306,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
               y,
             });
             setModalType('setting');
-            setTitle(`${selectedItem.label} 설정`);
+            setTitle(`${selectedItem.itemType} 설정`);
 
             setHandleButtonClick(handleSubmit);
             setChildren(
@@ -312,7 +346,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
     setSelectedItem(item);
     if (item.itemType === 'SQUARE' || item.itemType === 'ROUNDED') {
       setModalType('setting');
-      setTitle(`${item.label} 설정`);
+      setTitle(`${item.itemType} 설정`);
 
       setHandleButtonClick(handleSubmit);
       setChildren(
@@ -373,7 +407,6 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
           elementRegisterRequestDtos.push({
             itemId: item.itemId,
             itemType: item.itemType,
-            label: item.label,
             x: item.x,
             y: item.y,
             floor: parseInt(floor, 10),

@@ -3,6 +3,8 @@ import theme from 'style/common/theme.js';
 
 import { ReactComponent as SquareTableIcon } from 'assets/icons/manager/restaurant/table-square.svg';
 import { ReactComponent as RoundTableIcon } from 'assets/icons/manager/restaurant/table-rounded.svg';
+import { ReactComponent as SquareTablePointedIcon } from 'assets/icons/manager/restaurant/table-square-pointed.svg';
+import { ReactComponent as RoundTablePointedIcon } from 'assets/icons/manager/restaurant/table-rounded-pointed.svg';
 import { ReactComponent as RestroomIcon } from 'assets/icons/manager/restaurant/restroom.svg';
 import { ReactComponent as CounterIcon } from 'assets/icons/manager/restaurant/cashier.svg';
 import { ReactComponent as EntranceIcon } from 'assets/icons/manager/restaurant/door.svg';
@@ -52,10 +54,18 @@ const SeatingMapStyled = styled.div`
 
 const MapStyled = styled.div`
   position: relative;
-  width: 100%;
+  width: 75%;
   height: 100%;
   max-width: 480px;
-  border: 1px solid #ccc;
+  border: 1px solid ${theme.color.primary};
+
+  @media (min-width: 480px) {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 480px;
+    border: 1px solid ${theme.color.primary};
+  }
 `;
 
 const ItemWrapperStyled = styled.div`

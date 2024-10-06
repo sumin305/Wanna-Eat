@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { authClientInstance } from 'utils/http-client.js';
 import {
   MainPageStyled,
   GoToSeatDecorateStyled,
@@ -15,6 +16,7 @@ import {
   ModalTitleStyled,
   ModalContentWrapper,
   ModalOverlayStyled,
+  ReservationCountStyled,
 } from './MainPage.js';
 
 import SeatingMap from 'component/manager/main/SeatingMap/SeatingMap.jsx';
@@ -48,10 +50,14 @@ const MainPage = () => {
   const [dropdownId, setDropdownId] = useState(1);
   const { setItems, setWidth, setSelectedId } = useDropdownStore();
 
+  const [pastReservationCnt, setPastReservationCnt] = useState(-1);
+  const [totalReservationCnt, setTotalReservationCnt] = useState(-1);
+
   useEffect(() => {
     setItems(['소형 (50m² 이하)', '중형 (50m² ~ 150m²)', '대형 (150m² 이상)']);
     setWidth('10.375rem');
     setSelectedId(1);
+    fetchMainData();
   }, [setItems, setWidth, setSelectedId]);
 
   const handleDropdownOnSelect = (selectedValue) => {
@@ -102,6 +108,20 @@ const MainPage = () => {
     setIsModalOpen(false);
   };
 
+  const fetchMainData = async () => {
+    try {
+      const response = await authClientInstance.get(`/api/users/restaurants`);
+      console.log(response);
+
+      const data = response.data.data;
+      setPastReservationCnt(data.pastReservationCount);
+      setTotalReservationCnt(data.totalReservationCount);
+    } catch (error) {
+      console.error('사업자 메인 데이터 요청 오류:', error);
+      return;
+    }
+  };
+
   return (
     <MainPageStyled>
       <GoToSeatDecorateStyled>
@@ -111,6 +131,10 @@ const MainPage = () => {
       </GoToSeatDecorateStyled>
 
       <SeatingMap />
+      {}
+      <ReservationCountStyled onClick={fetchMainData}>
+        금일 예약 현황: {pastReservationCnt}/{totalReservationCnt} (건)
+      </ReservationCountStyled>
 
       {isModalOpen && (
         <ModalOverlayStyled isModalOpen={isModalOpen} onClick={close}>

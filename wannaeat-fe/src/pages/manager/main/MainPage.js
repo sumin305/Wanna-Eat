@@ -231,6 +231,22 @@ const ModalOverlayStyled = styled.div`
   }
 `;
 
+const ReservationCountStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  width: 93%;
+  height: 10%;
+
+  border-radius: 0.5rem 0.5rem var(--Corner-None, 0rem) var(--Corner-None, 0rem);
+  box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.25);
+  padding: 10px;
+
+  font-size: ${theme.fontSize.px15};
+  font-weight: ${theme.fontWeight.bold};
+`;
+
 export {
   MainPageStyled,
   GoToSeatDecorateStyled,
@@ -246,4 +262,5 @@ export {
   ModalTitleStyled,
   ModalContentWrapper,
   ModalOverlayStyled,
+  ReservationCountStyled,
 };

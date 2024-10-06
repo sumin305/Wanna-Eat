@@ -32,6 +32,8 @@ import com.waterdragon.wannaeat.domain.reservation.domain.ReservationTable;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.CurrentReservedTableResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerMainDataResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationSummaryResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.RecentReservationResponseDto;
@@ -60,6 +62,7 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantStru
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructureRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
+import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
 import com.waterdragon.wannaeat.domain.user.repository.UserRepository;
 import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
 import com.waterdragon.wannaeat.global.redis.service.RedisService;
@@ -693,6 +696,67 @@ public class ReservationServiceImpl implements ReservationService {
 
 		// 두 쿼리에서 모두 결과가 없으면 null 반환
 		return null;
+	}
+
+	@Override
+	public ManagerMainDataResponseDto getManagerMainData() {
+		User user = authUtil.getAuthenticatedUser();
+		if (user.getRole() != Role.MANAGER) {
+			throw new NotAuthorizedException("권한이 없습니다.");
+		}
+
+		Restaurant restaurant = restaurantRepository.findByUser(user)
+			.orElseThrow(() -> new RestaurantNotFoundException("식당이 존재하지 않습니다."));
+
+		LocalDate today = LocalDate.now();
+
+		LocalTime now = LocalTime.now();
+
+		List<Reservation> todayReservations = reservationRepository.findByRestaurantAndReservationDateAndCancelledFalse(
+			restaurant, today);
+
+		List<Reservation> currentReservations = reservationRepository.findByRestaurantAndReservationDateAndCancelledFalseAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+			restaurant, today, now, now);
+
+		List<CurrentReservedTableResponseDto> currentReservedTables = getListCurrentReservation(
+			currentReservations);
+
+		int totalReservationCount = todayReservations.size();
+
+		int pastReservationCount = countReservationsBeforeNow(todayReservations);
+
+		return ManagerMainDataResponseDto.builder()
+			.currentReservedTables(currentReservedTables)
+			.totalReservationCount(totalReservationCount)
+			.pastReservationCount(pastReservationCount)
+			.build();
+
+	}
+
+	@Override
+	public List<CurrentReservedTableResponseDto> getListCurrentReservation(List<Reservation> reservations) {
+		return reservations.stream()
+			.flatMap(reservation -> reservation.getReservationTables().stream()
+				.map(table -> CurrentReservedTableResponseDto.builder()
+					.reservationId(reservation.getReservationId()) // 예약 ID
+					.tableId(table.getTableId()) // 테이블 ID
+					.reservationStartTime(reservation.getStartTime()) // 예약 시작 시간
+					.reservationEndTime(reservation.getEndTime()) // 예약 종료 시간
+					.build()
+				)
+			)
+			.collect(Collectors.toList());
+
+	}
+
+	@Override
+	public int countReservationsBeforeNow(List<Reservation> reservations) {
+		LocalTime now = LocalTime.now();
+
+		// 현재 시간 이전의 예약 startTime을 가진 예약들의 수를 카운트
+		return (int)reservations.stream()
+			.filter(reservation -> reservation.getStartTime().isBefore(now))
+			.count();
 	}
 
 }

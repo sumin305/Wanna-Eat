@@ -60,11 +60,11 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.RestaurantStru
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantRepository;
 import com.waterdragon.wannaeat.domain.restaurant.repository.RestaurantStructureRepository;
 import com.waterdragon.wannaeat.domain.user.domain.User;
-import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
 import com.waterdragon.wannaeat.domain.user.repository.UserRepository;
 import com.waterdragon.wannaeat.global.exception.error.NotAuthorizedException;
 import com.waterdragon.wannaeat.global.redis.service.RedisService;
 import com.waterdragon.wannaeat.global.util.AuthUtil;
+import com.waterdragon.wannaeat.global.util.FcmUtil;
 import com.waterdragon.wannaeat.global.util.QrUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -81,6 +81,7 @@ public class ReservationServiceImpl implements ReservationService {
 	private final RedisService redisService;
 	private final AlarmService alarmService;
 	private final OrderRepository orderRepository;
+	private final FcmUtil fcmUtil;
 	@Value("${redirectURL}")
 	private String REDIRECT_URL;
 
@@ -225,6 +226,9 @@ public class ReservationServiceImpl implements ReservationService {
 		registerReservationTable(reservation, reservationRegisterRequestDto.getTableList());
 
 		alarmService.registerAlarm(reservation, AlarmType.RESERVATION_CONFIRMED);
+
+		fcmUtil.sendFcm(reservation.getUser(), AlarmType.RESERVATION_CONFIRMED);
+		fcmUtil.sendFcm(reservation.getRestaurant().getUser(), AlarmType.RESERVATION_CONFIRMED);
 
 		return ReservationDetailResponseDto.transferToReservationDetailResponseDto(reservation,
 			reservationRegisterRequestDto.getTableList());
@@ -414,7 +418,7 @@ public class ReservationServiceImpl implements ReservationService {
 			.orElseThrow(() -> new ReservationNotFoundException(
 				"해당 예약이 존재하지 않습니다."));
 
-		if(reservation.getUser() != user){
+		if (reservation.getUser() != user) {
 			throw new NotAuthorizedException("접근 권한이 없습니다.");
 		}
 		return ReservationDetailResponseDto.transferToReservationDetailResponseDto(reservation);
@@ -515,6 +519,8 @@ public class ReservationServiceImpl implements ReservationService {
 		reservationRepository.save(reservation);
 
 		alarmService.registerAlarm(reservation, AlarmType.RESERVATION_CANCELED);
+
+		fcmUtil.sendFcm(reservation.getRestaurant().getUser(), AlarmType.RESERVATION_CANCELED);
 	}
 
 	/**
@@ -539,6 +545,7 @@ public class ReservationServiceImpl implements ReservationService {
 		reservationRepository.save(reservation);
 
 		alarmService.registerAlarm(reservation, AlarmType.EXIT_COMPLETED);
+		fcmUtil.sendFcm(reservation.getRestaurant().getUser(), reservation, AlarmType.EXIT_COMPLETED);
 
 	}
 

@@ -1,13 +1,18 @@
 import { useState, useEffect } from 'react';
-import { SeatingMapStyled } from './SeatingMap.js';
+import { SeatingMapStyled, Items } from './SeatingMap.js';
 import { authClientInstance } from 'utils/http-client.js';
+
+import FloorSelector from 'component/manager/restaurant/SeatDecorate/FloorSelector/FloorSelector.jsx';
+import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
 
 const SeatingMap = () => {
   const [floorData, setFloorData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [currentFloor, setCurrentFloor] = useState(1);
+
   const testData = {
-    floorCnt: 1,
+    floorCnt: 3,
     itemsByFloor: [
       {
         itemId: 'd6c927a6-756b-422f-81a9-bfe8019cf404',
@@ -51,6 +56,8 @@ const SeatingMap = () => {
     ],
   };
 
+  const floors = Array.from({ length: testData.floorCnt }, (_, i) => i + 1);
+
   useEffect(() => {
     setFloorData(testData.itemsByFloor);
     setLoading(false);
@@ -69,7 +76,68 @@ const SeatingMap = () => {
     }
   };
 
-  return <SeatingMapStyled>123</SeatingMapStyled>;
+  const handleFloorChange = (selectedFloor) => {
+    setCurrentFloor(selectedFloor);
+    setFloorData(testData.itemsByFloor[selectedFloor]);
+  };
+
+  const renderIcon = (itemType) => {
+    const item = Items.find((item) => item.itemType === itemType);
+    if (item && item.icon) {
+      const IconComponent = item.icon;
+      return <IconComponent />;
+    }
+    return null;
+  };
+
+  if (loading) {
+    return (
+      <div>
+        <LoadingIcon />
+      </div>
+    );
+  }
+
+  return (
+    <SeatingMapStyled>
+      <FloorSelector
+        floors={floors}
+        currentFloor={currentFloor}
+        onFloorChange={handleFloorChange}
+      />
+
+      <div
+        style={{
+          position: 'relative',
+          width: '500px',
+          height: '500px',
+          border: '1px solid #ccc',
+        }}
+      >
+        {floorData.map((item) => (
+          <div
+            key={item.itemId}
+            style={{
+              position: 'absolute',
+              left: `${item.x}px`,
+              top: `${item.y}px`,
+              width: '50px',
+              height: '50px',
+            }}
+          >
+            {renderIcon(item.itemType)}
+            {item.itemType === 'square' || item.itemType === 'rounded' ? (
+              <div>
+                <strong>{item.tableNumber}</strong> ({item.capacity} 명)
+              </div>
+            ) : (
+              <div></div>
+            )}
+          </div>
+        ))}
+      </div>
+    </SeatingMapStyled>
+  );
 };
 
 export default SeatingMap;

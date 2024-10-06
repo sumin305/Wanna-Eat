@@ -33,8 +33,19 @@ import useOrderStore from '../../../../stores/customer/useOrderStore.js';
 import useChatStore from '../../../../stores/customer/useChatStore.js';
 import DeleteIcon from 'assets/icons/order/delete.svg';
 import useAlert from 'utils/alert.js';
+import useModalStore from 'stores/common/useModalStore.js';
 
 const OrderCartBox = ({ reservationUrl }) => {
+  const nav = useNavigate();
+  const {
+    setModalType,
+    setAlertText,
+    setIsOneButton,
+    setHandleButtonClick,
+    close,
+    open,
+  } = useModalStore();
+
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ['나의 메뉴', '전체 메뉴'];
   const showAlert = useAlert();
@@ -46,7 +57,6 @@ const OrderCartBox = ({ reservationUrl }) => {
     allSortedMenusInfo,
     setAllMenusSortInfo,
   } = useOrderStore();
-  const nav = useNavigate();
 
   // 정렬되지 않은 메뉴 데이터를 가져옴
   const allMenus = allMenusInfo?.cartDetailResponseDto?.cartElements || [];
@@ -55,7 +65,7 @@ const OrderCartBox = ({ reservationUrl }) => {
   const sortedMenus =
     allSortedMenusInfo?.cartDetailResponseDto?.cartElements || [];
 
-  const reservationParticipantId = 8;
+  const reservationParticipantId = 2;
   const [menuCounts, setMenuCounts] = useState([]);
 
   const { stompClient, isConnected } = useChatStore();
@@ -232,33 +242,39 @@ const OrderCartBox = ({ reservationUrl }) => {
   };
 
   // 주문하기 버튼 클릭시 실행되는 함수
-  const handleOrderButtonClick = async () => {
-    await showAlert('주문하시겠습니까?');
-    const orderRegisterRequestDto = {
-      reservationUrl: reservationUrl,
-      prepareRequest: true,
-    };
+  const handleOrderButtonClick = () => {
+    setModalType('alert');
+    setAlertText('전체 주문하시겠습니까?');
+    setIsOneButton(false);
+    setHandleButtonClick(() => {
+      const orderRegisterRequestDto = {
+        reservationUrl: reservationUrl,
+        prepareRequest: true,
+      };
 
-    if (stompClient && isConnected) {
-      try {
-        await stompClient.send(
-          `/api/public/sockets/orders/register`,
-          {},
-          JSON.stringify(orderRegisterRequestDto)
-        );
-        console.log('주문에 보내는 내용:', orderRegisterRequestDto);
+      if (stompClient && isConnected) {
+        try {
+          stompClient.send(
+            `/api/public/sockets/orders/register`,
+            {},
+            JSON.stringify(orderRegisterRequestDto)
+          );
+          console.log('주문에 보내는 내용:', orderRegisterRequestDto);
 
-        setAllMenusInfo({ cartDetailResponseDto: { cartElements: [] } });
-        setAllMenusSortInfo({ cartDetailResponseDto: { cartElements: [] } });
-        setMenuCounts([]);
-      } catch (error) {
-        console.log('주문 실패:', error);
-        showAlert('주문에 실패했습니다.');
+          setAllMenusInfo({ cartDetailResponseDto: { cartElements: [] } });
+          setAllMenusSortInfo({ cartDetailResponseDto: { cartElements: [] } });
+          setMenuCounts([]);
+        } catch (error) {
+          console.log('주문 실패:', error);
+          showAlert('주문에 실패했습니다.');
+        }
+      } else {
+        console.log('stompClient is not initialized or not connected');
+        showAlert('웹소켓이 연결되지 않습니다.');
       }
-    } else {
-      console.log('stompClient is not initialized or not connected');
-      showAlert('웹소켓이 연결되지 않습니다.');
-    }
+      close();
+    });
+    open();
   };
 
   const handleDeleteMenuButton = (menuId) => {

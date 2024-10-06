@@ -97,9 +97,7 @@ const useStore = create((set, get) => ({
   },
 }));
 
-const GridCanvas = ({ currentFloor }) => {
-  const gridColumns = 10; // 가로
-  const gridRows = 10; // 세로
+const GridCanvas = ({ currentFloor, gridColumns, gridRows }) => {
   const [gridSize, setGridSize] = useState(50);
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);

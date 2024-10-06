@@ -75,11 +75,16 @@ const MainPage = () => {
   };
 
   const handleSubmit = () => {
+    if(floor === ''){
+      window.alert('층을 입력해 주세요');
+      return;
+    }
+    
     console.log(
       'dropdownId:' + dropdownId + ' floor:' + floor + ' 제출되었습니다.'
     );
     close();
-    navigate('/manager/restaurant/seat-decorate');
+    navigate('/manager/restaurant/seat-decorate', {state: { dropdownId, floor },});
   };
 
   const [floor, setFloor] = useState(1);

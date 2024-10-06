@@ -71,9 +71,17 @@ export const MenuImg = styled.img`
 `;
 
 export const FoodInfoDiv = styled.div`
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
+`;
+
+export const DeleteImg = styled.img`
+  position: absolute;
+  top: 3%;
+  right: 5%;
+  cursor: pointer;
 `;
 
 export const FoodInfoTopDiv = styled.div`

@@ -15,15 +15,19 @@ import {
   MenuPageContainer,
   WETabContainer,
   TabText,
-  MenuItems,
-  MenuItem,
-  MenuImage,
-  MenuInfo,
-  MenuTitle,
   MenuDescription,
   MenuPrice,
   CartImg,
+  MenuContainer,
+  MenuBox,
+  ImageBox,
+  MenuImg,
+  MenuContentContainer,
+  MenuName,
+  // MenuPrice,
+  // MenuDescription,
 } from './MenuSelectPage.js';
+import useAlert from 'utils/alert.js';
 
 const MenuSelectPage = () => {
   const nav = useNavigate();
@@ -32,7 +36,7 @@ const MenuSelectPage = () => {
   const { isConnected, setIsConnected, stompClient, setStompClient } =
     useChatStore();
   const [activeTab, setActiveTab] = useState(0);
-  const reservationParticipantId = 7;
+  const reservationParticipantId = 2;
   const increment = 1; // 증가 갯수는 1로 설정
 
   const {
@@ -41,9 +45,29 @@ const MenuSelectPage = () => {
     setIsShowLogo,
     setIsShowBackIcon,
     setActiveIcons,
+    setIconAction,
+    isChatOn,
+    setIsChatOn,
   } = useHeaderStore();
 
   const { allMenusData, setAllMenusData } = useOrderStore();
+
+  const showAlert = useAlert();
+  // useEffect(() => {
+  //   const chatOn = () => {
+  //     nav(`/customer/order/chat/${reservationUrl}`);
+  //   };
+  //   const chatOff = () => {
+  //     nav(-1);
+  //   };
+  //   if (!isChatOn) {
+  //     setActiveIcons([12]);
+  //     setIconAction([chatOn]);
+  //   } else {
+  //     setActiveIcons([11]);
+  //     setIconAction([chatOff]);
+  //   }
+  // }, [isChatOn]);
 
   // 웹소켓 초기 연결
   useEffect(() => {
@@ -51,7 +75,7 @@ const MenuSelectPage = () => {
     setPageName('메뉴선택');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
-    setActiveIcons([3]);
+    // setActiveIcons([3]);
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);
 
@@ -137,6 +161,7 @@ const MenuSelectPage = () => {
   };
 
   const handleCartIconClick = (menuId) => {
+    showAlert('메뉴가 장바구니에 추가되었습니다.');
     const cartRegisterRequestDto = {
       reservationUrl: reservationUrl,
       reservationParticipantId: reservationParticipantId,
@@ -169,28 +194,30 @@ const MenuSelectPage = () => {
         <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
       </WETabContainer>
       <TabText>{tabs[activeTab]}</TabText>
-      <MenuItems>
+      <MenuContainer>
         {currentMenuDetails &&
           currentMenuDetails.map((menu, menuId) => (
-            <MenuItem key={menuId}>
-              <MenuImage src={menu.menuImage}></MenuImage>
-              <MenuInfo>
-                <MenuTitle>{menu.menuName}</MenuTitle>
+            <MenuBox key={menuId}>
+              <ImageBox>
+                <MenuImg src={menu.menuImage}></MenuImg>
+              </ImageBox>
+              <MenuContentContainer>
+                <MenuName>{menu.menuName}</MenuName>
                 <MenuPrice>
                   {menu.menuPrice.toLocaleString('ko-KR')}원
                 </MenuPrice>
                 <MenuDescription>{menu.menuDescription}</MenuDescription>
-              </MenuInfo>
-              <CartImg
-                src={CartIcon}
-                alt="담기 아이콘"
-                onClick={() => handleCartIconClick(menu.menuId)}
-              />
-            </MenuItem>
+                <CartImg
+                  src={CartIcon}
+                  alt="담기 아이콘"
+                  onClick={() => handleCartIconClick(menu.menuId)}
+                />
+              </MenuContentContainer>
+            </MenuBox>
           ))}
+      </MenuContainer>
 
-        <WEButton onClick={clickGotoCart}>장바구니 보기</WEButton>
-      </MenuItems>
+      <WEButton onClick={clickGotoCart}>장바구니 보기</WEButton>
     </MenuPageContainer>
   );
 };

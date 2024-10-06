@@ -6,7 +6,7 @@ import { validateReservationUrl, getOrderData } from 'api/customer/order';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import useOrderStore from 'stores/customer/useOrderStore';
-import OrderMainBox from 'component/customer/order/OrderMainBox.jsx';
+import OrderMainBox from 'component/customer/order/OrderMainBox/OrderMainBox.jsx';
 
 const OrderMainPage = () => {
   const nav = useNavigate();
@@ -30,6 +30,14 @@ const OrderMainPage = () => {
   } = useChatStore();
 
   const { allOrdersInfo, setAllOrdersInfo } = useOrderStore();
+
+  const {
+    setReservationDate,
+    setReservationStartTime,
+    setReservationEndTime,
+    setRestaurantId,
+    setReservationId,
+  } = useOrderStore();
 
   // 웹소켓 초기 연결
   useEffect(() => {
@@ -99,6 +107,12 @@ const OrderMainPage = () => {
       chatSize
     );
     console.log('메인페이지 불러온 데이터:', allOrdersInfo.data);
+
+    setReservationDate(allOrdersInfo.data.reservationDate);
+    setReservationStartTime(allOrdersInfo.data.reservationDate);
+    setReservationEndTime(allOrdersInfo.data.reservationEndTime);
+    setRestaurantId(allOrdersInfo.data.restaurantId);
+    setReservationId(allOrdersInfo.data.reservationId);
 
     // 전체 메뉴 리스트 저장
     setAllOrdersInfo(allOrdersInfo.data);

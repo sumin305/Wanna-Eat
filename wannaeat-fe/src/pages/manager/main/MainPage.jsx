@@ -59,6 +59,12 @@ const MainPage = () => {
 
   const [occupiedList, setOccupiedList] = useState([]);
 
+  const [isMyRestaurant, setIsMyRestaurant] = useState(true);
+
+  const handle404Error = () => {
+    setIsMyRestaurant(false);
+  };
+
   useEffect(() => {
     setItems(['소형 (50m² 이하)', '중형 (50m² ~ 150m²)', '대형 (150m² 이상)']);
     setWidth('10.375rem');
@@ -127,6 +133,10 @@ const MainPage = () => {
       setOccupiedList(data.currentReservedTables);
       console.log('occupiedList: ', occupiedList);
     } catch (error) {
+      if (error.response && error.response.status === 404) {
+        setIsMyRestaurant(false);
+      }
+
       console.error('사업자 메인 데이터 요청 오류:', error);
       return;
     } finally {
@@ -142,14 +152,24 @@ const MainPage = () => {
         </GoToSeatDecorateButtonStyled>
       </GoToSeatDecorateStyled>
 
-      <SeatingMap OccupiedList={occupiedList} />
-      {}
-      <ReservationCountStyled>
-        금일 예약 현황: {pastReservationCnt}/{totalReservationCnt} (건)
-        <RotatingIconWrapper isRotating={isRotating}>
-          <RefreshIcon onClick={fetchMainData} />
-        </RotatingIconWrapper>
-      </ReservationCountStyled>
+      {isMyRestaurant && (
+        <>
+          <SeatingMap OccupiedList={occupiedList} on404Error={handle404Error} />
+          {}
+          <ReservationCountStyled>
+            금일 예약 현황: {pastReservationCnt}/{totalReservationCnt} (건)
+            <RotatingIconWrapper isRotating={isRotating}>
+              <RefreshIcon onClick={fetchMainData} />
+            </RotatingIconWrapper>
+          </ReservationCountStyled>
+        </>
+      )}
+
+      {!isMyRestaurant && (
+        <>
+          <div>매장 꾸미기를 해주세요</div>
+        </>
+      )}
 
       {isModalOpen && (
         <ModalOverlayStyled isModalOpen={isModalOpen} onClick={close}>

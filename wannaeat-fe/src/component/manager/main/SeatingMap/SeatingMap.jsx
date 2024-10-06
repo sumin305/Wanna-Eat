@@ -15,7 +15,7 @@ import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
 import { ReactComponent as SquareTablePointedIcon } from 'assets/icons/manager/restaurant/table-square-pointed.svg';
 import { ReactComponent as RoundTablePointedIcon } from 'assets/icons/manager/restaurant/table-rounded-pointed.svg';
 
-const SeatingMap = ({ OccupiedList }) => {
+const SeatingMap = ({ OccupiedList, on404Error }) => {
   const [floorData, setFloorData] = useState([]);
   const [originalData, setOriginalData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,8 +27,6 @@ const SeatingMap = ({ OccupiedList }) => {
   const [IconHeight, setIconHeight] = useState(100);
 
   const { restaurantId } = useMyRestaurantStore();
-
-  const [isOccupied, setIsOccupied] = useState(false);
 
   const reservedTable = OccupiedList;
 
@@ -74,6 +72,10 @@ const SeatingMap = ({ OccupiedList }) => {
       setIconWidth(tempValue);
       setIconHeight(tempValue);
     } catch (error) {
+      if (error.response && error.response.status === 404) {
+        on404Error();
+      }
+
       console.error('배치 정보 요청 오류:', error);
       setLoading(false);
       return;

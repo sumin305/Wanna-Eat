@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
-import { getToken } from '../../../api/common/login.js';
+import {
+  getSsafyPayAccount,
+  createSsafyPayAccount,
+} from 'api/common/ssafyPay/user.js';
 import useCommonStore, { ROLE } from '../../../stores/common/useCommonStore';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../../assets/icons/header/logo-picture.svg';
@@ -19,7 +22,6 @@ import { getFcmToken } from '../../../firebase/firebaseCloudMessaging.js';
 import { giveFcmToken } from '../../../api/common/login.js';
 
 const LoginPage = () => {
-  const { fcmToken } = useCommonStore();
   const navigate = useNavigate();
   const { getUserInfo, setEmail, setSocialType } = useCommonStore();
   const kakaoLink = process.env.REACT_APP_KAKAO_LOGIN_URL;
@@ -49,6 +51,12 @@ const LoginPage = () => {
       } else if (userInfo.role === ROLE.CUSTOMER) {
         const fcmToken = await getFcmToken();
         await giveFcmToken(fcmToken);
+        // 손님의 userKey 조회
+        const result = await getSsafyPayAccount(userInfo.email);
+        if (result.status !== 201) {
+          console.log('userKey 조회 실패해서 발급합니다.');
+          await createSsafyPayAccount(userInfo.email);
+        }
         navigate('/customer');
       } else {
         const fcmToken = await getFcmToken();

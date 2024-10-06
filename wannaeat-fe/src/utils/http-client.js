@@ -13,8 +13,13 @@ const setAccessToken = (newAccessToken) => {
 // ssafy 금융 API 요청
 const createSsafyClientInstance = () => {
   const instance = axios.create({
-    baseURL: process.env.REACT_APP_SSAFY_PAY_URL,
+    baseURL: process.env.REACT_APP_CLIENT_URL,
     timeout: 5000,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
+      'Access-Control-Allow-Credentials': 'true',
+    },
     withCredentials: false,
   });
   return instance;
@@ -32,6 +37,29 @@ const createClientInstance = () => {
     },
     withCredentials: false,
   });
+  return instance;
+};
+
+// 소켓 연결 시 요청
+const createSocketClientInstance = () => {
+  const url = window.location.pathname.split('/');
+  const cookieStr =
+    url[url.length - 1] +
+    '=' +
+    localStorage.getItem('reservationParticipantId');
+  console.log('cookieStr', cookieStr);
+
+  const instance = axios.create({
+    baseURL: process.env.REACT_APP_REST_API_URL,
+    timeout: 5000,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
+      'Access-Control-Allow-Credentials': 'true',
+    },
+    withCredentials: true,
+  });
+
   return instance;
 };
 
@@ -68,6 +96,7 @@ const createAuthWithRefreshClientInstance = () => {
 };
 
 export const ssafyClient = createSsafyClientInstance();
+export const socketClient = createSocketClientInstance();
 export const clientInstance = createClientInstance();
 export const authClientInstance = createAuthClientInstance();
 export const authWithRefreshClientInstance =

@@ -62,6 +62,9 @@ export const getMyAccountList = async () => {
     .post('/api/v1/edu/deposit/inquireDepositInfoList', {
       Header: Header('inquireDepositInfoList', localStorage.getItem('userKey')),
     })
-    .then((result) => result)
+    .then((result) => {
+      localStorage.setItem('accountNo', result.data.REC.list[0].accountNo);
+      return result;
+    })
     .catch((error) => error);
 };

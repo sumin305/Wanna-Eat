@@ -3,6 +3,10 @@ import {
   getSsafyPayAccount,
   createSsafyPayAccount,
 } from 'api/common/ssafyPay/user.js';
+import {
+  createAccount,
+  getMyAccountList,
+} from 'api/common/ssafyPay/account.js';
 import useCommonStore, { ROLE } from '../../../stores/common/useCommonStore';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../../assets/icons/header/logo-picture.svg';
@@ -51,12 +55,21 @@ const LoginPage = () => {
       } else if (userInfo.role === ROLE.CUSTOMER) {
         const fcmToken = await getFcmToken();
         await giveFcmToken(fcmToken);
+
         // 손님의 userKey 조회
-        const result = await getSsafyPayAccount(userInfo.email);
-        if (result.status !== 201) {
+        const accountResult = await getSsafyPayAccount(userInfo.email);
+        if (accountResult.status !== 201) {
           console.log('userKey 조회 실패해서 발급합니다.');
           await createSsafyPayAccount(userInfo.email);
         }
+
+        // 손님의 deposit account 조회
+        const depositAccountResult = await getMyAccountList();
+        if (depositAccountResult.status !== 200) {
+          console.log('user Deposit Account 조회 실패해서 발급합니다.');
+          await createAccount();
+        }
+
         navigate('/customer');
       } else {
         const fcmToken = await getFcmToken();

@@ -66,6 +66,8 @@ file:
 # 카카오페이 Secret Key
 kakaopay:
   secret-key: ${KAKAOPAY_SECRET_KEY}
+  order-redirect-url: ${KAKAOPAY_ORDER_REDIRECT_URL}
+  deposit-redirect-url: ${KAKAOPAY_DEPOSIT_REDIRECT_URL}
 
 # 싸피페이 API Key
 ssafypay:

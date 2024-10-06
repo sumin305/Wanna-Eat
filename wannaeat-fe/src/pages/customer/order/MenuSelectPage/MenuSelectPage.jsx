@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import useHeaderStore from 'stores/common/useHeaderStore';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getMenuData, validateReservationUrl } from 'api/customer/order';
+import { getMenuData, validateReservationUrl } from 'api/customer/socket';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import useChatStore from 'stores/customer/useChatStore';
@@ -10,6 +10,8 @@ import useOrderStore from 'stores/customer/useOrderStore';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 import { useState } from 'react';
+import useCartStore from 'stores/customer/useCartStore';
+
 import CartIcon from 'assets/icons/order/cart.svg';
 import {
   MenuPageContainer,
@@ -37,7 +39,7 @@ const MenuSelectPage = () => {
     useChatStore();
 
   const [activeTab, setActiveTab] = useState(0);
-  const reservationParticipantId = 2;
+  const [reservationParticipantId, setReservationParticipantId] = useState(0);
   const increment = 1; // 증가 갯수는 1로 설정
 
   const {
@@ -50,6 +52,7 @@ const MenuSelectPage = () => {
   } = useHeaderStore();
 
   const { allMenusData, setAllMenusData } = useOrderStore();
+  const { setCartElements } = useCartStore();
 
   const showAlert = useAlert();
 
@@ -70,26 +73,20 @@ const MenuSelectPage = () => {
     setIconAction([gotoSelectMenu, gotoChat]);
 
     const validateAndConnect = async () => {
-      const response = await validateReservationUrl(reservationUrl);
-
       // reservationUrl 유효성 검사 실행 후 유효한 경우
-      if (response.status === 200) {
-        // stompClient가 없는 경우에만 소켓 연결 시도
-        if (!stompClient) {
-          initializeConnection();
-        } else {
-          console.log('이미 소켓이 연결되어 있습니다.');
-        }
+      // stompClient가 없는 경우에만 소켓 연결 시도
+      if (!stompClient) {
+        initializeConnection();
       } else {
-        // 유효하지 않은 reservationUrl일 경우
-        console.log(response.response.data.message);
-        nav('/customer/order/notexist', {
-          state: { message: response.response.data.message },
-        });
+        console.log('이미 소켓이 연결되어 있습니다.');
       }
     };
 
     validateAndConnect();
+
+    setReservationParticipantId(
+      localStorage.getItem('reservationParticipantId')
+    );
   }, []);
 
   const initializeConnection = () => {
@@ -110,6 +107,13 @@ const MenuSelectPage = () => {
           (response) => {
             const content = JSON.parse(response.body);
             console.log('Received message: ', content);
+            console.log('sumin Received message: ', content);
+
+            if (content.socketType === 'CART') {
+              console.log('cart socket message ');
+              console.dir(content.cartElements);
+              setCartElements(content.cartElements);
+            }
           }
         );
 

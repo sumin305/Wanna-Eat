@@ -15,6 +15,11 @@ const createSsafyClientInstance = () => {
   const instance = axios.create({
     baseURL: process.env.REACT_APP_SSAFY_PAY_URL,
     timeout: 5000,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
+      'Access-Control-Allow-Credentials': 'true',
+    },
     withCredentials: false,
   });
   return instance;

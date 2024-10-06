@@ -94,7 +94,7 @@ const ReservationAlertTime = styled.p`
 const ReservationLastTime = styled.p`
   color: ${theme.color.primary};
   font-weight: 900;
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   margin-right: 0.5rem;
 
   @media (min-width: 480px) {

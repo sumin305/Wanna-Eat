@@ -23,18 +23,26 @@ const MapContainer = () => {
     setCenterLatLng,
     getRestaurantPositions,
   } = useMapStore();
-  const { setRestaurantId, setRestaurant } = useRestaurantStore();
+
   const { reservationDate, startTime, endTime, memberCount } =
     useReservationStore;
   const { categoryId, keyword } = useMapFilterStore();
+
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const navigate = useNavigate();
   // 초기 렌더링 시 사용자 현재 위치 기반 식당 검색
   useEffect(() => {
     const fetchMarketPositions = async () => {
+      console.log(reservationDate, startTime, endTime, memberCount);
       const restaurantMarkers = await getRestaurantPositions({
         latitude: lat,
         longitude: lon,
+        ...(categoryId !== -1 && { categoryId: categoryId }),
+        ...(keyword && { keyword: keyword }),
+        ...(reservationDate && { reservationDate: reservationDate }),
+        ...(startTime && { startTime: startTime }),
+        ...(endTime && { endTime: endTime }),
+        ...(memberCount && memberCount !== -1 && { memberCount: memberCount }),
       });
       setMarkerPositions(restaurantMarkers);
     };
@@ -169,8 +177,6 @@ const MapContainer = () => {
   // 마커 클릭 시 해당 레스토랑 정보 상세보기로 이동
   const handleMarkerClick = async (id) => {
     console.log('handleMarkerClick', id);
-    await setRestaurant(id);
-    await setRestaurantId(id);
     navigate(`/customer/reservation/restaurant-detail/${id}`);
   };
 

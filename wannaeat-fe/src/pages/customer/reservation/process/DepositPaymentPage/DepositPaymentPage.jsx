@@ -13,56 +13,46 @@ import {
   DepositPriceText,
   CardSelectBoxStyled,
 } from './DepositPaymentPage.js';
-import CardImage1 from '../../../../../assets/customer/카카오페이카드.png';
-import CardImage2 from '../../../../../assets/customer/농협카드.png';
-import CardImage3 from '../../../../../assets/customer/신한카드.png';
-import CardImage4 from '../../../../../assets/customer/우리카드.png';
-import CardImage5 from '../../../../../assets/customer/국민카드.png';
+import { getMyCreditCardList } from 'api/common/ssafyPay/card.js';
 
-import {
-  getMerchantCategories,
-  registerMerchant,
-  getCreditCardList,
-  createCreditCard,
-  getMyCreditCardList,
-  payByCreditCard,
-} from 'api/common/ssafyPay/card.js';
-
-import {
-  createSsafyPayAccount,
-  getSsafyPayAccount,
-} from 'api/common/ssafyPay/user.js';
-
-import { getAccountList, createAccount } from 'api/common/ssafyPay/account.js';
-import { payDepositPaymentByKakaoPay } from 'api/common/payment.js';
+import { CardNameText } from 'pages/customer/user/CardManagePage/CardManagePage.js';
 import Carousel from 'react-spring-3d-carousel';
 import { config } from 'react-spring';
 import { useState, useEffect } from 'react';
 import useCommonStore from '../../../../../stores/common/useCommonStore.js';
+import { cardMaps } from 'assets';
+import useAuthStore from 'stores/customer/useAuthStore';
+import { payDepositPaymentByKakaoPay } from 'api/common/payment.js';
+
 const DepositPaymentPage = () => {
   const navigate = useNavigate();
-  const { email } = useCommonStore();
-  const { depositPerMember, restaurantName } = useRestaurantStore();
-  const { memberCount } = useReservationStore();
+  const { depositPerMember, restaurantId } = useRestaurantStore();
   const [depositPrice, setDepositPrice] = useState(0);
-
   const [cards, setCards] = useState([]);
-  const [selectedCard, setSelectedCard] = useState(null);
-  const cardImages = {
-    카카오페이카드: CardImage1,
-    농협카드: CardImage2,
-    신협카드: CardImage3,
-    우리카드: CardImage4,
-    KB국민카드: CardImage5,
-  };
   const [goToSlide, setGoToSlide] = useState(null);
+  const [selectedardIndex, setSelectedCardIndex] = useState(0);
+  const {
+    selectedCard,
+    setSelectedCard,
+    memberCount,
+    reservationDate,
+    startTime,
+    endTime,
+  } = useReservationStore();
+
+  useEffect(() => {
+    setSelectedCard(cards[selectedardIndex]);
+  }, [selectedCard]);
 
   useEffect(() => {
     // 회원 카드 정보 조회
     const fetchCards = async () => {
       const result = await getMyCreditCardList();
+      if (result.status !== 200) {
+        alert('카드 목록 조회 실패');
+      }
       const cards = result.data.REC;
-      setCards([...cards, { cardIssuerName: '카카오페이카드', cardNo: '0' }]);
+      setCards([...cards, { cardName: '카카오페이카드', cardNo: '0' }]);
     };
     setDepositPrice(
       depositPerMember * memberCount === 0
@@ -70,52 +60,79 @@ const DepositPaymentPage = () => {
         : depositPerMember * memberCount
     );
     fetchCards();
+
+    // 카카오페이 후 redirect 되었을 경우,
   }, []);
+
   const slides = cards.map((card, index) => ({
     key: index,
     content: (
-      <img
-        onClick={() => {
-          setGoToSlide(index);
-          setSelectedCard(card);
-        }}
-        width="144px"
-        height="229px"
-        src={cardImages[card.cardIssuerName]}
-        alt={`Card ${card.cardNo}`}
-      />
+      <div>
+        <img
+          onClick={() => handleCardClick(index, card)}
+          width="144px"
+          height="229px"
+          src={cardMaps[card.cardName]}
+          alt={`Card ${card.cardNo}`}
+        />
+        <CardNameText>{card.cardName}</CardNameText>
+      </div>
     ),
   }));
+
+  const handleCardClick = (index, card) => {
+    setGoToSlide(index);
+    setSelectedCardIndex(index);
+    setSelectedCard(card);
+  };
 
   const handleBeforeButtonClick = () => {
     navigate(-1);
   };
 
+  const kakaoPayment = async (price) => {
+    const result = await payDepositPaymentByKakaoPay({
+      price: price,
+      restaurantId: restaurantId,
+      reservationRegisterRequestDto: {
+        restaurantId: restaurantId,
+        reservationDate: reservationDate,
+        reservationStartTime: startTime,
+        reservationEndTime: endTime,
+        memberCnt: memberCount,
+        tableList: [],
+      },
+    });
+
+    console.log(result);
+    if (result.status !== 200) {
+      alert('결제에 실패했습니다.');
+    }
+
+    window.location.href = result.data.data.next_redirect_mobile_url;
+    return;
+  };
+
+  // 결제 버튼 클릭
   const handleNextButtonClick = async () => {
     if (!selectedCard) {
       setSelectedCard(cards[0]);
     }
 
-    // 카카오페이 결제
-    if (selectedCard.cardNo === '0') {
-      await payDepositPaymentByKakaoPay({});
+    // 카카오페이 시
+    if (selectedCard && selectedCard.cardNo === '0') {
+      kakaoPayment(
+        depositPerMember * memberCount === 0
+          ? 50000
+          : depositPerMember * memberCount
+      );
       return;
     }
 
-    // 싸피페이 결제
-    const result = await payByCreditCard(
-      selectedCard.cardNo,
-      selectedCard.cvc,
-      2022,
-      depositPrice
-    );
-
-    if (result.status === 200) {
-      alert('결제 성공');
-    }
-
-    navigate('/customer/reservation/fingerprint-auth');
+    // 싸피페이 시
+    navigate('/customer/password-auth');
   };
+
   return (
     <DepositPaymentPageContainer>
       <WEStep index={2} />

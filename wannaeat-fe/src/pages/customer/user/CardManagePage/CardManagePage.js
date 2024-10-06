@@ -4,6 +4,11 @@ const CardManagePageContainer = styled.div`
   display: grid;
   grid-template-rows: 1fr 5fr 1fr;
 `;
+
+const CardNameText = styled.p`
+  margin-top: 1rem;
+  font-weight: bold;
+`;
 const CardSelectBoxStyled = styled.div`
   width: 100%;
   height: 70%;
@@ -18,4 +23,9 @@ const ButtonWrapper = styled.div`
   justify-content: flex-end;
   margin-top: 20px;
 `;
-export { CardManagePageContainer, CardSelectBoxStyled, ButtonWrapper };
+export {
+  CardManagePageContainer,
+  CardSelectBoxStyled,
+  ButtonWrapper,
+  CardNameText,
+};

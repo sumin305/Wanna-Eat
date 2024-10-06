@@ -2,10 +2,9 @@ import styled from '@emotion/styled/macro';
 import theme from '../../../../style/common/theme';
 
 const MainPageContainer = styled.div`
-  scrollbar-width: none;
-  scroll-behavior: smooth;
   display: flex;
   flex-direction: column;
+  margin-bottom: 10%;
 `;
 
 const SearchWrapper = styled.div`
@@ -30,6 +29,9 @@ const SearchInput = styled.input`
   margin-bottom: 1rem;
   ::placeholder {
     color: ${theme.color.disabled};
+  }
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px15};
   }
 `;
 
@@ -73,6 +75,10 @@ const BannerTitle = styled.p`
   font-size: ${theme.fontSize.px17};
   text-align: right;
   margin-bottom: 0.5rem;
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px21};
+  }
 `;
 
 const BannerButton = styled.button`
@@ -84,6 +90,10 @@ const BannerButton = styled.button`
   font-weight: 100;
   font-size: ${theme.fontSize.px11};
   justify-content: right;
+  align-items: center;
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px13};
+  }
 `;
 const CategoryWrapper = styled.div``;
 
@@ -98,6 +108,10 @@ const CategoryTitle = styled.div`
   font-weight: bold;
   text-align: center;
   margin: 0.5rem 0;
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px15};
+  }
 `;
 
 const CategoryImage = styled.img``;
@@ -106,6 +120,9 @@ const CategoryName = styled.p`
   font-size: ${theme.fontSize.px9};
   text-align: center;
   height: 0.8rem;
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px11};
+  }
 `;
 const RestaurantWrapper = styled.div`
   background: ${theme.color.gray};
@@ -130,6 +147,9 @@ const RestaurantInfoContainer = styled.div`
 const RestaurantTitle = styled.p`
   font-size: ${theme.fontSize.px13};
   font-weight: bold;
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px15};
+  }
 `;
 
 const RestaurantTitleButton = styled.button`
@@ -139,48 +159,53 @@ const RestaurantTitleButton = styled.button`
   border: none;
   font-size: ${theme.fontSize.px11};
   font-weight: light;
+  align-items: center;
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px13};
+  }
 `;
 const RestaurantInfoBox = styled.div`
   margin-right: 1rem;
+  margin-bottom: 1rem;
+
+  padding: 0.5rem;
+  border-radius: 5px;
+  background: white;
 `;
 
 const RestaurantInfoImage = styled.img`
   border-radius: 5px;
-  width: 8rem;
   height: 13vh;
   background: white;
 `;
 
 const RestaurantInfoName = styled.p`
   font-size: ${theme.fontSize.px13};
+  font-weight: bold;
+  margin: 0.2rem 0;
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px15};
+  }
 `;
 const RestaurantDetailWrapper = styled.div`
   display: flex;
 `;
 const RestaurantMyReservation = styled.div`
+  padding: 3px;
   margin-right: 0.3rem;
-  width: 50px;
   letter-spacing: 0;
-  border: 1px solid ${theme.color.primary};
+  border: 2px solid ${theme.color.primary};
   border-radius: 5px;
-  height: 2vh;
   font-size: ${theme.fontSize.px8};
+  font-weight: bold;
   background: white;
   align-content: center;
   text-align: center;
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px10};
+  }
 `;
-const RestaurantTotalReservation = styled.div`
-  margin-right: 0.3rem;
-  width: 50px;
-  letter-spacing: 0;
-  border: 1px solid ${theme.color.accent};
-  border-radius: 5px;
-  height: 2vh;
-  font-size: ${theme.fontSize.px8};
-  background: white;
-  align-content: center;
-  text-align: center;
-`;
+
 export {
   MainPageContainer,
   SearchWrapper,
@@ -206,5 +231,4 @@ export {
   RestaurantInfoName,
   RestaurantDetailWrapper,
   RestaurantMyReservation,
-  RestaurantTotalReservation,
 };

@@ -99,10 +99,11 @@ const UserLogoutButton = styled.button`
   text-align: center;
   align-self: center;
   height: 30%;
-  padding-top: 20%; /* 하단에 배치되도록 설정 */
+  padding-top: 30%;
 
   @media (min-width: 480px) {
     font-size: 1rem;
+    padding-top: 10%;
   }
 `;
 

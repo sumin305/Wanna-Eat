@@ -34,15 +34,15 @@ import { useNavigate } from 'react-router-dom';
 const SignUpPage = () => {
   const { setRole, email, socialType, requestSignUp } = useCommonStore();
   const { setError, clearError } = useTextfieldStore();
-  const { open, setAlertText, setModalType } = useModalStore();
-  const navigate = useNavigate();
-  const alert = useAlert();
   const [isChecked, setIsChecked] = useState(false);
   const [isCustomer, setIsCustomer] = useState(false);
   const [verifyNickname, setVerifyNickname] = useState(false);
   const [isVerificationCodeSent, setIsVerificationCodeSent] = useState(false);
   const [verifyPhoneNumber, setVerifyPhoneNumber] = useState(false);
   const [code, setCode] = useState(0);
+  const navigate = useNavigate();
+  const alert = useAlert();
+
   const [userInfo, setUserInfo] = useState({
     nickname: '',
     email: '',
@@ -50,10 +50,6 @@ const SignUpPage = () => {
     role: '',
     phone: '',
   });
-
-  const handleCheckBoxClick = () => {
-    setIsChecked(!isChecked);
-  };
 
   // 닉네임 변경 핸들러
   const handleNicknameChange = (e) => {
@@ -105,10 +101,6 @@ const SignUpPage = () => {
     }
   };
 
-  const handleCodeChange = (e) => {
-    setCode(e.target.value);
-  };
-
   const handleCheckCodeButtonClick = async () => {
     // 전화번호 인증 코드 검증
     const response = await verifyCode(
@@ -125,20 +117,29 @@ const SignUpPage = () => {
     }
   };
 
+  // 싸피 금융 API 사용자 등록
   const joinSsafyAccount = async () => {
+    // 계정 생성
     const createAccountResult = await createSsafyPayAccount(email);
 
+    // 계좌 생성
     const createDepositAccountResult = await createAccount();
 
-    if (
-      createAccountResult.status === 201 &&
-      createDepositAccountResult.status === 201
-    ) {
-      console.log('SSAFY Pay 계정 및 계좌 생성 성공');
-    } else {
-      console.log('SSAFY Pay 계정 및 계좌 생성 실패');
+    if (createAccountResult.status !== 201) {
+      console.log(createAccountResult.response.data.responseMessage);
+      return false;
     }
+
+    if (createDepositAccountResult.status != 201) {
+      console.log(createDepositAccountResult.response.data.responseMessage);
+      return false;
+    }
+
+    console.log('싸피 계정 가입 성공');
+    return true;
   };
+
+  // 회원가입 버튼 핸들러
   const handleJoinButtonClick = async () => {
     // 약관 동의했는지 체크
     if (!isChecked) {
@@ -165,24 +166,24 @@ const SignUpPage = () => {
       phone: userInfo.phone,
     };
 
+    // 손님 회원가입일 경우 싸피 페이 사용자 계정 생성 및 계좌 생성
+    if (requestUserInfo.role === ROLE.CUSTOMER) {
+      await joinSsafyAccount();
+    }
+
     // 회원가입 요청
     const response = await requestSignUp(requestUserInfo);
 
     if (response.status === 201) {
-      alert('회원가입 성공');
-
       if (requestUserInfo.role === ROLE.CUSTOMER) {
-        // 손님인 경우에는 싸피 페이 사용자 계정 생성 및 계좌 생성
-        joinSsafyAccount();
-
-        navigate('/customer');
         setRole(ROLE.CUSTOMER);
+        navigate('/password-regist');
       } else {
         navigate('/manager');
         setRole(ROLE.MANAGER);
       }
     } else {
-      alert('회원가입 실패');
+      alert(response.response.data.message);
     }
   };
 
@@ -240,7 +241,7 @@ const SignUpPage = () => {
             <Textfield
               type="number"
               name="code"
-              onChange={handleCodeChange}
+              onChange={(e) => setCode(e.target.value)}
               placeholder="인증번호를 입력해주세요"
             ></Textfield>
             <TextFieldWrapperButton onClick={handleCheckCodeButtonClick}>
@@ -251,7 +252,9 @@ const SignUpPage = () => {
       </InputContainer>
 
       <ButtonWrapper>
-        <VerificationNumberInputWrapper onClick={handleCheckBoxClick}>
+        <VerificationNumberInputWrapper
+          onClick={() => setIsChecked(!isChecked)}
+        >
           <WECheck isChecked={isChecked} />
           <VerificationTitle>약관에 동의합니다.</VerificationTitle>
         </VerificationNumberInputWrapper>

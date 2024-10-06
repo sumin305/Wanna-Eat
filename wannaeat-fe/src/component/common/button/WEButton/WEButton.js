@@ -60,7 +60,7 @@ const ButtonStyled = styled.button`
       long: '93%',
       venti: '63%',
       medium: '43.4%',
-      modal: '34.4%',
+      modal: '45%',
       short: '27.2%',
       menu: '23.7%',
     };
@@ -99,6 +99,23 @@ const ButtonStyled = styled.button`
   }
 
   margin: 0 auto;
+
+  @media (min-width: 480px) {
+    width: ${(props) => {
+      if (props.width) return props.width;
+
+      const sizeMap = {
+        long: '93%',
+        venti: '63%',
+        medium: '43.4%',
+        modal: '45%',
+        short: '27.2%',
+        menu: '23.7%',
+      };
+
+      return sizeMap[props.size] || 'none';
+    }};
+  }
 `;
 
 export default ButtonStyled;

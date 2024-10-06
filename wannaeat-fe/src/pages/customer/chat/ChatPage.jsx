@@ -45,6 +45,7 @@ const ChatPage = () => {
     setIsShowLogo,
     setActiveIcons,
     setIsShowBackIcon,
+    setIconAction,
   } = useHeaderStore();
 
   // 웹소켓 초기 연결
@@ -53,7 +54,16 @@ const ChatPage = () => {
     setPageName('채팅');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
-    setActiveIcons([3]);
+
+    const gotoChat = () => {
+      nav(`/customer/order/chat/${reservationUrl}`);
+    };
+    const gotoSelectMenu = () => {
+      nav(`/customer/order/menu-select/${reservationUrl}`);
+    };
+    setActiveIcons([8, 10]);
+    setIconAction([gotoSelectMenu, gotoChat]);
+
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);
 
@@ -93,20 +103,26 @@ const ChatPage = () => {
       console.log('연결상태:', isConnected);
       const chatdata = await getChatlist(reservationUrl, chatPage, chatSize);
       console.log(chatdata.data);
-      // 초기에 받은 데이터가 최신순이어서 순서를 바꾸고 chatMessages로 넣음
-      await setChatMessages(
-        chatdata.data.chatMessageDetailResponseDtos.chatMessageDetailResponseDtos.content
-          .slice()
-          .reverse()
-      );
-      console.log('zustand chatMessages :', chatMessages);
+      if (chatdata) {
+        // 초기에 받은 데이터가 최신순이어서 순서를 바꾸고 chatMessages로 넣음
+        await setChatMessages(
+          chatdata.data.chatMessageListResponseDto.chatMessageDetailResponseDtos.content
+            .slice()
+            .reverse()
+        );
+        console.log('zustand chatMessages :', chatMessages);
+      } else {
+        console.log('채팅 데이터 없음');
+      }
     } else {
       console.log('채팅 메세지 불러오기 실패');
     }
   };
 
   const initializeConnection = () => {
-    const socket = new SockJS('http://localhost:8080/api/public/ws');
+    const socket = new SockJS(
+      `${process.env.REACT_APP_REST_API_URL}/api/public/ws`
+    );
     const client = Stomp.over(socket);
 
     // 웹소켓 연결
@@ -116,12 +132,15 @@ const ChatPage = () => {
         console.log('소켓연결');
 
         // 구독
-        client.subscribe('/topic/reservations/random2', (response) => {
-          const content = JSON.parse(response.body);
-          console.log('Received message: ', content);
-          setChatPlusMessages(content);
-          console.log(chatMessages);
-        });
+        client.subscribe(
+          `/topic/reservations/${reservationUrl}`,
+          (response) => {
+            const content = JSON.parse(response.body);
+            console.log('Received message: ', content);
+            setChatPlusMessages(content);
+            console.log(chatMessages);
+          }
+        );
 
         setStompClient(client);
         setIsConnected(true);
@@ -166,6 +185,18 @@ const ChatPage = () => {
     }
   };
 
+  // 엔터키로 전송
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleChatMessageSendButtonClick();
+    }
+  };
+
+  // 주문하기 메인페이지로 이동
+  const clickGotoOrder = () => {
+    nav(`/customer/order/${reservationUrl}`);
+  };
+
   // 스크롤 위치 감지
   const handleScroll = (e) => {
     const { scrollTop } = e.target;
@@ -184,10 +215,10 @@ const ChatPage = () => {
     const prevScrollHeight = chatContainer.scrollHeight; // 이전 스크롤 높이 저장
     const prevScrollTop = chatContainer.scrollTop; // 현재 스크롤 위치 저장
 
-    if (chatdata && chatdata.data.chatMessageDetailResponseDtos) {
+    if (chatdata && chatdata.data.chatMessageListResponseDto) {
       // 새로 불러온 데이터를 기존 메시지 앞에 추가
       const prevMessages =
-        chatdata.data.chatMessageDetailResponseDtos.chatMessageDetailResponseDtos.content
+        chatdata.data.chatMessageListResponseDto.chatMessageDetailResponseDtos.content
           .slice()
           .reverse();
       console.log('조회된 메세지', prevMessages);
@@ -224,18 +255,6 @@ const ChatPage = () => {
     };
   }, [chatPage]); // chatMessages가 업데이트될 때마다 실행
 
-  // 주문하기 메인페이지로 이동
-  const clickGotoOrder = () => {
-    nav(`/customer/order/${reservationUrl}`);
-  };
-
-  // 엔터키로 전송
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      handleChatMessageSendButtonClick();
-    }
-  };
-
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('ko-KR', options);
@@ -248,73 +267,74 @@ const ChatPage = () => {
     );
   };
 
+  console.log('웹소켓연결확인:', stompClient);
+  console.log('웹소켓연결확인:', isConnected);
+
   return (
-    <>
-      <ChatContainer
-        id="chat-container"
-        style={{ height: '500px', overflowY: 'scroll' }}
-      >
-        {chatMessages &&
-          chatMessages.map((chat, index) => {
-            // 이전 메세지의 날짜와 현재 메세지의 날짜 비교
-            const currentMessageDate = formatDate(chat.registerTime);
-            const prevMessageDate =
-              index > 0
-                ? formatDate(chatMessages[index - 1].registerTime)
-                : null;
-            return (
-              <>
-                <DateBox key={chat.id}>
-                  {currentMessageDate !== prevMessageDate && (
-                    <div>
-                      <span>-</span>
-                      {currentMessageDate}
-                      <span>-</span>
-                    </div>
-                  )}
-                </DateBox>
-                <ChatWrapper
+    <ChatContainer
+      id="chat-container"
+      style={{ height: '470px', overflowY: 'scroll' }}
+    >
+      {chatMessages &&
+        chatMessages.map((chat, index) => {
+          // 이전 메세지의 날짜와 현재 메세지의 날짜 비교
+          const currentMessageDate = formatDate(chat.registerTime);
+          const prevMessageDate =
+            index > 0 ? formatDate(chatMessages[index - 1].registerTime) : null;
+          return (
+            <>
+              <DateBox key={chat.id}>
+                {currentMessageDate !== prevMessageDate && (
+                  <div>
+                    <span>-</span>
+                    {currentMessageDate}
+                    <span>-</span>
+                  </div>
+                )}
+              </DateBox>
+
+              <ChatWrapper
+                isMyMessage={
+                  chat.senderReservationParticipantId ===
+                  myReservationParticipantId
+                }
+                key={chat.id}
+              >
+                <ChatNickname
                   isMyMessage={
                     chat.senderReservationParticipantId ===
                     myReservationParticipantId
                   }
                 >
-                  <ChatNickname
+                  {chat.senderReservationParticipantNickname}
+                </ChatNickname>
+                <ChatMessageBox
+                  isMyMessage={
+                    chat.senderReservationParticipantId ===
+                    myReservationParticipantId
+                  }
+                >
+                  <ChatContent
                     isMyMessage={
                       chat.senderReservationParticipantId ===
                       myReservationParticipantId
                     }
                   >
-                    {chat.senderReservationParticipantNickname}
-                  </ChatNickname>
-                  <ChatMessageBox
+                    {chat.content}
+                  </ChatContent>
+                  <ChatTime
                     isMyMessage={
                       chat.senderReservationParticipantId ===
                       myReservationParticipantId
                     }
                   >
-                    <ChatContent
-                      isMyMessage={
-                        chat.senderReservationParticipantId ===
-                        myReservationParticipantId
-                      }
-                    >
-                      {chat.content}
-                    </ChatContent>
-                    <ChatTime
-                      isMyMessage={
-                        chat.senderReservationParticipantId ===
-                        myReservationParticipantId
-                      }
-                    >
-                      {showChatTime(chat.registerTime)}
-                    </ChatTime>
-                  </ChatMessageBox>
-                </ChatWrapper>
-              </>
-            );
-          })}
-      </ChatContainer>
+                    {showChatTime(chat.registerTime)}
+                  </ChatTime>
+                </ChatMessageBox>
+              </ChatWrapper>
+            </>
+          );
+        })}
 
       <ChatInputWrapper>
         <input
@@ -327,11 +347,7 @@ const ChatPage = () => {
           <img src={SendIcon} alt="전송아이콘" />
         </WEButton>
       </ChatInputWrapper>
-      <button onClick={clickGotoOrder}>주문하기 메인페이지 이동</button>
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-    </>
+    </ChatContainer>
   );
 };
 

@@ -17,15 +17,20 @@ import {
 import theme from '../../../../../style/common/theme.js';
 import paper from '../../../.././../assets/icons/common/paper.svg';
 import useReservationStore from '../../../../../stores/customer/useReservationStore.js';
+import useMapFilterStore from '../../../../../stores/map/useMapFilterStore.js';
 import { useNavigate } from 'react-router-dom';
 const SuccessPage = () => {
   const {
-    selectedDate,
-    selectedStartTime,
-    selectedEndTime,
-    selectedHeadCount,
+    reservationDate,
+    startTime,
+    endTime,
+    memberCount,
     selectedSeatNumber,
+    resetReservation,
   } = useReservationStore();
+  const { resetMapFilterStore } = useMapFilterStore();
+
+  const { restaurantName } = useReservationStore();
   const link = 'https://wannaeat/invite/myrestaurant';
   const navigate = useNavigate();
   const handleCopyButtonClick = (e) => {
@@ -33,6 +38,8 @@ const SuccessPage = () => {
     alert('복사가 완료되었습니다.');
   };
   const handleSuccessButtonClick = (e) => {
+    resetReservation(); // 예약 임시 정보 모두 삭제
+    resetMapFilterStore();
     navigate('/customer/reservationlist');
   };
   return (
@@ -43,12 +50,12 @@ const SuccessPage = () => {
         <SuccessMessageText>늦지않게 방문해주세요!</SuccessMessageText>
       </SuccessMessageWrapper>
       <ReservationInfoWrapper>
-        <ReservationTitle>서래갈매기 한밭대점</ReservationTitle>
+        <ReservationTitle>{restaurantName}</ReservationTitle>
         <Button size="long" height={'7vh'} outlined={true} fontWeight={900}>
-          {selectedDate} {selectedStartTime} ~ {selectedEndTime}
+          {reservationDate} {startTime} ~ {endTime}
         </Button>
         <Button size="long" height={'7vh'} outlined={true} fontWeight={900}>
-          {selectedHeadCount}명 좌석 {selectedSeatNumber}
+          {memberCount}명 좌석 {selectedSeatNumber}
         </Button>
       </ReservationInfoWrapper>
       <LinkInfoWrapper>

@@ -20,6 +20,7 @@ const OrderSheetPage = () => {
     setIsShowLogo,
     setActiveIcons,
     setIsShowBackIcon,
+    setIconAction,
   } = useHeaderStore();
   const { allOrdersInfo } = useOrderStore();
 
@@ -28,8 +29,16 @@ const OrderSheetPage = () => {
     setIsCarrot(true);
     setPageName('계산서');
     setIsShowLogo(false);
-    setActiveIcons([3]);
     setIsShowBackIcon(true);
+
+    const gotoChat = () => {
+      nav(`/customer/order/chat/${reservationUrl}`);
+    };
+    const gotoSelectMenu = () => {
+      nav(`/customer/order/menu-select/${reservationUrl}`);
+    };
+    setActiveIcons([8, 10]);
+    setIconAction([gotoSelectMenu, gotoChat]);
 
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);

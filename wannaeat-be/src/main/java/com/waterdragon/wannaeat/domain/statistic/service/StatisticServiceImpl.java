@@ -36,6 +36,8 @@ import com.waterdragon.wannaeat.domain.statistic.dto.response.ReservationCountPe
 import com.waterdragon.wannaeat.domain.statistic.dto.response.ReservationCountStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.RevenuePerDayResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.RevenueStatisticResponseDto;
+import com.waterdragon.wannaeat.domain.statistic.dto.response.UserRestaurantVisitStatisticResponseDto;
+import com.waterdragon.wannaeat.domain.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -164,6 +166,14 @@ public class StatisticServiceImpl implements StatisticService {
 			.build();
 	}
 
+	/**
+	 * 해당 연월의 날짜별 예약, 취소 카운트를 리턴하는 메소드
+	 *
+	 * @param restaurant 식당 정보
+	 * @param year 검색 연도
+	 * @param month 검색 월
+	 * @return 날짜별 예약, 취소 카운트 목록
+	 */
 	@Override
 	public ReservationCountStatisticResponseDto getReservationCountStatistics(Restaurant restaurant, int year,
 		int month) {
@@ -208,6 +218,42 @@ public class StatisticServiceImpl implements StatisticService {
 		return ReservationCountStatisticResponseDto.builder()
 			.reservationCounts(sortedReservationCountMap)
 			.build();
+	}
+
+	/**
+	 * 사용자가 가장 많이 방문한 식당 5개를 리턴하는 메소드
+	 *
+	 * @param user 사용자 정보
+	 * @return 가장 많이 방문한 식당 목록
+	 */
+	@Override
+	public List<UserRestaurantVisitStatisticResponseDto> getRestaurantVisitStatisticsByUser(User user) {
+
+		List<Reservation> reservations = getReservationsByUserAndLastYear(user);
+
+		Map<Restaurant, Long> statistics = reservations.stream()
+			.collect(Collectors.groupingBy(Reservation::getRestaurant, Collectors.counting()));
+
+		// 통계를 DTO로 변환하고, 방문 횟수 기준으로 내림차순 정렬, 상위 5개만 리턴
+		return statistics.entrySet().stream()
+			.map(entry -> {
+				Restaurant restaurant = entry.getKey();
+				Long visitCount = entry.getValue();
+
+				return UserRestaurantVisitStatisticResponseDto.builder()
+					.restaurantId(restaurant.getRestaurantId()) // 레스토랑 ID
+					.restaurantName(restaurant.getName()) // 레스토랑 이름
+					.restaurantImage(restaurant.getImages() != null && !restaurant.getImages().isEmpty()
+						? restaurant.getImages().get(0).getImageUrl()
+						: null) // 이미지 리스트가 비어있으면 null
+					.restaurantVisitCount(visitCount.intValue()) // 방문 횟수
+					.restaurantCategory(restaurant.getCategory().getCategoryName()) // 레스토랑 카테고리
+					.build();
+			})
+			.sorted(Comparator.comparing(UserRestaurantVisitStatisticResponseDto::getRestaurantVisitCount)
+				.reversed()) // 방문 횟수 기준으로 정렬 (내림차순)
+			.limit(5) // 상위 5개만 선택
+			.collect(Collectors.toList()); // List<UserRestaurantVisitStatisticResponseDto>로 변환
 	}
 
 	/**
@@ -436,6 +482,19 @@ public class StatisticServiceImpl implements StatisticService {
 		LocalDate startDate = endDate.minusMonths(month).withDayOfMonth(1);     // 12개월 전 1일
 
 		return reservationRepository.findReservationsForRestaurantWithinDateRange(restaurant, startDate, endDate);
+	}
+
+	/**
+	 * 사용자의 최근 1년간의 예약 데이터를 가져오는 메소드
+	 *
+	 * @return 예약 목록
+	 */
+	@Override
+	public List<Reservation> getReservationsByUserAndLastYear(User user) {
+		LocalDate today = LocalDate.now();
+		LocalDate startDate = today.minusMonths(12).withDayOfMonth(1);     // 12개월 전 1일
+
+		return reservationRepository.findReservationsByUserAndDate(user, startDate);
 	}
 
 	/**

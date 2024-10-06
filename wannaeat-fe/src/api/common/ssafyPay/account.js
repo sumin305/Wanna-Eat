@@ -50,3 +50,18 @@ export const createAccount = async () => {
     })
     .catch((error) => error);
 };
+
+// 내 계좌 목록 조회
+export const getMyAccountList = async () => {
+  if (!localStorage.getItem('userKey')) {
+    alert('유저 키가 없습니다.');
+    return;
+  }
+
+  return await ssafyClient
+    .post('/api/v1/edu/deposit/inquireDepositInfoList', {
+      Header: Header('inquireDepositInfoList', localStorage.getItem('userKey')),
+    })
+    .then((result) => result)
+    .catch((error) => error);
+};

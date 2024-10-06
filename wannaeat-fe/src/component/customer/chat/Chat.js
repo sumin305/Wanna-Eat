@@ -10,7 +10,7 @@ export const DateBox = styled.div`
 `;
 
 export const ChatContainer = styled.div`
-  height: 100%;
+  margin-bottom: 20%;
   background-color: ${theme.color.secondary};
 `;
 

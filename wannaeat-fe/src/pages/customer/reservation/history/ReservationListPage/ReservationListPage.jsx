@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import useHeaderStore from 'stores/common/useHeaderStore';
-import { getMyReservation } from 'api/customer/reservation';
+import {
+  getMyReservation,
+  getPriorityVisitingRestaurant,
+} from 'api/customer/reservation';
 import Button from 'component/common/button/WEButton/WEButton.jsx';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
@@ -32,6 +35,9 @@ const ListPage = () => {
   const [memberCount, setMemberCount] = useState(3);
   const [restaurantName, setRestaurantName] = useState('싸덱스 식당');
   const { remainingTime } = useCountDownTimer(date);
+  const [hasPriorityVisitingRestaurant, setHasPriorityVisitingRestaurant] =
+    useState(false);
+
   useEffect(() => {
     const fetchMyReservationList = async () => {
       const result = await getMyReservation();
@@ -44,12 +50,35 @@ const ListPage = () => {
         console.log('내 예약 정보 불러오기 실패');
       }
     };
+
+    const fetchMyPriorityVisitingRestaurantList = async () => {
+      const result = await getPriorityVisitingRestaurant();
+      console.log(result);
+
+      if (result.status !== 200) {
+        console.log('우선 방문 예약 식당 불러오기 실패');
+        return;
+      }
+
+      const data = result.data.data;
+      if (!data) {
+        setHasPriorityVisitingRestaurant(false);
+      } else {
+        setHasPriorityVisitingRestaurant(true);
+        setRestaurantName(data.restaurantName);
+        setDate(data.reservationDate + ' ' + data.reservationStartTime);
+        setMemberCount(data.memberCnt);
+      }
+      console.log(data);
+    };
+
     setPageName('예약 내역');
     setIsShowBackIcon(false);
     setIsShowLogo(false);
     setActiveIcons([]);
 
     fetchMyReservationList();
+    fetchMyPriorityVisitingRestaurantList();
   }, []);
 
   const formatRemainingTime = () => {
@@ -84,24 +113,27 @@ const ListPage = () => {
 
   return (
     <ReservationListContainer>
-      <ReservationAlertWrapper>
-        <ReservationDateWrapper>
-          <ReservationAlertDate>
-            {moment(date).format('YYYY년 MM월 DD일')}{' '}
-            {moment(date).format('HH:mm')}
-          </ReservationAlertDate>
-          <ReservationAlertTime>
-            <ReservationLastTime>{formatRemainingTime()}</ReservationLastTime>
-            <ReservationTimeInfo>
-              후에 {restaurantName}
-              <br></br> {memberCount} 人 예약되어 있어요
-            </ReservationTimeInfo>
-          </ReservationAlertTime>
-        </ReservationDateWrapper>
-        <ReservationiInfoButtonWrapper>
-          <ReservationInfoButton>더보기 ></ReservationInfoButton>
-        </ReservationiInfoButtonWrapper>
-      </ReservationAlertWrapper>
+      {hasPriorityVisitingRestaurant && (
+        <ReservationAlertWrapper>
+          <ReservationDateWrapper>
+            <ReservationAlertDate>
+              {moment(date).format('YYYY년 MM월 DD일')}{' '}
+              {moment(date).format('HH:mm')}
+            </ReservationAlertDate>
+            <ReservationAlertTime>
+              <ReservationLastTime>{formatRemainingTime()}</ReservationLastTime>
+              <ReservationTimeInfo>
+                후에 {restaurantName}
+                <br></br> {memberCount} 人 예약되어 있어요
+              </ReservationTimeInfo>
+            </ReservationAlertTime>
+          </ReservationDateWrapper>
+          <ReservationiInfoButtonWrapper>
+            <ReservationInfoButton>더보기 ></ReservationInfoButton>
+          </ReservationiInfoButtonWrapper>
+        </ReservationAlertWrapper>
+      )}
+
       {myReservationList.map((reservation) => (
         <ReservationItem key={reservation.reservationId}>
           <ReservationItemInfo>

@@ -6,8 +6,6 @@ import {
 } from 'api/common/ssafyPay/card.js';
 import useCardStore from 'stores/customer/useCardStore';
 import useHeaderStore from 'stores/common/useHeaderStore';
-import styled from '@emotion/styled';
-import theme from 'style/common/theme';
 import { cardMaps } from 'assets';
 import AddIcon from 'assets/customer/add.svg';
 import useAlert from 'utils/alert';
@@ -29,10 +27,19 @@ const CardRegistPage = () => {
   const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
-      const cardIssuerRest = await getCreditCardIssuerList();
-      setCardIssuerList(cardIssuerRest.data.Header.REC);
+      const cardIssuerResult = await getCreditCardIssuerList();
+      if (cardIssuerResult.status != 200) {
+        alert('카드사 목록 불러오기 실패');
+        return;
+      }
+      setCardIssuerList(cardIssuerResult.data.Header.REC);
 
       const cardListResult = await getCreditCardList();
+      if (cardListResult.status != 200) {
+        alert('카드 목록 불러오기 실패');
+        return;
+      }
+
       const cards = cardListResult.data.REC;
 
       const cardNames = cardListResult.data.REC.map((card) => card.cardName);
@@ -68,6 +75,8 @@ const CardRegistPage = () => {
     if (result.status === 200) {
       alert('카드 추가에 성공했습니다.');
       navigate('/customer/card-manage');
+    } else {
+      alert('카드 추가에 실패했습니다.');
     }
   };
   return (

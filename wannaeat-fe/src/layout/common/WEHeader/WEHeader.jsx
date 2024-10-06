@@ -12,6 +12,7 @@ import {
   HeaderImg,
   HeaderTitle,
   IconImg,
+  UnderLineStyled,
 } from './WEHeader';
 
 import Logo from '../../../assets/icons/header/logo-picture.svg';
@@ -35,9 +36,8 @@ const WEHeader = () => {
   };
 
   const handleHeaderIconClick = (index) => {
+    console.dir(iconAction);
     const action = iconAction[index];
-    console.log('typeof action', typeof action);
-    console.log('action', action);
     action();
   };
   return (
@@ -80,6 +80,7 @@ const WEHeader = () => {
             ))}
         </HeaderRight>
       </HeaderWrapper>
+      {isCarrot === false && isUnderLine && <UnderLineStyled />}
     </HeaderContainer>
   );
 };

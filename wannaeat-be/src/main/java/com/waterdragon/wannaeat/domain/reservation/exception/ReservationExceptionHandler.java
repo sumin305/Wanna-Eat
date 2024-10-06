@@ -15,6 +15,9 @@ import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationPa
 import com.waterdragon.wannaeat.domain.reservation.exception.error.UnpaidOrderExistsException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class ReservationExceptionHandler {
 
@@ -22,6 +25,7 @@ public class ReservationExceptionHandler {
 	@ExceptionHandler(ReservationNotFoundException.class)
 	public final ResponseEntity<ErrorResponseDto> handleReservationNotFoundException(
 		ReservationNotFoundException ex) {
+		log.error("Not Found error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Reservation Not Found", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -31,6 +35,7 @@ public class ReservationExceptionHandler {
 	@ExceptionHandler(ReservationParticipantNotFoundException.class)
 	public final ResponseEntity<ErrorResponseDto> handleReservationParticipantNotFoundException(
 		ReservationParticipantNotFoundException ex) {
+		log.error("Not Found error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Reservation Participant Not Found", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -40,6 +45,7 @@ public class ReservationExceptionHandler {
 	@ExceptionHandler(DuplicateReservationTableException.class)
 	public final ResponseEntity<ErrorResponseDto> handleDuplicateReservationTableException(
 		DuplicateReservationTableException ex) {
+		log.error("Conflict error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Duplicate Reservation Table", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
@@ -49,6 +55,7 @@ public class ReservationExceptionHandler {
 	@ExceptionHandler(AlreadyCancelledReservationException.class)
 	public final ResponseEntity<ErrorResponseDto> handleAlreadyCancelledReservationException(
 		AlreadyCancelledReservationException ex) {
+		log.error("Conflict error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Already Cancelled Reservation", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
@@ -58,6 +65,7 @@ public class ReservationExceptionHandler {
 	@ExceptionHandler(UnpaidOrderExistsException.class)
 	public final ResponseEntity<ErrorResponseDto> handleUnpaidOrderExistsException(
 		UnpaidOrderExistsException ex) {
+		log.error("Conflict error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Unpaid Order Exists Exception", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
@@ -67,6 +75,7 @@ public class ReservationExceptionHandler {
 	@ExceptionHandler(FailureGenerateQrCodeException.class)
 	public final ResponseEntity<ErrorResponseDto> handleFailureGenerateQrCodeException(
 		FailureGenerateQrCodeException ex) {
+		log.error("Server error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Failure Generate Qr Code", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -76,6 +85,7 @@ public class ReservationExceptionHandler {
 	@ExceptionHandler(QrTokenNotFoundException.class)
 	public final ResponseEntity<ErrorResponseDto> handleQrTokenNotFoundException(
 		QrTokenNotFoundException ex) {
+		log.error("Bad Request error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Qr Token Not Found", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -85,6 +95,7 @@ public class ReservationExceptionHandler {
 	@ExceptionHandler(InvalidQrTokenException.class)
 	public final ResponseEntity<ErrorResponseDto> InvalidQrTokenException(
 		InvalidQrTokenException ex) {
+		log.error("Bad Request error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Qr Token Exception", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);

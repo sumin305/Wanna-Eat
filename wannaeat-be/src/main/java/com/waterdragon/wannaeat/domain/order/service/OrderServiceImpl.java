@@ -42,6 +42,7 @@ import com.waterdragon.wannaeat.domain.reservation.repository.ReservationPartici
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationRepository;
 import com.waterdragon.wannaeat.domain.socket.domain.enums.SocketType;
 import com.waterdragon.wannaeat.global.redis.service.RedisService;
+import com.waterdragon.wannaeat.global.util.FcmUtil;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +61,7 @@ public class OrderServiceImpl implements OrderService {
 	private final ReservationRepository reservationRepository;
 	private final MenuRepository menuRepository;
 	private final SimpMessageSendingOperations sendingOperations;
+	private final FcmUtil fcmUtil;
 
 	/**
 	 * 결제된 수량만큼 paid_cnt 수정 메소드
@@ -159,6 +161,8 @@ public class OrderServiceImpl implements OrderService {
 				alarmService.registerAlarm(reservation, menu, AlarmType.ORDER_ADDED);
 			}
 		}
+
+		fcmUtil.sendFcm(reservation.getRestaurant().getUser(), AlarmType.ORDER_ADDED);
 
 		// Redis에서 장바구니 제거
 		redisService.deleteValues(cartKey);

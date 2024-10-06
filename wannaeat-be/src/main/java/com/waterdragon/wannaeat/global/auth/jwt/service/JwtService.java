@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.waterdragon.wannaeat.domain.restaurant.domain.Restaurant;
 import com.waterdragon.wannaeat.domain.user.domain.UserToken;
 import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
 import com.waterdragon.wannaeat.domain.user.domain.enums.SocialType;
@@ -51,6 +52,7 @@ public class JwtService {
 	private static final String EMAIL_CLAIM = "email";
 	private static final String SOCIAL_TYPE_CLAIM = "socialType";
 	private static final String ROLE_CLAIM = "role";
+	private static final String RESTAURANT_ID_CLAIM = "restaurantId";
 	private static final String BEARER = "Bearer ";
 
 	private final UserRepository userRepository;
@@ -59,16 +61,17 @@ public class JwtService {
 	/**
 	 * AccessToken 생성 메소드
 	 */
-	public String createAccessToken(String email, SocialType socialType, Role role) {
+	public String createAccessToken(String email, SocialType socialType, Role role, Restaurant restaurant) {
 		Date now = new Date();
 		return JWT.create() // JWT 토큰을 생성하는 빌더 반환
 			.withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
 			.withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod)) // 토큰 만료 시간 설정
 
-			//클레임으로는 저희는 email, socialType, role 3가지 사용합니다.
+			// 클레임으로는 email, socialType, role, restaurantId 4가지 사용
 			.withClaim(EMAIL_CLAIM, email)
 			.withClaim(SOCIAL_TYPE_CLAIM, socialType.name())
 			.withClaim(ROLE_CLAIM, role.toString())
+			.withClaim(RESTAURANT_ID_CLAIM, restaurant != null ? restaurant.getRestaurantId() : null) // restaurant가 null이면 null 설정
 			.sign(Algorithm.HMAC512(secretKey)); // HMAC512 알고리즘 사용, application-jwt.yml에서 지정한 secret 키로 암호화
 	}
 

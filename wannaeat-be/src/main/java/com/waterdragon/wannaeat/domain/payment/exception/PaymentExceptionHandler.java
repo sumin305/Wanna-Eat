@@ -11,6 +11,9 @@ import com.waterdragon.wannaeat.domain.payment.exception.error.InvalidPriceExcep
 import com.waterdragon.wannaeat.domain.payment.exception.error.MenuCountRequestMoreThanUnpaidException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class PaymentExceptionHandler {
 
@@ -18,6 +21,7 @@ public class PaymentExceptionHandler {
 	@ExceptionHandler(InvalidPaymentException.class)
 	public final ResponseEntity<ErrorResponseDto> handleInvalidPaymentException(
 		InvalidPaymentException ex) {
+		log.error("Not Found error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Payment", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -27,6 +31,7 @@ public class PaymentExceptionHandler {
 	@ExceptionHandler(InvalidPriceException.class)
 	public final ResponseEntity<ErrorResponseDto> handleInvalidPriceException(
 		InvalidPriceException ex) {
+		log.error("Bad Request error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Price", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -36,6 +41,7 @@ public class PaymentExceptionHandler {
 	@ExceptionHandler(MenuCountRequestMoreThanUnpaidException.class)
 	public final ResponseEntity<ErrorResponseDto> handleMenuCountRequestMoreThanUnpaidException(
 		MenuCountRequestMoreThanUnpaidException ex) {
+		log.error("Bad Request error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("MenuCount Request More Than Unpaid", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -45,6 +51,7 @@ public class PaymentExceptionHandler {
 	@ExceptionHandler(InvalidPaymentPasswordException.class)
 	public final ResponseEntity<ErrorResponseDto> handleInvalidPaymentPasswordException(
 		InvalidPaymentPasswordException ex) {
+		log.error("Bad Request error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Payment Password Exception", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);

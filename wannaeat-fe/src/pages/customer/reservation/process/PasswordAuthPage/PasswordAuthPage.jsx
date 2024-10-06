@@ -59,9 +59,10 @@ const PasswordAuthPage = () => {
   const suffleNumber = () => {
     setNumber(number.sort(() => Math.random() - 0.5));
   };
+
   const handleNumberButtonClick = (num) => {
     if (num === '<') {
-      setInputNumber('');
+      setInputNumber(inputNumber.substring(0, inputNumber.length - 1));
       return;
     }
 
@@ -71,7 +72,6 @@ const PasswordAuthPage = () => {
     }
 
     setInputNumber(inputNumber + num);
-
     // 비밀번호를 다 입력했을때,
     if (inputNumber.length === 5) {
       setPassword(inputNumber);

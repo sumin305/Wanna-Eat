@@ -31,12 +31,12 @@ const RestaurantRegistPage = () => {
     setIsMapModalOpen(true);
   };
 
-  const handleMapConfirm = (latitude, longitude) => {
+  const handleMapConfirm = (latitude, longitude, address) => {
     setLat(latitude);
     setLng(longitude);
-    setAddress(`위도: ${latitude}, 경도: ${longitude}`);
+    setAddress(address);
   };
-  console.log('위도, 경도', lat, lng);
+  console.log('주소 잘왔나', address);
   const [name, setName] = useState('');
   // const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
@@ -87,9 +87,8 @@ const RestaurantRegistPage = () => {
                   placeholder="사업장 주소를 입력하세요."
                   value={address}
                   showErrorMessageSpace={true}
-                  // onChange={(e) => setAddress(e.target.value)}
+                  onChange={(e) => setAddress(e.target.value)}
                   onClick={handleAddressClick}
-                  readOnly={true}
                 />
                 <MapModal
                   isOpen={isMapModalOpen}

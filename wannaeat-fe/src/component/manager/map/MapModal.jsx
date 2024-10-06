@@ -11,10 +11,11 @@ import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 const MapModal = ({ isOpen, onClose, onConfirm }) => {
   const [centerLat, setCenterLat] = useState(37.5665);
   const [centerLng, setCenterLng] = useState(126.978);
+  const [address, setAddress] = useState('');
 
   const handleConfirm = () => {
-    console.log(centerLat, centerLng);
-    onConfirm(centerLat, centerLng); // 확인 버튼을 누르면 위도와 경도를 부모 컴포넌트로 전달
+    console.log(centerLat, centerLng, address);
+    onConfirm(centerLat, centerLng, address); // 확인 버튼을 누르면 위도와 경도를 부모 컴포넌트로 전달
     onClose();
   };
 
@@ -23,7 +24,16 @@ const MapModal = ({ isOpen, onClose, onConfirm }) => {
       <ModalOverlay>
         <MapModalContainer className="modal">
           <NoticeText>가게를 아래 마커로 위치해주세요</NoticeText>
-          <MenagerMap setCenterLat={setCenterLat} setCenterLng={setCenterLng} />
+          <NoticeText>
+            현재 위치한 주소
+            <br />
+            {address}
+          </NoticeText>
+          <MenagerMap
+            setCenterLat={setCenterLat}
+            setCenterLng={setCenterLng}
+            setAddress={setAddress}
+          />
           <ButtonWrapper>
             <WEButton width="45%" onClick={onClose}>
               취소

@@ -17,6 +17,10 @@ import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 // import WETimeDropdown from 'component/manager/WETimeDropdown.jsx';
 import MapModal from 'component/manager/map/MapModal.jsx';
+import { registRestaurant } from 'api/manager/restaurant/restaurant.js';
+import WEDropdown from '../../../../component/common/dropdown/WEDropdown.jsx';
+import useMapFilterStore from 'stores/map/useMapFilterStore.js';
+import { useDropdownStore } from '../../../../stores/common/useDropdownStore.js';
 
 const RestaurantRegistPage = () => {
   const tabs = ['사업자', '매장'];
@@ -25,9 +29,8 @@ const RestaurantRegistPage = () => {
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
-  // const validateName = () => {
-  //   if (restaurantFormData.name === )
-  // }
+  const { setCategoryId } = useMapFilterStore();
+  const { setItems } = useDropdownStore();
 
   const handleAddressClick = () => {
     setIsMapModalOpen(true);
@@ -47,7 +50,39 @@ const RestaurantRegistPage = () => {
     setPageName('매장 정보 입력');
   }, [setIsCarrot, setIsUnderLine, setPageName]);
 
-  const handleRegistButtonClick = () => {};
+  // 확인 버튼을 누르면 호출되는 함수
+  const handleRegistButtonClick = async () => {
+    const response = await registRestaurant({
+      restaurantOwnerName: restaurantFormData.name,
+      restaurantBusinessNumber: restaurantFormData.number,
+      restaurantAddress: restaurantFormData.address,
+      restaurantPhone: restaurantFormData.phone,
+      restaurantName: restaurantFormData.restaurantName,
+      restaurantCategoryId: restaurantFormData.businessType,
+      latitude: restaurantFormData.lat,
+      longitude: restaurantFormData.lng,
+    });
+    console.log(response);
+    console.log(response.data);
+  };
+
+  // 카테고리가 선택되면 호출되는 함수
+  const handleCategoryOnSelect = (e) => {
+    const categories = JSON.parse(localStorage.getItem('categories'));
+    const categoryId = categories.filter(
+      (category) => category.restaurantCategoryName === e
+    )[0].restaurantCategoryId;
+    console.log(categoryId);
+    setRestaurantFormData('businessType', categoryId);
+  };
+
+  useEffect(() => {
+    setItems(
+      JSON.parse(localStorage.getItem('categories')).map(
+        (category) => category.restaurantCategoryName
+      )
+    );
+  }, []);
 
   const renderContent = (activeTab) => {
     switch (activeTab) {
@@ -138,7 +173,12 @@ const RestaurantRegistPage = () => {
             <InputWrapperStyled>
               <InputWithLabelStyled>
                 <label>업종</label>
-                <WETextField
+                <WEDropdown
+                  useDropdownStore={useDropdownStore}
+                  placeholder="카테고리를 선택하세요"
+                  onSelect={handleCategoryOnSelect}
+                />
+                {/* <WETextField
                   name="restaurantRegist-businessType"
                   placeholder="업종을 입력하세요."
                   value={restaurantFormData.businessType}
@@ -146,7 +186,7 @@ const RestaurantRegistPage = () => {
                   onChange={(e) =>
                     setRestaurantFormData('businessType', e.target.value)
                   }
-                />
+                /> */}
               </InputWithLabelStyled>
             </InputWrapperStyled>
           </ContentWrapperStyled>

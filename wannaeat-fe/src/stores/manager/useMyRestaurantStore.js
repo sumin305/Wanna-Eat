@@ -7,7 +7,7 @@ const useMyRestaurantStore = create((set) => ({
     address: '',
     phone: '',
     restaurantName: '',
-    businessType: '',
+    businessType: -1,
     lat: 0,
     lng: 0,
   },

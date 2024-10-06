@@ -31,10 +31,12 @@ import { useNavigate } from 'react-router-dom';
 import useOrderStore from '../../../stores/customer/useOrderStore.js';
 import useChatStore from '../../../stores/customer/useChatStore.js';
 import DeleteIcon from 'assets/icons/order/delete.svg';
+import useAlert from 'utils/alert.js';
 
 const OrderCartBox = ({ reservationUrl }) => {
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ['나의 메뉴', '전체 메뉴'];
+  const showAlert = useAlert();
 
   // Zustand에서 필요한 상태와 함수를 가져옴
   const {
@@ -114,7 +116,7 @@ const OrderCartBox = ({ reservationUrl }) => {
                     menuTotalPrice: item.menuTotalPrice - item.menuPrice,
                   };
                 } else {
-                  alert('메뉴 수량은 0 이하로 줄일 수 없습니다.');
+                  showAlert('메뉴 수량은 0 이하로 줄일 수 없습니다.');
                   return item;
                 }
               }
@@ -139,10 +141,10 @@ const OrderCartBox = ({ reservationUrl }) => {
           JSON.stringify(cartRegisterRequestDto)
         );
       } catch (error) {
-        console.log('장바구니 업데이트 실패', error);
+        showAlert('장바구니 업데이트를 실패했습니다.');
       }
     } else {
-      alert('웹소켓 연결에 실패했습니다.');
+      showAlert('웹소켓 연결에 실패했습니다.');
     }
   };
 
@@ -183,13 +185,14 @@ const OrderCartBox = ({ reservationUrl }) => {
           JSON.stringify(cartRegisterRequestDto)
         );
       } catch (error) {
-        console.log('장바구니 업데이트 실패', error);
+        showAlert('장바구니 업데이트를 실패했습니다');
       }
     } else {
-      alert('웹소켓 연결에 실패했습니다.');
+      showAlert('웹소켓 연결에 실패했습니다.');
     }
   };
 
+  // 주문서 페이지로 이동
   const handleOrderMainClick = () => {
     nav(`/customer/order/${reservationUrl}`);
   };
@@ -209,10 +212,10 @@ const OrderCartBox = ({ reservationUrl }) => {
           JSON.stringify(cartClearRequestDto)
         );
       } catch (error) {
-        console.log('장바구니 목록지우기 실패', error);
+        showAlert('비우기버튼 실행실패');
       }
     } else {
-      alert('웹소켓 연결에 실패했습니다.');
+      showAlert('웹소켓 연결에 실패했습니다.');
     }
 
     // 다른 사람들의 메뉴만 필터링해서 저장
@@ -228,7 +231,8 @@ const OrderCartBox = ({ reservationUrl }) => {
   };
 
   // 주문하기 버튼 클릭시 실행되는 함수
-  const handleOrderButtonClick = () => {
+  const handleOrderButtonClick = async () => {
+    await showAlert('주문하시겠습니까?');
     const orderRegisterRequestDto = {
       reservationUrl: reservationUrl,
       prepareRequest: true,
@@ -236,7 +240,7 @@ const OrderCartBox = ({ reservationUrl }) => {
 
     if (stompClient && isConnected) {
       try {
-        stompClient.send(
+        await stompClient.send(
           `/api/public/sockets/orders/register`,
           {},
           JSON.stringify(orderRegisterRequestDto)
@@ -248,9 +252,11 @@ const OrderCartBox = ({ reservationUrl }) => {
         setMenuCounts([]);
       } catch (error) {
         console.log('주문 실패:', error);
+        showAlert('주문에 실패했습니다.');
       }
     } else {
       console.log('stompClient is not initialized or not connected');
+      showAlert('웹소켓이 연결되지 않습니다.');
     }
   };
 
@@ -307,11 +313,11 @@ const OrderCartBox = ({ reservationUrl }) => {
         setMenuCounts(updatedMenuCounts);
       } catch (error) {
         console.log('메뉴삭제 실패:', error);
-        alert('메뉴삭제실패');
+        showAlert('메뉴삭제에 실패했습니다.');
       }
     } else {
       console.log('stompClient is not initialized or not connected');
-      alert('웹소켓 연결이 끊겼습니다.');
+      showAlert('웹소켓 연결이 끊겼습니다.');
     }
   };
 

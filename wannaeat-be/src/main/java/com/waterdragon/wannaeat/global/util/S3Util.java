@@ -32,7 +32,7 @@ public class S3Util {
 	private String bucket;
 
 	// 허용할 파일 확장자 목록
-	private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png", "gif");
+	private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png", "gif", "jfif");
 
 	// 최대 파일 크기 (예: 10MB)
 	private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;

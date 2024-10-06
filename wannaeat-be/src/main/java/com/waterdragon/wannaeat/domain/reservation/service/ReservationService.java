@@ -11,6 +11,8 @@ import com.waterdragon.wannaeat.domain.reservation.domain.Reservation;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.CurrentReservedTableResponseDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerMainDataResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationSummaryResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.RecentReservationResponseDto;
@@ -52,4 +54,10 @@ public interface ReservationService {
 	ManagerReservationDetailResponseDto getReservationListByManager(Long reservationId);
 
 	RecentReservationResponseDto getRecentReservation();
+
+	ManagerMainDataResponseDto getManagerMainData();
+
+	List<CurrentReservedTableResponseDto> getListCurrentReservation(List<Reservation> reservations);
+
+	int countReservationsBeforeNow(List<Reservation> reservations);
 }

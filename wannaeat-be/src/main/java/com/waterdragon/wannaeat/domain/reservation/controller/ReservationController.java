@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.QrGenerateRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.ReservationRegisterRequestDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.request.UrlValidationRequestDto;
+import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerMainDataResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationDetailResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.ManagerReservationSummaryResponseDto;
 import com.waterdragon.wannaeat.domain.reservation.dto.response.RecentReservationResponseDto;
@@ -366,5 +367,28 @@ public class ReservationController {
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
+
+	/**
+	 * 사업자 메인 데이터 조회 API
+	 *
+	 * @return 사업자 메인 데이터
+	 */
+	@Operation(summary = "사업자 메인 데이터 조회 API")
+	@GetMapping("/users/restaurants")
+	public ResponseEntity<ResponseDto<ManagerMainDataResponseDto>> getManagerMainData() {
+
+		ManagerMainDataResponseDto managerMainDataResponseDto = reservationService.getManagerMainData();
+
+		// 응답 객체 생성
+		ResponseDto<ManagerMainDataResponseDto> responseDto = ResponseDto.<ManagerMainDataResponseDto>builder()
+			.status(HttpStatus.OK.value())
+			.message("사업자 메인화면 데이터 목록")
+			.data(managerMainDataResponseDto)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+
 
 }

@@ -101,13 +101,12 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 	 *  그 후 JwtService.sendAccessTokenAndRefreshToken()으로 응답 헤더에 보내기
 	 */
 	public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
-		System.out.println("리프레시토큰11 : " + refreshToken);
 		userTokenRepository.findByRefreshToken(refreshToken)
 			.ifPresent(userToken -> {
 				String reIssuedRefreshToken = reIssueRefreshToken(userToken);
 				jwtService.sendAccessAndRefreshToken(response,
 					jwtService.createAccessToken(userToken.getUser().getEmail(), userToken.getUser().getSocialType(),
-						userToken.getUser().getRole()),
+						userToken.getUser().getRole(), userToken.getUser().getRestaurant()),
 					reIssuedRefreshToken);
 			});
 	}

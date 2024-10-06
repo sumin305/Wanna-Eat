@@ -22,6 +22,9 @@ import com.waterdragon.wannaeat.domain.restaurant.exception.error.TableIdDuplica
 import com.waterdragon.wannaeat.domain.restaurant.exception.error.TimeRequestWithoutDateException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class RestaurantExceptionHandler {
 
@@ -29,6 +32,7 @@ public class RestaurantExceptionHandler {
 	@ExceptionHandler(DuplicateBusinessNumberException.class)
 	public final ResponseEntity<ErrorResponseDto> handleDuplicateBusinessNumberException(
 		DuplicateBusinessNumberException ex) {
+		log.error("Conflict error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Duplicate Business Number", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
@@ -38,6 +42,7 @@ public class RestaurantExceptionHandler {
 	@ExceptionHandler(InvalidRestaurantOpenCloseTimeException.class)
 	public final ResponseEntity<ErrorResponseDto> handleInvalidRestaurantOpenCloseTimeException(
 		InvalidRestaurantOpenCloseTimeException ex) {
+		log.error("Bad Request error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Restaurant Open Close Time", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -47,6 +52,7 @@ public class RestaurantExceptionHandler {
 	@ExceptionHandler(InvalidBreakStartEndTimeException.class)
 	public final ResponseEntity<ErrorResponseDto> handleInvalidBreakStartEndTimeException(
 		InvalidBreakStartEndTimeException ex) {
+		log.error("Bad Request error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Break Start End Time", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -56,6 +62,7 @@ public class RestaurantExceptionHandler {
 	@ExceptionHandler(RestaurantNotFoundException.class)
 	public final ResponseEntity<ErrorResponseDto> handleRestaurantNotFoundException(
 		RestaurantNotFoundException ex) {
+		log.error("Not Found error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Restaurant Not Found", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -65,6 +72,7 @@ public class RestaurantExceptionHandler {
 	@ExceptionHandler(RestaurantStructureNotFoundException.class)
 	public final ResponseEntity<ErrorResponseDto> handleRestaurantStructureNotFoundException(
 		RestaurantStructureNotFoundException ex) {
+		log.error("Not Found error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Restaurant Structure Not Found", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -74,6 +82,7 @@ public class RestaurantExceptionHandler {
 	@ExceptionHandler(RestaurantCategoryNotFoundException.class)
 	public final ResponseEntity<ErrorResponseDto> handleRestaurantCategoryNotFoundException(
 		RestaurantCategoryNotFoundException ex) {
+		log.error("Not Found error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Restaurant Category Not Found", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -83,6 +92,7 @@ public class RestaurantExceptionHandler {
 	@ExceptionHandler(InvalidUserLocationException.class)
 	public final ResponseEntity<ErrorResponseDto> handleInvalidUserLocationException(
 		InvalidUserLocationException ex) {
+		log.error("Bad Request error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid User Location", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -92,6 +102,7 @@ public class RestaurantExceptionHandler {
 	@ExceptionHandler(TimeRequestWithoutDateException.class)
 	public final ResponseEntity<ErrorResponseDto> handleTimeRequestWithoutDateException(
 		TimeRequestWithoutDateException ex) {
+		log.error("Bad Request error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Time Request Without Date", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -101,6 +112,7 @@ public class RestaurantExceptionHandler {
 	@ExceptionHandler(InvalidFilterTimeSequenceException.class)
 	public final ResponseEntity<ErrorResponseDto> handleInvalidFilterTimeSequenceException(
 		InvalidFilterTimeSequenceException ex) {
+		log.error("Bad Request error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Filter Time Sequence", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -110,6 +122,7 @@ public class RestaurantExceptionHandler {
 	@ExceptionHandler(InvalidFilterReservationDateException.class)
 	public final ResponseEntity<ErrorResponseDto> handleInvalidFilterReservationDateException(
 		InvalidFilterReservationDateException ex) {
+		log.error("Bad Request error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Filter Reservation Date", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -119,6 +132,7 @@ public class RestaurantExceptionHandler {
 	@ExceptionHandler(RestaurantElementOutOfRangeException.class)
 	public final ResponseEntity<ErrorResponseDto> handleRestaurantElementOutOfRangeException(
 		RestaurantElementOutOfRangeException ex) {
+		log.error("Bad Request error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Restaurant Element Out Of Range", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -128,6 +142,7 @@ public class RestaurantExceptionHandler {
 	@ExceptionHandler(TableIdDuplicateException.class)
 	public final ResponseEntity<ErrorResponseDto> handleTableIdDuplicateException(
 		TableIdDuplicateException ex) {
+		log.error("Conflict error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Table Id Duplicate", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
@@ -137,6 +152,7 @@ public class RestaurantExceptionHandler {
 	@ExceptionHandler(FailureRegistRestaurantToSsafyException.class)
 	public final ResponseEntity<ErrorResponseDto> handleFailureRegistRestaurantToSsafyException(
 		FailureRegistRestaurantToSsafyException ex) {
+		log.error("Server error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Failure Regist Restaurant To Ssafy", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -146,6 +162,7 @@ public class RestaurantExceptionHandler {
 	@ExceptionHandler(InvalidMerchantNameException.class)
 	public final ResponseEntity<ErrorResponseDto> handleInvalidMerchantNameException(
 		InvalidMerchantNameException ex) {
+		log.error("Server error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Merchant Name Exception", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -155,6 +172,7 @@ public class RestaurantExceptionHandler {
 	@ExceptionHandler(RestaurantAlreadyExistException.class)
 	public final ResponseEntity<ErrorResponseDto> handleRestaurantAlreadyExistException(
 		RestaurantAlreadyExistException ex) {
+		log.error("Conflict error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Restaurant Already Exist Exception", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);

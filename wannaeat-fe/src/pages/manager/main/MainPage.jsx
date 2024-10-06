@@ -17,6 +17,8 @@ import {
   ModalOverlayStyled,
 } from './MainPage.js';
 
+import SeatingMap from 'component/manager/main/SeatingMap/SeatingMap.jsx';
+
 import Button from 'component/common/button/WEButton/WEButton.jsx';
 
 import useHeaderStore from '../../../stores/common/useHeaderStore.js';
@@ -107,6 +109,8 @@ const MainPage = () => {
           매장 꾸미기
         </GoToSeatDecorateButtonStyled>
       </GoToSeatDecorateStyled>
+
+      <SeatingMap />
 
       {isModalOpen && (
         <ModalOverlayStyled isModalOpen={isModalOpen} onClick={close}>

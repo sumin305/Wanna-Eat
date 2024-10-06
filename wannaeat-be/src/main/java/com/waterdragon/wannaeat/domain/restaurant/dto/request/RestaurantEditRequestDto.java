@@ -33,6 +33,12 @@ public class RestaurantEditRequestDto {
 	@NotNull(message = "매장 카테고리 id는 필수 입력값입니다.")
 	private Long restaurantCategoryId;
 
+	@NotNull(message = "위도는 필수 입력값입니다.")
+	private Double latitude;
+
+	@NotNull(message = "경도는 필수 입력값입니다.")
+	private Double longitude;
+
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
 	private LocalTime restaurantOpenTime;
 
@@ -54,8 +60,4 @@ public class RestaurantEditRequestDto {
 	private Integer depositPerMember;
 
 	private String restaurantDescription;
-
-	private Double latitude;
-
-	private Double longitude;
 }

@@ -30,9 +30,12 @@ import {
   TotalPriceP,
 } from './OrderSheetBox.js';
 import WECheck from '../../../common/check/WECheck.jsx';
+import useAlert from 'utils/alert.js';
 
 const OrderSheetBox = ({ reservationUrl }) => {
   const nav = useNavigate();
+  const showAlert = useAlert();
+
   const { allOrdersInfo } = useOrderStore();
   const allOrders =
     allOrdersInfo?.orderListResponseDto?.orderDetailResponseDtos || [];
@@ -103,7 +106,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
         },
       }));
     } else {
-      alert('더 이상 추가할 수 없습니다.');
+      showAlert('더 이상 추가할 수 없습니다.');
     }
   };
 
@@ -121,7 +124,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
         },
       }));
     } else {
-      alert('수량은 0보다 작을 수 없습니다.');
+      showAlert('수량은 0보다 작을 수 없습니다.');
     }
   };
 

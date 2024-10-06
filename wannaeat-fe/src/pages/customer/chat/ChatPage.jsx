@@ -271,74 +271,70 @@ const ChatPage = () => {
   console.log('웹소켓연결확인:', isConnected);
 
   return (
-    <>
-      <ChatContainer
-        id="chat-container"
-        style={{ height: '500px', overflowY: 'scroll' }}
-      >
-        {chatMessages &&
-          chatMessages.map((chat, index) => {
-            // 이전 메세지의 날짜와 현재 메세지의 날짜 비교
-            const currentMessageDate = formatDate(chat.registerTime);
-            const prevMessageDate =
-              index > 0
-                ? formatDate(chatMessages[index - 1].registerTime)
-                : null;
-            return (
-              <>
-                <DateBox key={chat.id}>
-                  {currentMessageDate !== prevMessageDate && (
-                    <div>
-                      <span>-</span>
-                      {currentMessageDate}
-                      <span>-</span>
-                    </div>
-                  )}
-                </DateBox>
+    <ChatContainer
+      id="chat-container"
+      style={{ height: '470px', overflowY: 'scroll' }}
+    >
+      {chatMessages &&
+        chatMessages.map((chat, index) => {
+          // 이전 메세지의 날짜와 현재 메세지의 날짜 비교
+          const currentMessageDate = formatDate(chat.registerTime);
+          const prevMessageDate =
+            index > 0 ? formatDate(chatMessages[index - 1].registerTime) : null;
+          return (
+            <>
+              <DateBox key={chat.id}>
+                {currentMessageDate !== prevMessageDate && (
+                  <div>
+                    <span>-</span>
+                    {currentMessageDate}
+                    <span>-</span>
+                  </div>
+                )}
+              </DateBox>
 
-                <ChatWrapper
+              <ChatWrapper
+                isMyMessage={
+                  chat.senderReservationParticipantId ===
+                  myReservationParticipantId
+                }
+                key={chat.id}
+              >
+                <ChatNickname
                   isMyMessage={
                     chat.senderReservationParticipantId ===
                     myReservationParticipantId
                   }
-                  key={chat.id}
                 >
-                  <ChatNickname
+                  {chat.senderReservationParticipantNickname}
+                </ChatNickname>
+                <ChatMessageBox
+                  isMyMessage={
+                    chat.senderReservationParticipantId ===
+                    myReservationParticipantId
+                  }
+                >
+                  <ChatContent
                     isMyMessage={
                       chat.senderReservationParticipantId ===
                       myReservationParticipantId
                     }
                   >
-                    {chat.senderReservationParticipantNickname}
-                  </ChatNickname>
-                  <ChatMessageBox
+                    {chat.content}
+                  </ChatContent>
+                  <ChatTime
                     isMyMessage={
                       chat.senderReservationParticipantId ===
                       myReservationParticipantId
                     }
                   >
-                    <ChatContent
-                      isMyMessage={
-                        chat.senderReservationParticipantId ===
-                        myReservationParticipantId
-                      }
-                    >
-                      {chat.content}
-                    </ChatContent>
-                    <ChatTime
-                      isMyMessage={
-                        chat.senderReservationParticipantId ===
-                        myReservationParticipantId
-                      }
-                    >
-                      {showChatTime(chat.registerTime)}
-                    </ChatTime>
-                  </ChatMessageBox>
-                </ChatWrapper>
-              </>
-            );
-          })}
-      </ChatContainer>
+                    {showChatTime(chat.registerTime)}
+                  </ChatTime>
+                </ChatMessageBox>
+              </ChatWrapper>
+            </>
+          );
+        })}
 
       <ChatInputWrapper>
         <input
@@ -351,11 +347,7 @@ const ChatPage = () => {
           <img src={SendIcon} alt="전송아이콘" />
         </WEButton>
       </ChatInputWrapper>
-      <button onClick={clickGotoOrder}>주문하기 메인페이지 이동</button>
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-    </>
+    </ChatContainer>
   );
 };
 

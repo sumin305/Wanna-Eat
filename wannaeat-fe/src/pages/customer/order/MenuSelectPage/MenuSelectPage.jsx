@@ -35,6 +35,7 @@ const MenuSelectPage = () => {
   const reservationUrl = params.url;
   const { isConnected, setIsConnected, stompClient, setStompClient } =
     useChatStore();
+
   const [activeTab, setActiveTab] = useState(0);
   const reservationParticipantId = 2;
   const increment = 1; // 증가 갯수는 1로 설정
@@ -154,6 +155,7 @@ const MenuSelectPage = () => {
 
   const handleCartIconClick = (menuId) => {
     showAlert('메뉴가 장바구니에 추가되었습니다.');
+
     const cartRegisterRequestDto = {
       reservationUrl: reservationUrl,
       reservationParticipantId: reservationParticipantId,
@@ -173,10 +175,11 @@ const MenuSelectPage = () => {
         console.log('장바구니 업데이트 내용:', cartRegisterRequestDto);
       } catch (error) {
         console.log('장바구니 업데이트 실패', error);
+        showAlert('장바구니 업데이트를 실패했습니다.');
       }
     } else {
       console.log('웹소켓 연결 실패');
-      alert('웹소켓 연결에 실패했습니다.');
+      showAlert('웹소켓 연결에 실패했습니다.');
     }
   };
 

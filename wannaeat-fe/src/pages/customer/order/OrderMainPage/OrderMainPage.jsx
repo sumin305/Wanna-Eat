@@ -139,18 +139,8 @@ const OrderMainPage = () => {
     }
   }, []);
 
-  const clickGotoChat = () => {
-    nav(`/customer/order/chat/${reservationUrl}`);
-  };
-
   return (
     <>
-      <button onClick={clickGotoChat}>채팅으로 이동</button>
-      <button
-        onClick={() => nav(`/customer/order/menu-select/${reservationUrl}`)}
-      >
-        메뉴선택페이지로 이동
-      </button>
       <OrderMainBox reservationUrl={reservationUrl} />
     </>
   );

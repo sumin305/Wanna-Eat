@@ -125,6 +125,7 @@ const SeatingMap = () => {
   };
 
   const renderIcon = (itemType) => {
+    console.log('현재 itemType: ', itemType);
     const item = Items.find((item) => item.itemType === itemType);
     if (item && item.icon) {
       const IconComponent = item.icon;

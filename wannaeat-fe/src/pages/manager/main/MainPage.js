@@ -233,8 +233,8 @@ const ModalOverlayStyled = styled.div`
 
 const ReservationCountStyled = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
 
   width: 93%;
   height: 10%;
@@ -245,6 +245,10 @@ const ReservationCountStyled = styled.div`
 
   font-size: ${theme.fontSize.px15};
   font-weight: ${theme.fontWeight.bold};
+
+  svg {
+    margin-right: 5px;
+  }
 `;
 
 export {

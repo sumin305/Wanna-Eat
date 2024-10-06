@@ -27,6 +27,7 @@ import useHeaderStore from '../../../stores/common/useHeaderStore.js';
 import { useDropdownStore } from 'stores/common/useDropdownStore.js';
 
 import WEDropdown from 'component/common/dropdown/WEDropdown.jsx';
+import { ReactComponent as RefreshIcon } from 'assets/icons/manager/restaurant/refresh.svg';
 
 const MainPage = () => {
   const {
@@ -111,7 +112,7 @@ const MainPage = () => {
   const fetchMainData = async () => {
     try {
       const response = await authClientInstance.get(`/api/users/restaurants`);
-      console.log(response);
+      console.log('데이터 불러옵니다!', response);
 
       const data = response.data.data;
       setPastReservationCnt(data.pastReservationCount);
@@ -132,8 +133,9 @@ const MainPage = () => {
 
       <SeatingMap />
       {}
-      <ReservationCountStyled onClick={fetchMainData}>
+      <ReservationCountStyled>
         금일 예약 현황: {pastReservationCnt}/{totalReservationCnt} (건)
+        <RefreshIcon onClick={fetchMainData} />
       </ReservationCountStyled>
 
       {isModalOpen && (

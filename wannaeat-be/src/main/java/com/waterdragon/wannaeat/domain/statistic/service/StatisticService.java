@@ -12,6 +12,8 @@ import com.waterdragon.wannaeat.domain.statistic.dto.response.MenuStatisticRespo
 import com.waterdragon.wannaeat.domain.statistic.dto.response.PeekStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.ReservationCountStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.RevenueStatisticResponseDto;
+import com.waterdragon.wannaeat.domain.statistic.dto.response.UserRestaurantVisitStatisticResponseDto;
+import com.waterdragon.wannaeat.domain.user.domain.User;
 
 public interface StatisticService {
 
@@ -22,6 +24,8 @@ public interface StatisticService {
 	RevenueStatisticResponseDto getStatisticsByRevenue(Restaurant restaurant, int year, int month);
 
 	ReservationCountStatisticResponseDto getReservationCountStatistics(Restaurant restaurant, int year, int month);
+
+	List<UserRestaurantVisitStatisticResponseDto> getRestaurantVisitStatisticsByUser(User user);
 
 	Map<Integer, Long> getMonthlyStatsByMonths(List<Reservation> reservations);
 
@@ -50,4 +54,6 @@ public interface StatisticService {
 	String getHalfHourSlot(LocalTime time);
 
 	String convertDayOfWeekToKorean(DayOfWeek dayOfWeek);
+
+	List<Reservation> getReservationsByUserAndLastYear(User user);
 }

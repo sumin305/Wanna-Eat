@@ -9,6 +9,9 @@ import com.waterdragon.wannaeat.domain.restaurantlike.exception.error.LikeDuplic
 import com.waterdragon.wannaeat.domain.restaurantlike.exception.error.LikeNotFoundException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class RestaurantLikeExceptionHandler {
 
@@ -16,6 +19,7 @@ public class RestaurantLikeExceptionHandler {
 	@ExceptionHandler(LikeDuplicateException.class)
 	public final ResponseEntity<ErrorResponseDto> handleLikeDuplicateException(
 		LikeDuplicateException ex) {
+		log.error("Conflict error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Like Duplicate", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
@@ -25,6 +29,7 @@ public class RestaurantLikeExceptionHandler {
 	@ExceptionHandler(LikeNotFoundException.class)
 	public final ResponseEntity<ErrorResponseDto> handleLikeNotFoundException(
 		LikeNotFoundException ex) {
+		log.error("Not Found error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Like Not Found", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);

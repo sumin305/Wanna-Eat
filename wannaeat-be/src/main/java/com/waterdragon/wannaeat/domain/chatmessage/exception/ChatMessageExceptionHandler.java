@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.waterdragon.wannaeat.domain.chatmessage.exception.error.ChatMessageParameterException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class ChatMessageExceptionHandler {
 
@@ -15,6 +18,7 @@ public class ChatMessageExceptionHandler {
 	@ExceptionHandler(ChatMessageParameterException.class)
 	public final ResponseEntity<ErrorResponseDto> handleChatMessageParameterException(
 		ChatMessageParameterException ex) {
+		log.error("Bad Request error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Chat Message Parameter Exception", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);

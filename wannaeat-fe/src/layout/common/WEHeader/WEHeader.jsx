@@ -35,6 +35,7 @@ const WEHeader = () => {
   };
 
   const handleHeaderIconClick = (index) => {
+    console.dir(iconAction);
     const action = iconAction[index];
     console.log('typeof action', typeof action);
     console.log('action', action);

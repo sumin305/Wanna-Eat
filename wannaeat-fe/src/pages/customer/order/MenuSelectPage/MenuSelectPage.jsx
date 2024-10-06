@@ -46,28 +46,11 @@ const MenuSelectPage = () => {
     setIsShowBackIcon,
     setActiveIcons,
     setIconAction,
-    isChatOn,
-    setIsChatOn,
   } = useHeaderStore();
 
   const { allMenusData, setAllMenusData } = useOrderStore();
 
   const showAlert = useAlert();
-  // useEffect(() => {
-  //   const chatOn = () => {
-  //     nav(`/customer/order/chat/${reservationUrl}`);
-  //   };
-  //   const chatOff = () => {
-  //     nav(-1);
-  //   };
-  //   if (!isChatOn) {
-  //     setActiveIcons([12]);
-  //     setIconAction([chatOn]);
-  //   } else {
-  //     setActiveIcons([11]);
-  //     setIconAction([chatOff]);
-  //   }
-  // }, [isChatOn]);
 
   // 웹소켓 초기 연결
   useEffect(() => {
@@ -75,7 +58,16 @@ const MenuSelectPage = () => {
     setPageName('메뉴선택');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
-    // setActiveIcons([3]);
+
+    const gotoChat = () => {
+      nav(`/customer/order/chat/${reservationUrl}`);
+    };
+    const gotoSelectMenu = () => {
+      nav(`/customer/order/menu-select/${reservationUrl}`);
+    };
+    setActiveIcons([8, 10]);
+    setIconAction([gotoSelectMenu, gotoChat]);
+
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);
 

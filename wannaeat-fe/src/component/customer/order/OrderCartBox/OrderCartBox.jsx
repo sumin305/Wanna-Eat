@@ -4,6 +4,7 @@ import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 import {
   TopBox,
   OrderContainer,
+  WETabContainer,
   ButtonWrapper,
   MenuContainer,
   TotalMenuP,
@@ -372,7 +373,9 @@ const OrderCartBox = ({ reservationUrl }) => {
   console.log(sortedMenus);
   return (
     <OrderContainer>
-      <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+      <WETabContainer>
+        <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+      </WETabContainer>
       <div>
         <TopBox>
           <MenuContainer>

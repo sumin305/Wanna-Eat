@@ -41,7 +41,7 @@ const OrderCartPage = () => {
     setIsCarrot(true);
     setPageName('장바구니');
     setIsShowLogo(false);
-    setActiveIcons([3]);
+    setActiveIcons([8, 10]);
     setIsShowBackIcon(true);
 
     const validateAndConnect = async () => {

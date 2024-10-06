@@ -45,6 +45,7 @@ const ChatPage = () => {
     setIsShowLogo,
     setActiveIcons,
     setIsShowBackIcon,
+    setIconAction,
   } = useHeaderStore();
 
   // 웹소켓 초기 연결
@@ -53,7 +54,16 @@ const ChatPage = () => {
     setPageName('채팅');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
-    setActiveIcons([3]);
+
+    const gotoChat = () => {
+      nav(`/customer/order/chat/${reservationUrl}`);
+    };
+    const gotoSelectMenu = () => {
+      nav(`/customer/order/menu-select/${reservationUrl}`);
+    };
+    setActiveIcons([8, 10]);
+    setIconAction([gotoSelectMenu, gotoChat]);
+
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);
 

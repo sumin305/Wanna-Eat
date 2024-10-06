@@ -22,6 +22,7 @@ import {
   MenuImg,
   MenuNameP,
   OrderContainer,
+  WETabContainer,
   PeopleP,
   TopBox,
   TotalMenuP,
@@ -180,7 +181,9 @@ const OrderSheetBox = ({ reservationUrl }) => {
 
   return (
     <OrderContainer>
-      <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+      <WETabContainer>
+        <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+      </WETabContainer>
       <div>
         <TopBox>
           <MenuContainer>

@@ -18,6 +18,7 @@ const OrderMainPage = () => {
     setIsShowLogo,
     setActiveIcons,
     setIsShowBackIcon,
+    setIconAction,
   } = useHeaderStore();
 
   const {
@@ -44,8 +45,16 @@ const OrderMainPage = () => {
     setIsCarrot(true);
     setPageName('주문서');
     setIsShowLogo(false);
-    setActiveIcons([3]);
     setIsShowBackIcon(true);
+
+    const gotoChat = () => {
+      nav(`/customer/order/chat/${reservationUrl}`);
+    };
+    const gotoSelectMenu = () => {
+      nav(`/customer/order/menu-select/${reservationUrl}`);
+    };
+    setActiveIcons([8, 10]);
+    setIconAction([gotoSelectMenu, gotoChat]);
 
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);

@@ -7,7 +7,7 @@ import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import useOrderStore from 'stores/customer/useOrderStore';
 import OrderMainBox from 'component/customer/order/OrderMainBox/OrderMainBox.jsx';
-
+import useCartStore from 'stores/customer/useCartStore';
 const OrderMainPage = () => {
   const nav = useNavigate();
   const params = useParams();
@@ -20,7 +20,7 @@ const OrderMainPage = () => {
     setIsShowBackIcon,
     setIconAction,
   } = useHeaderStore();
-
+  const { setCartElements } = useCartStore();
   const {
     isConnected,
     setIsConnected,
@@ -58,9 +58,15 @@ const OrderMainPage = () => {
 
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);
-
+      console.log('sumin response', response);
       // reservationUrl 유효성 검사 실행 후 유효한 경우
       if (response.status === 200) {
+        const reservationParticipantId =
+          response.data.data.reservationParticipantId;
+        localStorage.setItem(
+          'reservationParticipantId',
+          reservationParticipantId
+        );
         // stompClient가 없는 경우에만 소켓 연결 시도
         if (!stompClient) {
           initializeConnection();
@@ -95,7 +101,14 @@ const OrderMainPage = () => {
           `/topic/reservations/${reservationUrl}`,
           (response) => {
             const content = JSON.parse(response.body);
-            console.log('Received message: ', content);
+            console.log('sumin Received message: ', content);
+
+            if (content.socketType === 'CART') {
+              console.log('cart socket message ');
+              console.dir(content.cartElements);
+              setCartElements(content.cartElements);
+            } else if (content.socketType === 'ORDER') {
+            }
           }
         );
 
@@ -115,6 +128,7 @@ const OrderMainPage = () => {
       chatPage,
       chatSize
     );
+
     console.log('메인페이지 불러온 데이터:', allOrdersInfo.data);
 
     setReservationDate(allOrdersInfo.data.reservationDate);

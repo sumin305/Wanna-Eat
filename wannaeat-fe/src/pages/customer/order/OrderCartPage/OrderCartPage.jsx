@@ -8,6 +8,7 @@ import OrderCartBox from 'component/customer/order/OrderCartBox/OrderCartBox.jsx
 import useHeaderStore from 'stores/common/useHeaderStore';
 import useOrderStore from 'stores/customer/useOrderStore';
 import { getOrderData } from 'api/customer/order.js';
+import useCartStore from 'stores/customer/useCartStore';
 
 const OrderCartPage = () => {
   const {
@@ -25,6 +26,8 @@ const OrderCartPage = () => {
     restaurantId,
     setRestaurantId,
   } = useOrderStore();
+  const { setCartElements } = useCartStore();
+
   const nav = useNavigate();
   const params = useParams();
   const reservationUrl = params.url;
@@ -83,7 +86,12 @@ const OrderCartPage = () => {
           `/topic/reservations/${reservationUrl}`,
           (response) => {
             const content = JSON.parse(response.body);
-            console.log('Received message: ', content);
+            console.log('soom Received message: ', content);
+            if (content.socketType === 'CART') {
+              console.log('cart socket message ');
+              console.dir(content.cartElements);
+              setCartElements(content.cartElements);
+            }
           }
         );
 

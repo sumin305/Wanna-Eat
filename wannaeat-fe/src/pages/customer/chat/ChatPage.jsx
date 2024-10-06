@@ -136,7 +136,7 @@ const ChatPage = () => {
           `/topic/reservations/${reservationUrl}`,
           (response) => {
             const content = JSON.parse(response.body);
-            console.log('Received message: ', content);
+            console.log('soom chat Received message: ', content);
             setChatPlusMessages(content);
             console.log(chatMessages);
           }

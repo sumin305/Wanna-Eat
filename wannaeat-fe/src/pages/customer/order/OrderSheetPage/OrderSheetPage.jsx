@@ -79,7 +79,7 @@ const OrderSheetPage = () => {
           `/topic/reservations/${reservationUrl}`,
           (response) => {
             const content = JSON.parse(response.body);
-            console.log('Received message: ', content);
+            console.log('ordersheet Received message: ', content);
           }
         );
 

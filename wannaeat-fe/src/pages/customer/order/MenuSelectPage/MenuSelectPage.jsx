@@ -10,6 +10,8 @@ import useOrderStore from 'stores/customer/useOrderStore';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 import { useState } from 'react';
+import useCartStore from 'stores/customer/useCartStore';
+
 import CartIcon from 'assets/icons/order/cart.svg';
 import {
   MenuPageContainer,
@@ -50,6 +52,7 @@ const MenuSelectPage = () => {
   } = useHeaderStore();
 
   const { allMenusData, setAllMenusData } = useOrderStore();
+  const { setCartElements } = useCartStore();
 
   const showAlert = useAlert();
 
@@ -110,6 +113,13 @@ const MenuSelectPage = () => {
           (response) => {
             const content = JSON.parse(response.body);
             console.log('Received message: ', content);
+            console.log('sumin Received message: ', content);
+
+            if (content.socketType === 'CART') {
+              console.log('cart socket message ');
+              console.dir(content.cartElements);
+              setCartElements(content.cartElements);
+            }
           }
         );
 

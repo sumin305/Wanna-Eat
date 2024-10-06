@@ -10,6 +10,9 @@ import com.waterdragon.wannaeat.domain.menu.exception.error.MenuNotBelongToResta
 import com.waterdragon.wannaeat.domain.menu.exception.error.MenuNotFoundException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class MenuExceptionHandler {
 
@@ -17,6 +20,7 @@ public class MenuExceptionHandler {
 	@ExceptionHandler(MenuNotBelongToRestaurantException.class)
 	public final ResponseEntity<ErrorResponseDto> handleMenuNotBelongToRestaurantException(
 		MenuNotBelongToRestaurantException ex) {
+		log.error("Not Found error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Menu Not Belong To Restaurant", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -26,6 +30,7 @@ public class MenuExceptionHandler {
 	@ExceptionHandler(MenuNotFoundException.class)
 	public final ResponseEntity<ErrorResponseDto> handleMenuNotFoundException(
 		MenuNotFoundException ex) {
+		log.error("Not Found error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Menu Not Found", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -35,6 +40,7 @@ public class MenuExceptionHandler {
 	@ExceptionHandler(MenuCategoryNotFoundException.class)
 	public final ResponseEntity<ErrorResponseDto> handleMenuCategoryNotFoundException(
 		MenuCategoryNotFoundException ex) {
+		log.error("Not Found error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Menu Category Not Found", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);

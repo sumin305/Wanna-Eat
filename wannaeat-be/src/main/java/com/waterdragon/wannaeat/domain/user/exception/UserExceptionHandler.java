@@ -12,6 +12,9 @@ import com.waterdragon.wannaeat.domain.user.exception.error.InvalidCodeException
 import com.waterdragon.wannaeat.domain.user.exception.error.InvalidPhoneException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class UserExceptionHandler {
 
@@ -19,6 +22,7 @@ public class UserExceptionHandler {
 	@ExceptionHandler(DuplicateUserException.class)
 	public final ResponseEntity<ErrorResponseDto> handleDuplicateUserException(
 		DuplicateUserException ex) {
+		log.error("Conflict error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Duplicate User", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
@@ -28,6 +32,7 @@ public class UserExceptionHandler {
 	@ExceptionHandler(DuplicateNicknameException.class)
 	public final ResponseEntity<ErrorResponseDto> handleDuplicateNicknameException(
 		DuplicateNicknameException ex) {
+		log.error("Conflict error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Duplicate Nickname", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
@@ -37,6 +42,7 @@ public class UserExceptionHandler {
 	@ExceptionHandler(InvalidPhoneException.class)
 	public final ResponseEntity<ErrorResponseDto> handleInvalidPhoneException(
 		InvalidPhoneException ex) {
+		log.error("Unprocessable entity error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Phone Number", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
@@ -46,6 +52,7 @@ public class UserExceptionHandler {
 	@ExceptionHandler(InvalidCodeException.class)
 	public final ResponseEntity<ErrorResponseDto> handleInvalidCodeException(
 		InvalidCodeException ex) {
+		log.error("Bad Request error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Invalid Auth Code", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -55,6 +62,7 @@ public class UserExceptionHandler {
 	@ExceptionHandler(DuplicatePhoneException.class)
 	public final ResponseEntity<ErrorResponseDto> handleDuplicatePhoneException(
 		DuplicatePhoneException ex) {
+		log.error("Conflict error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Duplicate Phone Number", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);

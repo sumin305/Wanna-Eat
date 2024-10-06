@@ -26,10 +26,10 @@ import {
   TotalPriceDiv,
   TotalPriceP,
 } from './OrderCartBox.js';
-import theme from '../../../style/common/theme.js';
+import theme from '../../../../style/common/theme.js';
 import { useNavigate } from 'react-router-dom';
-import useOrderStore from '../../../stores/customer/useOrderStore.js';
-import useChatStore from '../../../stores/customer/useChatStore.js';
+import useOrderStore from '../../../../stores/customer/useOrderStore.js';
+import useChatStore from '../../../../stores/customer/useChatStore.js';
 import DeleteIcon from 'assets/icons/order/delete.svg';
 import useAlert from 'utils/alert.js';
 

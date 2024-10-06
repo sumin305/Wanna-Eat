@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import useOrderStore from 'stores/customer/useOrderStore';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import {
+  TotalPriceText,
+  MenuDiv,
   CheckText,
   DeleteDiv,
   FoodDiv,
@@ -25,9 +27,8 @@ import {
   TotalMenuP,
   TotalPriceDiv,
   TotalPriceP,
-} from './OrderCartBox';
-import { TotalPriceText, MenuDiv } from './OrderSheetBox.js';
-import WECheck from '../../common/check/WECheck.jsx';
+} from './OrderSheetBox.js';
+import WECheck from '../../../common/check/WECheck.jsx';
 
 const OrderSheetBox = ({ reservationUrl }) => {
   const nav = useNavigate();

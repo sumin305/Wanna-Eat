@@ -2,10 +2,10 @@ import { useState } from 'react';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 import { TopBox, OrderContainer, ButtonWrapper } from './OrderMainBox.js';
-import theme from '../../../style/common/theme.js';
+import theme from '../../../../style/common/theme.js';
 import { useNavigate } from 'react-router-dom';
-import useOrderStore from '../../../stores/customer/useOrderStore.js';
-import useChatStore from '../../../stores/customer/useChatStore.js';
+import useOrderStore from '../../../../stores/customer/useOrderStore.js';
+import useChatStore from '../../../../stores/customer/useChatStore.js';
 import {
   FoodDiv,
   FoodInfoBottomDiv,
@@ -23,7 +23,7 @@ import {
   TotalMenuP,
   TotalPriceDiv,
   TotalPriceP,
-} from './OrderCartBox.js';
+} from './OrderMainBox.js';
 
 const OrderMainBox = ({ reservationUrl }) => {
   const [activeTab, setActiveTab] = useState(0);

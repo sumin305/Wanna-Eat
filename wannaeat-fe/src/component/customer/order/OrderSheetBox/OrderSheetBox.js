@@ -163,7 +163,16 @@ export const MenuNameP = styled.p`
 `;
 
 export const OrderContainer = styled.div`
-  height: 100%;
+  margin-bottom: 20%;
+`;
+
+// 탭 스타일
+export const WETabContainer = styled.div`
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: ${theme.color.white};
 `;
 
 export const PeopleP = styled.p`

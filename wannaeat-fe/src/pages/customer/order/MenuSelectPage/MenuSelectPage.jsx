@@ -35,6 +35,7 @@ const MenuSelectPage = () => {
   const reservationUrl = params.url;
   const { isConnected, setIsConnected, stompClient, setStompClient } =
     useChatStore();
+
   const [activeTab, setActiveTab] = useState(0);
   const reservationParticipantId = 2;
   const increment = 1; // 증가 갯수는 1로 설정
@@ -46,28 +47,11 @@ const MenuSelectPage = () => {
     setIsShowBackIcon,
     setActiveIcons,
     setIconAction,
-    isChatOn,
-    setIsChatOn,
   } = useHeaderStore();
 
   const { allMenusData, setAllMenusData } = useOrderStore();
 
   const showAlert = useAlert();
-  // useEffect(() => {
-  //   const chatOn = () => {
-  //     nav(`/customer/order/chat/${reservationUrl}`);
-  //   };
-  //   const chatOff = () => {
-  //     nav(-1);
-  //   };
-  //   if (!isChatOn) {
-  //     setActiveIcons([12]);
-  //     setIconAction([chatOn]);
-  //   } else {
-  //     setActiveIcons([11]);
-  //     setIconAction([chatOff]);
-  //   }
-  // }, [isChatOn]);
 
   // 웹소켓 초기 연결
   useEffect(() => {
@@ -75,7 +59,16 @@ const MenuSelectPage = () => {
     setPageName('메뉴선택');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
-    // setActiveIcons([3]);
+
+    const gotoChat = () => {
+      nav(`/customer/order/chat/${reservationUrl}`);
+    };
+    const gotoSelectMenu = () => {
+      nav(`/customer/order/menu-select/${reservationUrl}`);
+    };
+    setActiveIcons([8, 10]);
+    setIconAction([gotoSelectMenu, gotoChat]);
+
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);
 
@@ -162,6 +155,7 @@ const MenuSelectPage = () => {
 
   const handleCartIconClick = (menuId) => {
     showAlert('메뉴가 장바구니에 추가되었습니다.');
+
     const cartRegisterRequestDto = {
       reservationUrl: reservationUrl,
       reservationParticipantId: reservationParticipantId,
@@ -181,10 +175,11 @@ const MenuSelectPage = () => {
         console.log('장바구니 업데이트 내용:', cartRegisterRequestDto);
       } catch (error) {
         console.log('장바구니 업데이트 실패', error);
+        showAlert('장바구니 업데이트를 실패했습니다.');
       }
     } else {
       console.log('웹소켓 연결 실패');
-      alert('웹소켓 연결에 실패했습니다.');
+      showAlert('웹소켓 연결에 실패했습니다.');
     }
   };
 

@@ -18,6 +18,7 @@ const OrderMainPage = () => {
     setIsShowLogo,
     setActiveIcons,
     setIsShowBackIcon,
+    setIconAction,
   } = useHeaderStore();
 
   const {
@@ -44,8 +45,16 @@ const OrderMainPage = () => {
     setIsCarrot(true);
     setPageName('주문서');
     setIsShowLogo(false);
-    setActiveIcons([3]);
     setIsShowBackIcon(true);
+
+    const gotoChat = () => {
+      nav(`/customer/order/chat/${reservationUrl}`);
+    };
+    const gotoSelectMenu = () => {
+      nav(`/customer/order/menu-select/${reservationUrl}`);
+    };
+    setActiveIcons([8, 10]);
+    setIconAction([gotoSelectMenu, gotoChat]);
 
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);
@@ -130,18 +139,8 @@ const OrderMainPage = () => {
     }
   }, []);
 
-  const clickGotoChat = () => {
-    nav(`/customer/order/chat/${reservationUrl}`);
-  };
-
   return (
     <>
-      <button onClick={clickGotoChat}>채팅으로 이동</button>
-      <button
-        onClick={() => nav(`/customer/order/menu-select/${reservationUrl}`)}
-      >
-        메뉴선택페이지로 이동
-      </button>
       <OrderMainBox reservationUrl={reservationUrl} />
     </>
   );

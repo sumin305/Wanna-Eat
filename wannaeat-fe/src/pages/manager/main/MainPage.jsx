@@ -17,7 +17,6 @@ import {
   ModalContentWrapper,
   ModalOverlayStyled,
   ReservationCountStyled,
-  rotateAnimation,
   RotatingIconWrapper,
 } from './MainPage.js';
 
@@ -57,6 +56,8 @@ const MainPage = () => {
   const [totalReservationCnt, setTotalReservationCnt] = useState(-1);
 
   const [isRotating, setIsRotating] = useState(false);
+
+  const [occupiedList, setOccupiedList] = useState([]);
 
   useEffect(() => {
     setItems(['소형 (50m² 이하)', '중형 (50m² ~ 150m²)', '대형 (150m² 이상)']);
@@ -122,6 +123,9 @@ const MainPage = () => {
       const data = response.data.data;
       setPastReservationCnt(data.pastReservationCount);
       setTotalReservationCnt(data.totalReservationCount);
+
+      setOccupiedList(data.currentReservedTables);
+      console.log('occupiedList: ', occupiedList);
     } catch (error) {
       console.error('사업자 메인 데이터 요청 오류:', error);
       return;
@@ -138,7 +142,7 @@ const MainPage = () => {
         </GoToSeatDecorateButtonStyled>
       </GoToSeatDecorateStyled>
 
-      <SeatingMap />
+      <SeatingMap OccupiedList={occupiedList} />
       {}
       <ReservationCountStyled>
         금일 예약 현황: {pastReservationCnt}/{totalReservationCnt} (건)

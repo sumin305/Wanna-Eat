@@ -257,12 +257,19 @@ const rotateAnimation = keyframes`
 `;
 
 const RotatingIconWrapper = styled.div`
-  width: 24px;
+  width: 22px;
   height: 24px;
   display: inline-block;
   cursor: pointer;
   animation: ${(props) => (props.isRotating ? rotateAnimation : 'none')} 1s
     ease-in-out;
+
+  transform-origin: 50% 50%;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export {

@@ -22,8 +22,8 @@ const useStore = create((set, get) => ({
   gridStatusByFloor: {},
 
   addItem: (floor, item) => {
-    const itemId = uuid();
-    item.itemId = itemId;
+    // const itemId = uuid();
+    // item.itemId = itemId;
     console.log('추가된 아이템:', item);
 
     const isTableItem =
@@ -45,7 +45,7 @@ const useStore = create((set, get) => ({
         ...state.gridStatusByFloor,
         [floor]: {
           ...state.gridStatusByFloor[floor],
-          [`${item.x},${item.y}`]: itemId,
+          [`${item.x},${item.y}`]: item.itemId,
         },
       },
     }));
@@ -202,6 +202,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   };
 
   const handleSubmit = () => {
+    console.log('selectedItem: ' + selectedItem);
     if (selectedItem && selectedItem.itemId) {
       const tableNumber = document.querySelector('#tableNumber').value;
       const capacity = document.querySelector('#capacity').value;
@@ -248,9 +249,8 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
           (paletteItem) => paletteItem.itemId === item.itemId
         );
 
-        console.log('selectedItem: ' + selectedItem.itemId);
-
         if (selectedItem) {
+          console.log('selectedItem: ' + selectedItem.itemId);
           const newItemId = uuid();
           addItem(currentFloor, {
             itemId: newItemId,

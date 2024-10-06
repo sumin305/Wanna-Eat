@@ -12,37 +12,37 @@ import { ReactComponent as ArrowRIghtIcon } from '../../../../../assets/icons/ma
 const paletteItems = [
   {
     itemId: 1,
-    itemType: 'square',
+    itemType: 'SQUARE',
     label: '사각 테이블',
     icon: SquareTableIcon,
   },
   {
     itemId: 2,
-    itemType: 'rounded',
+    itemType: 'ROUNDED',
     label: '원형 테이블',
     icon: RoundTableIcon,
   },
   {
     itemId: 3,
-    itemType: 'restroom',
+    itemType: 'RESTROOM',
     label: '화장실',
     icon: RestroomIcon,
   },
   {
     itemId: 4,
-    itemType: 'counter',
+    itemType: 'COUNTER',
     label: '계산대',
     icon: CounterIcon,
   },
   {
     itemId: 5,
-    itemType: 'entrance',
+    itemType: 'ENTRANCE',
     label: '출입구',
     icon: EntranceIcon,
   },
   {
     itemId: 6,
-    itemType: 'kitchen',
+    itemType: 'KITCHEN',
     label: '주방',
     icon: KitchenIcon,
   },

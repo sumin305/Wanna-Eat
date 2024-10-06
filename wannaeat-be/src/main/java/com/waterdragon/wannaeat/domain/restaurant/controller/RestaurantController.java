@@ -44,14 +44,14 @@ public class RestaurantController {
 	 */
 	@Operation(summary = "매장 등록 API")
 	@PostMapping("/restaurants")
-	public ResponseEntity<ResponseDto<Void>> registerRestaurant(
+	public ResponseEntity<ResponseDto<Long>> registerRestaurant(
 		@Valid @RequestBody RestaurantRegisterRequestDto restaurantRegisterRequestDto) {
 
-		restaurantService.registerRestaurant(restaurantRegisterRequestDto);
-		ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+		Long restaurantId = restaurantService.registerRestaurant(restaurantRegisterRequestDto);
+		ResponseDto<Long> responseDto = ResponseDto.<Long>builder()
 			.status(HttpStatus.CREATED.value())
 			.message("매장이 성공적으로 등록되었습니다.")
-			.data(null)
+			.data(restaurantId)
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);

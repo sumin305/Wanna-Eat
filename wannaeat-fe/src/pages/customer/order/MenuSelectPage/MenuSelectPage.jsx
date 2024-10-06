@@ -15,14 +15,17 @@ import {
   MenuPageContainer,
   WETabContainer,
   TabText,
-  MenuItems,
-  MenuItem,
-  MenuImage,
-  MenuInfo,
-  MenuTitle,
   MenuDescription,
   MenuPrice,
   CartImg,
+  MenuContainer,
+  MenuBox,
+  ImageBox,
+  MenuImg,
+  MenuContentContainer,
+  MenuName,
+  // MenuPrice,
+  // MenuDescription,
 } from './MenuSelectPage.js';
 import useAlert from 'utils/alert.js';
 
@@ -191,28 +194,30 @@ const MenuSelectPage = () => {
         <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
       </WETabContainer>
       <TabText>{tabs[activeTab]}</TabText>
-      <MenuItems>
+      <MenuContainer>
         {currentMenuDetails &&
           currentMenuDetails.map((menu, menuId) => (
-            <MenuItem key={menuId}>
-              <MenuImage src={menu.menuImage}></MenuImage>
-              <MenuInfo>
-                <MenuTitle>{menu.menuName}</MenuTitle>
+            <MenuBox key={menuId}>
+              <ImageBox>
+                <MenuImg src={menu.menuImage}></MenuImg>
+              </ImageBox>
+              <MenuContentContainer>
+                <MenuName>{menu.menuName}</MenuName>
                 <MenuPrice>
                   {menu.menuPrice.toLocaleString('ko-KR')}원
                 </MenuPrice>
                 <MenuDescription>{menu.menuDescription}</MenuDescription>
-              </MenuInfo>
-              <CartImg
-                src={CartIcon}
-                alt="담기 아이콘"
-                onClick={() => handleCartIconClick(menu.menuId)}
-              />
-            </MenuItem>
+                <CartImg
+                  src={CartIcon}
+                  alt="담기 아이콘"
+                  onClick={() => handleCartIconClick(menu.menuId)}
+                />
+              </MenuContentContainer>
+            </MenuBox>
           ))}
+      </MenuContainer>
 
-        <WEButton onClick={clickGotoCart}>장바구니 보기</WEButton>
-      </MenuItems>
+      <WEButton onClick={clickGotoCart}>장바구니 보기</WEButton>
     </MenuPageContainer>
   );
 };

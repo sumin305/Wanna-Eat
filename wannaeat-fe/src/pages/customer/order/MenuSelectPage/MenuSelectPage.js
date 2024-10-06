@@ -22,78 +22,6 @@ export const TabText = styled.p`
   margin: 5% 7%;
 `;
 
-// 메뉴 항목 리스트 스타일
-export const MenuItems = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center; /* 좌우 중앙 정렬 */
-  gap: 30px; /* 카드들 간의 간격 */
-  /* 컨테이너 높이는 그대로 유지 */
-`;
-
-// 개별 메뉴 카드 스타일
-export const MenuItem = styled.div`
-  display: flex;
-  align-items: center;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 15px;
-  max-width: 400px;
-  min-width: 300px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease;
-  position: relative; /* 아이콘 배치를 위해 추가 */
-`;
-
-// 메뉴 이미지 스타일
-export const MenuImage = styled.img`
-  width: 130px;
-  height: 130px;
-  border-radius: 10px;
-  object-fit: cover;
-  margin-right: 15px;
-`;
-
-// 메뉴 정보 스타일 (제목, 설명 등)
-export const MenuInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-left: 20px;
-`;
-
-// 메뉴 제목 스타일
-export const MenuTitle = styled.h3`
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0 0 10px;
-  color: #333;
-`;
-
-// 메뉴 설명 스타일
-export const MenuDescription = styled.p`
-  font-size: 14px;
-  margin: 5px 0;
-  color: #333;
-`;
-
-// 메뉴 가격 스타일
-export const MenuPrice = styled.p`
-  font-size: 14px;
-  font-weight: bold;
-  color: #000;
-  margin: 5px 0;
-`;
-
-export const MenuIcons = styled.div`
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  display: flex;
-  gap: 12px; /* 아이콘 간 간격 */
-`;
-
 export const CartImg = styled.img`
   position: absolute;
   bottom: 10%;
@@ -101,4 +29,61 @@ export const CartImg = styled.img`
   width: 5%;
   height: 10%;
   cursor: pointer;
+`;
+
+export const MenuContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  margin-top: 3%;
+  margin-bottom: 20%;
+`;
+
+export const MenuBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+  margin: 2% 5%;
+  border: 2px solid ${theme.color.disabled};
+  border-radius: ${theme.borderRadius.px15};
+`;
+
+export const ImageBox = styled.div`
+  overflow: hidden;
+  left: 0;
+  width: 7rem;
+  height: 7rem;
+  border-radius: ${theme.borderRadius.px15};
+`;
+
+export const MenuImg = styled.img`
+  src: ${(props) => props.src};
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+export const MenuContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  width: 70%;
+  padding-left: 4%;
+`;
+
+export const MenuName = styled.p`
+  font-size: ${theme.fontSize.px13};
+  font-weight: bold;
+`;
+
+export const MenuPrice = styled.p`
+  font-size: ${theme.fontSize.px13};
+  margin: 8px 0;
+`;
+
+export const MenuDescription = styled.p`
+  font-size: ${theme.fontSize.px11};
 `;

@@ -12,6 +12,7 @@ import {
   HeaderImg,
   HeaderTitle,
   IconImg,
+  UnderLineStyled,
 } from './WEHeader';
 
 import Logo from '../../../assets/icons/header/logo-picture.svg';
@@ -79,6 +80,7 @@ const WEHeader = () => {
             ))}
         </HeaderRight>
       </HeaderWrapper>
+      {isCarrot === false && isUnderLine && <UnderLineStyled />}
     </HeaderContainer>
   );
 };

@@ -24,7 +24,7 @@ const TabContainer = styled.div`
 
 const Tab = styled.button`
   flex: 0 0 auto;
-  padding: 0.625rem 1.25rem;
+  padding: 0.38rem 1.25rem;
   margin: 0 0.625rem;
   font-size: ${theme.fontSize.px11};
   font-weight: ${(props) => (props.active ? 700 : 500)};

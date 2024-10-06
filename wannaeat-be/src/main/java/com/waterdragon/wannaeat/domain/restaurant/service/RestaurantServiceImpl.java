@@ -108,7 +108,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 	 */
 	@Override
 	@Transactional
-	public void registerRestaurant(RestaurantRegisterRequestDto restaurantRegisterRequestDto) {
+	public Long registerRestaurant(RestaurantRegisterRequestDto restaurantRegisterRequestDto) {
 
 		// 인증 회원객체
 		User user = authUtil.getAuthenticatedUser();
@@ -153,7 +153,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.longitude(restaurantRegisterRequestDto.getLongitude())
 			.merchantId(merchantId)
 			.build();
-		restaurantRepository.save(restaurant);
+		return restaurantRepository.save(restaurant).getRestaurantId();
 	}
 
 	/**

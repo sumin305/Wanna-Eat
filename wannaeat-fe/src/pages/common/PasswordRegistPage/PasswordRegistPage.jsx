@@ -35,7 +35,7 @@ const PasswordRegistPage = () => {
     newPassword.splice(9, 0, '취소');
     let newJSXArr = newPassword.map((num) => (
       <PasswordKey key={num} onClick={() => handleNumberButtonClick(num)}>
-        {num === '지문' ? <img src={FingerPrint}></img> : num}
+        {num}
       </PasswordKey>
     ));
     return newJSXArr;
@@ -68,49 +68,9 @@ const PasswordRegistPage = () => {
     }
   }, []);
 
-  // 패스키 등록 함수
-  const handleRegisterPasskey = async () => {
-    try {
-      if (!isSupported) {
-        alert('이 기기는 생체 인증을 지원하지 않습니다.');
-        return;
-      }
-
-      const attestation = await navigator.credentials.create({
-        publicKey: {
-          challenge: new Uint8Array(32), // 서버에서 생성한 고유한 challenge 값 필요
-          rp: { name: 'wanna-eat', id: window.location.hostname }, // RP 정보 (사이트 도메인)
-          user: {
-            id: new Uint8Array(16), // 사용자 ID (서버에서 고유하게 할당)
-            name: email, // 사용자 이메일 또는 이름
-            displayName: 'User', // 사용자 이름
-          },
-          pubKeyCredParams: [{ type: 'public-key', alg: -7 }], // 공개 키 알고리즘
-          authenticatorSelection: {
-            userVerification: 'required', // 생체 인증 요구
-          },
-          timeout: 60000, // 타임아웃 설정 (60초)
-        },
-      });
-
-      console.log('Attestation received:', attestation);
-
-      // 서버에 패스키 등록 데이터를 보내서 저장
-      // await serverRegisterPasskey(attestation);
-
-      setIsPasskeyRegistered(true); // 패스키 등록 완료 상태로 변경
-      alert('패스키가 성공적으로 등록되었습니다.');
-      return true;
-    } catch (e) {
-      console.error('Registration error:', e);
-      alert('패스키 등록에 실패했습니다.');
-      return false;
-    }
-  };
-
   const handleNumberButtonClick = async (num) => {
     if (num === '<') {
-      setInputNumber('');
+      setInputNumber(inputNumber.substring(0, inputNumber.length - 1));
       return;
     }
 

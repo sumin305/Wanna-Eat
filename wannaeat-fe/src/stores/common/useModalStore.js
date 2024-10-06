@@ -9,7 +9,7 @@ const useModalStore = create((set) => ({
   cancelText: '취소',
   confirmText: '확인',
   children: <div></div>,
-  handleButtonClick: () => {},
+  handleButtonClick: null,
   open: () => set({ isModalVisible: true }),
   close: () => set({ isModalVisible: false }),
   setTitle: (text) => set({ title: text }),

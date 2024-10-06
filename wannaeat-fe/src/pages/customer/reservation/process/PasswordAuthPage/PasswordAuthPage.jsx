@@ -15,7 +15,6 @@ import { useNavigate } from 'react-router-dom';
 import useAuthStore from 'stores/customer/useAuthStore';
 import useRestaurantStore from 'stores/customer/useRestaurantStore';
 import useReservationStore from '../../../../../stores/customer/useReservationStore.js';
-import useMapFilterStore from 'stores/map/useMapFilterStore.js';
 const PasswordAuthPage = () => {
   const [title, setTitle] = useState('결제 비밀번호를 입력해주세요');
   const [inputNumber, setInputNumber] = useState('');
@@ -60,9 +59,10 @@ const PasswordAuthPage = () => {
   const suffleNumber = () => {
     setNumber(number.sort(() => Math.random() - 0.5));
   };
+
   const handleNumberButtonClick = (num) => {
     if (num === '<') {
-      setInputNumber('');
+      setInputNumber(inputNumber.substring(0, inputNumber.length - 1));
       return;
     }
 
@@ -72,7 +72,6 @@ const PasswordAuthPage = () => {
     }
 
     setInputNumber(inputNumber + num);
-
     // 비밀번호를 다 입력했을때,
     if (inputNumber.length === 5) {
       setPassword(inputNumber);

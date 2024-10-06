@@ -69,7 +69,6 @@ const ListPage = () => {
         setDate(data.reservationDate + ' ' + data.reservationStartTime);
         setMemberCount(data.memberCnt);
       }
-
       console.log(data);
     };
 

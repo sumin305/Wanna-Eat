@@ -24,13 +24,13 @@ import {
 } from './LoginPage';
 import { getFcmToken } from '../../../firebase/firebaseCloudMessaging.js';
 import { giveFcmToken } from '../../../api/common/login.js';
-
+import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore';
 const LoginPage = () => {
   const navigate = useNavigate();
   const { getUserInfo, setEmail, setSocialType } = useCommonStore();
   const kakaoLink = process.env.REACT_APP_KAKAO_LOGIN_URL;
   const googleLink = process.env.REACT_APP_GOOGLE_LOGIN_URL;
-
+  const { setRestaurantId } = useMyRestaurantStore();
   const handleKakaoLoginButtonClick = () => {
     window.location.replace(kakaoLink);
   };
@@ -74,6 +74,7 @@ const LoginPage = () => {
       } else {
         const fcmToken = await getFcmToken();
         await giveFcmToken(fcmToken);
+        setRestaurantId(userInfo.restaurantId);
         navigate('/manager');
       }
     };

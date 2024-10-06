@@ -19,10 +19,9 @@ import { CardNameText } from 'pages/customer/user/CardManagePage/CardManagePage.
 import Carousel from 'react-spring-3d-carousel';
 import { config } from 'react-spring';
 import { useState, useEffect } from 'react';
-import useCommonStore from '../../../../../stores/common/useCommonStore.js';
 import { cardMaps } from 'assets';
-import useAuthStore from 'stores/customer/useAuthStore';
 import { payDepositPaymentByKakaoPay } from 'api/common/payment.js';
+import useAlert from '../../../../../utils/alert.js';
 
 const DepositPaymentPage = () => {
   const navigate = useNavigate();
@@ -30,6 +29,7 @@ const DepositPaymentPage = () => {
   const [depositPrice, setDepositPrice] = useState(0);
   const [cards, setCards] = useState([]);
   const [goToSlide, setGoToSlide] = useState(null);
+  const alert = useAlert();
   const [selectedardIndex, setSelectedCardIndex] = useState(0);
   const {
     selectedCard,
@@ -50,18 +50,36 @@ const DepositPaymentPage = () => {
       const result = await getMyCreditCardList();
       if (result.status !== 200) {
         alert('카드 목록 조회 실패');
+        setCards([{ cardName: '카카오페이카드', cardNo: '0' }]);
+        return;
       }
       const cards = result.data.REC;
       setCards([...cards, { cardName: '카카오페이카드', cardNo: '0' }]);
     };
+
     setDepositPrice(
       depositPerMember * memberCount === 0
         ? 50000
         : depositPerMember * memberCount
     );
+
     fetchCards();
 
+    const url = new URL(window.location.href);
+    const searchParams = url.searchParams;
+
     // 카카오페이 후 redirect 되었을 경우,
+    if (searchParams.has('status')) {
+      // 결제 성공
+      if (searchParams.get('status') === 'success') {
+        alert('결제에 성공했습니다.');
+        navigate('/customer/reservation/success');
+      } else if (searchParams.get('status') === 'fail') {
+        alert('결제에 실패했습니다.');
+      } else if (searchParams.get('status') === 'cancel') {
+        alert('결제가 취소되었습니다.');
+      }
+    }
   }, []);
 
   const slides = cards.map((card, index) => ({
@@ -107,6 +125,7 @@ const DepositPaymentPage = () => {
     console.log(result);
     if (result.status !== 200) {
       alert('결제에 실패했습니다.');
+      return;
     }
 
     window.location.href = result.data.data.next_redirect_mobile_url;

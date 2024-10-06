@@ -27,7 +27,7 @@ const useStore = create((set, get) => ({
     console.log('추가된 아이템:', item);
 
     const isTableItem =
-      item.itemType === 'square' || item.itemType === 'rounded';
+      item.itemType === 'SQUARE' || item.itemType === 'ROUNDED';
 
     set((state) => ({
       itemsByFloor: {
@@ -37,7 +37,7 @@ const useStore = create((set, get) => ({
           {
             ...item,
             itemType: item.itemType,
-            ...(isTableItem && { tableNumber: '', capacity: 0 }),
+            ...(isTableItem && { tableId: '', assignedSeats: 0 }),
           },
         ],
       },
@@ -204,18 +204,18 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   const handleSubmit = () => {
     console.log('selectedItem: ' + selectedItem);
     if (selectedItem && selectedItem.itemId) {
-      const tableNumber = document.querySelector('#tableNumber').value;
-      const capacity = document.querySelector('#capacity').value;
+      const tableId = document.querySelector('#tableId').value;
+      const assignedSeats = document.querySelector('#assignedSeats').value;
 
       console.log(
-        `${tableNumber}번 테이블, 최대 수용 인원 ${capacity}명으로 제출되었습니다!`
+        `${tableId}번 테이블, 최대 수용 인원 ${assignedSeats}명으로 제출되었습니다!`
       );
 
       console.log(selectedItem);
 
       updateItem(currentFloor, selectedItem.itemId, {
-        tableNumber,
-        capacity: parseInt(capacity, 10),
+        tableId,
+        assignedSeats: parseInt(assignedSeats, 10),
       });
 
       close();
@@ -262,8 +262,8 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
           });
 
           if (
-            selectedItem.itemType === 'square' ||
-            selectedItem.itemType === 'rounded'
+            selectedItem.itemType === 'SQUARE' ||
+            selectedItem.itemType === 'ROUNDED'
           ) {
             setSelectedItem({
               ...selectedItem,
@@ -280,7 +280,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
                 <label>
                   테이블 번호:
                   <input
-                    id="tableNumber"
+                    id="tableId"
                     type="text"
                     placeholder="테이블 번호 입력"
                   />
@@ -288,7 +288,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
                 <label>
                   최대 수용 인원:
                   <input
-                    id="capacity"
+                    id="assignedSeats"
                     type="number"
                     min="0"
                     placeholder="최대 수용 인원 입력"
@@ -310,7 +310,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   const handleClick = (item) => {
     console.log('클릭된 아이템:', item);
     setSelectedItem(item);
-    if (item.itemType === 'square' || item.itemType === 'rounded') {
+    if (item.itemType === 'SQUARE' || item.itemType === 'ROUNDED') {
       setModalType('setting');
       setTitle(`${item.label} 설정`);
 
@@ -320,20 +320,20 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
           <label>
             테이블 번호:
             <input
-              id="tableNumber"
+              id="tableId"
               type="text"
               placeholder="테이블 번호 입력"
-              defaultValue={item.tableNumber}
+              defaultValue={item.tableId}
             />
           </label>
           <label>
             최대 수용 인원:
             <input
-              id="capacity"
+              id="assignedSeats"
               type="number"
               min="0"
               placeholder="최대 수용 인원 입력"
-              defaultValue={item.capacity}
+              defaultValue={item.assignedSeats}
             />
           </label>
         </GridCanvasModalStyled>
@@ -354,16 +354,50 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
       }
     })();
 
+    const tableRegisterRequestDtos = [];
+    const elementRegisterRequestDtos = [];
+
+    Object.keys(itemsByFloor).forEach((floor) => {
+      itemsByFloor[floor].forEach((item) => {
+        if (item.itemType === 'SQUARE' || item.itemType === 'ROUNDED') {
+          tableRegisterRequestDtos.push({
+            itemId: item.itemId,
+            tableId: item.tableId,
+            assignedSeats: item.assignedSeats,
+            x: item.x,
+            y: item.y,
+            itemType: item.itemType,
+            floor: parseInt(floor, 10),
+          });
+        } else {
+          elementRegisterRequestDtos.push({
+            itemId: item.itemId,
+            itemType: item.itemType,
+            label: item.label,
+            x: item.x,
+            y: item.y,
+            floor: parseInt(floor, 10),
+          });
+        }
+      });
+    });
+
     console.log({
       size,
       floorCnt,
-      itemsByFloor,
+      tableRegisterRequestDtos,
+      elementRegisterRequestDtos,
     });
 
     authClientInstance
       .post(
         `/api/restaurants/structure`,
-        { size, floorCnt, itemsByFloor },
+        {
+          size,
+          floorCnt,
+          tableRegisterRequestDtos,
+          elementRegisterRequestDtos,
+        },
         {
           headers: {
             'Content-Type': 'application/json',

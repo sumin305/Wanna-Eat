@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react';
-import { SeatingMapStyled, Items } from './SeatingMap.js';
+import {
+  SeatingMapStyled,
+  Items,
+  MapStyled,
+  ItemWrapperStyled,
+  LabelStyled,
+} from './SeatingMap.js';
 import { authClientInstance } from 'utils/http-client.js';
+import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore.js';
 
 import FloorSelector from 'component/manager/restaurant/SeatDecorate/FloorSelector/FloorSelector.jsx';
 import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
@@ -11,45 +18,53 @@ const SeatingMap = () => {
 
   const [currentFloor, setCurrentFloor] = useState(1);
 
+  const { restaurantId } = useMyRestaurantStore();
+
+  useEffect(() => {
+    if (restaurantId) {
+      fetchFloorData();
+    }
+  }, [restaurantId]);
+
   const testData = {
     floorCnt: 3,
     itemsByFloor: [
       {
         itemId: 'd6c927a6-756b-422f-81a9-bfe8019cf404',
-        itemType: 'restroom',
+        itemType: 'RESTROOM',
         label: '화장실',
         x: 192,
         y: 0,
       },
       {
         itemId: '280edf56-3a4e-488b-aca2-522f22de893b',
-        itemType: 'entrance',
+        itemType: 'ENTRANCE',
         label: '출입구',
         x: 192,
         y: 432,
       },
       {
         itemId: 'f070056c-0678-43fd-b55e-7fbf80119cc8',
-        itemType: 'counter',
+        itemType: 'COUNTER',
         label: '계산대',
         x: 240,
         y: 432,
       },
       {
         itemId: 'fb47448c-ed9c-4fbc-b6bd-6eea38461f1e',
-        itemType: 'square',
+        itemType: 'SQUARE',
         label: '사각 테이블',
-        tableNumber: '2',
-        capacity: 4,
+        tableId: '1',
+        assignedSeats: 2,
         x: 96,
         y: 240,
       },
       {
         itemId: '69c7f645-66a5-4dc0-9395-be91eca5350a',
-        itemType: 'rounded',
+        itemType: 'ROUNDED',
         label: '원형 테이블',
-        tableNumber: '',
-        capacity: 0,
+        tableId: '2',
+        assignedSeats: 4,
         x: 336,
         y: 240,
       },
@@ -63,8 +78,7 @@ const SeatingMap = () => {
     setLoading(false);
   }, []);
 
-  const fetchFloorData = async () => {
-    const restaurantId = 1; // 임시 restaurant id
+  const fetchFloorData = async (restaurantId) => {
     try {
       const response = await authClientInstance.get(
         `/api/public/restaurants/${restaurantId}/structure`
@@ -106,36 +120,18 @@ const SeatingMap = () => {
         onFloorChange={handleFloorChange}
       />
 
-      <div
-        style={{
-          position: 'relative',
-          width: '500px',
-          height: '500px',
-          border: '1px solid #ccc',
-        }}
-      >
+      <MapStyled>
         {floorData.map((item) => (
-          <div
-            key={item.itemId}
-            style={{
-              position: 'absolute',
-              left: `${item.x}px`,
-              top: `${item.y}px`,
-              width: '50px',
-              height: '50px',
-            }}
-          >
+          <ItemWrapperStyled key={item.itemId} x={item.x} y={item.y}>
             {renderIcon(item.itemType)}
-            {item.itemType === 'square' || item.itemType === 'rounded' ? (
-              <div>
-                <strong>{item.tableNumber}</strong> ({item.capacity} 명)
-              </div>
+            {item.itemType === 'SQUARE' || item.itemType === 'ROUNDED' ? (
+              <LabelStyled>{item.tableId}번</LabelStyled>
             ) : (
-              <div></div>
+              ''
             )}
-          </div>
+          </ItemWrapperStyled>
         ))}
-      </div>
+      </MapStyled>
     </SeatingMapStyled>
   );
 };

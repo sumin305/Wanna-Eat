@@ -71,7 +71,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 			extractedAttributes.getNameAttributeKey(),
 			extractedAttributes.getOauth2UserInfo().getEmail(),
 			socialType,
-			createdUser.getRole()
+			createdUser.getRole(),
+			createdUser.getRestaurant()
 		);
 	}
 

@@ -4,7 +4,7 @@ import SockJS from 'sockjs-client';
 import useChatStore from 'stores/customer/useChatStore';
 import { getChatlist } from 'api/customer/chat';
 import { useNavigate, useParams } from 'react-router-dom';
-import { validateReservationUrl } from 'api/customer/order';
+import { validateReservationUrl } from 'api/customer/socket';
 import {
   DateBox,
   ChatContainer,
@@ -64,27 +64,27 @@ const ChatPage = () => {
     setActiveIcons([8, 10]);
     setIconAction([gotoSelectMenu, gotoChat]);
 
-    const validateAndConnect = async () => {
-      const response = await validateReservationUrl(reservationUrl);
+    // const validateAndConnect = async () => {
+    //   const response = await validateReservationUrl(reservationUrl);
 
-      // reservationUrl 유효성 검사 실행 후 유효한 경우
-      if (response.status === 200) {
-        // stompClient가 없는 경우에만 소켓 연결 시도
-        if (!stompClient) {
-          initializeConnection();
-        } else {
-          console.log('이미 소켓이 연결되어 있습니다.');
-        }
-      } else {
-        // 유효하지 않은 reservationUrl일 경우
-        console.log(response.response.data.message);
-        nav('/customer/order/notexist', {
-          state: { message: response.response.data.message },
-        });
-      }
-    };
+    //   // reservationUrl 유효성 검사 실행 후 유효한 경우
+    //   if (response.status === 200) {
+    //     // stompClient가 없는 경우에만 소켓 연결 시도
+    //     if (!stompClient) {
+    //       initializeConnection();
+    //     } else {
+    //       console.log('이미 소켓이 연결되어 있습니다.');
+    //     }
+    //   } else {
+    //     // 유효하지 않은 reservationUrl일 경우
+    //     console.log(response.response.data.message);
+    //     nav('/customer/order/notexist', {
+    //       state: { message: response.response.data.message },
+    //     });
+    //   }
+    // };
 
-    validateAndConnect();
+    // validateAndConnect();
   }, []);
 
   useEffect(() => {

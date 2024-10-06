@@ -26,7 +26,7 @@ import {
   FoodPriceP,
   TotalPriceDiv,
   TotalPriceP,
-} from './OrderCartBox.js';
+} from '../../../../pages/customer/order/OrderCartPage/OrderCartPage.js';
 import theme from '../../../../style/common/theme.js';
 import { useNavigate } from 'react-router-dom';
 import useOrderStore from '../../../../stores/customer/useOrderStore.js';
@@ -37,6 +37,16 @@ import useModalStore from 'stores/common/useModalStore.js';
 import useCartStore from 'stores/customer/useCartStore.js';
 const OrderCartBox = ({ reservationUrl }) => {
   const [menus, setMenus] = useState([]);
+
+  const [myCart, setMyCart] = useState([]);
+  const [totalCart, setTotalCart] = useState([]);
+
+  const [myCartCnt, setMyCartCnt] = useState(0);
+  const [totalCartCnt, setTotalCartCnt] = useState(0);
+
+  const [myCartPrice, setMyCartPrice] = useState(0);
+  const [totalCartPrice, setTotalCartPrice] = useState(0);
+
   const nav = useNavigate();
   const {
     setModalType,
@@ -60,13 +70,8 @@ const OrderCartBox = ({ reservationUrl }) => {
   } = useOrderStore();
 
   const { cartElements } = useCartStore();
-  // 정렬되지 않은 메뉴 데이터를 가져옴
-  const allMenus = allMenusInfo?.cartDetailResponseDto?.menus || [];
 
-  // 정렬된 메뉴 데이터를 Zustand에서 가져옴
-  const sortedMenus = allSortedMenusInfo?.cartDetailResponseDto?.menus || [];
-
-  const reservationParticipantId = 2;
+  const [reservationParticipantId, setreservationParticipantId] = useState(0);
   const [menuCounts, setMenuCounts] = useState([]);
 
   const { stompClient, isConnected } = useChatStore();
@@ -84,11 +89,8 @@ const OrderCartBox = ({ reservationUrl }) => {
 
   // 메뉴 정렬 후 Zustand에 저장
   useEffect(() => {
-    if (allMenus.length > 0) {
-      const sorted = sortMenusByParticipantId(
-        allMenus,
-        reservationParticipantId
-      );
+    if (menus.length > 0) {
+      const sorted = sortMenusByParticipantId(menus, reservationParticipantId);
 
       // 정렬된 메뉴를 Zustand에 저장
       setAllMenusSortInfo({
@@ -110,11 +112,42 @@ const OrderCartBox = ({ reservationUrl }) => {
     }
     console.log('cartElements', cartElements);
     setMenus(cartElements);
-  }, [cartElements, allMenus, reservationParticipantId, setAllMenusSortInfo]);
+  }, [menus]);
 
   useEffect(() => {
-    console.log('cartElements', cartElements);
+    setMenus(cartElements);
+    setreservationParticipantId(reservationParticipantId);
   }, []);
+
+  useEffect(() => {
+    setMenus(cartElements);
+    setMyCartCnt(
+      menus
+        .filter(
+          (menu) => menu.reservationParticipantId === reservationParticipantId
+        )
+        .reduce((total, menu) => {
+          return (
+            total +
+            Object.values(menu.menuInfo).reduce(
+              (count, menuItem) => count + menuItem.menuCnt,
+              0
+            )
+          );
+        }, 0)
+    );
+    setTotalCartCnt(
+      menus.reduce((total, menu) => {
+        return (
+          total +
+          Object.values(menu.menuInfo).reduce(
+            (count, menuItem) => count + menuItem.menuCnt,
+            0
+          )
+        );
+      }, 0)
+    );
+  }, [menus]);
 
   const handleDecrease = (
     menuIndex,
@@ -363,37 +396,6 @@ const OrderCartBox = ({ reservationUrl }) => {
     }, 0);
   };
 
-  // 나의 메뉴 개수 계산
-  const calculateMyMenuCount = () => {
-    return menus
-      .filter(
-        (menu) => menu.reservationParticipantId === reservationParticipantId
-      )
-      .reduce((total, menu) => {
-        return (
-          total +
-          Object.values(menu.menuInfo).reduce(
-            (count, menuItem) => count + menuItem.menuCnt,
-            0
-          )
-        );
-      }, 0);
-  };
-
-  // 전체 메뉴 개수 계산
-  const calculateTotalMenuCount = () => {
-    return menus.reduce((total, menu) => {
-      return (
-        total +
-        Object.values(menu.menuInfo).reduce(
-          (count, menuItem) => count + menuItem.menuCnt,
-          0
-        )
-      );
-    }, 0);
-  };
-
-  console.log(cartElements, menus);
   return (
     <OrderContainer>
       <WETabContainer>
@@ -404,8 +406,8 @@ const OrderCartBox = ({ reservationUrl }) => {
           <MenuContainer>
             <TotalMenuP>
               {activeTab === 0
-                ? `총 메뉴 ${calculateMyMenuCount()}개`
-                : `총 메뉴 ${calculateTotalMenuCount()}개`}
+                ? `총 메뉴 ${myCartCnt}개`
+                : `총 메뉴 ${totalCartCnt}개`}
             </TotalMenuP>
             <DeleteDiv>
               {activeTab === 0 ? (

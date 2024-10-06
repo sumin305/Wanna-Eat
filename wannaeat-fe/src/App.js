@@ -58,6 +58,7 @@ const getCategories = async () => {
     );
   }
 };
+
 getCategories();
 getMerchantCategories();
 function App() {

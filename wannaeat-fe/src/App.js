@@ -36,6 +36,12 @@ const globalStyles = css`
     margin: 0;
     padding: 0;
   }
+
+  button {
+    border: 0;
+    background: none;
+    color: black;
+  }
 `;
 
 // FCM permission & token
@@ -46,13 +52,11 @@ if (Notification.permission !== 'granted') {
 const getCategories = async () => {
   const response = await getRestaurantCategories();
   if (response.status === 200) {
-    // setCategories(response.data.data.restaurantCategories);
     localStorage.setItem(
       'categories',
       JSON.stringify(response.data.data.restaurantCategories)
     );
   }
-  // setCategories(data.categories);
 };
 getCategories();
 getMerchantCategories();

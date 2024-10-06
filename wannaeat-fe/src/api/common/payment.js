@@ -4,7 +4,7 @@ import { authClientInstance, clientInstance } from 'utils/http-client';
 
 // 보증금 결제 카페
 export const payDepositPaymentByKakaoPay = async (requestDto) => {
-  return await clientInstance
+  return await authClientInstance
     .post('/api/payments/deposit/kakao', requestDto)
     .then((result) => result)
     .catch((error) => error);

@@ -136,10 +136,40 @@ export const updateMenu = async (menuId, menuData, menuImage) => {
 // 메뉴 삭제 API
 export const deleteMenu = async (menuId) => {
   try {
-    const result = await authClientInstance.delete(`/api/menus/${menuId}`);
+    const result = await delete(`/api/menus/${menuId}`);
     return result.data;
   } catch (error) {
     console.error('Error deleting menu:', error);
     throw error; // 오류 발생 시 에러 던짐
   }
 };
+
+// 이미지 처리 API 호출
+export const editImage = async (imageFile) => {
+  const ngrokBaseUrl = process.env.REACT_APP_NGROK_BASE_URL;
+
+  if (!ngrokBaseUrl) {
+    console.error('ngrok URL이 설정되지 않았습니다.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', imageFile);
+
+  try {
+    // axios에서 Blob 형식으로 응답을 받아야 함
+    const result = await clientInstance.post(`${ngrokBaseUrl}/edit-image`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      responseType: 'blob',  // 여기가 중요함, Blob으로 받아옴
+      timeout: 10000000,  // 타임아웃 설정
+    });
+
+    return result.data;  // 성공 시 Blob 데이터 반환
+  } catch (error) {
+    console.error('Error editing image:', error);
+    throw error;
+  }
+};
+

@@ -93,4 +93,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 		+ "AND r.startTime <= :now AND r.endTime >= :now "
 		+ "ORDER BY r.reservationDate ASC, r.startTime ASC")
 	Page<Reservation> findFirstOngoingReservation(@Param("user") User user, @Param("today") LocalDate today, @Param("now") LocalTime now, Pageable pageable);
+
+	@Query("SELECT r FROM Reservation r WHERE r.user = :user " +
+		"AND r.cancelled = false " +
+		"AND r.reservationDate >= :date")
+	List<Reservation> findReservationsByUserAndDate(@Param("user") User user,
+		@Param("date") LocalDate date);
 }

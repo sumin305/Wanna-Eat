@@ -1,6 +1,7 @@
 package com.waterdragon.wannaeat.domain.statistic.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import com.waterdragon.wannaeat.domain.statistic.dto.response.MainStatisticRespo
 import com.waterdragon.wannaeat.domain.statistic.dto.response.PeekStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.ReservationCountStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.dto.response.RevenueStatisticResponseDto;
+import com.waterdragon.wannaeat.domain.statistic.dto.response.UserRestaurantVisitStatisticResponseDto;
 import com.waterdragon.wannaeat.domain.statistic.service.StatisticService;
 import com.waterdragon.wannaeat.domain.user.domain.User;
 import com.waterdragon.wannaeat.domain.user.domain.enums.Role;
@@ -185,6 +187,26 @@ public class StatisticController {
 			.status(HttpStatus.OK.value())
 			.message("월별 예약 수 통계 데이터.")
 			.data(reservationCountStatisticResponseDto)
+			.build();
+
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+	}
+
+	@Operation(summary = "고객별 많이 방문한 식당 목록 조회 API")
+	@GetMapping("/users/reservations/statistics")
+	public ResponseEntity<ResponseDto<List<UserRestaurantVisitStatisticResponseDto>>> getRestaurantVisitStatisticsByUser(
+	) {
+		User user = authUtil.getAuthenticatedUser();
+		if (user.getRole() != Role.CUSTOMER) {
+			throw new NotAuthorizedException("접근 권한이 없습니다.");
+		}
+
+		List<UserRestaurantVisitStatisticResponseDto> userRestaurantVisitStatisticResponseDto = statisticService.getRestaurantVisitStatisticsByUser(
+			user);
+		ResponseDto<List<UserRestaurantVisitStatisticResponseDto>> responseDto = ResponseDto.<List<UserRestaurantVisitStatisticResponseDto>>builder()
+			.status(HttpStatus.OK.value())
+			.message("가장 많이 방문한 식당 목록.")
+			.data(userRestaurantVisitStatisticResponseDto)
 			.build();
 
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);

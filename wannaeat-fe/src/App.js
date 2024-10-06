@@ -36,6 +36,12 @@ const globalStyles = css`
     margin: 0;
     padding: 0;
   }
+
+  button {
+    border: 0;
+    background: none;
+    color: black;
+  }
 `;
 
 // FCM permission & token

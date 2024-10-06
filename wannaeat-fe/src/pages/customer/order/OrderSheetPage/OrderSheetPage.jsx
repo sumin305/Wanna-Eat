@@ -4,27 +4,13 @@ import { validateReservationUrl } from 'api/customer/order';
 import useChatStore from 'stores/customer/useChatStore';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import OrderCartBox from 'component/customer/order/OrderCartBox.jsx';
 import useHeaderStore from 'stores/common/useHeaderStore';
 import useOrderStore from 'stores/customer/useOrderStore';
-import { getOrderData } from 'api/customer/order.js';
+import OrderSheetBox from 'component/customer/order/OrderSheetBox/OrderSheetBox.jsx';
 
-const OrderCartPage = () => {
-  const {
-    isConnected,
-    setIsConnected,
-    stompClient,
-    setStompClient,
-    chatPage,
-    chatSize,
-  } = useChatStore();
-  const {
-    allOrdersInfo,
-    allMenusInfo,
-    setAllMenusInfo,
-    restaurantId,
-    setRestaurantId,
-  } = useOrderStore();
+const OrderSheetPage = () => {
+  const { isConnected, setIsConnected, stompClient, setStompClient } =
+    useChatStore();
   const nav = useNavigate();
   const params = useParams();
   const reservationUrl = params.url;
@@ -35,11 +21,12 @@ const OrderCartPage = () => {
     setActiveIcons,
     setIsShowBackIcon,
   } = useHeaderStore();
+  const { allOrdersInfo } = useOrderStore();
 
   // 웹소켓 초기 연결
   useEffect(() => {
     setIsCarrot(true);
-    setPageName('장바구니');
+    setPageName('계산서');
     setIsShowLogo(false);
     setActiveIcons([3]);
     setIsShowBackIcon(true);
@@ -97,43 +84,14 @@ const OrderCartPage = () => {
     );
   };
 
-  const clickGotoChat = () => {
-    nav(`/customer/order/chat/${reservationUrl}`);
-  };
-
   console.log('웹소켓연결확인:', stompClient);
   console.log('웹소켓연결확인:', isConnected);
 
-  const fetchMenusData = async () => {
-    const allOrderData = await getOrderData(reservationUrl, chatPage, chatSize);
-    console.log('메인페이지 불러온 데이터:', allOrderData.data);
-
-    // 전체 메뉴 리스트 저장
-    setAllMenusInfo(allOrderData.data);
-    // 식당 아이디 저장
-    // setRestaurantId(allOrderData.data.restaurantId);
-    console.log('zustand allMenus:', allOrderData.data);
-    // console.log('zustand restaurantId:', restaurantId);
-  };
-
-  // 모든 주문 데이터 불러오기
-  useEffect(() => {
-    if (isConnected) {
-      fetchMenusData();
-    }
-  }, []);
-
   return (
-    <>
-      <button onClick={clickGotoChat}>채팅으로 이동</button>
-      <button
-        onClick={() => nav(`/customer/order/menu-select/${reservationUrl}`)}
-      >
-        메뉴선택페이지로 이동
-      </button>
-      <OrderCartBox reservationUrl={reservationUrl} />
-    </>
+    <div>
+      <OrderSheetBox reservationUrl={reservationUrl} />
+    </div>
   );
 };
 
-export default OrderCartPage;
+export default OrderSheetPage;

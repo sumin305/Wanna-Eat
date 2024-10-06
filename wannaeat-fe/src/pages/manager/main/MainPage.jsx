@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import theme from 'style/common/theme.js';
 import {
   MainPageStyled,
   GoToSeatDecorateStyled,
@@ -75,16 +74,18 @@ const MainPage = () => {
   };
 
   const handleSubmit = () => {
-    if(floor === ''){
+    if (floor === '') {
       window.alert('층을 입력해 주세요');
       return;
     }
-    
+
     console.log(
       'dropdownId:' + dropdownId + ' floor:' + floor + ' 제출되었습니다.'
     );
     close();
-    navigate('/manager/restaurant/seat-decorate', {state: { dropdownId, floor },});
+    navigate('/manager/restaurant/seat-decorate', {
+      state: { dropdownId, floor },
+    });
   };
 
   const [floor, setFloor] = useState(1);

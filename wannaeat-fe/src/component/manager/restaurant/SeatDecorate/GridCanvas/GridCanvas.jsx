@@ -23,13 +23,22 @@ const useStore = create((set, get) => ({
 
   addItem: (floor, item) => {
     const itemId = uuid();
+    item.itemId = itemId;
     console.log('추가된 아이템:', item);
+
+    const isTableItem =
+      item.itemType === 'square' || item.itemType === 'rounded';
+
     set((state) => ({
       itemsByFloor: {
         ...state.itemsByFloor,
         [floor]: [
           ...(state.itemsByFloor[floor] || []),
-          { ...item, itemType: item.itemType, tableNumber: '', capacity: 0 },
+          {
+            ...item,
+            itemType: item.itemType,
+            ...(isTableItem && { tableNumber: '', capacity: 0 }),
+          },
         ],
       },
       gridStatusByFloor: {
@@ -97,7 +106,7 @@ const useStore = create((set, get) => ({
   },
 }));
 
-const GridCanvas = ({ currentFloor, gridColumns, gridRows }) => {
+const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   const [gridSize, setGridSize] = useState(50);
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
@@ -143,14 +152,16 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows }) => {
   }, []);
 
   useEffect(() => {
-    const restaurantId = '일단임시식당ID';
+    const restaurantId = 1; // 임시 id
     authClientInstance
       .get(`/api/restaurants/${restaurantId}/structure`)
       .then((response) => {
         setItemsByFloor(currentFloor, response.data);
+        console.error('성공: ', response);
       })
       .catch((error) => {
         console.error('꾸미기 정보 요청 오류:', error);
+        return;
       });
   }, [setItemsByFloor, currentFloor]);
 
@@ -237,15 +248,17 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows }) => {
           (paletteItem) => paletteItem.itemId === item.itemId
         );
 
+        console.log('selectedItem: ' + selectedItem.itemId);
+
         if (selectedItem) {
+          const newItemId = uuid();
           addItem(currentFloor, {
-            itemId: item.itemId,
+            itemId: newItemId,
             itemType: item.itemType,
             x,
             y,
             icon: selectedItem.icon,
             label: selectedItem.label,
-            rotation: 0,
           });
 
           if (
@@ -254,7 +267,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows }) => {
           ) {
             setSelectedItem({
               ...selectedItem,
-              itemId: item.itemId,
+              itemId: newItemId,
               x,
               y,
             });
@@ -330,10 +343,27 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows }) => {
   };
 
   const handleCanvasSave = () => {
+    const size = (() => {
+      switch (gridColumns) {
+        case 5:
+          return 'SMALL';
+        case 10:
+          return 'MEDIUM';
+        case 15:
+          return 'LARGE';
+      }
+    })();
+
+    console.log({
+      size,
+      floorCnt,
+      itemsByFloor,
+    });
+
     authClientInstance
       .post(
-        '/api/restaurants/{restaurantId}structure',
-        { itemsByFloor },
+        `/api/restaurants/structure`,
+        { size, floorCnt, itemsByFloor },
         {
           headers: {
             'Content-Type': 'application/json',
@@ -345,6 +375,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows }) => {
       })
       .catch((error) => {
         console.error('꾸미기 저장 실패:', error);
+        return;
       });
   };
 
@@ -416,7 +447,6 @@ const GridItem = ({ item, gridSize, onClick }) => {
       isDragging={isDragging}
       x={item.x}
       y={item.y}
-      rotation={item.rotation}
       onClick={() => onClick(item)}
     >
       <item.icon

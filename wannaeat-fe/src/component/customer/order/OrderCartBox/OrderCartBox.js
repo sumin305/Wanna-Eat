@@ -16,6 +16,15 @@ export const MenuContainer = styled.div`
   align-items: center;
 `;
 
+// 탭 스타일
+export const WETabContainer = styled.div`
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: ${theme.color.white};
+`;
+
 export const TotalMenuP = styled.p`
   font-size: 15px;
   font-weight: 700;
@@ -53,7 +62,7 @@ export const LineDiv = styled.div`
 export const MenuDiv = styled.div`
   background-color: rgba(212, 212, 212, 0.3);
   padding: 4vw;
-  height: 50vh;
+  height: 45vh;
   overflow-y: auto;
   -ms-overflow-style: none; /* 인터넷 익스플로러용 스크롤바 숨김 */
   scrollbar-width: none; /* 파이어폭스용 스크롤바 숨김 */
@@ -71,9 +80,17 @@ export const MenuImg = styled.img`
 `;
 
 export const FoodInfoDiv = styled.div`
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
+`;
+
+export const DeleteImg = styled.img`
+  position: absolute;
+  top: 3%;
+  right: 5%;
+  cursor: pointer;
 `;
 
 export const FoodInfoTopDiv = styled.div`
@@ -178,7 +195,7 @@ export const TotalPriceP = styled.p`
 `;
 
 export const OrderContainer = styled.div`
-  height: 100%;
+  margin-bottom: 20%;
 `;
 
 export const ButtonContainer = styled.div`

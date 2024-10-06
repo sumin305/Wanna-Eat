@@ -13,9 +13,18 @@ export const logout = async () => {
     .catch((error) => error);
 };
 
+// 닉네임 변경
 export const editMyInfo = async (nickname) => {
   return await authClientInstance
-    .patch('/api/users', { nickname: nickname })
+    .patch('/api/users/nickname', { nickname: nickname })
+    .then((result) => result)
+    .catch((error) => error);
+};
+
+// 결제 비밀번호 등록
+export const registPassword = async (password) => {
+  return await authClientInstance
+    .patch('/api/users/password', { paymentPassword: password })
     .then((result) => result)
     .catch((error) => error);
 };

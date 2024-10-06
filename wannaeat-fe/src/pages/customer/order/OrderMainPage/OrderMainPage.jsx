@@ -6,7 +6,7 @@ import { validateReservationUrl, getOrderData } from 'api/customer/order';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import useOrderStore from 'stores/customer/useOrderStore';
-import OrderMainBox from 'component/customer/order/OrderMainBox.jsx';
+import OrderMainBox from 'component/customer/order/OrderMainBox/OrderMainBox.jsx';
 
 const OrderMainPage = () => {
   const nav = useNavigate();
@@ -18,6 +18,7 @@ const OrderMainPage = () => {
     setIsShowLogo,
     setActiveIcons,
     setIsShowBackIcon,
+    setIconAction,
   } = useHeaderStore();
 
   const {
@@ -31,13 +32,29 @@ const OrderMainPage = () => {
 
   const { allOrdersInfo, setAllOrdersInfo } = useOrderStore();
 
+  const {
+    setReservationDate,
+    setReservationStartTime,
+    setReservationEndTime,
+    setRestaurantId,
+    setReservationId,
+  } = useOrderStore();
+
   // 웹소켓 초기 연결
   useEffect(() => {
     setIsCarrot(true);
     setPageName('주문서');
     setIsShowLogo(false);
-    setActiveIcons([3]);
     setIsShowBackIcon(true);
+
+    const gotoChat = () => {
+      nav(`/customer/order/chat/${reservationUrl}`);
+    };
+    const gotoSelectMenu = () => {
+      nav(`/customer/order/menu-select/${reservationUrl}`);
+    };
+    setActiveIcons([8, 10]);
+    setIconAction([gotoSelectMenu, gotoChat]);
 
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);
@@ -100,6 +117,12 @@ const OrderMainPage = () => {
     );
     console.log('메인페이지 불러온 데이터:', allOrdersInfo.data);
 
+    setReservationDate(allOrdersInfo.data.reservationDate);
+    setReservationStartTime(allOrdersInfo.data.reservationDate);
+    setReservationEndTime(allOrdersInfo.data.reservationEndTime);
+    setRestaurantId(allOrdersInfo.data.restaurantId);
+    setReservationId(allOrdersInfo.data.reservationId);
+
     // 전체 메뉴 리스트 저장
     setAllOrdersInfo(allOrdersInfo.data);
     // 식당 아이디 저장
@@ -116,18 +139,8 @@ const OrderMainPage = () => {
     }
   }, []);
 
-  const clickGotoChat = () => {
-    nav(`/customer/order/chat/${reservationUrl}`);
-  };
-
   return (
     <>
-      <button onClick={clickGotoChat}>채팅으로 이동</button>
-      <button
-        onClick={() => nav(`/customer/order/menu-select/${reservationUrl}`)}
-      >
-        메뉴선택페이지로 이동
-      </button>
       <OrderMainBox reservationUrl={reservationUrl} />
     </>
   );

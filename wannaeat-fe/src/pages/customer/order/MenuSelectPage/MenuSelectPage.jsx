@@ -11,6 +11,23 @@ import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 import { useState } from 'react';
 import CartIcon from 'assets/icons/order/cart.svg';
+import {
+  MenuPageContainer,
+  WETabContainer,
+  TabText,
+  MenuDescription,
+  MenuPrice,
+  CartImg,
+  MenuContainer,
+  MenuBox,
+  ImageBox,
+  MenuImg,
+  MenuContentContainer,
+  MenuName,
+  // MenuPrice,
+  // MenuDescription,
+} from './MenuSelectPage.js';
+import useAlert from 'utils/alert.js';
 
 const MenuSelectPage = () => {
   const nav = useNavigate();
@@ -18,8 +35,9 @@ const MenuSelectPage = () => {
   const reservationUrl = params.url;
   const { isConnected, setIsConnected, stompClient, setStompClient } =
     useChatStore();
+
   const [activeTab, setActiveTab] = useState(0);
-  const myReservationParticipantId = 4;
+  const reservationParticipantId = 2;
   const increment = 1; // 증가 갯수는 1로 설정
 
   const {
@@ -28,9 +46,12 @@ const MenuSelectPage = () => {
     setIsShowLogo,
     setIsShowBackIcon,
     setActiveIcons,
+    setIconAction,
   } = useHeaderStore();
 
   const { allMenusData, setAllMenusData } = useOrderStore();
+
+  const showAlert = useAlert();
 
   // 웹소켓 초기 연결
   useEffect(() => {
@@ -38,7 +59,16 @@ const MenuSelectPage = () => {
     setPageName('메뉴선택');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
-    setActiveIcons([3]);
+
+    const gotoChat = () => {
+      nav(`/customer/order/chat/${reservationUrl}`);
+    };
+    const gotoSelectMenu = () => {
+      nav(`/customer/order/menu-select/${reservationUrl}`);
+    };
+    setActiveIcons([8, 10]);
+    setIconAction([gotoSelectMenu, gotoChat]);
+
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);
 
@@ -124,9 +154,11 @@ const MenuSelectPage = () => {
   };
 
   const handleCartIconClick = (menuId) => {
+    showAlert('메뉴가 장바구니에 추가되었습니다.');
+
     const cartRegisterRequestDto = {
       reservationUrl: reservationUrl,
-      reservationParticipantId: myReservationParticipantId,
+      reservationParticipantId: reservationParticipantId,
       menuId: menuId,
       menuPlusMinus: increment,
     };
@@ -143,34 +175,45 @@ const MenuSelectPage = () => {
         console.log('장바구니 업데이트 내용:', cartRegisterRequestDto);
       } catch (error) {
         console.log('장바구니 업데이트 실패', error);
+        showAlert('장바구니 업데이트를 실패했습니다.');
       }
     } else {
       console.log('웹소켓 연결 실패');
-      alert('웹소켓 연결에 실패했습니다.');
+      showAlert('웹소켓 연결에 실패했습니다.');
     }
   };
 
   return (
-    <>
-      <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
-      {tabs[activeTab]}
-      {currentMenuDetails &&
-        currentMenuDetails.map((menu, menuId) => (
-          <div key={menuId}>
-            <p>{menu.menuImage}</p>
-            <p>{menu.menuName}</p>
-            <p>{menu.menuPrice}</p>
-            <p>{menu.menuDescription}</p>
-            <img
-              src={CartIcon}
-              alt="담기 아이콘"
-              onClick={() => handleCartIconClick(menu.menuId)}
-            />
-          </div>
-        ))}
+    <MenuPageContainer>
+      <WETabContainer>
+        <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+      </WETabContainer>
+      <TabText>{tabs[activeTab]}</TabText>
+      <MenuContainer>
+        {currentMenuDetails &&
+          currentMenuDetails.map((menu, menuId) => (
+            <MenuBox key={menuId}>
+              <ImageBox>
+                <MenuImg src={menu.menuImage}></MenuImg>
+              </ImageBox>
+              <MenuContentContainer>
+                <MenuName>{menu.menuName}</MenuName>
+                <MenuPrice>
+                  {menu.menuPrice.toLocaleString('ko-KR')}원
+                </MenuPrice>
+                <MenuDescription>{menu.menuDescription}</MenuDescription>
+                <CartImg
+                  src={CartIcon}
+                  alt="담기 아이콘"
+                  onClick={() => handleCartIconClick(menu.menuId)}
+                />
+              </MenuContentContainer>
+            </MenuBox>
+          ))}
+      </MenuContainer>
 
       <WEButton onClick={clickGotoCart}>장바구니 보기</WEButton>
-    </>
+    </MenuPageContainer>
   );
 };
 

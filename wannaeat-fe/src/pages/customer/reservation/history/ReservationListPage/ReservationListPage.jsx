@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import useHeaderStore from 'stores/common/useHeaderStore';
-import { getMyReservation } from 'api/customer/reservation';
+import {
+  getMyReservation,
+  getPriorityVisitingRestaurant,
+} from 'api/customer/reservation';
 import Button from 'component/common/button/WEButton/WEButton.jsx';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
@@ -32,6 +35,9 @@ const ListPage = () => {
   const [memberCount, setMemberCount] = useState(3);
   const [restaurantName, setRestaurantName] = useState('싸덱스 식당');
   const { remainingTime } = useCountDownTimer(date);
+  const [hasPriorityVisitingRestaurant, setHasPriorityVisitingRestaurant] =
+    useState(false);
+
   useEffect(() => {
     const fetchMyReservationList = async () => {
       const result = await getMyReservation();
@@ -39,49 +45,45 @@ const ListPage = () => {
 
       if (result.status === 200) {
         console.log('내 예약 정보 불러오기 성공');
-        // setMyReservationList(result.data.content);
+        setMyReservationList(result.data.content);
       } else {
         console.log('내 예약 정보 불러오기 실패');
       }
     };
+
+    const fetchMyPriorityVisitingRestaurantList = async () => {
+      const result = await getPriorityVisitingRestaurant();
+      console.log(result);
+
+      if (result.status !== 200) {
+        console.log('우선 방문 예약 식당 불러오기 실패');
+        return;
+      }
+
+      const data = result.data.data;
+      if (!data) {
+        setHasPriorityVisitingRestaurant(false);
+      } else {
+        setHasPriorityVisitingRestaurant(true);
+        setRestaurantName(data.restaurantName);
+        setDate(data.reservationDate + ' ' + data.reservationStartTime);
+        setMemberCount(data.memberCnt);
+      }
+
+      console.log(data);
+    };
+
     setPageName('예약 내역');
     setIsShowBackIcon(false);
     setIsShowLogo(false);
-    setIsShowBackIcon(false);
     setActiveIcons([]);
 
     fetchMyReservationList();
-
-    // 데이터 생기면 삭제
-    setMyReservationList([
-      {
-        restaurantId: 1,
-        restaurantName: '그린브라우니 한밭대점',
-        restaurantImage: '',
-        memberCount: 3,
-        reservationStartTime: new Date(),
-      },
-      {
-        restaurantId: 2,
-        restaurantName: '경곤식당',
-        restaurantImage: '',
-        memberCount: 2,
-        reservationStartTime: new Date(),
-      },
-      {
-        restaurantId: 3,
-        restaurantName: '하나로식당',
-        restaurantImage: '',
-        memberCount: 1,
-        reservationStartTime: new Date(),
-      },
-    ]);
+    fetchMyPriorityVisitingRestaurantList();
   }, []);
 
   const formatRemainingTime = () => {
-    console.log('remainingTime', remainingTime);
     const splitArry = remainingTime.split(':');
-    console.log('splitArry', splitArry);
     const day = removeZero(splitArry[0]) ?? '00';
     const hour = removeZero(splitArry[1]) ?? '00';
     const min = removeZero(splitArry[2]) ?? '00';
@@ -107,47 +109,51 @@ const ListPage = () => {
   };
 
   const handleReservationDetailButtonClick = (id) => {
-    navigate('/customer/reservation/detail' + id);
+    navigate('/customer/reservation/detail/' + id);
   };
 
   return (
     <ReservationListContainer>
-      <ReservationAlertWrapper>
-        <ReservationDateWrapper>
-          <ReservationAlertDate>
-            {moment(date).format('YYYY년 MM월 DD일')}{' '}
-            {moment(date).format('HH:mm')}
-          </ReservationAlertDate>
-          <ReservationAlertTime>
-            <ReservationLastTime>{formatRemainingTime()}</ReservationLastTime>
-            <ReservationTimeInfo>
-              후에 {restaurantName}
-              <br></br> {memberCount} 人 예약되어 있어요
-            </ReservationTimeInfo>
-          </ReservationAlertTime>
-        </ReservationDateWrapper>
-        <ReservationiInfoButtonWrapper>
-          <ReservationInfoButton>더보기 ></ReservationInfoButton>
-        </ReservationiInfoButtonWrapper>
-      </ReservationAlertWrapper>
+      {hasPriorityVisitingRestaurant && (
+        <ReservationAlertWrapper>
+          <ReservationDateWrapper>
+            <ReservationAlertDate>
+              {moment(date).format('YYYY년 MM월 DD일')}{' '}
+              {moment(date).format('HH:mm')}
+            </ReservationAlertDate>
+            <ReservationAlertTime>
+              <ReservationLastTime>{formatRemainingTime()}</ReservationLastTime>
+              <ReservationTimeInfo>
+                후에 {restaurantName}
+                <br></br> {memberCount} 人 예약되어 있어요
+              </ReservationTimeInfo>
+            </ReservationAlertTime>
+          </ReservationDateWrapper>
+          <ReservationiInfoButtonWrapper>
+            <ReservationInfoButton>더보기 ></ReservationInfoButton>
+          </ReservationiInfoButtonWrapper>
+        </ReservationAlertWrapper>
+      )}
+
       {myReservationList.map((reservation) => (
-        <ReservationItem key={reservation.id}>
+        <ReservationItem key={reservation.reservationId}>
           <ReservationItemInfo>
-            <ReservationItemImage />
+            <ReservationItemImage src={reservation.restaurantImage} />
             <ReservationItemText>
               <ReservationItemTitle>
                 {reservation.restaurantName}
               </ReservationItemTitle>
               <ReservationItemSubTitle>
-                {reservation.memberCount}명 |&nbsp;
-                {moment(reservation.reservationStartTime).format(
-                  'YYYY-MM-DD(ddd) HH:mm'
-                )}
+                {reservation.memberCnt}명 |&nbsp;
+                {moment(reservation.reservationDate).format('YYYY-MM-DD')}&nbsp;
+                {reservation.reservationStartTime.split(':')[0] +
+                  ':' +
+                  reservation.reservationStartTime.split(':')[1]}
               </ReservationItemSubTitle>
             </ReservationItemText>
             <ReservationDetailButton
               onClick={() =>
-                handleReservationDetailButtonClick(reservation.restaurantId)
+                handleReservationDetailButtonClick(reservation.reservationId)
               }
             >
               예약상세

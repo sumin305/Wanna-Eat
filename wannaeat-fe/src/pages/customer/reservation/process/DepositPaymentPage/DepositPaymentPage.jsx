@@ -13,123 +13,71 @@ import {
   DepositPriceText,
   CardSelectBoxStyled,
 } from './DepositPaymentPage.js';
-import {
-  getMyCreditCardList,
-  payByCreditCard,
-} from 'api/common/ssafyPay/card.js';
+import { getMyCreditCardList } from 'api/common/ssafyPay/card.js';
 
 import { CardNameText } from 'pages/customer/user/CardManagePage/CardManagePage.js';
-import { handleCheckFingerprint } from '../FingerprintAuthPage/FingerprintAuthPage.jsx';
-import { payDepositPaymentByKakaoPay } from 'api/common/payment.js';
 import Carousel from 'react-spring-3d-carousel';
 import { config } from 'react-spring';
 import { useState, useEffect } from 'react';
-import useCommonStore from '../../../../../stores/common/useCommonStore.js';
 import { cardMaps } from 'assets';
-import useAuthStore from 'stores/customer/useAuthStore';
+import { payDepositPaymentByKakaoPay } from 'api/common/payment.js';
+import useAlert from '../../../../../utils/alert.js';
 
 const DepositPaymentPage = () => {
   const navigate = useNavigate();
-  const { email } = useCommonStore();
-  const { depositPerMember, restaurantName, restaurantId } =
-    useRestaurantStore();
-  const { memberCount } = useReservationStore();
+  const { depositPerMember, restaurantId } = useRestaurantStore();
   const [depositPrice, setDepositPrice] = useState(0);
-
   const [cards, setCards] = useState([]);
-
   const [goToSlide, setGoToSlide] = useState(null);
+  const alert = useAlert();
+  const [selectedardIndex, setSelectedCardIndex] = useState(0);
   const {
-    isSupported,
-    isPasskeyRegistered,
-    setIsSupported,
-    setIsPasskeyRegistered,
-    setIsAuthenticated,
-    isAuthenticated,
     selectedCard,
     setSelectedCard,
-  } = useAuthStore();
-  const {
+    memberCount,
     reservationDate,
     startTime,
     endTime,
-    setReservationDate,
-    setStartTime,
-    setEndTime,
-    selectedTimes,
   } = useReservationStore();
 
   useEffect(() => {
-    console.log(selectedCard);
+    setSelectedCard(cards[selectedardIndex]);
   }, [selectedCard]);
+
   useEffect(() => {
     // 회원 카드 정보 조회
     const fetchCards = async () => {
       const result = await getMyCreditCardList();
       if (result.status !== 200) {
+        alert('카드 목록 조회 실패');
+        setCards([{ cardName: '카카오페이카드', cardNo: '0' }]);
+        return;
       }
       const cards = result.data.REC;
       setCards([...cards, { cardName: '카카오페이카드', cardNo: '0' }]);
     };
+
     setDepositPrice(
       depositPerMember * memberCount === 0
         ? 50000
         : depositPerMember * memberCount
     );
 
-    const kakaoPayment = async () => {
-      const result = await payDepositPaymentByKakaoPay({
-        price:
-          depositPerMember * memberCount === 0
-            ? 50000
-            : depositPerMember * memberCount,
-        restaurantId: restaurantId,
-        reservationRegisterRequestDto: {
-          restaurantId: restaurantId,
-          reservationDate: reservationDate,
-          reservationStartTime: startTime,
-          reservationEndTime: endTime,
-          memberCnt: memberCount,
-          tableList: [],
-        },
-      });
-
-      if (result !== 200) {
-        alert('결제에 실패했습니다.');
-      }
-      return;
-    };
-
-    const ssafyPayment = async () => {
-      const result = await payByCreditCard(
-        selectedCard.cardNo,
-        selectedCard.cvc,
-        2022,
-        depositPerMember * memberCount === 0
-          ? 50000
-          : depositPerMember * memberCount
-      );
-      console.log('결제 결과', result);
-
-      if (result.status === 200) {
-        alert('결제 성공');
-        navigate('/customer/reservation/success');
-        setIsAuthenticated(false);
-      } else {
-        alert('결제에 실패했습니다.');
-      }
-    };
-
     fetchCards();
-    console.log(reservationDate);
-    // 인증 성공
-    if (isAuthenticated) {
-      // 카카오페이 결제
-      if (selectedCard && selectedCard.cardNo === '0') {
-        kakaoPayment();
-      } else {
-        // 싸피페이 결제
-        ssafyPayment();
+
+    const url = new URL(window.location.href);
+    const searchParams = url.searchParams;
+
+    // 카카오페이 후 redirect 되었을 경우,
+    if (searchParams.has('status')) {
+      // 결제 성공
+      if (searchParams.get('status') === 'success') {
+        alert('결제에 성공했습니다.');
+        navigate('/customer/reservation/success');
+      } else if (searchParams.get('status') === 'fail') {
+        alert('결제에 실패했습니다.');
+      } else if (searchParams.get('status') === 'cancel') {
+        alert('결제가 취소되었습니다.');
       }
     }
   }, []);
@@ -152,6 +100,7 @@ const DepositPaymentPage = () => {
 
   const handleCardClick = (index, card) => {
     setGoToSlide(index);
+    setSelectedCardIndex(index);
     setSelectedCard(card);
   };
 
@@ -159,13 +108,50 @@ const DepositPaymentPage = () => {
     navigate(-1);
   };
 
+  const kakaoPayment = async (price) => {
+    const result = await payDepositPaymentByKakaoPay({
+      price: price,
+      restaurantId: restaurantId,
+      reservationRegisterRequestDto: {
+        restaurantId: restaurantId,
+        reservationDate: reservationDate,
+        reservationStartTime: startTime,
+        reservationEndTime: endTime,
+        memberCnt: memberCount,
+        tableList: [],
+      },
+    });
+
+    console.log(result);
+    if (result.status !== 200) {
+      alert('결제에 실패했습니다.');
+      return;
+    }
+
+    window.location.href = result.data.data.next_redirect_mobile_url;
+    return;
+  };
+
+  // 결제 버튼 클릭
   const handleNextButtonClick = async () => {
     if (!selectedCard) {
       setSelectedCard(cards[0]);
     }
 
+    // 카카오페이 시
+    if (selectedCard && selectedCard.cardNo === '0') {
+      kakaoPayment(
+        depositPerMember * memberCount === 0
+          ? 50000
+          : depositPerMember * memberCount
+      );
+      return;
+    }
+
+    // 싸피페이 시
     navigate('/customer/password-auth');
   };
+
   return (
     <DepositPaymentPageContainer>
       <WEStep index={2} />

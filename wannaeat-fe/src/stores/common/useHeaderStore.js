@@ -7,6 +7,10 @@ import AlarmOnWhite from 'assets/icons/header/alarm-on-white.svg';
 import AlarmStackWhite from 'assets/icons/header/alarm-stack-white.svg';
 import ZzimOff from 'assets/icons/header/zzim-off.svg';
 import ZzimOn from 'assets/icons/header/zzim-on.svg';
+import ShowMenuOff from 'assets/icons/header/showmenu-white.svg';
+import ShowMenuOn from 'assets/icons/header/showmenu-black.svg';
+import ChatOff from 'assets/icons/header/chat-white.svg';
+import ChatOn from 'assets/icons/header/chat-black.svg';
 
 const icons = [
   AlarmOff,
@@ -17,6 +21,10 @@ const icons = [
   AlarmStackWhite,
   ZzimOff,
   ZzimOn,
+  ShowMenuOff,
+  ShowMenuOn,
+  ChatOff,
+  ChatOn,
 ];
 
 const useHeaderStore = create((set) => ({
@@ -30,6 +38,7 @@ const useHeaderStore = create((set) => ({
   extraHeaderText: '', // 서브탭바의 텍스트
   isUnderLine: false, // 밑줄 유무
   iconAction: [() => {}], // iconAction array
+  isChatOn: false, // 채팅 아이콘 상태 관리
   setIsCarrot: (isCarrot) => set({ isCarrot: isCarrot }),
   setPageName: (text) => set({ pageName: text }),
   setIsShowLogo: (isShowLogo) => set({ isShowLogo: isShowLogo }),
@@ -48,6 +57,7 @@ const useHeaderStore = create((set) => ({
   setExtraHeaderText: (text) => set({ extraHeaderText: text }),
   setIsUnderLine: (isUnderLine) => set({ isUnderLine: isUnderLine }),
   setIconAction: (actions) => set({ iconAction: actions }),
+  setIsChatOn: (isChatOn) => set(() => ({ isChatOn: isChatOn })),
 }));
 
 export default useHeaderStore;

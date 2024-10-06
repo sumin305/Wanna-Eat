@@ -4,6 +4,11 @@ const useMapFilterStore = create((set) => ({
   keyword: '',
   setCategoryId: (categoryId) => set({ categoryId: categoryId }),
   setKeyword: (keyword) => set({ keyword: keyword }),
+  resetMapFilterStore: () =>
+    set({
+      categoryId: -1,
+      keyword: '',
+    }),
 }));
 
 export default useMapFilterStore;

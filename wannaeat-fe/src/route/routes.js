@@ -14,9 +14,10 @@ import RestaurantRegistPage from '../pages/manager/restaurant/RestaurantRegistPa
 import StatisticsPage from 'pages/manager/statistics/StatisticsPage/StatisticsPage.jsx';
 import PeakTimePage from 'pages/manager/statistics/PeakTimePage/PeakTimePage.jsx';
 import SalesPage from 'pages/manager/statistics/SalesPage/SalesPage.jsx';
-import NotificationPage from '../pages/manager/notification/NotificationPage.jsx';
-import ManagerReservationDetailPage from '../pages/manager/reservation/ManagerReservationDetailPage.jsx';
+import AlarmPage from '../pages/manager/alarm/alarm.jsx';
+import ManagerReservationDetailPage from '../pages/manager/reservation/ManagerReservationDetailPage/ManagerReservationDetailPage.jsx';
 import AdminDetailPage from 'pages/manager/reservation/AdminDetailPage/AdminDetailPage.jsx';
+import MenuViewPage from 'pages/manager/menu/MenuViewPage/MenuViewPage.jsx';
 // 손님 관련 페이지
 import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
 import MapRestaurantPage from '../pages/customer/map/MapRestaurantPage.jsx';
@@ -30,16 +31,16 @@ import SeatSelectPage from '../pages/customer/reservation/process/SeatSelectPage
 import SuccessPage from '../pages/customer/reservation/process/SuccessPage/SuccessPage.jsx';
 import FingerprintAuthPage from '../pages/customer/reservation/process/FingerprintAuthPage/FingerprintAuthPage.jsx';
 import ChatPage from 'pages/customer/chat/ChatPage.jsx';
-import OrderMainPage from 'pages/customer/order/OrderMainPage.jsx';
-import OrderCartPage from 'pages/customer/order/OrderCartPage.jsx';
-import NotExistOrderPage from 'pages/customer/order/NotExistOrderPage.jsx';
-import MenuSelectPage from 'pages/customer/order/MenuSelectPage.jsx';
-import OrderSheetPage from 'pages/customer/order/OrderSheetPage.jsx';
-import OrderPaymentPage from 'pages/customer/order/OrderPaymentPage.jsx';
-import CardManagePage from '../pages/customer/user/CardManagePage/CardManagePage.jsx';
-import CardRegistPage from '../pages/customer/user/CardRegistPage/CardRegistPage.jsx';
-import NicknameEditPage from '../pages/customer/user/NicknameEditPage/NicknameEditPage.jsx';
-import MyZzimPage from '../pages/customer/user/MyZzimPage/MyZzimPage.jsx';
+import OrderMainPage from 'pages/customer/order/OrderMainPage/OrderMainPage.jsx';
+import OrderCartPage from 'pages/customer/order/OrderCartPage/OrderCartPage.jsx';
+import NotExistOrderPage from 'pages/customer/order/NotExistOrderPage/NotExistOrderPage.jsx';
+import MenuSelectPage from 'pages/customer/order/MenuSelectPage/MenuSelectPage.jsx';
+import OrderSheetPage from 'pages/customer/order/OrderSheetPage/OrderSheetPage.jsx';
+import OrderPaymentPage from 'pages/customer/order/OrderPaymentPage/OrderPaymentPage.jsx';
+import CardManagePage from 'pages/customer/user/CardManagePage/CardManagePage.jsx';
+import CardRegistPage from 'pages/customer/user/CardRegistPage/CardRegistPage.jsx';
+import NicknameEditPage from 'pages/customer/user/NicknameEditPage/NicknameEditPage.jsx';
+import MyZzimPage from 'pages/customer/user/MyZzimPage/MyZzimPage.jsx';
 import PasswordAuthPage from 'pages/customer/reservation/process/PasswordAuthPage/PasswordAuthPage.jsx';
 // 비회원 관련 페이지
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';
@@ -76,7 +77,9 @@ const AppRoutes = () => {
           element={<SalesPage />}
         />
 
-        <Route path="/manager/notification" element={<NotificationPage />} />
+        {/* 장정현 */}
+        <Route path="/manager/alarm" element={<AlarmPage />} />
+        <Route path="/manager/menu" element={<MenuViewPage />} />
         <Route
           path="/manager/reservation/reservation-detail/:id"
           element={<ManagerReservationDetailPage />}

@@ -1,10 +1,20 @@
 import { useEffect, useState } from 'react';
+import moment from 'moment';
+import useCountDownTimer from 'utils/useCountDownTimer';
 import useHeaderStore from '../../../../stores/common/useHeaderStore.js';
 import {
   MainPageContainer,
   SearchWrapper,
   SearchInput,
   SearchIcon,
+  ReservationDateWrapper,
+  ReservationAlertDate,
+  ReservationAlertTime,
+  ReservationLastTime,
+  ReservationTimeInfo,
+  ReservationiInfoButtonWrapper,
+  ReservationInfoButton,
+  ReservationAlertWrapper,
   BannerWrapper,
   BannerImage,
   BannerRightWrapper,
@@ -25,24 +35,33 @@ import {
   RestaurantInfoName,
   RestaurantDetailWrapper,
   RestaurantMyReservation,
-  RestaurantTotalReservation,
 } from './MainPage.js';
 import searchIcon from '../../../../assets/icons/common/search.svg';
 import tableIcon from '../../../../assets/icons/common/table.svg';
 import arrowRightIcon from '../../../../assets/icons/common/arrow-right.svg';
 import blackArrowRightIcon from '../../../../assets/icons/common/black-arrow-right.svg';
-import foodImage from '../../../../assets/icons/common/food.png';
 import { useNavigate } from 'react-router-dom';
 import useMapFilterStore from 'stores/map/useMapFilterStore.js';
-import { getMyReservation } from 'api/customer/reservation.js';
+import {
+  getMyReservation,
+  getPriorityVisitingRestaurant,
+} from 'api/customer/reservation.js';
 const MainPage = () => {
-  const { setKeyword, keyword } = useMapFilterStore();
+  const { setKeyword } = useMapFilterStore();
   const { setIsShowLogo, setActiveIcons, setPageName } = useHeaderStore();
   const navigate = useNavigate();
   const [restaurantCategories, setRestaurantCategories] = useState([]);
   const [recentlyReservedRestaurants, setRecentlyReservedRestaurants] =
     useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [hasPriorityVisitingRestaurant, setHasPriorityVisitingRestaurant] =
+    useState(false);
+
+  const [date, setDate] = useState('2024-10-11 00:00:00');
+  const { remainingTime } = useCountDownTimer(date);
+
+  const [restaurantName, setRestaurantName] = useState('싸덱스 식당');
+  const [memberCount, setMemberCount] = useState(3);
 
   useEffect(() => {
     const fetchMyReservationList = async () => {
@@ -56,13 +75,99 @@ const MainPage = () => {
         console.log('내 예약 정보 불러오기 실패');
       }
     };
+
+    const fetchMyPriorityVisitingRestaurantList = async () => {
+      const result = await getPriorityVisitingRestaurant();
+      console.log(result);
+
+      if (result.status !== 200) {
+        console.log('우선 방문 예약 식당 불러오기 실패');
+        return;
+      }
+
+      const data = result.data.data;
+      if (!data) {
+        setHasPriorityVisitingRestaurant(false);
+      } else {
+        setHasPriorityVisitingRestaurant(true);
+        setRestaurantName(data.restaurantName);
+        setDate(data.reservationDate + ' ' + data.reservationStartTime);
+        setMemberCount(data.memberCnt);
+      }
+
+      console.log(data);
+    };
+
     setPageName('');
     setIsShowLogo(true);
     setActiveIcons([0]);
     setRestaurantCategories(JSON.parse(localStorage.getItem('categories')));
     fetchMyReservationList();
+    fetchMyPriorityVisitingRestaurantList();
   }, []);
 
+  const formatRemainingTime = () => {
+    const splitArry = remainingTime.split(':');
+    const day = removeZero(splitArry[0]) ?? '00';
+    const hour = removeZero(splitArry[1]) ?? '00';
+    const min = removeZero(splitArry[2]) ?? '00';
+    if (day !== '00' && day !== '0') {
+      return day + '일 ' + hour + '시간';
+    } else if (hour !== '00' && hour !== '0') {
+      return hour + '시간 ' + min + '분';
+    } else {
+      return min + '분';
+    }
+  };
+  const removeZero = (time) => {
+    if (time?.length === 2 && time[0] === '0') {
+      return time[1];
+    }
+    return time;
+  };
+  const CustomerMainBanner = () => {
+    if (!hasPriorityVisitingRestaurant) {
+      return (
+        <BannerWrapper>
+          <BannerImage src={tableIcon} />
+          <BannerRightWrapper>
+            <BannerTitle>
+              예약을 통해
+              <br />
+              완벽한 식사 시간을
+              <br />
+              만들어보세요
+            </BannerTitle>
+            <BannerButton onClick={handleReservationButtonClick}>
+              예약하러 가기
+              <img src={arrowRightIcon} />
+            </BannerButton>
+          </BannerRightWrapper>
+        </BannerWrapper>
+      );
+    } else {
+      return (
+        <ReservationAlertWrapper>
+          <ReservationDateWrapper>
+            <ReservationAlertDate>
+              {moment(date).format('YYYY년 MM월 DD일')}{' '}
+              {moment(date).format('HH:mm')}
+            </ReservationAlertDate>
+            <ReservationAlertTime>
+              <ReservationLastTime>{formatRemainingTime()}</ReservationLastTime>
+              <ReservationTimeInfo>
+                후에 {restaurantName}
+                <br></br> {memberCount} 人 예약되어 있어요
+              </ReservationTimeInfo>
+            </ReservationAlertTime>
+          </ReservationDateWrapper>
+          <ReservationiInfoButtonWrapper>
+            <ReservationInfoButton>더보기 ></ReservationInfoButton>
+          </ReservationiInfoButtonWrapper>
+        </ReservationAlertWrapper>
+      );
+    }
+  };
   const handleSearchKeywordChange = (e) => {
     setSearchKeyword(e.target.value);
   };
@@ -82,6 +187,10 @@ const MainPage = () => {
     navigate('/customer/reservationlist');
   };
 
+  const handleRestaurantClick = (id) => {
+    navigate('/customer/reservation/detail/' + id);
+  };
+
   return (
     <MainPageContainer>
       <SearchWrapper>
@@ -95,28 +204,13 @@ const MainPage = () => {
           src={searchIcon}
         ></SearchIcon>
       </SearchWrapper>
-      <BannerWrapper>
-        <BannerImage src={tableIcon} />
-        <BannerRightWrapper>
-          <BannerTitle>
-            예약을 통해
-            <br />
-            완벽한 식사 시간을
-            <br />
-            만들어보세요
-          </BannerTitle>
-          <BannerButton onClick={handleReservationButtonClick}>
-            예약하러 가기
-            <img src={arrowRightIcon} />
-          </BannerButton>
-        </BannerRightWrapper>
-      </BannerWrapper>
+      {CustomerMainBanner()}
       <CategoryWrapper>
         <CategoryTitle>무엇을 드시고 싶으세요?</CategoryTitle>
         <CategoryContainer>
-          {restaurantCategories.map((category) => (
+          {restaurantCategories.map((category, index) => (
             <div
-              key={category.restaurantCategoryId}
+              key={index}
               onClick={() =>
                 handleClickCategoryItem(category.restaurantCategoryName)
               }
@@ -137,18 +231,26 @@ const MainPage = () => {
         </RestaurantHeader>
         <RestaurantInfoContainer>
           {recentlyReservedRestaurants.map((restaurant) => (
-            <RestaurantInfoBox key={restaurant.index}>
+            <RestaurantInfoBox
+              key={restaurant.reservationId}
+              onClick={() => handleRestaurantClick(restaurant.reservationId)}
+            >
               <RestaurantInfoImage src={restaurant.restaurantImage} />
               <RestaurantInfoName>
                 {restaurant.restaurantName}
               </RestaurantInfoName>
               <RestaurantDetailWrapper>
                 <RestaurantMyReservation>
-                  내 예약 {restaurant.myReservationCount}회
+                  {restaurant.reservationDate}
                 </RestaurantMyReservation>
-                <RestaurantTotalReservation>
-                  총 예약 {restaurant.totalReservationCount}회
-                </RestaurantTotalReservation>
+                <RestaurantMyReservation>
+                  {restaurant.reservationStartTime.split(':')[0] +
+                    ':' +
+                    restaurant.reservationEndTime.split(':')[1]}
+                </RestaurantMyReservation>
+                <RestaurantMyReservation>
+                  {restaurant.memberCnt}명
+                </RestaurantMyReservation>
               </RestaurantDetailWrapper>
             </RestaurantInfoBox>
           ))}

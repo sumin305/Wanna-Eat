@@ -78,7 +78,6 @@ authClientInstance.interceptors.request.use(
   (request) => {
     // access token 헤더에 저장
     request.headers['Authorization-wannaeat'] = accessToken;
-    console.log(accessToken);
     return request;
   },
   (error) => {
@@ -90,14 +89,6 @@ authClientInstance.interceptors.request.use(
 authClientInstance.interceptors.response.use(
   // 성공 시, 정상적으로 결과 반환
   (response) => {
-    console.log('authClientInstance 응답 성공');
-    if (response.headers.get('authorization-wannaeat')) {
-      console.log(response.headers.get('authorization-wannaeat'));
-      setAccessToken(response.headers.get('authorization-wannaeat'));
-    } else {
-      console.log('access token 없음');
-      console.log(response.headers.get('authorization-wannaeat'));
-    }
     return response;
   },
 
@@ -108,7 +99,8 @@ authClientInstance.interceptors.response.use(
     console.log('authClientInstance 응답 실패');
 
     // 인증 실패 시
-    if (response.status === 401) {
+    console.log(response);
+    if (error.status === 401) {
       console.log('interceptor에서 reissue 재요청');
       console.log(config);
 
@@ -122,7 +114,7 @@ authClientInstance.interceptors.response.use(
         config.headers['authorization-wannaeat'] = accessToken;
         console.log('AccessToken Reissue 성공');
         console.dir(authClientInstance(config));
-        return authClientInstance(config);
+        return await authClientInstance(config);
       } else {
         console.log('AccessToken Reissue 실패');
         const alert = useAlert();
@@ -130,6 +122,7 @@ authClientInstance.interceptors.response.use(
 
         alert('로그인 해주세요');
         navigate('/');
+        return;
       }
     } else {
       console.log('인증 성공');

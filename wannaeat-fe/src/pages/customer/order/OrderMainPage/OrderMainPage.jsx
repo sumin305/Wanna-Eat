@@ -101,7 +101,6 @@ const OrderMainPage = () => {
   // 모든 주문 데이터 불러오기
   useEffect(() => {
     const validateAndConnect = async () => {
-      console.log('render main page');
       const response = await validateReservationUrl(reservationUrl);
 
       // stompClient가 없는 경우에만 소켓 연결 시도
@@ -177,7 +176,7 @@ const OrderMainPage = () => {
       );
 
       console.log('메인페이지 불러온 데이터:', allOrdersInfo.data);
-
+      console.log('isConnected', isConnected);
       setReservationDate(allOrdersInfo.data.reservationDate);
       setReservationStartTime(allOrdersInfo.data.reservationDate);
       setReservationEndTime(allOrdersInfo.data.reservationEndTime);
@@ -215,10 +214,7 @@ const OrderMainPage = () => {
     };
 
     validateAndConnect();
-
-    if (isConnected) {
-      fetchOrdersInfo();
-    }
+    fetchOrdersInfo();
   }, []);
 
   useEffect(() => {

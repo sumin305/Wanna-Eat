@@ -49,6 +49,12 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 	@Value("${redirectURL}")
 	private String REDIRECT_URL;
 
+	@Value("${kakaopay.order-redirect-path}")
+	private String ORDER_REDIRECT_PATH = "/customer/order/order-payment";
+
+	@Value("${kakaopay.deposit-redirect-path}")
+	private String DEPOSIT_REDIRECT_PATH = "/customer/reservation/deposit-payment";
+
 	private final OrderService orderService;
 	private final OrderRepository orderRepository;
 	private final MenuRepository menuRepository;
@@ -108,10 +114,10 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 		parameters.put("total_amount", String.valueOf(totalPrice));             // 상품 총액
 		parameters.put("tax_free_amount", "0");                                 // 상품 비과세 금액
 		parameters.put("approval_url",
-			REDIRECT_URL + "/customer/order/order-payment?payment_id=" + paymentId
-				+ "&type=menu"); // 결제 성공 시 URL
-		parameters.put("cancel_url", REDIRECT_URL + "/api/public/payments/cancel/kakao");      // 결제 취소 시 URL
-		parameters.put("fail_url", REDIRECT_URL + "/api/public/payments/fail/kakao");          // 결제 실패 시 URL
+			REDIRECT_URL + ORDER_REDIRECT_PATH + "?payment_id=" + paymentId
+				+ "&type=menu" + "&status=success"); // 결제 성공 시 URL
+		parameters.put("cancel_url", REDIRECT_URL + ORDER_REDIRECT_PATH + "?status=cancel");      // 결제 취소 시 URL
+		parameters.put("fail_url", REDIRECT_URL + ORDER_REDIRECT_PATH + "?status=fail");          // 결제 실패 시 URL
 
 		// HttpEntity : HTTP 요청 또는 응답에 해당하는 Http Header와 Http Body를 포함하는 클래스
 		HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
@@ -159,10 +165,10 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 		parameters.put("total_amount", String.valueOf(totalPrice));             // 상품 총액
 		parameters.put("tax_free_amount", "0");                                 // 상품 비과세 금액
 		parameters.put("approval_url",
-			REDIRECT_URL + "/customer/reservation/deposit-payment?payment_id=" + paymentId
-				+ "&type=deposit"); // 결제 성공 시 URL
-		parameters.put("cancel_url", REDIRECT_URL + "/api/payments/cancel/kakao");      // 결제 취소 시 URL
-		parameters.put("fail_url", REDIRECT_URL + "/api/payments/fail/kakao");          // 결제 실패 시 URL
+			REDIRECT_URL + DEPOSIT_REDIRECT_PATH + "?payment_id=" + paymentId
+				+ "&type=deposit" + "&status=success"); // 결제 성공 시 URL
+		parameters.put("cancel_url", REDIRECT_URL + DEPOSIT_REDIRECT_PATH + "?status=cancel");      // 결제 취소 시 URL
+		parameters.put("fail_url", REDIRECT_URL + DEPOSIT_REDIRECT_PATH + "?status=fail");          // 결제 실패 시 URL
 
 		// HttpEntity : HTTP 요청 또는 응답에 해당하는 Http Header와 Http Body를 포함하는 클래스
 		HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());

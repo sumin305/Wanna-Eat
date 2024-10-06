@@ -3,7 +3,7 @@ import { ssafyClient } from '../../../utils/http-client';
 // 사용자 계정 생성 (API Key 발급)
 export const createSsafyPayAccount = async (userId) => {
   return await ssafyClient
-    .post('/api/v1/member', {
+    .post('/ssafy/api/v1/member', {
       apiKey: process.env.REACT_APP_SSAFY_PAY_API_KEY,
       userId: userId,
     })
@@ -20,7 +20,7 @@ export const createSsafyPayAccount = async (userId) => {
 // 사용자 계정 조회
 export const getSsafyPayAccount = async (userId) => {
   return await ssafyClient
-    .post('/api/v1/member/search', {
+    .post('/ssafy/api/v1/member/search', {
       apiKey: process.env.REACT_APP_SSAFY_PAY_API_KEY,
       userId: userId,
     })

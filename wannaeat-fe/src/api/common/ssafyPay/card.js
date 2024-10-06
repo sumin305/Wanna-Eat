@@ -23,7 +23,7 @@ const Header = (apiName, userKey = '') => {
 // 가맹점 등록 위한 카테고리 조회
 export const getMerchantCategories = async () => {
   return await ssafyClient
-    .post('/api/v1/edu/creditCard/inquireCategoryList', {
+    .post('/ssafy/api/v1/edu/creditCard/inquireCategoryList', {
       Header: Header('inquireCategoryList'),
     })
     .then((result) => {
@@ -37,7 +37,7 @@ export const getMerchantCategories = async () => {
 
 // 가맹점 등록
 export const registerMerchant = async (merchantName) => {
-  return await ssafyClient.post('/api/v1/edu/creditCard/createMerchant', {
+  return await ssafyClient.post('/ssafy/api/v1/edu/creditCard/createMerchant', {
     Header: Header('createMerchant'),
     categoryId: localStorage.getItem('restaurantMerchantCategoryId'),
     merchantName: merchantName,
@@ -47,7 +47,7 @@ export const registerMerchant = async (merchantName) => {
 // 카드 상품 조회
 export const getCreditCardList = async () => {
   return await ssafyClient
-    .post('/api/v1/edu/creditCard/inquireCreditCardList', {
+    .post('/ssafy/api/v1/edu/creditCard/inquireCreditCardList', {
       Header: Header('inquireCreditCardList'),
     })
     .then((result) => result)
@@ -57,7 +57,7 @@ export const getCreditCardList = async () => {
 // 카드사 조회
 export const getCreditCardIssuerList = async () => {
   return await ssafyClient
-    .post('/api/v1/edu/creditCard/inquireCardIssuerCodesList', {
+    .post('/ssafy/api/v1/edu/creditCard/inquireCardIssuerCodesList', {
       Header: Header('inquireCardIssuerCodesList'),
     })
     .then((result) => result)
@@ -67,7 +67,7 @@ export const getCreditCardIssuerList = async () => {
 // 카드가 이미 존재하는지 확인
 export const isCreditCardExist = async (cardName) => {
   return await ssafyClient
-    .post('/api/v1/edu/creditCard/inquireCreditCardList', {
+    .post('/ssafy/api/v1/edu/creditCard/inquireCreditCardList', {
       Header: Header('inquireCreditCardList'),
     })
     .then((result) => {
@@ -93,7 +93,7 @@ export const createCreditCardProduct = async (request) => {
     return;
   }
   return await ssafyClient
-    .post('/api/v1/edu/creditCard/createCreditCardProduct', {
+    .post('/ssafy/api/v1/edu/creditCard/createCreditCardProduct', {
       Header: Header('createCreditCardProduct'),
       cardIssuerCode: request.cardIssuerCode,
       cardName: request.cardName,
@@ -119,7 +119,7 @@ export const createCreditCard = async (
   }
 
   return await ssafyClient
-    .post('/api/v1/edu/creditCard/createCreditCard', {
+    .post('/ssafy/api/v1/edu/creditCard/createCreditCard', {
       Header: Header('createCreditCard', localStorage.getItem('userKey')),
       cardUniqueNo: cardUniqueNo,
       withdrawalAccountNo: localStorage.getItem('accountNo'),
@@ -137,7 +137,7 @@ export const getMyCreditCardList = async () => {
   }
 
   return await ssafyClient
-    .post('/api/v1/edu/creditCard/inquireSignUpCreditCardList', {
+    .post('/ssafy/api/v1/edu/creditCard/inquireSignUpCreditCardList', {
       Header: Header(
         'inquireSignUpCreditCardList',
         localStorage.getItem('userKey')
@@ -160,7 +160,7 @@ export const payByCreditCard = async (
   }
 
   return await ssafyClient
-    .post('/api/v1/edu/creditCard/createCreditCardTransaction', {
+    .post('/ssafy/api/v1/edu/creditCard/createCreditCardTransaction', {
       Header: Header(
         'createCreditCardTransaction',
         localStorage.getItem('userKey')

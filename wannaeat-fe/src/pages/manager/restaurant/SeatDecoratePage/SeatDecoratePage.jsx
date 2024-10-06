@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
@@ -10,10 +11,22 @@ import { isMobile } from 'react-device-detect';
 import { SeatDecoratePageStyled } from './SeatDecoreatePage.js';
 
 const SeatDecoratePage = () => {
+  const location = useLocation();
+  const { dropdownId, floor } = location.state || {};
+
+  const gridSizes = {
+    0: 5,
+    1: 10,
+    2: 15,
+  };
+
   const { setIsCarrot, setIsShowBackIcon, setActiveIcons, setPageName } =
     useHeaderStore();
   const [currentFloor, setCurrentFloor] = useState(1);
-  const floors = [1, 2, 3, 4, 5];
+
+  const gridC = gridSizes[dropdownId] || 10;
+  const gridR = gridSizes[dropdownId] || 10;
+  const floors = Array.from({ length: floor }, (_, i) => i + 1);
 
   const touchbackendOptions = {
     enableMouseEvents: true,
@@ -38,7 +51,12 @@ const SeatDecoratePage = () => {
           currentFloor={currentFloor}
           onFloorChange={setCurrentFloor}
         />
-        <GridCanvas currentFloor={currentFloor} />
+        <GridCanvas
+          currentFloor={currentFloor}
+          gridColumns={gridC}
+          gridRows={gridR}
+          floorCnt={floor}
+        />
       </SeatDecoratePageStyled>
     </DndProvider>
   );

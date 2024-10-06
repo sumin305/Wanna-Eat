@@ -1,17 +1,9 @@
-import { clientInstance } from 'utils/http-client';
+import { socketClient } from 'utils/http-client';
 
-// export const getReservationData = async (reservationUrl, chatPage, chatSize) => {
-//     try {
-//         const result = await clientInstance.get(
-//             `api/public/share-data/${reservationUrl}?chatPage=${chatPage}&chatSize=${chatSize}`
-//         );
-//         console.log('')
-//     }
-// }
-
+// 채팅 불러오기
 export const getChatlist = async (reservationUrl, chatPage, chatSize) => {
   try {
-    const result = await clientInstance.get(
+    const result = await socketClient.get(
       `/api/public/share-data/${reservationUrl}?chatPage=${chatPage}&chatSize=${chatSize}`
     );
     if (result && result.data) {

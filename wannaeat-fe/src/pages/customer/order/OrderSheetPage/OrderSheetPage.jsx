@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { validateReservationUrl } from 'api/customer/order';
+import { validateReservationUrl } from 'api/customer/socket';
 import useChatStore from 'stores/customer/useChatStore';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
@@ -79,7 +79,7 @@ const OrderSheetPage = () => {
           `/topic/reservations/${reservationUrl}`,
           (response) => {
             const content = JSON.parse(response.body);
-            console.log('Received message: ', content);
+            console.log('ordersheet Received message: ', content);
           }
         );
 

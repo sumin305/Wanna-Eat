@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import theme from 'style/common/theme.js';
+import { keyframes } from '@emotion/react';
 
 const MainPageStyled = styled.div`
   display: flex;
@@ -245,10 +246,23 @@ const ReservationCountStyled = styled.div`
 
   font-size: ${theme.fontSize.px15};
   font-weight: ${theme.fontWeight.bold};
-
-  svg {
-    margin-right: 5px;
+`;
+const rotateAnimation = keyframes`
+  from {
+    transform: rotate(0deg);
   }
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+const RotatingIconWrapper = styled.div`
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  cursor: pointer;
+  animation: ${(props) => (props.isRotating ? rotateAnimation : 'none')} 1s
+    ease-in-out;
 `;
 
 export {
@@ -267,4 +281,6 @@ export {
   ModalContentWrapper,
   ModalOverlayStyled,
   ReservationCountStyled,
+  rotateAnimation,
+  RotatingIconWrapper,
 };

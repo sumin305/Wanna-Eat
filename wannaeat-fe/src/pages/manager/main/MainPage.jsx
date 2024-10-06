@@ -17,6 +17,8 @@ import {
   ModalContentWrapper,
   ModalOverlayStyled,
   ReservationCountStyled,
+  rotateAnimation,
+  RotatingIconWrapper,
 } from './MainPage.js';
 
 import SeatingMap from 'component/manager/main/SeatingMap/SeatingMap.jsx';
@@ -53,6 +55,8 @@ const MainPage = () => {
 
   const [pastReservationCnt, setPastReservationCnt] = useState(-1);
   const [totalReservationCnt, setTotalReservationCnt] = useState(-1);
+
+  const [isRotating, setIsRotating] = useState(false);
 
   useEffect(() => {
     setItems(['소형 (50m² 이하)', '중형 (50m² ~ 150m²)', '대형 (150m² 이상)']);
@@ -110,6 +114,7 @@ const MainPage = () => {
   };
 
   const fetchMainData = async () => {
+    setIsRotating(true);
     try {
       const response = await authClientInstance.get(`/api/users/restaurants`);
       console.log('데이터 불러옵니다!', response);
@@ -120,6 +125,8 @@ const MainPage = () => {
     } catch (error) {
       console.error('사업자 메인 데이터 요청 오류:', error);
       return;
+    } finally {
+      setTimeout(() => setIsRotating(false), 1000);
     }
   };
 
@@ -135,7 +142,9 @@ const MainPage = () => {
       {}
       <ReservationCountStyled>
         금일 예약 현황: {pastReservationCnt}/{totalReservationCnt} (건)
-        <RefreshIcon onClick={fetchMainData} />
+        <RotatingIconWrapper isRotating={isRotating}>
+          <RefreshIcon onClick={fetchMainData} />
+        </RotatingIconWrapper>
       </ReservationCountStyled>
 
       {isModalOpen && (

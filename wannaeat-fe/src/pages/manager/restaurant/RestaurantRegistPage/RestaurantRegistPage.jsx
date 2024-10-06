@@ -43,6 +43,7 @@ const RestaurantRegistPage = () => {
     }
   };
 
+  const handleRegistButtonClick = () => {};
   const renderContent = (activeTab) => {
     switch (activeTab) {
       case 0:
@@ -202,7 +203,7 @@ const RestaurantRegistPage = () => {
 
       <WEButton
         className="testButton"
-        onClick={handleValidateNickname}
+        onClick={handleRegistButtonClick}
         size={'long'}
       >
         확인

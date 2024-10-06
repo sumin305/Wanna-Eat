@@ -179,8 +179,8 @@ const SignUpPage = () => {
         setRole(ROLE.CUSTOMER);
         navigate('/password-regist');
       } else {
-        navigate('/manager');
         setRole(ROLE.MANAGER);
+        navigate('/manager/restaurant/restaurant-regist');
       }
     } else {
       alert(response.response.data.message);

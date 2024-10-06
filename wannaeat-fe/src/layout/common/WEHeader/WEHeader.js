@@ -14,11 +14,6 @@ const HeaderContainer = styled.div`
   background-color: ${(props) =>
     props.isCarrot ? theme.color.primary : theme.color.white};
 
-  border-bottom: ${(props) =>
-    props.isCarrot === false && props.isUnderLine
-      ? `0.5px solid ${theme.color.disabled}`
-      : 'none'};
-
   @media (min-width: 480px) {
     width: 480px;
     align-items: center;
@@ -105,6 +100,16 @@ const IconImg = styled.img`
   height: 1.3rem;
 `;
 
+const UnderLineStyled = styled.hr`
+  border: 1px solid ${theme.color.primary};
+  background: ${theme.color.primary};
+  height: 0.2px;
+  width: 88%;
+  justify-self: center;
+  margin: 5px 0;
+  align-self: center;
+`;
+
 export {
   HeaderContainer,
   HeaderWrapper,
@@ -115,4 +120,5 @@ export {
   HeaderImg,
   HeaderTitle,
   IconImg,
+  UnderLineStyled,
 };

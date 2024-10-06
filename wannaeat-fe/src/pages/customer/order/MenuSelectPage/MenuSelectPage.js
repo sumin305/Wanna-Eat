@@ -56,6 +56,9 @@ export const ImageBox = styled.div`
   width: 7rem;
   height: 7rem;
   border-radius: ${theme.borderRadius.px15};
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const MenuImg = styled.img`

@@ -233,7 +233,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.sorted(Comparator.comparingDouble(restaurant -> calculateDistance(
 				filter.getLatitude(), filter.getLongitude(),
 				restaurant.getLatitude(), restaurant.getLongitude())))
-			.limit(30)
+			.limit(15)
 			.map(this::toRestaurantMapDetailResponseDto)
 			.toList();
 

@@ -116,7 +116,11 @@ const PasswordAuthPage = () => {
     if (result.status === 200) {
       alert('결제 성공');
       navigate('/customer/reservation/success');
-      setReservationUrl(result.data.data.reservationInfo.reservationUrl);
+      setReservationUrl(
+        process.env.REACT_APP_CLIENT_URL +
+          '/customer/order/' +
+          result.data.data.reservationInfo.reservationUrl
+      );
       setIsAuthenticated(false);
     } else {
       alert(result.response.data.message);

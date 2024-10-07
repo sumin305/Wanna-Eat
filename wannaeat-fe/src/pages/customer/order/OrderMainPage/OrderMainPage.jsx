@@ -56,8 +56,7 @@ const OrderMainPage = () => {
   const tabs = ['나의 메뉴', '전체 메뉴'];
   const nav = useNavigate();
   const params = useParams();
-  const reservationParamUrl = params.url;
-  const { reservationUrl } = useReservationStore();
+  const reservationUrl = params.url;
   const {
     setIsCarrot,
     setPageName,
@@ -94,10 +93,10 @@ const OrderMainPage = () => {
     setIsShowLogo(false);
     setIsShowBackIcon(true);
     const gotoChat = () => {
-      nav(`/customer/order/chat/${reservationParamUrl}`);
+      nav(`/customer/order/chat/${reservationUrl}`);
     };
     const gotoSelectMenu = () => {
-      nav(`/customer/order/menu-select/${reservationParamUrl}`);
+      nav(`/customer/order/menu-select/${reservationUrl}`);
     };
     setActiveIcons([8, 10]);
     setIconAction([gotoSelectMenu, gotoChat]);
@@ -135,7 +134,7 @@ const OrderMainPage = () => {
         await initializeConnection(); // WebSocket 연결을 먼저 시도
       }
       const allOrdersInfo = await getOrderData(
-        reservationParamUrl,
+        reservationUrl,
         chatPage,
         chatSize
       );
@@ -259,7 +258,7 @@ const OrderMainPage = () => {
           {},
           () => {
             client.subscribe(
-              `/topic/reservations/${reservationParamUrl}`,
+              `/topic/reservations/${reservationUrl}`,
               (response) => {
                 const content = JSON.parse(response.body);
                 console.log('main sumin Received message: ', content);
@@ -396,11 +395,11 @@ const OrderMainPage = () => {
   }, [allOrdersInfo]);
 
   const handleGotoCartButtonClick = () => {
-    nav(`/customer/order/cart/${reservationParamUrl}`);
+    nav(`/customer/order/cart/${reservationUrl}`);
   };
 
   const handleOrderSheetButtonClick = () => {
-    nav(`/customer/order/order-sheet/${reservationParamUrl}`);
+    nav(`/customer/order/order-sheet/${reservationUrl}`);
   };
 
   // 닉네임 별로 그룹화, 총 금액 구하는 함수

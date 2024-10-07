@@ -225,6 +225,8 @@ const RestaurantInfoBox = styled.div`
   padding: 0.5rem;
   border-radius: 5px;
   background: white;
+  display: flex;
+  flex-direction: column;
 `;
 
 const RestaurantInfoImage = styled.img`
@@ -261,6 +263,15 @@ const RestaurantMyReservation = styled.div`
   }
 `;
 
+const RestaurantInfoWrapper = styled.div`
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+}
+`;
 export {
   MainPageContainer,
   SearchWrapper,
@@ -294,4 +305,5 @@ export {
   RestaurantInfoName,
   RestaurantDetailWrapper,
   RestaurantMyReservation,
+  RestaurantInfoWrapper,
 };

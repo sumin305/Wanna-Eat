@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import CategoryPlustImg from '../../../../assets/icons/menu/PlusCategory.svg'; // 이미지 경로 수정
 import EditImg from '../../../../assets/icons/menu/Edit.svg'; // 이미지 경로 수정
 import DeleteImg from '../../../../assets/icons/menu/Delete.svg'; // 이미지 경로 수정
-import { registerCategory, getCategoryList, editMenuCategory, removeMenuCategory } from '../../../../api/manager/menu/menu.js'; // 삭제 API 임포트
+import {
+  registerCategory,
+  getCategoryList,
+  editMenuCategory,
+  removeMenuCategory,
+} from '../../../../api/manager/menu/menu.js'; // 삭제 API 임포트
 
 import {
   CategoryModalContainer,
@@ -53,8 +58,8 @@ const MenuCategoryPage = ({ restaurantId, onClose }) => {
   };
 
   const handleEditCategory = (categoryId, categoryName) => {
-    setEditCategoryId(categoryId);  // 수정할 카테고리 ID 설정
-    setEditCategoryName(categoryName);  // 수정할 카테고리 이름 설정
+    setEditCategoryId(categoryId); // 수정할 카테고리 ID 설정
+    setEditCategoryName(categoryName); // 수정할 카테고리 이름 설정
   };
 
   const handleSaveEditCategory = async () => {
@@ -88,14 +93,18 @@ const MenuCategoryPage = ({ restaurantId, onClose }) => {
           <CategoryItem key={category.menuCategoryId}>
             {/* 수정 모드일 때 input 창으로 변경 */}
             {editCategoryId === category.menuCategoryId ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+              >
                 <NewCategoryInput
                   type="text"
                   value={editCategoryName}
                   onChange={(e) => setEditCategoryName(e.target.value)}
                   placeholder="카테고리 이름 수정"
                 />
-                <CompleteButton onClick={handleSaveEditCategory}>완료</CompleteButton>
+                <CompleteButton onClick={handleSaveEditCategory}>
+                  완료
+                </CompleteButton>
               </div>
             ) : (
               <>
@@ -104,11 +113,30 @@ const MenuCategoryPage = ({ restaurantId, onClose }) => {
 
                 {/* 수정 및 삭제 버튼 */}
                 <div style={{ display: 'flex', gap: '10px' }}>
-                  <IconButton onClick={() => handleEditCategory(category.menuCategoryId, category.menuCategoryName)}>
-                    <img src={EditImg} alt="Edit" style={{ width: '20px', height: '20px' }} />
+                  <IconButton
+                    onClick={() =>
+                      handleEditCategory(
+                        category.menuCategoryId,
+                        category.menuCategoryName
+                      )
+                    }
+                  >
+                    <img
+                      src={EditImg}
+                      alt="Edit"
+                      style={{ width: '20px', height: '20px' }}
+                    />
                   </IconButton>
-                  <IconButton onClick={() => handleDeleteCategory(category.menuCategoryId)}>
-                    <img src={DeleteImg} alt="Delete" style={{ width: '20px', height: '20px' }} />
+                  <IconButton
+                    onClick={() =>
+                      handleDeleteCategory(category.menuCategoryId)
+                    }
+                  >
+                    <img
+                      src={DeleteImg}
+                      alt="Delete"
+                      style={{ width: '20px', height: '20px' }}
+                    />
                   </IconButton>
                 </div>
               </>
@@ -118,7 +146,14 @@ const MenuCategoryPage = ({ restaurantId, onClose }) => {
 
         {/* 카테고리 추가 입력 창과 완료 버튼 */}
         {isAddingCategory && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              marginTop: '10px',
+            }}
+          >
             <NewCategoryInput
               type="text"
               value={newCategoryName}
@@ -132,7 +167,11 @@ const MenuCategoryPage = ({ restaurantId, onClose }) => {
 
       {/* 카테고리 추가 버튼 */}
       <AddCategoryButton onClick={() => setIsAddingCategory(true)}>
-        <img src={CategoryPlustImg} alt="Add Category" style={{ width: '30px', height: '30px' }} />
+        <img
+          src={CategoryPlustImg}
+          alt="Add Category"
+          style={{ width: '30px', height: '30px' }}
+        />
       </AddCategoryButton>
 
       <CloseButton onClick={onClose}>닫기</CloseButton>

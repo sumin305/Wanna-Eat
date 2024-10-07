@@ -127,7 +127,7 @@ const MenuSelectPage = () => {
     );
   };
 
-  const restaurantId = 1;
+  const restaurantId = window.localStorage.getItem('restaurantId');
 
   const fetchMenuData = async () => {
     const allMenuData = await getMenuData(restaurantId);

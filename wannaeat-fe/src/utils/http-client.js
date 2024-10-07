@@ -13,7 +13,7 @@ const setAccessToken = (newAccessToken) => {
 // ssafy 금융 API 요청
 const createSsafyClientInstance = () => {
   const instance = axios.create({
-    baseURL: process.env.REACT_APP_CLIENT_URL,
+    baseURL: process.env.REACT_APP_SSAFY_PAY_URL,
     timeout: 5000,
     headers: {
       'Content-Type': 'application/json',

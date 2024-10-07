@@ -22,7 +22,7 @@ const Header = (apiName, userKey = '') => {
 // 계좌 리스트 조회
 export const getAccountList = async () => {
   return await ssafyClient
-    .post('/api/v1/edu/demandDeposit/inquireDemandDepositList', {
+    .post('/ssafy/api/v1/edu/demandDeposit/inquireDemandDepositList', {
       Header: Header('inquireDemandDepositList'),
     })
     .then((result) => result)
@@ -37,7 +37,7 @@ export const createAccount = async () => {
   }
 
   return await ssafyClient
-    .post('/api/v1/edu/demandDeposit/createDemandDepositAccount', {
+    .post('/ssafy/api/v1/edu/demandDeposit/createDemandDepositAccount', {
       Header: Header(
         'createDemandDepositAccount',
         localStorage.getItem('userKey')
@@ -59,7 +59,7 @@ export const getMyAccountList = async () => {
   }
 
   return await ssafyClient
-    .post('/api/v1/edu/deposit/inquireDepositInfoList', {
+    .post('/ssafy/api/v1/edu/deposit/inquireDepositInfoList', {
       Header: Header('inquireDepositInfoList', localStorage.getItem('userKey')),
     })
     .then((result) => {

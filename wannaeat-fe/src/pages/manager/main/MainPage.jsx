@@ -40,6 +40,7 @@ const MainPage = () => {
     setActiveIcons,
     setIsUnderLine,
     setIsShowLogo,
+    setIconAction,
   } = useHeaderStore();
 
   useEffect(() => {
@@ -48,7 +49,15 @@ const MainPage = () => {
     setIsUnderLine(false);
     setIsShowLogo(true);
     setPageName('');
-  }, [setIsCarrot, setActiveIcons, setIsUnderLine, setIsShowLogo, setPageName]);
+    setIconAction([() => navigate('/manager/alarm')]);
+  }, [
+    setIsCarrot,
+    setActiveIcons,
+    setIsUnderLine,
+    setIsShowLogo,
+    setPageName,
+    setIconAction,
+  ]);
 
   const navigate = useNavigate();
 

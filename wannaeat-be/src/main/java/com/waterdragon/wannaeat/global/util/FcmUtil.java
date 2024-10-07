@@ -28,7 +28,7 @@ public class FcmUtil {
 		if (user == null || user.getUserToken().getFcmToken() == null) {
 			return;
 		}
-		log.info("히히 발사");
+
 		log.info(user.getUserToken().getFcmToken());
 		Message message = Message.builder()
 			.setToken(user.getUserToken().getFcmToken())
@@ -47,10 +47,7 @@ public class FcmUtil {
 					).build()
 			).build();
 		try {
-			log.info("알람타입: " + alarmType.getKey());
-			log.info("알람메시지: " + alarmType.getMessage());
 			FirebaseMessaging.getInstance().send(message);
-			log.info("발사완료~");
 		} catch (FirebaseMessagingException exception) {
 			log.error("Fcm 메시지 전송 실패 : {}", exception.getMessage());
 			// throw new RuntimeException(exception);

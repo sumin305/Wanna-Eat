@@ -15,7 +15,7 @@ import com.waterdragon.wannaeat.domain.restaurant.dto.response.SsafyRestaurantRe
 
 public interface RestaurantService {
 
-	void registerRestaurant(RestaurantRegisterRequestDto restaurantRegisterRequestDto);
+	Long registerRestaurant(RestaurantRegisterRequestDto restaurantRegisterRequestDto);
 
 	RestaurantMapListResponseDto getListRestaurantsByFilter(Long categoryId, String keyword, LocalDate reservationDate,
 		LocalTime startTime, LocalTime endTime, Integer memberCount, Double latitude, Double longitude);

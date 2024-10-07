@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import moment from 'moment';
 import useCountDownTimer from 'utils/useCountDownTimer';
 import useHeaderStore from '../../../../stores/common/useHeaderStore.js';
+import { getMyInfo } from 'api/customer/user';
+
 import {
   MainPageContainer,
   SearchWrapper,
@@ -44,6 +46,7 @@ import blackArrowRightIcon from '../../../../assets/icons/common/black-arrow-rig
 import { useNavigate } from 'react-router-dom';
 import useMapFilterStore from 'stores/map/useMapFilterStore.js';
 import Logo from 'assets/icons/header/logo.png';
+import useCommonStore from '../../../../stores/common/useCommonStore.js';
 import {
   getMyReservation,
   getPriorityVisitingRestaurant,
@@ -51,6 +54,7 @@ import {
 } from 'api/customer/reservation.js';
 const MainPage = () => {
   const { setKeyword } = useMapFilterStore();
+  const { nickname, setNickname } = useCommonStore();
   const { setIsShowLogo, setActiveIcons, setPageName } = useHeaderStore();
   const navigate = useNavigate();
   const [restaurantCategories, setRestaurantCategories] = useState([]);
@@ -102,6 +106,15 @@ const MainPage = () => {
 
       console.log(data);
     };
+    const fetchMyInfo = async () => {
+      const response = await getMyInfo();
+      if (response && response.status === 200) {
+        setNickname(response.data.nickname);
+      } else {
+        console.error('getMyInfo error:', response);
+      }
+    };
+    fetchMyInfo();
 
     setPageName('');
     setIsShowLogo(true);
@@ -236,7 +249,7 @@ const MainPage = () => {
       </CategoryWrapper>
       <RestaurantWrapper>
         <RestaurantHeader>
-          <RestaurantTitle>최근 예약한 식당</RestaurantTitle>
+          <RestaurantTitle>{nickname}님이 자주 예약한 식당</RestaurantTitle>
           <RestaurantTitleButton onClick={handleReservationListButtonClick}>
             예약내역 보기
             <img src={blackArrowRightIcon} />

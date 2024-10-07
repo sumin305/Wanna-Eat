@@ -12,7 +12,6 @@ export const MenuContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   height: 30px;
-  margin-bottom: 10px;
   align-items: center;
 `;
 
@@ -28,7 +27,7 @@ export const WETabContainer = styled.div`
 export const TotalMenuP = styled.p`
   font-size: 15px;
   font-weight: 700;
-  margin-left: 4vw;
+  margin-left: 0.5rem;
 `;
 
 export const DeleteDiv = styled.div`
@@ -49,7 +48,6 @@ export const DeleteDiv = styled.div`
 export const FoodDiv = styled.div`
   display: flex;
   flex-direction: row;
-  padding: 1vw;
 `;
 
 export const LineDiv = styled.div`
@@ -60,8 +58,7 @@ export const LineDiv = styled.div`
 `;
 
 export const MenuDiv = styled.div`
-  background-color: rgba(212, 212, 212, 0.3);
-  padding: 4vw;
+  padding: 0.5rem;
   height: 45vh;
   overflow-y: auto;
   -ms-overflow-style: none; /* 인터넷 익스플로러용 스크롤바 숨김 */
@@ -115,7 +112,7 @@ export const FoodPriceP = styled.p`
 
 export const MenuNameP = styled.p`
   font-size: ${theme.fontSize.px13};
-  font-weight: ${theme.fontWeight.default};
+  font-weight: bold;
 `;
 
 export const FoodInfoCountP = styled.p`
@@ -179,9 +176,12 @@ export const FoodInfoBottomDiv = styled.div`
 `;
 
 export const PeopleP = styled.p`
-  font-size: ${theme.fontSize.px13};
-  font-weight: ${theme.fontWeight.default};
-  color: rgba(66, 66, 66, 1);
+  font-size: ${theme.fontSize.px11};
+  color: #424242;
+  display: inline-block;
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px13};
+  }
 `;
 
 export const TotalPriceDiv = styled.div`

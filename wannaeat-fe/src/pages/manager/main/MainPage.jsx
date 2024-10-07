@@ -168,12 +168,14 @@ const MainPage = () => {
         <>
           <SeatingMap OccupiedList={occupiedList} on404Error={handle404Error} />
           {}
-          <ReservationCountStyled>
-            금일 예약 현황: {pastReservationCnt}/{totalReservationCnt} (건)
-            <RotatingIconWrapper isRotating={isRotating}>
-              <RefreshIcon onClick={fetchMainData} />
-            </RotatingIconWrapper>
-          </ReservationCountStyled>
+          {pastReservationCnt >= 0 && (
+            <ReservationCountStyled>
+              금일 예약 현황: {pastReservationCnt}/{totalReservationCnt} (건)
+              <RotatingIconWrapper isRotating={isRotating}>
+                <RefreshIcon onClick={fetchMainData} />
+              </RotatingIconWrapper>
+            </ReservationCountStyled>
+          )}
         </>
       )}
 

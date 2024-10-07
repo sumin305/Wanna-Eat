@@ -17,6 +17,8 @@ import {
 } from './GridCanvas';
 import useModalStore from 'stores/common/useModalStore.js';
 
+import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore.js';
+
 const useStore = create((set, get) => ({
   itemsByFloor: {},
   gridStatusByFloor: {},
@@ -117,6 +119,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
     setItemsByFloor,
     updateItem,
     updateItemPosition,
+    clearItemsByFloor,
   } = useStore();
 
   const {
@@ -130,6 +133,8 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   const [selectedItem, setSelectedItem] = useState();
 
   const containerRef = useRef();
+
+  const { restaurantId } = useMyRestaurantStore();
 
   const calculateGridSize = () => {
     const width = window.innerWidth;
@@ -152,7 +157,6 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   }, []);
 
   useEffect(() => {
-    const restaurantId = 10; // 임시 id
     authClientInstance
       .get(`/api/public/restaurants/${restaurantId}/structure`)
       .then((response) => {
@@ -518,7 +522,9 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
         </ZoomableGridWrapperStyled>
         <ButtonWrapperStyled>
           <SaveButtonStyled onClick={handleCanvasSave}>저장</SaveButtonStyled>
-          <CancelButtonStyled>취소</CancelButtonStyled>
+          <CancelButtonStyled onClick={clearItemsByFloor}>
+            취소
+          </CancelButtonStyled>
         </ButtonWrapperStyled>
       </GridWrapperStyled>
     </div>

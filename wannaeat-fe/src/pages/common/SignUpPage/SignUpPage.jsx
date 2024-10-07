@@ -32,7 +32,8 @@ import useCommonStore, { ROLE } from '../../../stores/common/useCommonStore.js';
 import useAlert from 'utils/alert';
 import { useNavigate } from 'react-router-dom';
 const SignUpPage = () => {
-  const { setRole, email, socialType, requestSignUp } = useCommonStore();
+  const { setRole, setNickname, email, socialType, requestSignUp } =
+    useCommonStore();
   const { setError, clearError } = useTextfieldStore();
   const [isChecked, setIsChecked] = useState(false);
   const [isCustomer, setIsCustomer] = useState(false);
@@ -173,7 +174,7 @@ const SignUpPage = () => {
 
     // 회원가입 요청
     const response = await requestSignUp(requestUserInfo);
-
+    setNickname(requestUserInfo.nickname);
     if (response.status === 201) {
       if (requestUserInfo.role === ROLE.CUSTOMER) {
         setRole(ROLE.CUSTOMER);

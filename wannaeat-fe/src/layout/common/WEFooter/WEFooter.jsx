@@ -33,17 +33,17 @@ const tabs = {
     },
     {
       id: 2,
-      label: '매장관리',
-      offIcon: AdminOff,
-      onIcon: AdminOn,
-      path: '/manager/restaurantview',
-    },
-    {
-      id: 3,
       label: '통계',
       offIcon: StatisticsOff,
       onIcon: StatisticsOn,
       path: '/manager/statistics',
+    },
+    {
+      id: 3,
+      label: '내정보',
+      offIcon: MyinfoOff,
+      onIcon: MyinfoOn,
+      path: '/manager/myinfo',
     },
   ],
 

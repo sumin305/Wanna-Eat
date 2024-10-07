@@ -12,12 +12,26 @@ const DropdownLabelStyled = styled.div`
   justify-content: space-between;
   height: ${(props) => props.height};
   background-color: ${theme.color.white};
-  font-size: ${theme.fontSize.px13};
+  font-size: ${theme.fontSize.px11};
   border-radius: 0.3rem;
   border: 0.5px solid ${theme.color.disabled};
   padding: 0 10px;
   color: ${theme.color.info};
   align-items: center;
+
+  @media (min-width: 480px) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: ${(props) => props.height};
+    background-color: ${theme.color.white};
+    font-size: ${theme.fontSize.px13};
+    border-radius: 0.3rem;
+    border: 0.5px solid ${theme.color.disabled};
+    padding: 0 10px;
+    color: ${theme.color.info};
+    align-items: center;
+  }
 `;
 
 const IconStyled = styled.img`

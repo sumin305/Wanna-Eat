@@ -109,3 +109,28 @@ export const PriceInput = styled(InputField)`
   width: 180px;  // 가격 인풋 크기를 줄임
 `;
 
+
+// 꾸미기 버튼 스타일 추가
+export const DecorateButton = styled.button`
+  background-color: #ffa500;
+  color: white;
+  border: none;
+  padding: 15px;
+  font-size: 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 48%;  // 버튼 너비를 줄여서 간격 조정
+  margin-top: 20px;
+
+  &:hover {
+    background-color: #ff8c00;
+  }
+`;
+
+// 버튼 컨테이너 스타일 추가
+export const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;  // 버튼 간의 간격
+  margin-top: 10px;
+`;

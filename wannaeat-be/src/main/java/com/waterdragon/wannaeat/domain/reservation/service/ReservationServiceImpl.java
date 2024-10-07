@@ -223,7 +223,7 @@ public class ReservationServiceImpl implements ReservationService {
 				.startTime(reservationRegisterRequestDto.getReservationStartTime())
 				.endTime(reservationRegisterRequestDto.getReservationEndTime())
 				.memberCnt(reservationRegisterRequestDto.getMemberCnt())
-				.reservationUrl(REDIRECT_URL + RESERVATION_URL + generateRandomString())
+				.reservationUrl(generateRandomString())
 				.build());
 
 		registerReservationTable(reservation, reservationRegisterRequestDto.getTableList());

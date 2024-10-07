@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import useChatStore from 'stores/customer/useChatStore';
-import { getChatlist } from 'api/customer/chat';
+import { getChatlist, getChats } from 'api/customer/chat';
 import { useNavigate, useParams } from 'react-router-dom';
 import { validateReservationUrl } from 'api/customer/socket';
 import {
@@ -23,6 +23,9 @@ import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 import SendIcon from 'assets/icons/order/send.svg';
 
 const ChatPage = () => {
+  const [myReservationParticipantId, setMyReservationParticipantId] =
+    useState(0);
+
   const [chatMessageInput, setChatMessageInput] = useState('');
   const {
     isConnected,
@@ -66,27 +69,29 @@ const ChatPage = () => {
     setActiveIcons([8, 10]);
     setIconAction([gotoSelectMenu, gotoChat]);
 
-    // const validateAndConnect = async () => {
-    //   const response = await validateReservationUrl(reservationUrl);
+    const validateAndConnect = async () => {
+      const response = await validateReservationUrl(reservationUrl);
 
-    //   // reservationUrl 유효성 검사 실행 후 유효한 경우
-    //   if (response.status === 200) {
-    //     // stompClient가 없는 경우에만 소켓 연결 시도
-    //     if (!stompClient) {
-    //       initializeConnection();
-    //     } else {
-    //       console.log('이미 소켓이 연결되어 있습니다.');
-    //     }
-    //   } else {
-    //     // 유효하지 않은 reservationUrl일 경우
-    //     console.log(response.response.data.message);
-    //     nav('/customer/order/notexist', {
-    //       state: { message: response.response.data.message },
-    //     });
-    //   }
-    // };
-
-    // validateAndConnect();
+      // reservationUrl 유효성 검사 실행 후 유효한 경우
+      if (response.status === 200) {
+        // stompClient가 없는 경우에만 소켓 연결 시도
+        if (!stompClient) {
+          initializeConnection();
+        } else {
+          console.log('이미 소켓이 연결되어 있습니다.');
+        }
+      } else {
+        // 유효하지 않은 reservationUrl일 경우
+        console.log(response.response.data.message);
+        nav('/customer/order/notexist', {
+          state: { message: response.response.data.message },
+        });
+      }
+    };
+    validateAndConnect();
+    setMyReservationParticipantId(
+      localStorage.getItem('restaurantParticipantId')
+    );
   }, []);
 
   useEffect(() => {
@@ -103,8 +108,9 @@ const ChatPage = () => {
   const fetchChatData = async () => {
     if (isConnected) {
       console.log('연결상태:', isConnected);
-      const chatdata = await getChatlist(reservationUrl, chatPage, chatSize);
+      const chatdata = await getChats(reservationUrl);
       console.log(chatdata.data);
+      console.log('reservationUrl', reservationUrl);
       if (chatdata) {
         // 초기에 받은 데이터가 최신순이어서 순서를 바꾸고 chatMessages로 넣음
         await setChatMessages(
@@ -157,8 +163,6 @@ const ChatPage = () => {
   const handleChatMessageInputChange = (e) => {
     setChatMessageInput(e.target.value);
   };
-
-  const myReservationParticipantId = 2;
 
   const handleChatMessageSendButtonClick = () => {
     if (!chatMessageInput.trim()) return; // 공백 메시지는 전송하지 않음

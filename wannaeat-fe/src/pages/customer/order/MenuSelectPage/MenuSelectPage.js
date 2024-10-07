@@ -24,11 +24,16 @@ export const TabText = styled.p`
 
 export const CartImg = styled.img`
   position: absolute;
-  bottom: 10%;
-  right: 5%;
-  width: 5%;
-  height: 10%;
+  bottom: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
   cursor: pointer;
+  margin: 5px;
+  @media (min-width: 480px) {
+    width: 22px;
+    height: 22px;
+  }
 `;
 
 export const MenuContainer = styled.div`
@@ -80,13 +85,23 @@ export const MenuContentContainer = styled.div`
 export const MenuName = styled.p`
   font-size: ${theme.fontSize.px13};
   font-weight: bold;
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px15};
+  }
 `;
 
 export const MenuPrice = styled.p`
-  font-size: ${theme.fontSize.px13};
+  font-size: ${theme.fontSize.px11};
   margin: 8px 0;
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px13};
+  }
 `;
 
 export const MenuDescription = styled.p`
-  font-size: ${theme.fontSize.px11};
+  font-size: ${theme.fontSize.px9};
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px11};
+  }
 `;

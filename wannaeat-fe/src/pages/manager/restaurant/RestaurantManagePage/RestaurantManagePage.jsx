@@ -36,8 +36,7 @@ const RestaurantRegistPage = () => {
   const nav = useNavigate();
   const tabs = ['사업자', '매장'];
   const { setIsCarrot, setPageName, setIsUnderLine } = useHeaderStore();
-  const { managerFormData, setManagerFormData, restaurantId, setRestaurantId } =
-    useMyRestaurantStore();
+  const { managerFormData, setManagerFormData } = useMyRestaurantStore();
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
@@ -52,6 +51,7 @@ const RestaurantRegistPage = () => {
   const { setItems: setBreakEndTimeItems } = useBreakEndTimeDropdownStore();
 
   const showAlert = useAlert();
+  const restaurantId = window.localStorage.getItem('restaurantId') || '';
   const allTimes = [...lunchTimes, ...dinnerTimes];
 
   const [restaurantFormData, setRestaurantFormData] = useState({

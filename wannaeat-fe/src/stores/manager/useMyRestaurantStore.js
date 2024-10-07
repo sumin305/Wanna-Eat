@@ -12,7 +12,7 @@ const useMyRestaurantStore = create((set) => ({
     lng: 0,
   },
   reservationDetails: [],
-  restaurantId: '',
+  restaurantId: window.localStorage.getItem('restaurantId') || '',
   setManagerFormData: (field, value) =>
     set((state) => ({
       managerFormData: {

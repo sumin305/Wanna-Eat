@@ -4,6 +4,7 @@ import { authClientInstance } from 'utils/http-client.js';
 import { v4 as uuid } from 'uuid';
 import { create } from 'zustand';
 import { paletteItems } from '../ItemPalette/ItemPalette';
+import { useNavigate } from 'react-router-dom';
 import {
   GridWrapperStyled,
   ZoomableGridWrapperStyled,
@@ -16,6 +17,8 @@ import {
   GridCanvasModalStyled,
 } from './GridCanvas';
 import useModalStore from 'stores/common/useModalStore.js';
+
+import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore.js';
 
 const useStore = create((set, get) => ({
   itemsByFloor: {},
@@ -111,12 +114,16 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
+
+  const navigate = useNavigate();
+
   const {
     itemsByFloor,
     addItem,
     setItemsByFloor,
     updateItem,
     updateItemPosition,
+    clearItemsByFloor,
   } = useStore();
 
   const {
@@ -130,6 +137,8 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   const [selectedItem, setSelectedItem] = useState();
 
   const containerRef = useRef();
+
+  const { restaurantId } = useMyRestaurantStore();
 
   const calculateGridSize = () => {
     const width = window.innerWidth;
@@ -152,7 +161,6 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   }, []);
 
   useEffect(() => {
-    const restaurantId = 10; // 임시 id
     authClientInstance
       .get(`/api/public/restaurants/${restaurantId}/structure`)
       .then((response) => {
@@ -466,6 +474,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
       )
       .then((response) => {
         console.log('꾸미기 저장 성공:', response);
+        navigate('/manager');
       })
       .catch((error) => {
         console.error('꾸미기 저장 실패:', error);
@@ -518,7 +527,9 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
         </ZoomableGridWrapperStyled>
         <ButtonWrapperStyled>
           <SaveButtonStyled onClick={handleCanvasSave}>저장</SaveButtonStyled>
-          <CancelButtonStyled>취소</CancelButtonStyled>
+          <CancelButtonStyled onClick={clearItemsByFloor}>
+            취소
+          </CancelButtonStyled>
         </ButtonWrapperStyled>
       </GridWrapperStyled>
     </div>

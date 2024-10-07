@@ -11,8 +11,8 @@ import {
   AlarmContent,
   AlarmType,
   AlarmTime,
-  AlarmEmptyMessage
-} from './alarm'; 
+  AlarmEmptyMessage,
+} from './alarm';
 
 const AlarmPage = () => {
   const [alarms, setAlarms] = useState([]); // 알림 데이터를 상태로 관리
@@ -50,7 +50,7 @@ const AlarmPage = () => {
 
   // 카테고리 변경 시 필터링된 알림 목록을 업데이트
   useEffect(() => {
-    if (!alarms.length) return; // 데이터가 로드되지 않았으면 필터링하지 않음
+    if (!alarms) return; // 데이터가 로드되지 않았으면 필터링하지 않음
 
     if (selectedCategory === '전체') {
       setFilteredAlarms(alarms); // '전체' 선택 시 모든 알림 표시
@@ -129,14 +129,9 @@ const AlarmPage = () => {
               style={{ textDecoration: 'none', color: 'inherit' }} // 링크 스타일
             >
               <AlarmItem>
-                <AlarmIcon
-                  src={alarm.imageUrl}
-                  alt="알림 아이콘"
-                />
+                <AlarmIcon src={alarm.imageUrl} alt="알림 아이콘" />
                 <AlarmContent>
-                  <AlarmType>
-                    [{translateAlarmType(alarm.alarmType)}]
-                  </AlarmType>
+                  <AlarmType>[{translateAlarmType(alarm.alarmType)}]</AlarmType>
                   <div>예약 인원: {alarm.memberCnt}명</div>{' '}
                   {/* 예약 인원 표시 */}
                   {alarm.menuName && ( // 메뉴가 있을 때만 렌더링

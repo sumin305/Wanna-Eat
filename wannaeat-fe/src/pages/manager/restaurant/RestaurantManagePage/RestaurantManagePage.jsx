@@ -11,7 +11,7 @@ import {
   DropdownWrapperStyled,
   InputWithLabelStyled,
   InputWrapperStyled,
-} from './RestaurantRegistPage.js';
+} from './RestaurantManagePage.js';
 import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore.js';
 import WETextField from 'component/common/textfield/WETextfield/WETextfield.jsx';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
@@ -30,8 +30,10 @@ import {
 } from '../../../../stores/common/useDropdownStore.js';
 import useAlert from 'utils/alert.js';
 import useReservationStore from '../../../../stores/customer/useReservationStore.js';
+import { useNavigate } from 'react-router-dom';
 
 const RestaurantRegistPage = () => {
+  const nav = useNavigate();
   const tabs = ['사업자', '매장'];
   const { setIsCarrot, setPageName, setIsUnderLine } = useHeaderStore();
   const { managerFormData, setManagerFormData, restaurantId, setRestaurantId } =
@@ -112,6 +114,11 @@ const RestaurantRegistPage = () => {
     )[0].restaurantCategoryId;
     console.log(categoryId);
     setManagerFormData('businessType', categoryId);
+  };
+
+  // 메뉴버튼을 클릭하면 호출되는 함수
+  const handleMenuButtonClick = () => {
+    nav(`/manager/menu`);
   };
 
   useEffect(() => {
@@ -340,7 +347,11 @@ const RestaurantRegistPage = () => {
             }}
           />
         </TabWrapperStyled>
-        <WEButton className="testButton" size={'menu'}>
+        <WEButton
+          className="testButton"
+          size={'menu'}
+          onClick={handleMenuButtonClick}
+        >
           메뉴
         </WEButton>
       </TabWithButtonStyled>

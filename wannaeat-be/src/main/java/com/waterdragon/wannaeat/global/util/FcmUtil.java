@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.google.firebase.messaging.AndroidConfig;
+import com.google.firebase.messaging.AndroidNotification;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
@@ -23,12 +25,10 @@ import lombok.extern.slf4j.Slf4j;
 public class FcmUtil {
 
 	public void sendFcm(User user, AlarmType alarmType) {
-		log.info("취소알림 왔음");
 		if (user == null || user.getUserToken().getFcmToken() == null) {
 			return;
 		}
-
-		log.info("유효성통과");
+		log.info("히히 발사");
 		log.info(user.getUserToken().getFcmToken());
 		Message message = Message.builder()
 			.setToken(user.getUserToken().getFcmToken())
@@ -36,10 +36,21 @@ public class FcmUtil {
 				.setTitle("[머물래] " + alarmType.getKey())
 				.setBody(alarmType.getMessage())
 				.build())
-			.build();
+			.setAndroidConfig(
+				AndroidConfig.builder()
+					.setNotification(
+						AndroidNotification.builder()
+							.setTitle("[머물래] " + alarmType.getKey())
+							.setBody(alarmType.getMessage())
+							.setPriority(AndroidNotification.Priority.HIGH)
+							.build()
+					).build()
+			).build();
 		try {
-			log.info("발사");
+			log.info("알람타입: " + alarmType.getKey());
+			log.info("알람메시지: " + alarmType.getMessage());
 			FirebaseMessaging.getInstance().send(message);
+			log.info("발사완료~");
 		} catch (FirebaseMessagingException exception) {
 			log.error("Fcm 메시지 전송 실패 : {}", exception.getMessage());
 			// throw new RuntimeException(exception);
@@ -68,7 +79,15 @@ public class FcmUtil {
 				.setTitle("[머물래] " + alarmType.getKey())
 				.setBody(tableNumbers + alarmType.getMessage()) // 테이블 번호 추가
 				.build())
-			.build();
+			.setAndroidConfig(
+				AndroidConfig.builder()
+					.setNotification(
+						AndroidNotification.builder()
+							.setTitle("[머물래] " + alarmType.getKey())
+							.setBody(tableNumbers + alarmType.getMessage())
+							.build()
+					).build()
+			).build();
 		try {
 			FirebaseMessaging.getInstance().send(message);
 		} catch (FirebaseMessagingException exception) {

@@ -42,6 +42,7 @@ import arrowRightIcon from '../../../../assets/icons/common/arrow-right.svg';
 import blackArrowRightIcon from '../../../../assets/icons/common/black-arrow-right.svg';
 import { useNavigate } from 'react-router-dom';
 import useMapFilterStore from 'stores/map/useMapFilterStore.js';
+import Logo from 'assets/icons/header/logo.png';
 import {
   getMyReservation,
   getPriorityVisitingRestaurant,
@@ -62,6 +63,7 @@ const MainPage = () => {
 
   const [restaurantName, setRestaurantName] = useState('싸덱스 식당');
   const [memberCount, setMemberCount] = useState(3);
+  const [reservationId, setReservationId] = useState(0);
 
   useEffect(() => {
     const fetchMyReservationList = async () => {
@@ -93,6 +95,7 @@ const MainPage = () => {
         setRestaurantName(data.restaurantName);
         setDate(data.reservationDate + ' ' + data.reservationStartTime);
         setMemberCount(data.memberCnt);
+        setReservationId(data.reservationId);
       }
 
       console.log(data);
@@ -162,7 +165,11 @@ const MainPage = () => {
             </ReservationAlertTime>
           </ReservationDateWrapper>
           <ReservationiInfoButtonWrapper>
-            <ReservationInfoButton>더보기 ></ReservationInfoButton>
+            <ReservationInfoButton
+              onClick={() => handleReservationDetailButtonClick()}
+            >
+              더보기 >
+            </ReservationInfoButton>
           </ReservationiInfoButtonWrapper>
         </ReservationAlertWrapper>
       );
@@ -191,6 +198,10 @@ const MainPage = () => {
     navigate('/customer/reservation/detail/' + id);
   };
 
+  const handleReservationDetailButtonClick = () => {
+    navigate('/customer/reservationlist');
+    navigate('/customer/reservation/detail/' + reservationId);
+  };
   return (
     <MainPageContainer>
       <SearchWrapper>
@@ -235,7 +246,11 @@ const MainPage = () => {
               key={restaurant.reservationId}
               onClick={() => handleRestaurantClick(restaurant.reservationId)}
             >
-              <RestaurantInfoImage src={restaurant.restaurantImage} />
+              <RestaurantInfoImage
+                src={
+                  restaurant.restaurantImage ? restaurant.restaurantImage : Logo
+                }
+              />
               <RestaurantInfoName>
                 {restaurant.restaurantName}
               </RestaurantInfoName>

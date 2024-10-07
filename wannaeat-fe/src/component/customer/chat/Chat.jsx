@@ -9,6 +9,8 @@ import {
   ChatContent,
   ChatTime,
   ChatInputWrapper,
+  ChatInput,
+  ChatInputButton,
 } from './Chat';
 
 const Chat = () => {
@@ -118,12 +120,14 @@ const Chat = () => {
         </ChatWrapper>
       ))}
       <ChatInputWrapper>
-        <input
+        <ChatInput
           value={chatMessageInput}
           onChange={handleChatMessageInputChange}
           placeholder="메시지를 입력하세요"
         />
-        <button onClick={handleChatMessageSendButtonClick}>전송</button>
+        <ChatInputButton onClick={handleChatMessageSendButtonClick}>
+          전송
+        </ChatInputButton>
       </ChatInputWrapper>
     </ChatContainer>
   );

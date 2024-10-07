@@ -62,7 +62,11 @@ const ReservationDetailPage = () => {
       setReservationEndTime(reservation.reservationEndTime);
       setRestaurantId(reservation.restaurantId);
       setSeatList(reservation.tableList);
-      setReservationUrl(reservation.reservationUrl);
+      setReservationUrl(
+        process.env.REACT_APP_CLIENT_URL +
+          '/customer/order/' +
+          reservation.reservationUrl
+      );
     };
 
     setPageName('예약 상세');

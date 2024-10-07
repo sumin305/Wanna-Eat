@@ -212,7 +212,19 @@ const OrderCartPage = () => {
     setreservationParticipantId(
       localStorage.getItem('reservationParticipantId')
     );
+    const sorted = reorderArray(cartElements);
+    setCartElements(sorted);
 
+    console.log(
+      '내 장바구니 개수',
+      cartElements.filter(
+        (menu) =>
+          Number(menu.reservationParticipantId) ===
+          Number(reservationParticipantId)
+      )
+    );
+
+    console.log('cartElements', cartElements);
     setMyCartCnt(
       cartElements
         .filter(
@@ -260,6 +272,9 @@ const OrderCartPage = () => {
   }, []);
 
   useEffect(() => {
+    const sorted = reorderArray(cartElements);
+    setCartElements(sorted);
+
     setMyCartCnt(
       cartElements
         .filter(
@@ -566,8 +581,30 @@ const OrderCartPage = () => {
           <MenuContainer>
             <TotalMenuP>
               {activeTab === 0
-                ? `총 메뉴 ${myCartCnt}개`
-                : `총 메뉴 ${totalCartCnt}개`}
+                ? `총 메뉴 ${cartElements
+                    .filter(
+                      (menu) =>
+                        Number(menu.reservationParticipantId) ===
+                        Number(reservationParticipantId)
+                    )
+                    .reduce((total, menu) => {
+                      return (
+                        total +
+                        Object.values(menu.menuInfo).reduce(
+                          (count, menuItem) => count + menuItem.menuCnt,
+                          0
+                        )
+                      );
+                    }, 0)}개`
+                : `총 메뉴 ${cartElements.reduce((total, menu) => {
+                    return (
+                      total +
+                      Object.values(menu.menuInfo).reduce(
+                        (count, menuItem) => count + menuItem.menuCnt,
+                        0
+                      )
+                    );
+                  }, 0)}개`}
             </TotalMenuP>
             <DeleteDiv>
               {activeTab === 0 ? (

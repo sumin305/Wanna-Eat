@@ -36,6 +36,7 @@ import {
   MenuImageWrapper,
   PeopleP,
 } from './OrderMainPage.js';
+import useReservationStore from '../../../../stores/customer/useReservationStore.js';
 
 const OrderMainPage = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -55,8 +56,8 @@ const OrderMainPage = () => {
   const tabs = ['나의 메뉴', '전체 메뉴'];
   const nav = useNavigate();
   const params = useParams();
-  const reservationUrl = params.url;
-
+  const reservationParamUrl = params.url;
+  const { reservationUrl } = useReservationStore();
   const {
     setIsCarrot,
     setPageName,
@@ -93,10 +94,10 @@ const OrderMainPage = () => {
     setIsShowLogo(false);
     setIsShowBackIcon(true);
     const gotoChat = () => {
-      nav(`/customer/order/chat/${reservationUrl}`);
+      nav(`/customer/order/chat/${reservationParamUrl}`);
     };
     const gotoSelectMenu = () => {
-      nav(`/customer/order/menu-select/${reservationUrl}`);
+      nav(`/customer/order/menu-select/${reservationParamUrl}`);
     };
     setActiveIcons([8, 10]);
     setIconAction([gotoSelectMenu, gotoChat]);
@@ -105,9 +106,11 @@ const OrderMainPage = () => {
   // 모든 주문 데이터 불러오기
   useEffect(() => {
     const validateAndConnect = async () => {
-      const response = await validateReservationUrl(reservationUrl);
+      const response = await validateReservationUrl(
+        process.env.REACT_APP_CLIENT_URL + window.location.pathname
+      );
       console.log('validateAndConnectResponse', response);
-
+      console.log(process.env.REACT_APP_CLIENT_URL + window.location.pathname);
       // reservationUrl 유효성 검사 실행 후 유효한 경우
       if (response.status !== 200) {
         alert('유효한 예약 URL이 아닙니다.');
@@ -132,7 +135,7 @@ const OrderMainPage = () => {
         await initializeConnection(); // WebSocket 연결을 먼저 시도
       }
       const allOrdersInfo = await getOrderData(
-        reservationUrl,
+        reservationParamUrl,
         chatPage,
         chatSize
       );
@@ -256,7 +259,7 @@ const OrderMainPage = () => {
           {},
           () => {
             client.subscribe(
-              `/topic/reservations/${reservationUrl}`,
+              `/topic/reservations/${reservationParamUrl}`,
               (response) => {
                 const content = JSON.parse(response.body);
                 console.log('main sumin Received message: ', content);
@@ -393,11 +396,11 @@ const OrderMainPage = () => {
   }, [allOrdersInfo]);
 
   const handleGotoCartButtonClick = () => {
-    nav(`/customer/order/cart/${reservationUrl}`);
+    nav(`/customer/order/cart/${reservationParamUrl}`);
   };
 
   const handleOrderSheetButtonClick = () => {
-    nav(`/customer/order/order-sheet/${reservationUrl}`);
+    nav(`/customer/order/order-sheet/${reservationParamUrl}`);
   };
 
   // 닉네임 별로 그룹화, 총 금액 구하는 함수

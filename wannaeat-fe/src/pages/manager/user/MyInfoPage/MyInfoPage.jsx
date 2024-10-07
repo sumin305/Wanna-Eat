@@ -32,6 +32,7 @@ const MyInfoPage = () => {
     setIsShowBackIcon,
     setActiveIcons,
     setIsUnderLine,
+    setIconAction,
   } = useHeaderStore();
   useEffect(() => {
     const fetchMyInfo = async () => {
@@ -51,6 +52,7 @@ const MyInfoPage = () => {
     setIsShowBackIcon(false);
     setActiveIcons([0]);
     setIsUnderLine(true);
+    setIconAction([() => navigate('/manager/alarm')]);
   }, []);
 
   const handleRestaurantManageButtonClick = () => {

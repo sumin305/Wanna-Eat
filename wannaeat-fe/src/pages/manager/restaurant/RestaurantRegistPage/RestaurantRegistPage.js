@@ -57,11 +57,20 @@ const InputWrapperStyled = styled.div`
   }
 `;
 
+const DropdownWrapperStyled = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 90%;
+`;
+
 export {
   RestaurantRegistPageStyled,
   TabWithButtonStyled,
   TabWrapperStyled,
   ContentWrapperStyled,
+  DropdownWrapperStyled,
   InputWithLabelStyled,
   InputWrapperStyled,
 };

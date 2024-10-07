@@ -8,6 +8,7 @@ import {
   TabWithButtonStyled,
   TabWrapperStyled,
   ContentWrapperStyled,
+  DropdownWrapperStyled,
   InputWithLabelStyled,
   InputWrapperStyled,
 } from './RestaurantRegistPage.js';
@@ -20,25 +21,49 @@ import MapModal from 'component/manager/map/MapModal.jsx';
 import { registRestaurant } from 'api/manager/restaurant/restaurant.js';
 import WEDropdown from '../../../../component/common/dropdown/WEDropdown.jsx';
 import useMapFilterStore from 'stores/map/useMapFilterStore.js';
-import { useDropdownStore } from '../../../../stores/common/useDropdownStore.js';
+import {
+  useDropdownStore,
+  useVisitTimeDropdownStore,
+  useEndTimeDropdownStore,
+  useBreakStartTimeDropdownStore,
+  useBreakEndTimeDropdownStore,
+} from '../../../../stores/common/useDropdownStore.js';
 import useAlert from 'utils/alert.js';
+import useReservationStore from '../../../../stores/customer/useReservationStore.js';
 
 const RestaurantRegistPage = () => {
   const tabs = ['사업자', '매장'];
   const { setIsCarrot, setPageName, setIsUnderLine } = useHeaderStore();
-  const {
-    restaurantFormData,
-    setRestaurantFormData,
-    restaurantId,
-    setRestaurantId,
-  } = useMyRestaurantStore();
+  const { managerFormData, setManagerFormData, restaurantId, setRestaurantId } =
+    useMyRestaurantStore();
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
   const { setCategoryId } = useMapFilterStore();
   const { setItems } = useDropdownStore();
+  const { setError, clearError } = useTextfieldStore();
+  const { lunchTimes, dinnerTimes } = useReservationStore();
+
+  const { setItems: setVisitTimeItems } = useVisitTimeDropdownStore();
+  const { setItems: setEndTimeItems } = useEndTimeDropdownStore();
+  const { setItems: setBreakStartTimeItems } = useBreakStartTimeDropdownStore();
+  const { setItems: setBreakEndTimeItems } = useBreakEndTimeDropdownStore();
 
   const showAlert = useAlert();
+  const allTimes = [...lunchTimes, ...dinnerTimes];
+
+  const [restaurantFormData, setRestaurantFormData] = useState({
+    restaurantOpenTime: '',
+    restaurantCloseTime: '',
+    breakStartTime: '',
+    breakEndTime: '',
+    maxReservationTime: '',
+    minMemberCount: '',
+    maxMemberCount: '',
+    depositPerMember: '',
+    restaurantDescription: '',
+    restaurantImages: [],
+  });
 
   const handleAddressClick = () => {
     setIsMapModalOpen(true);
@@ -46,28 +71,30 @@ const RestaurantRegistPage = () => {
 
   const handleMapConfirm = (latitude, longitude, address) => {
     console.log('주소 잘왔나', address);
-    setRestaurantFormData('lat', latitude);
-    setRestaurantFormData('lng', longitude);
-    setRestaurantFormData('address', address);
+    setManagerFormData('lat', latitude);
+    setManagerFormData('lng', longitude);
+    setManagerFormData('address', address);
   };
+  console.log('사업자 정보', managerFormData);
   console.log('레스토랑 정보', restaurantFormData);
 
   // 확인 버튼을 누르면 호출되는 함수
   const handleRegistButtonClick = async () => {
     const response = await registRestaurant({
-      restaurantOwnerName: restaurantFormData.name,
-      restaurantBusinessNumber: restaurantFormData.number,
-      restaurantAddress: restaurantFormData.address,
-      restaurantPhone: restaurantFormData.phone,
-      restaurantName: restaurantFormData.restaurantName,
-      restaurantCategoryId: restaurantFormData.businessType,
-      latitude: restaurantFormData.lat,
-      longitude: restaurantFormData.lng,
+      restaurantOwnerName: managerFormData.name,
+      restaurantBusinessNumber: managerFormData.number,
+      restaurantAddress: managerFormData.address,
+      restaurantPhone: managerFormData.phone,
+      restaurantName: managerFormData.restaurantName,
+      restaurantCategoryId: managerFormData.businessType,
+      latitude: managerFormData.lat,
+      longitude: managerFormData.lng,
     });
     console.log(response);
     if (response.status === 201) {
       const restaurantId = response.data.data;
       setRestaurantId(restaurantId);
+      setActiveTab(1);
       showAlert(response.data.message);
     } else if (response.status === 400) {
       showAlert('값을 형식에 맞게 입력하세요.');
@@ -83,7 +110,7 @@ const RestaurantRegistPage = () => {
       (category) => category.restaurantCategoryName === e
     )[0].restaurantCategoryId;
     console.log(categoryId);
-    setRestaurantFormData('businessType', categoryId);
+    setManagerFormData('businessType', categoryId);
   };
 
   useEffect(() => {
@@ -103,6 +130,15 @@ const RestaurantRegistPage = () => {
     );
   }, []);
 
+  useEffect(() => {
+    if (activeTab === 1) {
+      setVisitTimeItems(allTimes);
+      setEndTimeItems(allTimes);
+      setBreakStartTimeItems(allTimes);
+      setBreakEndTimeItems(allTimes);
+    }
+  }, [activeTab]);
+
   const renderContent = (activeTab) => {
     switch (activeTab) {
       case 0:
@@ -114,11 +150,9 @@ const RestaurantRegistPage = () => {
                 <WETextField
                   name="restaurantRegist-name"
                   placeholder="대표자 이름을 입력하세요."
-                  value={restaurantFormData.name}
+                  value={managerFormData.name}
                   showErrorMessageSpace={true}
-                  onChange={(e) =>
-                    setRestaurantFormData('name', e.target.value)
-                  }
+                  onChange={(e) => setManagerFormData('name', e.target.value)}
                 />
               </InputWithLabelStyled>
             </InputWrapperStyled>
@@ -129,10 +163,10 @@ const RestaurantRegistPage = () => {
                 <WETextField
                   name="restaurantRegist-address"
                   placeholder="사업장 주소를 입력하세요."
-                  value={restaurantFormData.address}
+                  value={managerFormData.address}
                   showErrorMessageSpace={true}
                   onChange={(e) =>
-                    setRestaurantFormData('address', e.target.value)
+                    setManagerFormData('address', e.target.value)
                   }
                   onClick={handleAddressClick}
                 />
@@ -150,11 +184,9 @@ const RestaurantRegistPage = () => {
                 <WETextField
                   name="restaurantRegist-Number"
                   placeholder="xxx-xx-xxxxx"
-                  value={restaurantFormData.number}
+                  value={managerFormData.number}
                   showErrorMessageSpace={true}
-                  onChange={(e) =>
-                    setRestaurantFormData('number', e.target.value)
-                  }
+                  onChange={(e) => setManagerFormData('number', e.target.value)}
                 />
               </InputWithLabelStyled>
             </InputWrapperStyled>
@@ -164,12 +196,10 @@ const RestaurantRegistPage = () => {
                 <label>전화번호</label>
                 <WETextField
                   name="restaurantRegist-phone"
-                  placeholder="000-0000-0000"
-                  value={restaurantFormData.phone}
+                  placeholder="00000000000"
+                  value={managerFormData.phone}
                   showErrorMessageSpace={true}
-                  onChange={(e) =>
-                    setRestaurantFormData('phone', e.target.value)
-                  }
+                  onChange={(e) => setManagerFormData('phone', e.target.value)}
                 />
               </InputWithLabelStyled>
             </InputWrapperStyled>
@@ -180,10 +210,10 @@ const RestaurantRegistPage = () => {
                 <WETextField
                   name="restaurantRegist-restaurantName"
                   placeholder="매장명을 입력하세요."
-                  value={restaurantFormData.restaurantName}
+                  value={managerFormData.restaurantName}
                   showErrorMessageSpace={true}
                   onChange={(e) =>
-                    setRestaurantFormData('restaurantName', e.target.value)
+                    setManagerFormData('restaurantName', e.target.value)
                   }
                 />
               </InputWithLabelStyled>
@@ -193,7 +223,6 @@ const RestaurantRegistPage = () => {
               <InputWithLabelStyled>
                 <label>업종</label>
                 <WEDropdown
-                  width="70%"
                   useDropdownStore={useDropdownStore}
                   placeholder="카테고리를 선택하세요"
                   onSelect={handleCategoryOnSelect}
@@ -206,61 +235,87 @@ const RestaurantRegistPage = () => {
         return (
           <ContentWrapperStyled>
             <InputWrapperStyled>
-              <InputWithLabelStyled>
-                <label>대표자</label>
-                {/* <WETimeDropdown /> */}
-              </InputWithLabelStyled>
+              <label>영업시간</label>
+              <DropdownWrapperStyled>
+                {/* <InputWithLabelStyled> */}
+                <WEDropdown
+                  useDropdownStore={useVisitTimeDropdownStore}
+                  placeholder="시작시간"
+                  value={restaurantFormData.restaurantOpenTime}
+                  onSelect={(value) =>
+                    setRestaurantFormData((prevData) => ({
+                      ...prevData,
+                      restaurantOpenTime: value,
+                    }))
+                  }
+                />
+                {/* </InputWithLabelStyled> */}
+                {/* <InputWithLabelStyled> */}
+
+                <WEDropdown
+                  useDropdownStore={useEndTimeDropdownStore}
+                  placeholder="끝나는시간"
+                  value={restaurantFormData.restaurantCloseTime}
+                  onSelect={(value) =>
+                    setRestaurantFormData((prevData) => ({
+                      ...prevData,
+                      restaurantCloseTime: value,
+                    }))
+                  }
+                />
+                {/* </InputWithLabelStyled> */}
+              </DropdownWrapperStyled>
             </InputWrapperStyled>
 
             <InputWrapperStyled>
               <InputWithLabelStyled>
-                <label>사업장 주소</label>
+                {/* <label>사업장 주소</label>
                 <WETextField
                   name="restaurantRegist-address"
                   placeholder="사업장 주소를 입력하세요."
-                  value={restaurantFormData.address}
+                  value={managerFormData.address}
                   showErrorMessageSpace={true}
                   onChange={(e) => setRestaurantFormData(e.target.value)}
-                />
+                /> */}
               </InputWithLabelStyled>
             </InputWrapperStyled>
 
             <InputWrapperStyled>
               <InputWithLabelStyled>
-                <label>전화번호</label>
+                {/* <label>전화번호</label>
                 <WETextField
                   name="restaurantRegist-phone"
                   placeholder="전화번호를 입력하세요."
-                  value={restaurantFormData.phone}
+                  value={managerFormData.phone}
                   showErrorMessageSpace={true}
                   onChange={(e) => setRestaurantFormData(e.target.value)}
-                />
+                /> */}
               </InputWithLabelStyled>
             </InputWrapperStyled>
 
             <InputWrapperStyled>
               <InputWithLabelStyled>
-                <label>매장명</label>
+                {/* <label>매장명</label>
                 <WETextField
                   name="restaurantRegist-restaurantName"
                   placeholder="매장명을 입력하세요."
-                  value={restaurantFormData.restaurantName}
+                  value={managerFormData.restaurantName}
                   showErrorMessageSpace={true}
                   onChange={(e) => setRestaurantFormData(e.target.value)}
-                />
+                /> */}
               </InputWithLabelStyled>
             </InputWrapperStyled>
 
             <InputWrapperStyled>
               <InputWithLabelStyled>
-                <label>업종</label>
+                {/* <label>업종</label>
                 <WETextField
                   name="restaurantRegist-businessType"
                   placeholder="업종을 입력하세요."
-                  value={restaurantFormData.businessType}
+                  value={managerFormData.businessType}
                   showErrorMessageSpace={true}
                   onChange={(e) => setRestaurantFormData(e.target.value)}
-                />
+                /> */}
               </InputWithLabelStyled>
             </InputWrapperStyled>
           </ContentWrapperStyled>

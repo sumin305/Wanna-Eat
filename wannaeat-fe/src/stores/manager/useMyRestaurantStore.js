@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 const useMyRestaurantStore = create((set) => ({
-  restaurantFormData: {
+  managerFormData: {
     name: '',
     number: '',
     address: '',
@@ -13,10 +13,10 @@ const useMyRestaurantStore = create((set) => ({
   },
   reservationDetails: [],
   restaurantId: '',
-  setRestaurantFormData: (field, value) =>
+  setManagerFormData: (field, value) =>
     set((state) => ({
-      restaurantFormData: {
-        ...state.restaurantFormData,
+      managerFormData: {
+        ...state.managerFormData,
         [field]: value,
       },
     })),

@@ -37,11 +37,10 @@ const MenuSelectPage = () => {
   const reservationUrl = params.url;
   const { isConnected, setIsConnected, stompClient, setStompClient } =
     useChatStore();
-
   const [activeTab, setActiveTab] = useState(0);
   const [reservationParticipantId, setReservationParticipantId] = useState(0);
-  const increment = 1; // 증가 갯수는 1로 설정
 
+  const increment = 1; // 증가 갯수는 1로 설정
   const {
     setIsCarrot,
     setPageName,
@@ -51,7 +50,7 @@ const MenuSelectPage = () => {
     setIconAction,
   } = useHeaderStore();
 
-  const { allMenusData, setAllMenusData } = useOrderStore();
+  const { allMenusData, setAllMenusData, restaurantId } = useOrderStore();
   const { setCartElements } = useCartStore();
 
   const showAlert = useAlert();
@@ -126,8 +125,6 @@ const MenuSelectPage = () => {
       }
     );
   };
-
-  const restaurantId = window.localStorage.getItem('restaurantId');
 
   const fetchMenuData = async () => {
     const allMenuData = await getMenuData(restaurantId);

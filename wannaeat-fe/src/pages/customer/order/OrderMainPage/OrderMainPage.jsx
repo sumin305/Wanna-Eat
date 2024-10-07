@@ -66,18 +66,11 @@ const OrderMainPage = () => {
     setIconAction,
   } = useHeaderStore();
   const { setCartElements } = useCartStore();
-  const {
-    isConnected,
-    setIsConnected,
-    stompClient,
-    setStompClient,
-    chatPage,
-    chatSize,
-  } = useChatStore();
-
-  const { allOrdersInfo, setAllOrdersInfo } = useOrderStore();
+  const { setIsConnected, stompClient, setStompClient, chatPage, chatSize } =
+    useChatStore();
 
   const {
+    allOrdersInfo,
     setReservationDate,
     setReservationStartTime,
     setReservationEndTime,
@@ -105,11 +98,9 @@ const OrderMainPage = () => {
   // 모든 주문 데이터 불러오기
   useEffect(() => {
     const validateAndConnect = async () => {
-      const response = await validateReservationUrl(
-        process.env.REACT_APP_CLIENT_URL + window.location.pathname
-      );
+      const response = await validateReservationUrl(reservationUrl);
       console.log('validateAndConnectResponse', response);
-      console.log(process.env.REACT_APP_CLIENT_URL + window.location.pathname);
+      console.log(reservationUrl);
       // reservationUrl 유효성 검사 실행 후 유효한 경우
       if (response.status !== 200) {
         alert('유효한 예약 URL이 아닙니다.');
@@ -126,8 +117,10 @@ const OrderMainPage = () => {
         'reservationParticipantId',
         reservationParticipantId
       );
+      console.log('reservationParticipantId', reservationParticipantId);
       setreservationParticipantId(reservationParticipantId);
 
+      console.log('stompClient있나 확인', stompClient);
       // WebSocket 연결 후 데이터 불러오기
       if (!stompClient) {
         console.log('stompClient가 없어 소켓 연결을 시도합니다.');
@@ -147,7 +140,7 @@ const OrderMainPage = () => {
       setReservationEndTime(totalData.reservationEndTime);
       setRestaurantId(totalData.restaurantId);
       setReservationId(totalData.reservationId);
-
+      console.log('restaurantId', totalData.restaurantId);
       setCartElements(
         totalData.cartDetailResponseDto
           ? totalData.cartDetailResponseDto.cartElements
@@ -250,6 +243,7 @@ const OrderMainPage = () => {
 
     const initializeConnection = async () => {
       return await new Promise((resolve, reject) => {
+        console.log('reservationUrl', reservationUrl);
         const socket = new SockJS(
           `${process.env.REACT_APP_REST_API_URL}/api/public/ws`
         );
@@ -282,7 +276,7 @@ const OrderMainPage = () => {
             resolve(); // WebSocket 연결 성공 시 resolve 호출
           },
           (error) => {
-            console.log('소켓 연결 오류:', error);
+            console.log('구독 실패 연결 오류:', error);
             setIsConnected(false);
             reject(error); // WebSocket 연결 실패 시 reject 호출
           }

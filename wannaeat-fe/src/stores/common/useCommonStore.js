@@ -13,11 +13,12 @@ const useCommonStore = create((set) => ({
   socialType: '',
   categories: [], // 음식 카테고리
   fcmToken: '',
+  nickname: '',
   setRole: (value) => set(() => ({ role: value })),
   setEmail: (value) => set(() => ({ email: value })),
   setSocialType: (value) => set(() => ({ socialType: value })),
   setCategories: (categories) => set({ categories: categories }),
-
+  setNickname: (nickname) => set(() => ({ nickname: nickname })),
   getUserInfo: async () => {
     // refresh -> access 재발급
     const result = await getToken();

@@ -12,7 +12,10 @@ import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore.js';
 import FloorSelector from 'component/manager/restaurant/SeatDecorate/FloorSelector/FloorSelector.jsx';
 import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
 
-const SeatingMap = () => {
+import { ReactComponent as SquareTablePointedIcon } from 'assets/icons/manager/restaurant/table-square-pointed.svg';
+import { ReactComponent as RoundTablePointedIcon } from 'assets/icons/manager/restaurant/table-rounded-pointed.svg';
+
+const SeatingMap = ({ OccupiedList, on404Error }) => {
   const [floorData, setFloorData] = useState([]);
   const [originalData, setOriginalData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,7 +23,12 @@ const SeatingMap = () => {
 
   const [currentFloor, setCurrentFloor] = useState(1);
 
+  const [IconWidth, setIconWidth] = useState(100);
+  const [IconHeight, setIconHeight] = useState(100);
+
   const { restaurantId } = useMyRestaurantStore();
+
+  const reservedTable = OccupiedList;
 
   useEffect(() => {
     console.log('restaurantId: ' + restaurantId);
@@ -29,73 +37,45 @@ const SeatingMap = () => {
     }
   }, [restaurantId]);
 
-  //   const testData = {
-  //     floorCnt: 3,
-  //     tableDetailResponseDtos: [
-  //       {
-  //         itemId: 'table-uuid-1',
-  //         itemType: 'SQUARE',
-  //         x: 120.567,
-  //         y: 250.0,
-  //         floor: 3,
-  //         tableId: 101,
-  //         assignedSeats: 4,
-  //       },
-  //       {
-  //         itemId: 'table-uuid-2',
-  //         itemType: 'ROUNDED',
-  //         x: 320.7,
-  //         y: 150.5,
-  //         floor: 1,
-  //         tableId: 102,
-  //         assignedSeats: 6,
-  //       },
-  //     ],
-  //     elementDetailResponseDtos: [
-  //       {
-  //         itemId: 'element-uuid-1',
-  //         itemType: 'RESTROOM',
-  //         x: 192,
-  //         y: 0,
-  //         floor: 1,
-  //       },
-  //       {
-  //         itemId: 'element-uuid-2',
-  //         itemType: 'ENTRANCE',
-  //         x: 192,
-  //         y: 432,
-  //         floor: 2,
-  //       },
-  //       {
-  //         itemId: 'element-uuid-3',
-  //         itemType: 'COUNTER',
-  //         x: 240,
-  //         y: 432,
-  //         floor: 1,
-  //       },
-  //     ],
-  //   };
-
-  //   const floors = Array.from({ length: testData.floorCnt }, (_, i) => i + 1);
-
-  //   useEffect(() => {
-  //     mergeFloorData(testData);
-  //     setLoading(false);
-  //   }, []);
-
   const fetchFloorData = async (restaurantId) => {
     console.log('restaurantId: ' + restaurantId + ' 으로 get요청 보냅니다!');
     try {
       const response = await authClientInstance.get(
         `/api/public/restaurants/${restaurantId}/structure`
       );
-      const { data } = response;
-      console.log('받아온 데이터!: ', data);
+      const { data } = response.data;
+
+      console.log('data: ', data);
+
       setFloorCnt(data.floorCnt);
       setOriginalData(data);
       mergeFloorData(data, currentFloor);
       setLoading(false);
+
+      let tempValue;
+
+      switch (data.size) {
+        case 'SMALL':
+          tempValue = 20;
+          break;
+        case 'MEDIUM':
+          tempValue = 10;
+          break;
+        case 'LARGE':
+          tempValue = 6.5;
+          break;
+        default:
+          tempValue = 10;
+          break;
+      }
+
+      setIconWidth(tempValue);
+      setIconHeight(tempValue);
     } catch (error) {
+      if (error.response && error.response.status === 404) {
+        on404Error();
+      }
+
       console.error('배치 정보 요청 오류:', error);
       setLoading(false);
       return;
@@ -124,13 +104,24 @@ const SeatingMap = () => {
     }
   };
 
-  const renderIcon = (itemType) => {
-    console.log('현재 itemType: ', itemType);
+  const renderIcon = (itemType, tableId, reservedTable) => {
+    const isOccupied = reservedTable.some(
+      (reserved) => reserved.tableId === tableId
+    );
+
     const item = Items.find((item) => item.itemType === itemType);
-    if (item && item.icon) {
-      const IconComponent = item.icon;
+
+    if (item) {
+      const IconComponent =
+        isOccupied && itemType === 'square'
+          ? SquareTablePointedIcon
+          : isOccupied && itemType === 'rounded'
+            ? RoundTablePointedIcon
+            : item.icon;
+
       return <IconComponent />;
     }
+
     return null;
   };
 
@@ -152,8 +143,14 @@ const SeatingMap = () => {
 
       <MapStyled>
         {floorData.map((item) => (
-          <ItemWrapperStyled key={item.itemId} x={item.x} y={item.y}>
-            {renderIcon(item.itemType)}
+          <ItemWrapperStyled
+            key={item.itemId}
+            x={item.x}
+            y={item.y}
+            svgWidth={IconWidth}
+            svgHeight={IconHeight}
+          >
+            {renderIcon(item.itemType, item.tableId, reservedTable)}
             {item.itemType === 'SQUARE' || item.itemType === 'ROUNDED' ? (
               <LabelStyled>{item.tableId}번</LabelStyled>
             ) : (

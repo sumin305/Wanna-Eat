@@ -5,7 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../../../../../component/common/button/WEButton/WEButton.jsx';
 import { SeatSelectPageContainer } from './SeatSelectPage.js';
 
-const SeatSelectPage = () => {
+import SeatSelect from 'component/customer/reservation/SeatSelect/SeatSelect.jsx';
+
+const SeatSelectPage = (tableData) => {
   const navigate = useNavigate();
 
   const handleBeforeButtonClick = () => {
@@ -17,6 +19,7 @@ const SeatSelectPage = () => {
   return (
     <SeatSelectPageContainer>
       <WEStep index={1} />
+      <SeatSelect tableData={tableData} />
       <ButtonWrapper>
         <Button
           onClick={handleBeforeButtonClick}

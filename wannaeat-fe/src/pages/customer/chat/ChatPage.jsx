@@ -14,6 +14,8 @@ import {
   ChatContent,
   ChatTime,
   ChatInputWrapper,
+  ChatInput,
+  ChatTextContainer,
 } from 'component/customer/chat/Chat';
 import useHeaderStore from 'stores/common/useHeaderStore';
 import WETextfield from 'component/common/textfield/WETextfield/WETextfield.jsx';
@@ -271,79 +273,83 @@ const ChatPage = () => {
   console.log('웹소켓연결확인:', isConnected);
 
   return (
-    <ChatContainer
-      id="chat-container"
-      style={{ height: '470px', overflowY: 'scroll' }}
-    >
-      {chatMessages &&
-        chatMessages.map((chat, index) => {
-          // 이전 메세지의 날짜와 현재 메세지의 날짜 비교
-          const currentMessageDate = formatDate(chat.registerTime);
-          const prevMessageDate =
-            index > 0 ? formatDate(chatMessages[index - 1].registerTime) : null;
-          return (
-            <>
-              <DateBox key={chat.id}>
-                {currentMessageDate !== prevMessageDate && (
-                  <div>
-                    <span>-</span>
-                    {currentMessageDate}
-                    <span>-</span>
-                  </div>
-                )}
-              </DateBox>
+    <ChatContainer>
+      <ChatTextContainer id="chat-container">
+        {chatMessages &&
+          chatMessages.map((chat, index) => {
+            // 이전 메세지의 날짜와 현재 메세지의 날짜 비교
+            const currentMessageDate = formatDate(chat.registerTime);
+            const prevMessageDate =
+              index > 0
+                ? formatDate(chatMessages[index - 1].registerTime)
+                : null;
+            return (
+              <>
+                <DateBox key={chat.id}>
+                  {currentMessageDate !== prevMessageDate && (
+                    <div>
+                      <span>-</span>
+                      {currentMessageDate}
+                      <span>-</span>
+                    </div>
+                  )}
+                </DateBox>
 
-              <ChatWrapper
-                isMyMessage={
-                  chat.senderReservationParticipantId ===
-                  myReservationParticipantId
-                }
-                key={chat.id}
-              >
-                <ChatNickname
+                <ChatWrapper
                   isMyMessage={
                     chat.senderReservationParticipantId ===
                     myReservationParticipantId
                   }
+                  key={chat.id}
                 >
-                  {chat.senderReservationParticipantNickname}
-                </ChatNickname>
-                <ChatMessageBox
-                  isMyMessage={
-                    chat.senderReservationParticipantId ===
-                    myReservationParticipantId
-                  }
-                >
-                  <ChatContent
+                  <ChatNickname
                     isMyMessage={
                       chat.senderReservationParticipantId ===
                       myReservationParticipantId
                     }
                   >
-                    {chat.content}
-                  </ChatContent>
-                  <ChatTime
+                    {chat.senderReservationParticipantNickname}
+                  </ChatNickname>
+                  <ChatMessageBox
                     isMyMessage={
                       chat.senderReservationParticipantId ===
                       myReservationParticipantId
                     }
                   >
-                    {showChatTime(chat.registerTime)}
-                  </ChatTime>
-                </ChatMessageBox>
-              </ChatWrapper>
-            </>
-          );
-        })}
-
+                    <ChatContent
+                      isMyMessage={
+                        chat.senderReservationParticipantId ===
+                        myReservationParticipantId
+                      }
+                    >
+                      {chat.content}
+                    </ChatContent>
+                    <ChatTime
+                      isMyMessage={
+                        chat.senderReservationParticipantId ===
+                        myReservationParticipantId
+                      }
+                    >
+                      {showChatTime(chat.registerTime)}
+                    </ChatTime>
+                  </ChatMessageBox>
+                </ChatWrapper>
+              </>
+            );
+          })}
+      </ChatTextContainer>
       <ChatInputWrapper>
-        <input
+        <ChatInput
           value={chatMessageInput}
           onChange={handleChatMessageInputChange}
           placeholder="메시지를 입력하세요"
           onKeyDown={handleKeyPress}
         />
-        <WEButton onClick={handleChatMessageSendButtonClick}>
+        <WEButton
+          height={'5vh'}
+          width={'2rem'}
+          onClick={handleChatMessageSendButtonClick}
+        >
           <img src={SendIcon} alt="전송아이콘" />
         </WEButton>
       </ChatInputWrapper>

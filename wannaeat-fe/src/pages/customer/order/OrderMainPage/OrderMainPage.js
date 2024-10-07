@@ -31,20 +31,19 @@ export const MenuContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   height: 30px;
-  margin-bottom: 10px;
   align-items: center;
 `;
 
 export const TotalMenuP = styled.p`
   font-size: 15px;
   font-weight: 700;
-  margin-left: 4vw;
+  margin-left: 0.5rem;
 `;
 
 export const DeleteDiv = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 3vw;
+  margin-right: 1rem;
 
   & > button {
     padding: 5px;
@@ -59,7 +58,6 @@ export const DeleteDiv = styled.div`
 export const FoodDiv = styled.div`
   display: flex;
   flex-direction: row;
-  padding: 1vw;
 `;
 
 export const LineDiv = styled.div`
@@ -70,9 +68,8 @@ export const LineDiv = styled.div`
 `;
 
 export const MenuDiv = styled.div`
-  background-color: rgba(212, 212, 212, 0.3);
-  padding: 4vw;
-  height: 45vh;
+  padding: 0.5rem;
+  height: 53vh;
   overflow-y: auto;
   -ms-overflow-style: none; /* 인터넷 익스플로러용 스크롤바 숨김 */
   scrollbar-width: none; /* 파이어폭스용 스크롤바 숨김 */
@@ -82,10 +79,15 @@ export const MenuDiv = styled.div`
   }
 `;
 
+export const MenuImageWrapper = styled.div`
+  width: 65px;
+  height: 65px;
+  display: flex;
+  margin-right: 0.5rem;
+  align-self: center;
+`;
 export const MenuImg = styled.img`
-  width: 60px;
-  height: 60px;
-  margin-right: 15px;
+  width: 65px;
   border-radius: 6px;
 `;
 
@@ -94,6 +96,14 @@ export const FoodInfoDiv = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  margin: 3px 0;
+`;
+
+export const FoodCountWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 export const DeleteImg = styled.img`
@@ -106,16 +116,16 @@ export const DeleteImg = styled.img`
 export const FoodInfoTopDiv = styled.div`
   display: flex;
   justify-content: space-between;
-  margin: 5px 0;
 `;
 
 export const FoodInfoCountDiv = styled.div`
-  height: 20px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   border-radius: 10px;
   justify-content: space-between;
-  align-items: center;
+  @media (min-width: 480px) {
+    flex-direction: row;
+  }
 `;
 
 export const FoodPriceP = styled.p`
@@ -125,26 +135,29 @@ export const FoodPriceP = styled.p`
 
 export const MenuNameP = styled.p`
   font-size: ${theme.fontSize.px13};
-  font-weight: ${theme.fontWeight.default};
+  font-weight: bold;
+  margin-bottom: 3px;
 `;
 
 export const FoodInfoCountP = styled.p`
-  border-top: 1px solid rgba(212, 212, 212, 1);
-  border-bottom: 1px solid rgba(212, 212, 212, 1);
-  font-size: 11px;
+  border: 1px solid rgba(212, 212, 212, 1);
+  border-radius: 5px;
+  padding: 2px;
+  margin: 2px;
+  font-size: ${theme.fontSize.px11};
   font-weight: 600;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 25px;
   background-color: white;
-  height: 22px;
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px13};
+  }
 `;
 
 export const FoodInfoCountLeftBtn = styled.button`
   background-color: white;
-  width: 23px;
-  height: 23px;
   color: rgba(212, 212, 212, 1);
   border: 1px solid rgba(212, 212, 212, 1);
   border-radius: 6px 0 0 6px;
@@ -162,8 +175,6 @@ export const FoodInfoCountLeftBtn = styled.button`
 
 export const FoodInfoCountRightBtn = styled.button`
   background-color: white;
-  width: 23px;
-  height: 23px;
   color: rgba(212, 212, 212, 1);
   border: 1px solid rgba(212, 212, 212, 1);
   border-radius: 0 5px 5px 0;
@@ -185,15 +196,24 @@ export const FoodInfoBottomDiv = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 10px 0;
+`;
+
+export const TextP = styled.p`
+  font-size: ${theme.fontSize.px11};
+  display: inline-block;
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px13};
+  }
 `;
 
 export const PeopleP = styled.p`
-  font-size: ${theme.fontSize.px13};
-  font-weight: ${theme.fontWeight.default};
-  color: rgba(66, 66, 66, 1);
+  font-size: ${theme.fontSize.px11};
+  color: #424242;
+  display: inline-block;
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px13};
+  }
 `;
-
 export const TotalPriceDiv = styled.div`
   display: flex;
   justify-content: right;

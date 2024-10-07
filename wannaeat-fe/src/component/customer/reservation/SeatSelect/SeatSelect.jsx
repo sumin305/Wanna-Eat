@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
+
 import {
-  SeatingMapStyled,
+  SeatSelectStyled,
   Items,
   MapStyled,
   ItemWrapperStyled,
   LabelStyled,
-} from './SeatingMap.js';
+} from './SeatSelect.js';
 import { authClientInstance } from 'utils/http-client.js';
-import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore.js';
+import { useLocation } from 'react-router-dom';
 
 import FloorSelector from 'component/manager/restaurant/SeatDecorate/FloorSelector/FloorSelector.jsx';
 import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
@@ -15,7 +16,11 @@ import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
 import { ReactComponent as SquareTablePointedIcon } from 'assets/icons/manager/restaurant/table-square-pointed.svg';
 import { ReactComponent as RoundTablePointedIcon } from 'assets/icons/manager/restaurant/table-rounded-pointed.svg';
 
-const SeatingMap = ({ OccupiedList, on404Error }) => {
+import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
+
+const SeatSelect = () => {
+  const location = useLocation();
+  const { tableData } = location.state || {};
   const [floorData, setFloorData] = useState([]);
   const [originalData, setOriginalData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -26,9 +31,10 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
   const [IconWidth, setIconWidth] = useState(100);
   const [IconHeight, setIconHeight] = useState(100);
 
-  const { restaurantId } = useMyRestaurantStore();
+  const { restaurantId } = useRestaurantStore();
 
-  const reservedTable = OccupiedList;
+  console.log('TYPE: ', Array.isArray(tableData));
+  const reservedTable = tableData;
 
   useEffect(() => {
     console.log('restaurantId: ' + restaurantId);
@@ -72,10 +78,6 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
       setIconWidth(tempValue);
       setIconHeight(tempValue);
     } catch (error) {
-      if (error.response && error.response.status === 404) {
-        on404Error();
-      }
-
       console.error('배치 정보 요청 오류:', error);
       setLoading(false);
       return;
@@ -134,7 +136,7 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
   }
 
   return (
-    <SeatingMapStyled>
+    <SeatSelectStyled>
       <FloorSelector
         floors={Array.from({ length: floorCnt }, (_, i) => i + 1)}
         currentFloor={currentFloor}
@@ -159,8 +161,8 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
           </ItemWrapperStyled>
         ))}
       </MapStyled>
-    </SeatingMapStyled>
+    </SeatSelectStyled>
   );
 };
 
-export default SeatingMap;
+export default SeatSelect;

@@ -2,16 +2,18 @@ import { clientInstance, authClientInstance } from 'utils/http-client';
 
 // 모든 메뉴 조회
 export const getMenu = async () => {
+  const restaurantId = window.localStorage.getItem('restaurantId');
+
   return await clientInstance
-    .get('api/public/restaurants/1/menus')
+    .get(`api/public/restaurants/${restaurantId}/menus`)
     .then((result) => result.data) // Promise 결과를 반환
     .catch((error) => error); // 오류가 발생하면 error를 반환
 };
 
 // 카테고리 등록 API
 export const registerCategory = async (menuCategoryName) => {
-  const restaurantId = window.localStorage.getItem('restaurantId'); // restaurantId를 하드코딩
-  console.log('restaurantId:', restaurantId);
+  const restaurantId = window.localStorage.getItem('restaurantId');
+
   return await authClientInstance
     .post(`/api/menu-categories`, {
       restaurantId,
@@ -26,7 +28,7 @@ export const registerCategory = async (menuCategoryName) => {
 
 // 카테고리 조회 API
 export const getCategoryList = async () => {
-  const restaurantId = 1; // restaurantId를 하드코딩
+  const restaurantId = window.localStorage.getItem('restaurantId');
 
   return await clientInstance
     .get(`/api/public/restaurants/${restaurantId}/menu-categories`)
@@ -65,7 +67,7 @@ export const removeMenuCategory = async (menuCategoryId) => {
 
 // 메뉴 등록 API
 export const registerMenu = async (menuData, menuImage) => {
-  const restaurantId = 1; // restaurantId를 하드코딩
+  const restaurantId = window.localStorage.getItem('restaurantId');
 
   const formData = new FormData();
   const menuDataWithRestaurantId = {
@@ -99,7 +101,7 @@ export const registerMenu = async (menuData, menuImage) => {
 
 // 메뉴 수정
 export const updateMenu = async (menuId, menuData, menuImage) => {
-  const restaurantId = 1; // restaurantId를 하드코딩
+  const restaurantId = window.localStorage.getItem('restaurantId');
 
   // restaurantId를 추가한 메뉴 데이터 생성
   const menuDataWithRestaurantId = {
@@ -145,7 +147,7 @@ export const updateMenu = async (menuId, menuData, menuImage) => {
 // 메뉴 삭제 API
 export const deleteMenu = async (menuId) => {
   try {
-    const result = await delete `/api/menus/${menuId}`;
+    const result = await authClientInstance.delete(`/api/menus/${menuId}`);
     return result.data;
   } catch (error) {
     console.error('Error deleting menu:', error);

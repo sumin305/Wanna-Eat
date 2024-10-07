@@ -97,26 +97,25 @@ public class OrderServiceImpl implements OrderService {
 	@Transactional
 	public void registerOrder(OrderRegisterRequestDto orderRegisterRequestDto) {
 
-		boolean prepareRequest = false;
-		if (orderRegisterRequestDto.getPrepareRequest().equals(Boolean.TRUE)) {
-			prepareRequest = true;
-		}
+		boolean prepareRequest = orderRegisterRequestDto.getPrepareRequest().equals(Boolean.TRUE);
 		String reservationUrl = orderRegisterRequestDto.getReservationUrl();
+
+		// url로 Reservation 조회하는 시점에 비관적 락 사용 (같은 url이라면 다음 트랜잭션은 여기서 대기)
+		Reservation reservation = reservationRepository.findByReservationUrlWithLock(reservationUrl)
+			.orElseThrow(() -> new ReservationNotFoundException("해당 예약은 존재하지 않거나 퇴실처리 되었습니다. 예약 url : " + reservationUrl));
 
 		String cartKey = CART_KEY_PREFIX + reservationUrl;
 		Object cachedObject = redisService.getValues(cartKey);
+
 		ObjectMapper objectMapper = new ObjectMapper();
 		Cart cart = objectMapper.convertValue(cachedObject, Cart.class);
 
-		// Cart 존재 안함
+		// Cart 존재 안함 (동시에 들어온 2번째 트랜잭션이라면 Cart가 삭제되고 존재하지 않아서 예외 던지면서 종료)
 		if (cart == null) {
 			throw new CartNotFoundException("장바구니가 현재 존재하지 않습니다. 예약 url : " + reservationUrl);
 		}
 
-		Reservation reservation = reservationRepository.findByReservationUrl(reservationUrl)
-			.orElseThrow(
-				() -> new ReservationNotFoundException("해당 예약은 존재하지 않거나 퇴실처리되었습니다. 예약 url : " + reservationUrl));
-
+		// 각 Cart 데이터를 orders 테이블에 저장
 		for (Map.Entry<Long, Map<Long, CartMenu>> entry : cart.getCartElements().entrySet()) {
 			Long orderParticipantId = entry.getKey();
 			Map<Long, CartMenu> menuMap = entry.getValue();

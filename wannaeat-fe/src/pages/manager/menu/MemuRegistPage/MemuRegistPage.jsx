@@ -11,11 +11,15 @@ import {
   CloseButtonContainer,
   CloseButton,
   DecorateButton, // 새로 추가된 꾸미기 버튼
-  ButtonContainer // 버튼 컨테이너 임포트
+  ButtonContainer, // 버튼 컨테이너 임포트
 } from './MemuRegistPage.js'; // 스타일 임포트
 
 import PlusImg from '../../../../assets/icons/menu/Plus.svg';
-import { getCategoryList, registerMenu, editImage } from '../../../../api/manager/menu/menu.js'; // API 임포트
+import {
+  getCategoryList,
+  registerMenu,
+  editImage,
+} from '../../../../api/manager/menu/menu.js'; // API 임포트
 
 const MenuRegistPage = ({ onClose }) => {
   const [menuName, setMenuName] = useState('');
@@ -54,7 +58,7 @@ const MenuRegistPage = ({ onClose }) => {
   // 이미지 꾸미기 (editImage API 호출)
   const handleImageDecorate = async () => {
     if (!image) {
-      alert("이미지를 먼저 업로드하세요.");
+      alert('이미지를 먼저 업로드하세요.');
       return;
     }
 
@@ -125,7 +129,10 @@ const MenuRegistPage = ({ onClose }) => {
           onChange={(e) => setSelectedCategory(e.target.value)}
         >
           {categories.map((category) => (
-            <option key={category.menuCategoryId} value={category.menuCategoryId}>
+            <option
+              key={category.menuCategoryId}
+              value={category.menuCategoryId}
+            >
               {category.menuCategoryName}
             </option>
           ))}
@@ -141,7 +148,7 @@ const MenuRegistPage = ({ onClose }) => {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             placeholder="가격을 입력하세요"
-            style={{ width: '150px' }}  // 인풋 필드의 너비를 줄임
+            style={{ width: '150px' }} // 인풋 필드의 너비를 줄임
           />
           <span style={{ marginLeft: '10px' }}>원</span>
         </div>
@@ -197,10 +204,10 @@ const MenuRegistPage = ({ onClose }) => {
 
       {/* 확인 및 닫기 버튼 */}
       <CloseButtonContainer>
+        <CloseButton onClick={onClose}>닫기</CloseButton> {/* 닫기 버튼 추가 */}
         <SubmitButton onClick={handleSubmit} disabled={isSubmitting}>
           {isSubmitting ? '등록 중...' : '확인'}
         </SubmitButton>
-        <CloseButton onClick={onClose}>닫기</CloseButton> {/* 닫기 버튼 추가 */}
       </CloseButtonContainer>
     </FormContainer>
   );

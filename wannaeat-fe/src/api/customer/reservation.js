@@ -46,3 +46,11 @@ export const getReservationTableByDate = async (
     .then((result) => result)
     .catch((error) => error);
 };
+
+// 상위 5개 예약
+export const getTop5Reservations = async () => {
+  return await authClientInstance
+    .get('/api/users/reservations/statistics')
+    .then((result) => result)
+    .catch((error) => error);
+};

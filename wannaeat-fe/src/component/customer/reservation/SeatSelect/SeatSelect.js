@@ -41,7 +41,7 @@ const Items = [
   },
 ];
 
-const SeatingMapStyled = styled.div`
+const SeatSelectStyled = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -77,7 +77,7 @@ const ItemWrapperStyled = styled.div`
   width: ${({ svgWidth }) => svgWidth}%;
   height: ${({ svgHeight }) => svgHeight}%;
   /* width: 23%;
-  height: 23%; */
+    height: 23%; */
 
   /* background-color: blue; */
 
@@ -92,4 +92,4 @@ const LabelStyled = styled.div`
   font-weight: ${theme.fontWeight.default};
 `;
 
-export { Items, SeatingMapStyled, MapStyled, ItemWrapperStyled, LabelStyled };
+export { Items, SeatSelectStyled, MapStyled, ItemWrapperStyled, LabelStyled };

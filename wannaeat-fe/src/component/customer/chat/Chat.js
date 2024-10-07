@@ -10,8 +10,18 @@ export const DateBox = styled.div`
 `;
 
 export const ChatContainer = styled.div`
-  margin-bottom: 20%;
   background-color: ${theme.color.secondary};
+  height: 90vh; /* 전체 화면을 채우도록 설정 */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
+export const ChatTextContainer = styled.div`
+  height: calc(90vh - 5vh); /* 입력창을 제외한 높이로 설정 */
+  overflow-y: auto; /* 스크롤 가능하도록 설정 */
+  margin-bottom: 15vh;
+  scrollbar-width: none;
 `;
 
 export const ChatWrapper = styled.div`
@@ -26,20 +36,26 @@ export const ChatWrapper = styled.div`
 export const ChatMessageBox = styled.div`
   display: flex;
   flex-direction: ${({ isMyMessage }) => (isMyMessage ? 'row-reverse' : 'row')};
-  padding: 5px;
+  padding: 0 5px;
+  margin: 5px;
   max-width: 70%;
 `;
 
 export const ChatNickname = styled.p`
   color: ${theme.color.white};
-  font-size: ${theme.fontSize.px10};
+  font-size: ${theme.fontSize.px11};
+  font-weight: bold;
+  margin: 0 5px;
+
   text-align: ${({ isMyMessage }) => (isMyMessage ? 'right' : 'left')};
-`;
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px13};
+  `;
 
 export const ChatContent = styled.p`
   background-color: ${({ isMyMessage }) =>
     isMyMessage ? theme.color.accent : theme.color.white};
-  font-size: ${theme.fontSize.px15};
+  font-size: ${theme.fontSize.px11};
   text-align: ${({ isMyMessage }) => (isMyMessage ? 'left' : 'left')};
   padding: 5px 10px;
   border-radius: ${({ isMyMessage }) =>
@@ -51,10 +67,29 @@ export const ChatTime = styled.p`
   font-size: ${theme.fontSize.px10};
   text-align: ${({ isMyMessage }) => (isMyMessage ? 'right' : 'left')};
   align-self: end;
+  margin: 0 3px;
 `;
 
 export const ChatInputWrapper = styled.div`
-  display: flex;
-  background-color: ${theme.color.secondary};
+  position: fixed;
+  bottom: 0;
   width: 100%;
+  height: 5vh;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10vh;
+
+  @media (min-width: 480px) {
+    width: 480px;
+  }
+`;
+
+export const ChatInput = styled.input`
+  width: 95%;
+  height: 5vh;
+  border: none;
+`;
+
+export const ChatInputButton = styled.button`
+  width: 5%;
 `;

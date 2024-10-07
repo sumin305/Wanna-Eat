@@ -74,7 +74,8 @@ const LoginPage = () => {
       } else {
         const fcmToken = await getFcmToken();
         await giveFcmToken(fcmToken);
-        setRestaurantId(userInfo.restaurantId);
+        // 로컬 스토리지에 restaurantId 저장
+        window.localStorage.setItem('restaurantId', userInfo.restaurantId);
         navigate('/manager');
       }
     };

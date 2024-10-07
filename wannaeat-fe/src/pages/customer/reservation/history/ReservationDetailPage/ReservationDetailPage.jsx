@@ -26,7 +26,7 @@ import {
 const ReservationDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { setPageName, setIsShowBackIcon, setIsShowLogo, setActiveIcons } =
+  const { setIsShowLogo, setPageName, setIsShowBackIcon, setActiveIcons } =
     useHeaderStore();
   const {
     setCancelText,
@@ -44,12 +44,8 @@ const ReservationDetailPage = () => {
   const [reservationStartTime, setReservationStartTime] = useState('');
   const [reservationEndTime, setReservationEndTime] = useState('');
   const [seatList, setSeatList] = useState([]);
-  const link = 'https://wannaeat/invite/myrestaurant';
+  const [reservationUrl, setReservationUrl] = useState('');
 
-  const handleCopyButtonClick = (e) => {
-    navigator.clipboard.writeText(link);
-    alert('복사가 완료되었습니다.');
-  };
   useEffect(() => {
     const fetchReservationDetail = async () => {
       const result = await getReservationDetail(id);
@@ -66,14 +62,24 @@ const ReservationDetailPage = () => {
       setReservationEndTime(reservation.reservationEndTime);
       setRestaurantId(reservation.restaurantId);
       setSeatList(reservation.tableList);
+      setReservationUrl(
+        process.env.REACT_APP_CLIENT_URL +
+          '/customer/order/' +
+          reservation.reservationUrl
+      );
     };
 
     setPageName('예약 상세');
+    setIsShowLogo(false);
     setIsShowBackIcon(true);
     setActiveIcons([]);
     fetchReservationDetail();
   }, []);
 
+  const handleCopyButtonClick = () => {
+    alert('복사가 완료되었습니다.');
+    navigator.clipboard.writeText(reservationUrl);
+  };
   const handleRestaurantInfoButtonClick = () => {
     navigate('/customer/reservation/restaurant-detail/' + restaurantId);
   };
@@ -93,6 +99,7 @@ const ReservationDetailPage = () => {
 
   const removeReservation = async () => {
     const result = await cancelReservation(id);
+
     if (result.status !== 200) {
       alert(result.response.data.message);
       return;
@@ -123,14 +130,17 @@ const ReservationDetailPage = () => {
       <LinkInfoWrapper>
         <LinkInfoTitle>링크를 단톡방에 공유해주세요</LinkInfoTitle>
         <LinkInfoTextWrapper>
-          <LinkInfoText>{link}</LinkInfoText>
-          <LinkInfoButton onClick={handleCopyButtonClick}>
+          <LinkInfoText>{reservationUrl}</LinkInfoText>
+          <LinkInfoButton onClick={() => handleCopyButtonClick()}>
             <img src={paper} />
           </LinkInfoButton>
         </LinkInfoTextWrapper>
       </LinkInfoWrapper>
       <ButtonWrapper>
-        <Button size={'long'} onClick={handleReservationCancelButtonClick}>
+        <Button
+          size={'long'}
+          onClick={() => handleReservationCancelButtonClick}
+        >
           예약 취소
         </Button>
       </ButtonWrapper>

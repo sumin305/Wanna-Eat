@@ -19,6 +19,7 @@ import paper from '../../../.././../assets/icons/common/paper.svg';
 import useReservationStore from '../../../../../stores/customer/useReservationStore.js';
 import useMapFilterStore from '../../../../../stores/map/useMapFilterStore.js';
 import { useNavigate } from 'react-router-dom';
+
 const SuccessPage = () => {
   const {
     reservationDate,
@@ -27,14 +28,14 @@ const SuccessPage = () => {
     memberCount,
     selectedSeatNumber,
     resetReservation,
+    reservationUrl,
   } = useReservationStore();
   const { resetMapFilterStore } = useMapFilterStore();
 
   const { restaurantName } = useReservationStore();
-  const link = 'https://wannaeat/invite/myrestaurant';
   const navigate = useNavigate();
   const handleCopyButtonClick = (e) => {
-    navigator.clipboard.writeText(link);
+    navigator.clipboard.writeText(reservationUrl);
     alert('복사가 완료되었습니다.');
   };
   const handleSuccessButtonClick = (e) => {
@@ -61,7 +62,7 @@ const SuccessPage = () => {
       <LinkInfoWrapper>
         <LinkInfoTitle>링크를 단톡방에 공유해주세요</LinkInfoTitle>
         <LinkInfoTextWrapper>
-          <LinkInfoText>{link}</LinkInfoText>
+          <LinkInfoText>{reservationUrl}</LinkInfoText>
           <LinkInfoButton onClick={handleCopyButtonClick}>
             <img src={paper} />
           </LinkInfoButton>

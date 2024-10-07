@@ -200,6 +200,7 @@ const RestaurantInfoContainer = styled.div`
 const RestaurantTitle = styled.p`
   font-size: ${theme.fontSize.px13};
   font-weight: bold;
+
   @media (min-width: 480px) {
     font-size: ${theme.fontSize.px15};
   }
@@ -213,6 +214,7 @@ const RestaurantTitleButton = styled.button`
   font-size: ${theme.fontSize.px11};
   font-weight: light;
   align-items: center;
+
   @media (min-width: 480px) {
     font-size: ${theme.fontSize.px13};
   }
@@ -220,15 +222,17 @@ const RestaurantTitleButton = styled.button`
 const RestaurantInfoBox = styled.div`
   margin-right: 1rem;
   margin-bottom: 1rem;
-
   padding: 0.5rem;
   border-radius: 5px;
   background: white;
+  display: flex;
+  flex-direction: column;
 `;
 
 const RestaurantInfoImage = styled.img`
   border-radius: 5px;
   height: 13vh;
+  width: 130px;
   background: white;
 `;
 
@@ -259,6 +263,15 @@ const RestaurantMyReservation = styled.div`
   }
 `;
 
+const RestaurantInfoWrapper = styled.div`
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+}
+`;
 export {
   MainPageContainer,
   SearchWrapper,
@@ -292,4 +305,5 @@ export {
   RestaurantInfoName,
   RestaurantDetailWrapper,
   RestaurantMyReservation,
+  RestaurantInfoWrapper,
 };

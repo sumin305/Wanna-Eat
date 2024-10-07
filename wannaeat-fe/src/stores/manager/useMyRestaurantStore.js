@@ -1,21 +1,22 @@
 import { create } from 'zustand';
 
 const useMyRestaurantStore = create((set) => ({
-  restaurantFormData: {
+  managerFormData: {
     name: '',
+    number: '',
     address: '',
     phone: '',
     restaurantName: '',
-    businessType: '',
+    businessType: -1,
     lat: 0,
     lng: 0,
   },
   reservationDetails: [],
-  restaurantId: -1,
-  setRestaurantFormData: (field, value) =>
+  restaurantId: window.localStorage.getItem('restaurantId') || '',
+  setManagerFormData: (field, value) =>
     set((state) => ({
-      restaurantFormData: {
-        ...state.restaurantFormData,
+      managerFormData: {
+        ...state.managerFormData,
         [field]: value,
       },
     })),

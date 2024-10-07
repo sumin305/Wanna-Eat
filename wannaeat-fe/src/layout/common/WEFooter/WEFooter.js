@@ -6,7 +6,7 @@ const FooterContainer = styled.div`
   display: flex;
   background-color: ${theme.color.white};
   width: 100%;
-  height: 10%;
+  height: 10vh;
   position: fixed;
   bottom: 0;
   box-shadow: 1px 0px 4px 0px ${theme.color.disabled};

@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 const RestaurantRegistPageStyled = styled.div`
   min-height: calc(100vh + 3.125rem);
   overflow-y: auto;
+  margin-bottom: 20%;
 
   @media (min-width: 480px) {
     width: 480px;
@@ -56,11 +57,20 @@ const InputWrapperStyled = styled.div`
   }
 `;
 
+const DropdownWrapperStyled = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 90%;
+`;
+
 export {
   RestaurantRegistPageStyled,
   TabWithButtonStyled,
   TabWrapperStyled,
   ContentWrapperStyled,
+  DropdownWrapperStyled,
   InputWithLabelStyled,
   InputWrapperStyled,
 };

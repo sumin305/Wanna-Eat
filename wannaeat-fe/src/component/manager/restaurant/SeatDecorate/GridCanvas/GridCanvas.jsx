@@ -156,21 +156,48 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
     authClientInstance
       .get(`/api/public/restaurants/${restaurantId}/structure`)
       .then((response) => {
-        const {
-          tableRegisterRequestDtos = [],
-          elementRegisterRequestDtos = [],
-        } = response.data;
+        console.log('response: ', response);
 
-        const itemsByFloor = {};
+        const { tableDetailResponseDtos = [], elementDetailResponseDtos = [] } =
+          response.data.data;
 
-        tableRegisterRequestDtos.forEach((table) => {
-          const floor = table.floor;
-          if (!itemsByFloor[floor]) {
-            itemsByFloor[floor] = [];
-          }
-          itemsByFloor[floor].push({
+        console.log('tableDetailResponseDtos:', tableDetailResponseDtos);
+        console.log('elementDetailResponseDtos:', elementDetailResponseDtos);
+
+        // const itemsByFloor = {};
+
+        // tableDetailResponseDtos.forEach((table) => {
+        //   const floor = table.floor;
+        //   if (!itemsByFloor[floor]) {
+        //     itemsByFloor[floor] = [];
+        //   }
+        //   itemsByFloor[floor].push({
+        //     itemId: table.itemId,
+        //     itemType: table.itemType.toUpperCase(),
+        //     x: table.x,
+        //     y: table.y,
+        //     tableId: table.tableId,
+        //     assignedSeats: table.assignedSeats,
+        //   });
+        // });
+
+        // elementDetailResponseDtos.forEach((element) => {
+        //   const floor = element.floor;
+        //   if (!itemsByFloor[floor]) {
+        //     itemsByFloor[floor] = [];
+        //   }
+        //   itemsByFloor[floor].push({
+        //     itemId: element.itemId,
+        //     itemType: element.itemType.toUpperCase(),
+        //     x: element.x,
+        //     y: element.y,
+        //   });
+        // });
+
+        tableDetailResponseDtos.forEach((table) => {
+          addItem(currentFloor, {
             itemId: table.itemId,
-            itemType: table.itemType,
+            itemType: table.itemType.toUpperCase(),
             x: table.x,
             y: table.y,
             tableId: table.tableId,
@@ -178,20 +205,16 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
           });
         });
 
-        elementRegisterRequestDtos.forEach((element) => {
-          const floor = element.floor;
-          if (!itemsByFloor[floor]) {
-            itemsByFloor[floor] = [];
-          }
-          itemsByFloor[floor].push({
+        elementDetailResponseDtos.forEach((element) => {
+          addItem(currentFloor, {
             itemId: element.itemId,
-            itemType: element.itemType,
+            itemType: element.itemType.toUpperCase(),
             x: element.x,
             y: element.y,
           });
         });
 
-        setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
+        // setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
         console.error('성공: ', response);
       })
       .catch((error) => {
@@ -199,6 +222,36 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
         return;
       });
   }, [setItemsByFloor, currentFloor]);
+
+  useEffect(() => {
+    if (!selectedItem) {
+      console.log('selectedItem 없음');
+      return;
+    }
+
+    setModalType('setting');
+    setTitle(`${selectedItem.itemType} 설정`);
+
+    setHandleButtonClick(handleSubmit);
+    setChildren(
+      <GridCanvasModalStyled>
+        <label>
+          테이블 번호:
+          <input id="tableId" type="text" placeholder="테이블 번호 입력" />
+        </label>
+        <label>
+          최대 수용 인원:
+          <input
+            id="assignedSeats"
+            type="number"
+            min="0"
+            placeholder="최대 수용 인원 입력"
+          />
+        </label>
+      </GridCanvasModalStyled>
+    );
+    open();
+  }, [selectedItem]);
 
   const handleWheel = (e) => {
     if (e.ctrlKey) {
@@ -305,32 +358,6 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
               x,
               y,
             });
-            setModalType('setting');
-            setTitle(`${selectedItem.itemType} 설정`);
-
-            setHandleButtonClick(handleSubmit);
-            setChildren(
-              <GridCanvasModalStyled>
-                <label>
-                  테이블 번호:
-                  <input
-                    id="tableId"
-                    type="text"
-                    placeholder="테이블 번호 입력"
-                  />
-                </label>
-                <label>
-                  최대 수용 인원:
-                  <input
-                    id="assignedSeats"
-                    type="number"
-                    min="0"
-                    placeholder="최대 수용 인원 입력"
-                  />
-                </label>
-              </GridCanvasModalStyled>
-            );
-            open();
           }
         }
       } else if (item.type === 'GRID_ITEM') {
@@ -498,6 +525,22 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   );
 };
 
+const renderIcon = (itemType) => {
+  const paletteItem = paletteItems.find((item) => item.itemType === itemType);
+
+  if (!paletteItem || !paletteItem.icon) {
+    return;
+  }
+
+  const IconComponent = paletteItem.icon;
+  return (
+    <IconComponent
+      className="grid-item-icon"
+      style={{ width: '100%', height: '100%' }}
+    />
+  );
+};
+
 const GridItem = ({ item, gridSize, onClick }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'GRID_ITEM',
@@ -516,13 +559,7 @@ const GridItem = ({ item, gridSize, onClick }) => {
       y={item.y}
       onClick={() => onClick(item)}
     >
-      <item.icon
-        className="grid-item-icon"
-        style={{
-          width: '100%',
-          height: '100%',
-        }}
-      />
+      {renderIcon(item.itemType)}
     </GridItemStyled>
   );
 };

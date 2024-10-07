@@ -2,10 +2,13 @@ import styled from '@emotion/styled';
 import theme from 'style/common/theme.js';
 import { keyframes } from '@emotion/react';
 
+import { ReactComponent as ManagerImg } from 'assets/icons/header/logo.svg';
+
 const MainPageStyled = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
   height: 80vh;
   flex-shrink: 0;
@@ -24,6 +27,8 @@ const GoToSeatDecorateStyled = styled.div`
   height: 10%;
   background-color: ${theme.color.primary};
   border-radius: 0 0 0.4375rem 0.4375rem;
+
+  flex-shrink: 0;
 `;
 
 const GoToSeatDecorateButtonStyled = styled.div`
@@ -169,6 +174,7 @@ const SettingModalContainer = styled.div`
 
   border-radius: ${theme.borderRadius.default};
   padding: 0.5rem 0;
+
   @media (min-width: 480px) {
     width: 400px;
     justify-self: center;
@@ -236,6 +242,7 @@ const ReservationCountStyled = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 
   width: 93%;
   height: 10%;
@@ -243,10 +250,17 @@ const ReservationCountStyled = styled.div`
   border-radius: 0.5rem 0.5rem var(--Corner-None, 0rem) var(--Corner-None, 0rem);
   box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.25);
   padding: 10px;
+  padding-left: 5%;
 
   font-size: ${theme.fontSize.px15};
   font-weight: ${theme.fontWeight.bold};
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px21};
+    font-weight: ${theme.fontWeight.bold};
+  }
 `;
+
 const rotateAnimation = keyframes`
   from {
     transform: rotate(0deg);
@@ -257,12 +271,59 @@ const rotateAnimation = keyframes`
 `;
 
 const RotatingIconWrapper = styled.div`
-  width: 24px;
+  width: 22px;
   height: 24px;
   display: inline-block;
   cursor: pointer;
   animation: ${(props) => (props.isRotating ? rotateAnimation : 'none')} 1s
     ease-in-out;
+
+  transform-origin: 50% 50%;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (min-width: 480px) {
+    width: 28px;
+    height: 28px;
+  }
+`;
+
+const SuggestionMessageStyled = styled.div`
+  font-size: ${theme.fontSize.px27};
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  margin-top: 5%;
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px40};
+    width: 100%;
+    height: 100%;
+    text-align: center;
+  }
+`;
+
+const ManagerImgWrapperStyled = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  height: fit-content;
+`;
+
+const ManagerImgStyled = styled(ManagerImg)`
+  width: 320px;
+  height: 320px;
+  margin-right: 34px;
+
+  @media (min-width: 480px) {
+    width: 500px;
+    height: 500px;
+    margin-right: 34px;
+  }
 `;
 
 export {
@@ -283,4 +344,7 @@ export {
   ReservationCountStyled,
   rotateAnimation,
   RotatingIconWrapper,
+  ManagerImgWrapperStyled,
+  ManagerImgStyled,
+  SuggestionMessageStyled,
 };

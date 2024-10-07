@@ -24,8 +24,14 @@ const PasswordAuthPage = () => {
   const { isSupported, isPasskeyRegistered, setIsAuthenticated } =
     useAuthStore();
   const { depositPerMember, restaurantId } = useRestaurantStore();
-  const { reservationDate, startTime, endTime, memberCount, selectedCard } =
-    useReservationStore();
+  const {
+    reservationDate,
+    startTime,
+    endTime,
+    memberCount,
+    selectedCard,
+    setReservationUrl,
+  } = useReservationStore();
   useEffect(() => {
     suffleNumber();
   }, [inputNumber]);
@@ -72,6 +78,7 @@ const PasswordAuthPage = () => {
     }
 
     setInputNumber(inputNumber + num);
+
     // 비밀번호를 다 입력했을때,
     if (inputNumber.length === 5) {
       setPassword(inputNumber);
@@ -109,6 +116,7 @@ const PasswordAuthPage = () => {
     if (result.status === 200) {
       alert('결제 성공');
       navigate('/customer/reservation/success');
+      setReservationUrl(result.data.data.reservationInfo.reservationUrl);
       setIsAuthenticated(false);
     } else {
       alert(result.response.data.message);

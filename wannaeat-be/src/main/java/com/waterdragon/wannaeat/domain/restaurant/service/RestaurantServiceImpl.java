@@ -151,6 +151,9 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.category(restaurantCategory)
 			.latitude(restaurantRegisterRequestDto.getLatitude())
 			.longitude(restaurantRegisterRequestDto.getLongitude())
+			.depositPerMember(restaurantRegisterRequestDto.getDepositPerMember())
+			.openTime(restaurantRegisterRequestDto.getRestaurantOpenTime())
+			.closeTime(restaurantRegisterRequestDto.getRestaurantCloseTime())
 			.merchantId(merchantId)
 			.build();
 		return restaurantRepository.save(restaurant).getRestaurantId();

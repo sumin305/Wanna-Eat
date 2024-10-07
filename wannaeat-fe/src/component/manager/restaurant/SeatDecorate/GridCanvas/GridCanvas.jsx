@@ -119,9 +119,6 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
     updateItemPosition,
   } = useStore();
 
-  const [TableId, setTableId] = useState(); // 추가했어
-  const [AssignedSeats, setAssignedSeats] = useState(); // 추가했어
-
   const {
     open,
     close,
@@ -295,8 +292,8 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   const handleSubmit = () => {
     console.log('selectedItem: ' + selectedItem);
     if (selectedItem && selectedItem.itemId) {
-      const tableId = TableId;
-      const assignedSeats = AssignedSeats;
+      const tableId = document.querySelector('#tableId').value;
+      const assignedSeats = document.querySelector('#assignedSeats').value;
 
       console.log(
         `${tableId}번 테이블, 최대 수용 인원 ${assignedSeats}명으로 제출되었습니다!`
@@ -388,7 +385,6 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
               type="text"
               placeholder="테이블 번호 입력"
               defaultValue={item.tableId}
-              onChange={(e) => setTableId(e.target.value)}
             />
           </label>
           <label>
@@ -399,7 +395,6 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
               min="0"
               placeholder="최대 수용 인원 입력"
               defaultValue={item.assignedSeats}
-              onChange={(e) => setAssignedSeats(e.target.value)}
             />
           </label>
         </GridCanvasModalStyled>

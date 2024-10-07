@@ -35,6 +35,7 @@ import {
   RestaurantInfoName,
   RestaurantDetailWrapper,
   RestaurantMyReservation,
+  RestaurantInfoWrapper,
 } from './MainPage.js';
 import searchIcon from '../../../../assets/icons/common/search.svg';
 import tableIcon from '../../../../assets/icons/common/table.svg';
@@ -46,6 +47,7 @@ import Logo from 'assets/icons/header/logo.png';
 import {
   getMyReservation,
   getPriorityVisitingRestaurant,
+  getTop5Reservations,
 } from 'api/customer/reservation.js';
 const MainPage = () => {
   const { setKeyword } = useMapFilterStore();
@@ -67,12 +69,12 @@ const MainPage = () => {
 
   useEffect(() => {
     const fetchMyReservationList = async () => {
-      const result = await getMyReservation();
+      const result = await getTop5Reservations();
       console.log(result);
 
       if (result.status === 200) {
         console.log('내 예약 정보 불러오기 성공');
-        setRecentlyReservedRestaurants(result.data.content);
+        setRecentlyReservedRestaurants(result.data.data);
       } else {
         console.log('내 예약 정보 불러오기 실패');
       }
@@ -251,22 +253,19 @@ const MainPage = () => {
                   restaurant.restaurantImage ? restaurant.restaurantImage : Logo
                 }
               />
-              <RestaurantInfoName>
-                {restaurant.restaurantName}
-              </RestaurantInfoName>
-              <RestaurantDetailWrapper>
-                <RestaurantMyReservation>
-                  {restaurant.reservationDate}
-                </RestaurantMyReservation>
-                <RestaurantMyReservation>
-                  {restaurant.reservationStartTime.split(':')[0] +
-                    ':' +
-                    restaurant.reservationEndTime.split(':')[1]}
-                </RestaurantMyReservation>
-                <RestaurantMyReservation>
-                  {restaurant.memberCnt}명
-                </RestaurantMyReservation>
-              </RestaurantDetailWrapper>
+              <RestaurantInfoWrapper>
+                <RestaurantInfoName>
+                  {restaurant.restaurantName}
+                </RestaurantInfoName>
+                <RestaurantDetailWrapper>
+                  <RestaurantMyReservation>
+                    {restaurant.restaurantVisitCount}명
+                  </RestaurantMyReservation>
+                  <RestaurantMyReservation>
+                    {restaurant.restaurantCategory}
+                  </RestaurantMyReservation>
+                </RestaurantDetailWrapper>
+              </RestaurantInfoWrapper>
             </RestaurantInfoBox>
           ))}
         </RestaurantInfoContainer>

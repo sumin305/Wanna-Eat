@@ -1,5 +1,9 @@
 package com.waterdragon.wannaeat.domain.restaurant.dto.request;
 
+import java.time.LocalTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -35,4 +39,14 @@ public class RestaurantRegisterRequestDto {
 	@NotNull(message = "위, 경도는 필수 입력값입니다.")
 	private Double longitude;
 
+	@NotNull(message = "인당 보증금은 필수 입력값입니다.")
+	private Integer depositPerMember;
+
+	@NotNull(message = "매장 오픈 시간은 필수 입력값입니다.")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+	private LocalTime restaurantOpenTime;
+
+	@NotNull(message = "매장 마감 시간은 필수 입력값입니다.")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+	private LocalTime restaurantCloseTime;
 }

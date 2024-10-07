@@ -4,6 +4,7 @@ import { authClientInstance } from 'utils/http-client.js';
 import { v4 as uuid } from 'uuid';
 import { create } from 'zustand';
 import { paletteItems } from '../ItemPalette/ItemPalette';
+import { useNavigate } from 'react-router-dom';
 import {
   GridWrapperStyled,
   ZoomableGridWrapperStyled,
@@ -113,6 +114,9 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
+
+  const navigate = useNavigate();
+
   const {
     itemsByFloor,
     addItem,
@@ -470,6 +474,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
       )
       .then((response) => {
         console.log('꾸미기 저장 성공:', response);
+        navigate('/manager');
       })
       .catch((error) => {
         console.error('꾸미기 저장 실패:', error);

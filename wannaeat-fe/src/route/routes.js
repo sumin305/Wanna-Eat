@@ -17,7 +17,8 @@ import AlarmPage from '../pages/manager/alarm/alarm.jsx';
 import ManagerReservationDetailPage from '../pages/manager/reservation/ManagerReservationDetailPage/ManagerReservationDetailPage.jsx';
 import AdminDetailPage from 'pages/manager/reservation/AdminDetailPage/AdminDetailPage.jsx';
 import MenuViewPage from 'pages/manager/menu/MenuViewPage/MenuViewPage.jsx';
-import ManagerInfo from 'pages/manager/user/MyInfoPage/MyInfoPage.jsx';
+import ManagerInfoPage from 'pages/manager/user/MyInfoPage/MyInfoPage.jsx';
+import ManagerNicknameEditPage from 'pages/manager/user/NicknameEditPage/NicknameEditPage.jsx';
 
 // 손님 관련 페이지
 import CustomerMainPage from '../pages/customer/main/MainPage/MainPage.jsx';
@@ -60,7 +61,11 @@ const AppRoutes = () => {
           path="/manager/restaurant/seat-decorate"
           element={<SeatDecoratePage />}
         />
-        <Route path="/manager/myinfo" element={<ManagerInfo />} />
+        <Route path="/manager/myinfo" element={<ManagerInfoPage />} />
+        <Route
+          path="/manager/nickname-edit"
+          element={<ManagerNicknameEditPage />}
+        />
         <Route
           path="/manager/restaurant/restaurant-manage"
           element={<RestaurantManagePage />}

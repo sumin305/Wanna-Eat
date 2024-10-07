@@ -25,8 +25,14 @@ const MyInfoPage = () => {
   const { nickname, email, phone, setNickname, setEmail, setPhone } =
     useMyInfoStore();
   const navigate = useNavigate();
-  const { setPageName, setIsShowLogo, setIsShowBackIcon, setActiveIcons } =
-    useHeaderStore();
+  const {
+    setIsCarrot,
+    setPageName,
+    setIsShowLogo,
+    setIsShowBackIcon,
+    setActiveIcons,
+    setIsUnderLine,
+  } = useHeaderStore();
   useEffect(() => {
     const fetchMyInfo = async () => {
       const response = await getMyInfo();
@@ -39,25 +45,31 @@ const MyInfoPage = () => {
       }
     };
     fetchMyInfo();
+    setIsCarrot(false);
     setPageName('내 정보');
     setIsShowLogo(false);
     setIsShowBackIcon(false);
-    setActiveIcons([]);
+    setActiveIcons([0]);
+    setIsUnderLine(true);
   }, []);
 
   const handleRestaurantManageButtonClick = () => {
     navigate('/manager/restaurant/restaurant-manage');
   };
   const handleNicknameChangeButtonClick = () => {
-    navigate('/customer/nickname-edit');
+    navigate('/manager/nickname-edit');
   };
 
-  const handleMyZzimButtonClick = () => {
-    navigate('/customer/myzzim');
-  };
+  // const handleMyZzimButtonClick = () => {
+  //   navigate('/customer/myzzim');
+  // };
   const handleLogoutButtonClick = async () => {
     const result = await logout();
     console.log(result);
+    // 로컬스토리지에 restaurantId가 있을 경우 로그아웃 시 restaurantId 제거
+    if (window.localStorage.getItem('restaurantId') && result.status === 200) {
+      window.localStorage.removeItem('restaurantId');
+    }
     navigate('/');
   };
   return (
@@ -85,10 +97,10 @@ const MyInfoPage = () => {
           <UserButtonItemText>닉네임 변경</UserButtonItemText>
         </UserButtonItem>
 
-        <UserButtonItem onClick={handleMyZzimButtonClick}>
+        {/* <UserButtonItem onClick={handleMyZzimButtonClick}>
           <UserButtonItemImg src={Zzim} />
           <UserButtonItemText>내가 찜한 식당</UserButtonItemText>
-        </UserButtonItem>
+        </UserButtonItem> */}
       </UserButtonBox>
 
       <UserLogoutButton onClick={handleLogoutButtonClick}>

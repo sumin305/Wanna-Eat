@@ -83,6 +83,10 @@ const TimeSelectPage = () => {
   };
 
   const checkSeatData = async (restaurantId, date, startTime, endTime) => {
+    console.log('시간 선택 페이지 restaurantId: ', restaurantId);
+    console.log('date:', date);
+    console.log('startTime:', startTime);
+    console.log('endTime:', endTime);
     try {
       const response = await authClientInstance.get(
         `/api/restaurants/${restaurantId}/reservations/available-tables?date=${date}&startTime=${startTime}&endTime=${endTime}`

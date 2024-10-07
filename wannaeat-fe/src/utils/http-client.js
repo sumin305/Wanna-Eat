@@ -139,7 +139,8 @@ authClientInstance.interceptors.response.use(
 
       //  AccessToken Reissue 성공
       if (reissueResponse.status === 200) {
-        setAccessToken(accessToken);
+        console.log(reissueResponse.headers['authorization-wannaeat']);
+        setAccessToken(reissueResponse.headers['authorization-wannaeat']);
         config.headers['authorization-wannaeat'] = accessToken;
         console.log('AccessToken Reissue 성공');
         console.dir(authClientInstance(config));

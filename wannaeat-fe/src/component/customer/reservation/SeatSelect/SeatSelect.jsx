@@ -17,6 +17,7 @@ import { ReactComponent as SquareTablePointedIcon } from 'assets/icons/manager/r
 import { ReactComponent as RoundTablePointedIcon } from 'assets/icons/manager/restaurant/table-rounded-pointed.svg';
 
 import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
+import useModalStore from 'stores/common/useModalStore.js';
 
 const SeatSelect = () => {
   const location = useLocation();
@@ -33,7 +34,16 @@ const SeatSelect = () => {
 
   const { restaurantId } = useRestaurantStore();
 
-  console.log('TYPE: ', Array.isArray(tableData));
+  const {
+    open,
+    close,
+    setTitle,
+    setAlertText,
+    setCancelText,
+    setConfirmText,
+    setIsOneButton,
+  } = useModalStore();
+
   const reservedTable = tableData;
 
   useEffect(() => {
@@ -106,6 +116,22 @@ const SeatSelect = () => {
     }
   };
 
+  const handleIconClick = (item) => {
+    const isReserved = reservedTable.some(
+      (reserved) => reserved.tableId === item.tableId
+    );
+
+    if (!isReserved) {
+      setTitle('예약 불가');
+      setAlertText(`${item.tableId}번 테이블은 예약이 불가능합니다.`);
+      setCancelText('닫기');
+      setIsOneButton(true);
+      open();
+    } else {
+      console.log(`${item.tableId}번 테이블을 선택하였습니다.`);
+    }
+  };
+
   const renderIcon = (itemType, tableId, reservedTable) => {
     const isOccupied = reservedTable.some(
       (reserved) => reserved.tableId === tableId
@@ -151,6 +177,7 @@ const SeatSelect = () => {
             y={item.y}
             svgWidth={IconWidth}
             svgHeight={IconHeight}
+            onClick={handleIconClick}
           >
             {renderIcon(item.itemType, item.tableId, reservedTable)}
             {item.itemType === 'SQUARE' || item.itemType === 'ROUNDED' ? (

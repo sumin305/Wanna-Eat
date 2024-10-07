@@ -18,6 +18,9 @@ import {
   ModalOverlayStyled,
   ReservationCountStyled,
   RotatingIconWrapper,
+  ManagerImgWrapperStyled,
+  ManagerImgStyled,
+  SuggestionMessageStyled,
 } from './MainPage.js';
 
 import SeatingMap from 'component/manager/main/SeatingMap/SeatingMap.jsx';
@@ -167,7 +170,12 @@ const MainPage = () => {
 
       {!isMyRestaurant && (
         <>
-          <div>매장 꾸미기를 해주세요</div>
+          <SuggestionMessageStyled>
+            매장 꾸미기를 해 주세요
+          </SuggestionMessageStyled>
+          <ManagerImgWrapperStyled>
+            <ManagerImgStyled />
+          </ManagerImgWrapperStyled>
         </>
       )}
 

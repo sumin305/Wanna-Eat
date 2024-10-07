@@ -93,7 +93,8 @@ const RestaurantRegistPage = () => {
     console.log(response);
     if (response.status === 201) {
       const restaurantId = response.data.data;
-      setRestaurantId(restaurantId);
+      // 매장 등록 시 로컬스토리지에 restaurantId 저장
+      window.localStorage.setItem('restaurantId', restaurantId);
       setActiveTab(1);
       showAlert(response.data.message);
     } else if (response.status === 400) {

@@ -14,6 +14,7 @@ import {
   OrderContainer,
   ButtonWrapper,
 } from '../../../../pages/customer/order/OrderMainPage/OrderMainPage.js';
+import Logo from 'assets/icons/header/logo.png';
 import {
   FoodDiv,
   FoodInfoBottomDiv,
@@ -27,10 +28,13 @@ import {
   MenuDiv,
   MenuImg,
   MenuNameP,
-  PeopleP,
+  TextP,
   TotalMenuP,
   TotalPriceDiv,
   TotalPriceP,
+  FoodCountWrapper,
+  MenuImageWrapper,
+  PeopleP,
 } from './OrderMainPage.js';
 
 const OrderMainPage = () => {
@@ -102,13 +106,7 @@ const OrderMainPage = () => {
   useEffect(() => {
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);
-
-      // stompClient가 없는 경우에만 소켓 연결 시도
-      if (!stompClient) {
-        console.log('stompClient가 없어 소켓 연결을 시도합니다.');
-        initializeConnection();
-        return;
-      }
+      console.log('validateAndConnectResponse', response);
 
       // reservationUrl 유효성 검사 실행 후 유효한 경우
       if (response.status !== 200) {
@@ -127,48 +125,12 @@ const OrderMainPage = () => {
         reservationParticipantId
       );
       setreservationParticipantId(reservationParticipantId);
-    };
 
-    const initializeConnection = () => {
-      const socket = new SockJS(
-        `${process.env.REACT_APP_REST_API_URL}/api/public/ws`
-      );
-      const client = Stomp.over(socket);
-
-      client.connect(
-        {},
-        () => {
-          // 구독
-          client.subscribe(
-            `/topic/reservations/${reservationUrl}`,
-            (response) => {
-              const content = JSON.parse(response.body);
-              console.log('main sumin Received message: ', content);
-
-              if (content.socketType === 'CART') {
-                console.log('cart socket message ');
-                console.dir(content.cartElements);
-                setCartElements(content.cartElements);
-              } else if (content.socketType === 'ORDER') {
-                setCartElements([]);
-              }
-            },
-            (error) => {
-              console.log(error);
-            }
-          );
-
-          setStompClient(client);
-          setIsConnected(true);
-        },
-        (error) => {
-          console.log('소켓 연결 오류:', error);
-          setIsConnected(false);
-        }
-      );
-    };
-
-    const fetchOrdersInfo = async () => {
+      // WebSocket 연결 후 데이터 불러오기
+      if (!stompClient) {
+        console.log('stompClient가 없어 소켓 연결을 시도합니다.');
+        await initializeConnection(); // WebSocket 연결을 먼저 시도
+      }
       const allOrdersInfo = await getOrderData(
         reservationUrl,
         chatPage,
@@ -176,67 +138,258 @@ const OrderMainPage = () => {
       );
 
       console.log('메인페이지 불러온 데이터:', allOrdersInfo.data);
-      console.log('isConnected', isConnected);
-      setReservationDate(allOrdersInfo.data.reservationDate);
-      setReservationStartTime(allOrdersInfo.data.reservationDate);
-      setReservationEndTime(allOrdersInfo.data.reservationEndTime);
-      setRestaurantId(allOrdersInfo.data.restaurantId);
-      setReservationId(allOrdersInfo.data.reservationId);
+      const totalData = allOrdersInfo.data;
+      // 상태 업데이트
+      setReservationDate(totalData.reservationDate);
+      setReservationStartTime(totalData.reservationDate);
+      setReservationEndTime(totalData.reservationEndTime);
+      setRestaurantId(totalData.restaurantId);
+      setReservationId(totalData.reservationId);
 
-      // 전체 주문 리스트 저장
-      setAllOrdersInfo(allOrdersInfo.data);
       setCartElements(
-        allOrdersInfo.data.cartDetailResponseDto
-          ? allOrdersInfo.data.cartDetailResponseDto.cartElements
+        totalData.cartDetailResponseDto
+          ? totalData.cartDetailResponseDto.cartElements
           : []
       );
-      setOrders(
-        allOrdersInfo?.orderListResponseDto?.orderDetailResponseDtos || []
-      );
+      setOrders(totalData.orderListResponseDto.orderDetailResponseDtos || []);
+      console.log(allOrdersInfo);
+      console.log(allOrdersInfo.data);
+      console.log(allOrdersInfo.data.orderListResponseDto);
+      console.log(totalData.orderListResponseDto.orderDetailResponseDtos);
 
       setMyOrders(
-        orders.filter(
-          (order) => order.reservationParticipantId === reservationParticipantId
+        totalData.orderListResponseDto
+          ? totalData.orderListResponseDto.orderDetailResponseDtos.filter(
+              (order) =>
+                Number(order.reservationParticipantId) ===
+                Number(reservationParticipantId)
+            )
+          : []
+      );
+      console.log(
+        'validate setMyOrders',
+        totalData.orderListResponseDto
+          ? totalData.orderListResponseDto.orderDetailResponseDtos.filter(
+              (order) =>
+                Number(order.reservationParticipantId) ===
+                Number(reservationParticipantId)
+            )
+          : []
+      );
+
+      setAllOrders(
+        groupByNicknameWithTotalPrice(
+          totalData.orderListResponseDto.orderDetailResponseDtos
         )
       );
-      setAllOrders(groupByNicknameWithTotalPrice(orders));
+      console.log(
+        'validate setAllOrders',
+        groupByNicknameWithTotalPrice(
+          totalData.orderListResponseDto.orderDetailResponseDtos
+        )
+      );
 
-      setMyTotalCnt(calculateTotalCnt(myOrders));
-      setAllTotalCnt(calculateTotalCnt(orders));
+      setMyTotalCnt(
+        calculateTotalCnt(
+          totalData.orderListResponseDto.orderDetailResponseDtos.filter(
+            (order) =>
+              Number(order.reservationParticipantId) ===
+              Number(reservationParticipantId)
+          )
+        )
+      );
+      console.log(
+        'test',
+        totalData.orderListResponseDto.orderDetailResponseDtos.filter(
+          (order) =>
+            Number(order.reservationParticipantId) ===
+            Number(reservationParticipantId)
+        )
+      );
+      console.log(
+        'validate setMyTotalCnt',
+        calculateTotalCnt(
+          totalData.orderListResponseDto.orderDetailResponseDtos.filter(
+            (order) =>
+              Number(order.reservationParticipantId) ===
+              Number(reservationParticipantId)
+          )
+        )
+      );
 
+      setAllTotalCnt(
+        calculateTotalCnt(
+          totalData.orderListResponseDto.orderDetailResponseDtos
+        )
+      );
+      console.log(
+        'validate setAllTotalCnt',
+        calculateTotalCnt(
+          totalData.orderListResponseDto.orderDetailResponseDtos
+        )
+      );
       setMyTotalPrice(
-        myOrders.reduce(
-          (acc, order) => acc + order.totalCnt * order.menuPrice,
-          0
+        totalData.orderListResponseDto.orderDetailResponseDtos
+          .filter(
+            (order) =>
+              Number(order.reservationParticipantId) ===
+              Number(reservationParticipantId)
+          )
+          .reduce((acc, order) => acc + order.totalCnt * order.menuPrice, 0)
+      );
+      setAllTotalPrice(
+        calculateTotalPriceForAll(
+          groupByNicknameWithTotalPrice(
+            totalData.orderListResponseDto.orderDetailResponseDtos
+          )
         )
       );
-      setAllTotalPrice(calculateTotalPriceForAll(allOrders));
+    };
+
+    const initializeConnection = async () => {
+      return await new Promise((resolve, reject) => {
+        const socket = new SockJS(
+          `${process.env.REACT_APP_REST_API_URL}/api/public/ws`
+        );
+        const client = Stomp.over(socket);
+        client.connect(
+          {},
+          () => {
+            client.subscribe(
+              `/topic/reservations/${reservationUrl}`,
+              (response) => {
+                const content = JSON.parse(response.body);
+                console.log('main sumin Received message: ', content);
+
+                if (content.socketType === 'CART') {
+                  console.log('cart socket message ');
+                  console.dir(content.cartElements);
+                  setCartElements(content.cartElements);
+                } else if (content.socketType === 'ORDER') {
+                  setCartElements([]);
+                }
+              },
+              (error) => {
+                console.log('suminerror', error);
+              }
+            );
+
+            setStompClient(client);
+            setIsConnected(true);
+            console.log('client', client);
+            resolve(); // WebSocket 연결 성공 시 resolve 호출
+          },
+          (error) => {
+            console.log('소켓 연결 오류:', error);
+            setIsConnected(false);
+            reject(error); // WebSocket 연결 실패 시 reject 호출
+          }
+        );
+      });
     };
 
     validateAndConnect();
-    fetchOrdersInfo();
   }, []);
 
   useEffect(() => {
     // 각 변수들 세팅
-    setOrders(
-      allOrdersInfo?.orderListResponseDto?.orderDetailResponseDtos || []
+    console.log('각 변수들 세팅');
+    const totalData = allOrdersInfo.data;
+    console.log('allOrdersInfo', allOrdersInfo);
+    // 참여자 ID 받아서 localStorage에 저장
+    const reservationParticipantId = localStorage.getItem(
+      'reservationParticipantId'
     );
 
-    setMyOrders(
-      orders.filter(
-        (order) => order.reservationParticipantId === reservationParticipantId
-      )
-    );
-    setAllOrders(groupByNicknameWithTotalPrice(orders));
+    if (allOrdersInfo.length > 0) {
+      setMyOrders(
+        totalData.orderListResponseDto
+          ? totalData.orderListResponseDto.orderDetailResponseDtos.filter(
+              (order) =>
+                Number(order.reservationParticipantId) ===
+                Number(reservationParticipantId)
+            )
+          : []
+      );
+      console.log(
+        'validate setMyOrders',
+        totalData.orderListResponseDto
+          ? totalData.orderListResponseDto.orderDetailResponseDtos.filter(
+              (order) =>
+                Number(order.reservationParticipantId) ===
+                Number(reservationParticipantId)
+            )
+          : []
+      );
 
-    setMyTotalCnt(calculateTotalCnt(myOrders));
-    setAllTotalCnt(calculateTotalCnt(orders));
+      setAllOrders(
+        groupByNicknameWithTotalPrice(
+          totalData.orderListResponseDto.orderDetailResponseDtos
+        )
+      );
+      console.log(
+        'validate setAllOrders',
+        groupByNicknameWithTotalPrice(
+          totalData.orderListResponseDto.orderDetailResponseDtos
+        )
+      );
 
-    setMyTotalPrice(
-      myOrders.reduce((acc, order) => acc + order.totalCnt * order.menuPrice, 0)
-    );
-    setAllTotalPrice(calculateTotalPriceForAll(allOrders));
+      setMyTotalCnt(
+        calculateTotalCnt(
+          totalData.orderListResponseDto.orderDetailResponseDtos.filter(
+            (order) =>
+              Number(order.reservationParticipantId) ===
+              Number(reservationParticipantId)
+          )
+        )
+      );
+      console.log(
+        'test',
+        totalData.orderListResponseDto.orderDetailResponseDtos.filter(
+          (order) =>
+            Number(order.reservationParticipantId) ===
+            Number(reservationParticipantId)
+        )
+      );
+      console.log(
+        'validate setMyTotalCnt',
+        calculateTotalCnt(
+          totalData.orderListResponseDto.orderDetailResponseDtos.filter(
+            (order) =>
+              Number(order.reservationParticipantId) ===
+              Number(reservationParticipantId)
+          )
+        )
+      );
+
+      setAllTotalCnt(
+        calculateTotalCnt(
+          totalData.orderListResponseDto.orderDetailResponseDtos
+        )
+      );
+      console.log(
+        'validate setAllTotalCnt',
+        calculateTotalCnt(
+          totalData.orderListResponseDto.orderDetailResponseDtos
+        )
+      );
+      setMyTotalPrice(
+        totalData.orderListResponseDto.orderDetailResponseDtos
+          .filter(
+            (order) =>
+              Number(order.reservationParticipantId) ===
+              Number(reservationParticipantId)
+          )
+          .reduce((acc, order) => acc + order.totalCnt * order.menuPrice, 0)
+      );
+      setAllTotalPrice(
+        calculateTotalPriceForAll(
+          groupByNicknameWithTotalPrice(
+            totalData.orderListResponseDto.orderDetailResponseDtos
+          )
+        )
+      );
+    }
   }, [allOrdersInfo]);
 
   const handleGotoCartButtonClick = () => {
@@ -300,23 +453,30 @@ const OrderMainPage = () => {
                     {myOrders.map((order, index) => (
                       <div key={index}>
                         <FoodDiv>
-                          {order.menuImage && (
-                            <MenuImg src={order.menuImage} alt="메뉴사진" />
-                          )}
+                          <MenuImageWrapper>
+                            <MenuImg
+                              src={order.menuImage ? order.menuImage : Logo}
+                              alt="메뉴사진"
+                            />
+                          </MenuImageWrapper>
                           <FoodInfoDiv>
                             <FoodInfoTopDiv>
                               <MenuNameP>{order.menuName}</MenuNameP>
                             </FoodInfoTopDiv>
                             <FoodInfoBottomDiv>
                               <FoodInfoCountDiv>
-                                <PeopleP>총 주문:</PeopleP>
-                                <FoodInfoCountP>
-                                  {order.totalCnt}
-                                </FoodInfoCountP>
-                                <PeopleP>미결제 수량:</PeopleP>
-                                <FoodInfoCountP>
-                                  {order.totalCnt - order.paidCnt}
-                                </FoodInfoCountP>
+                                <FoodCountWrapper>
+                                  <TextP>미결제 수량</TextP>
+                                  <FoodInfoCountP>
+                                    {order.totalCnt - order.paidCnt}
+                                  </FoodInfoCountP>
+                                </FoodCountWrapper>
+                                <FoodCountWrapper>
+                                  <TextP>총 주문</TextP>
+                                  <FoodInfoCountP>
+                                    {order.totalCnt}
+                                  </FoodInfoCountP>
+                                </FoodCountWrapper>
                               </FoodInfoCountDiv>
 
                               <FoodPriceP>
@@ -350,28 +510,30 @@ const OrderMainPage = () => {
                       group.orders.map((order, index) => (
                         <div key={index}>
                           <FoodDiv>
-                            {order.menuImage && (
+                            <MenuImageWrapper>
                               <MenuImg
-                                src={order.menuImage}
-                                alt={order.menuName}
+                                src={order.menuImage ? order.menuImage : Logo}
                               />
-                            )}
+                            </MenuImageWrapper>
                             <FoodInfoDiv>
                               <FoodInfoTopDiv>
                                 <MenuNameP>{order.menuName}</MenuNameP>
                               </FoodInfoTopDiv>
                               <FoodInfoBottomDiv>
                                 <FoodInfoCountDiv>
-                                  <PeopleP>총 주문:</PeopleP>
-                                  <FoodInfoCountP>
-                                    {order.totalCnt}
-                                  </FoodInfoCountP>
-                                  <PeopleP>미결제 수량:</PeopleP>
-                                  <FoodInfoCountP>
-                                    {order.totalCnt - order.paidCnt}
-                                  </FoodInfoCountP>
+                                  <FoodCountWrapper>
+                                    <TextP>미결제 수량:</TextP>
+                                    <FoodInfoCountP>
+                                      {order.totalCnt - order.paidCnt}
+                                    </FoodInfoCountP>
+                                  </FoodCountWrapper>
+                                  <FoodCountWrapper>
+                                    <TextP>총 주문:</TextP>
+                                    <FoodInfoCountP>
+                                      {order.totalCnt}
+                                    </FoodInfoCountP>
+                                  </FoodCountWrapper>
                                 </FoodInfoCountDiv>
-
                                 <FoodPriceP>
                                   {(
                                     order.totalCnt * order.menuPrice

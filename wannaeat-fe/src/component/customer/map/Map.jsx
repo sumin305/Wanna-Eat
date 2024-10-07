@@ -81,29 +81,7 @@ const MapContainer = () => {
     });
 
     console.log('markerPositions', markerPositions);
-    // var positions = markerPositions;
-    var positions = [
-      {
-        id: 1,
-        title: '지역1',
-        latlng: new kakao.maps.LatLng(lat + 0.000004, lon + 0.00001),
-      },
-      {
-        id: 2,
-        title: '지역2',
-        latlng: new kakao.maps.LatLng(lat + 0.000235, lon + 0.00119),
-      },
-      {
-        id: 3,
-        title: '지역3',
-        latlng: new kakao.maps.LatLng(lat + 0.000178, lon - 0.000727),
-      },
-      {
-        id: 4,
-        title: '지역4',
-        latlng: new kakao.maps.LatLng(lat + 0.000692, lon + 0.000071),
-      },
-    ];
+    var positions = markerPositions;
 
     var imageSrc = PinkMarker;
 

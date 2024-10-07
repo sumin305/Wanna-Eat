@@ -125,13 +125,6 @@ const PasswordAuthPage = () => {
   // 생체 인증 (지문 등) 확인 함수
   const handleCheckFingerprint = async () => {
     try {
-      if (!isSupported || !isPasskeyRegistered) {
-        alert(
-          '이 기기는 지문 인식을 지원하지 않거나 패스키가 등록되지 않았습니다.'
-        );
-        return;
-      }
-
       const assertion = await navigator.credentials.get({
         publicKey: {
           challenge: new Uint8Array([117, 61, 252, 231, 191, 241, 32, 4]), // 서버에서 생성한 고유한 값 (랜덤 값)

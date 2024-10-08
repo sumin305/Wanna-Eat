@@ -77,6 +77,12 @@ const MapFilterModalBox = () => {
   // 인원 수가 변경될때마다 호출되는 함수
   const handleMemberCountChange = (e) => {
     console.log(e.target.value);
+
+    if (e.target.value <= 0) {
+      alert('0명 이상 입력하세요.');
+      return;
+    }
+
     setMemberCount(parseInt(e.target.value));
     console.log(memberCount);
   };

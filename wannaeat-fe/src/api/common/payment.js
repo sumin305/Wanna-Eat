@@ -37,7 +37,7 @@ export const payDepositPaymentBySsafyPay = async (requestDto) => {
 
 // 음식비 결제 싸페
 export const payMenuBySsafyPay = async (requestDto) => {
-  return await clientInstance
+  return await authClientInstance
     .post('/api/payments/menus/ssafy', requestDto)
     .then((result) => result)
     .catch((error) => error);

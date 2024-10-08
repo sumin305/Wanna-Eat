@@ -120,43 +120,45 @@ authClientInstance.interceptors.response.use(
     return response;
   },
 
-  // 실패  (401 에러)
+  // 실패
   async (error) => {
     console.log(error);
     const { response, config } = error;
     console.log('authClientInstance 응답 실패');
 
-    // 인증 실패 시
-    console.log(response);
-    if (error.status === 401) {
-      console.log('interceptor에서 reissue 재요청');
-      console.log(config);
-      localStorage.setItem('isReissueRequested', false);
-
-      // RefreshToken으로 AccessToken Reissue 요청
-      if (!localStorage.getItem('isReissueRequested')) {
+    // 인증 실패 (401에러) 시
+    if (response.status === 401) {
+      // 처음 401 에러가 발생했을 경우 isReissueRequested == false
+      if (localStorage.getItem('isReissueRequested') === 'false') {
+        // interceptor에서 reissue 재요청
         const reissueResponse =
           await authWithRefreshClientInstance.get('/api/users/reissue');
+
         //  AccessToken Reissue 성공
         if (reissueResponse.status === 200) {
+          console.log('AccessToken Reissue 성공');
+
+          const newAccessToken =
+            'Bearer ' + reissueResponse.headers.get('authorization-wannaeat');
+          setAccessToken(newAccessToken);
           localStorage.setItem('isReissueRequested', true);
-          setAccessToken(reissueResponse.headers['authorization-wannaeat']);
-          config.headers['authorization-wannaeat'] = accessToken;
+          config.headers['authorization-wannaeat'] = newAccessToken;
           return await authClientInstance(config);
-        } else {
-          console.log('AccessToken Reissue 실패');
-          return;
+        }
+        //  AccessToken Reissue 실패
+        else {
+          return Promise.reject(error);
         }
       } else {
         console.log('AccessToken Reissue 실패');
+        localStorage.setItem('isReissueRequested', false);
         alert('로그인 해주세요');
         window.location.href = '/';
         return;
       }
     } else {
-      console.log('인증 성공');
+      return Promise.reject(error);
     }
-    return Promise.reject(error);
   }
 );
 

@@ -7,7 +7,6 @@ import {
   LabelStyled,
 } from './SeatingMap.js';
 import { authClientInstance } from 'utils/http-client.js';
-import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore.js';
 
 import FloorSelector from 'component/manager/restaurant/SeatDecorate/FloorSelector/FloorSelector.jsx';
 import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
@@ -26,7 +25,7 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
   const [IconWidth, setIconWidth] = useState(100);
   const [IconHeight, setIconHeight] = useState(100);
 
-  const { restaurantId } = useMyRestaurantStore();
+  const restaurantId = window.localStorage.getItem('restaurantId');
 
   const reservedTable = OccupiedList;
 

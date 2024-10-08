@@ -5,6 +5,7 @@ import {
   onMessage,
 } from 'firebase/messaging';
 import { app as firebaseApp } from './firebase';
+import LogoIcon from 'assets/icons/header/logo.svg';
 
 const messaging = getMessaging(firebaseApp);
 
@@ -25,7 +26,7 @@ export function onForegroundMessage() {
     const notificationTitle = payload.notification.title;
     const notificationOptions = {
       body: payload.notification.body,
-      icon: '/your-icon-url', // 아이콘 경로 지정
+      icon: LogoIcon, // 아이콘 경로 지정
     };
 
     // Notification API를 사용해 포그라운드에서도 푸시 알림을 보여줌

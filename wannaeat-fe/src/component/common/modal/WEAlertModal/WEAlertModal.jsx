@@ -21,7 +21,7 @@ const WEAlertModal = () => {
       <TitleStyled>{alertText}</TitleStyled>
       {isOneButton ? (
         <OneButtonContainerStyled>
-          <WEButton size="long" onClick={close}>
+          <WEButton size="long" onClick={() => handleButtonClick()}>
             {confirmText}
           </WEButton>
         </OneButtonContainerStyled>

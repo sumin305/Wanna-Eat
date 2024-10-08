@@ -20,6 +20,7 @@ import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
 import { ReactComponent as SquareTableDisabledIcon } from 'assets/icons/manager/restaurant/table-square-disabled.svg';
 import { ReactComponent as RoundTableDisabledIcon } from 'assets/icons/manager/restaurant/table-rounded-disabled.svg';
 
+import useReservationStore from 'stores/customer/useReservationStore.js';
 import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
 import useModalStore from 'stores/common/useModalStore.js';
 
@@ -36,15 +37,16 @@ const SeatSelect = () => {
   const [IconWidth, setIconWidth] = useState(100);
   const [IconHeight, setIconHeight] = useState(100);
 
+  const { tableList, setTableList } = useReservationStore();
   const { restaurantId } = useRestaurantStore();
 
   const {
     open,
-    setTitle,
+    close,
     setAlertText,
-    setCancelText,
-    setIsOneButton,
     setModalType,
+    setConfirmText,
+    setHandleButtonClick,
   } = useModalStore();
 
   const reservedTable = tableData;
@@ -124,7 +126,13 @@ const SeatSelect = () => {
       (reserved) => reserved.tableId === item.tableId
     );
 
-    if (item.itemType === 'square' || item.itemType === 'rounded') {
+    console.log('item.tableId: ', item.tableId);
+    setHandleButtonClick(() => handleAddTable(item.tableId));
+
+    if (
+      !isReserved &&
+      (item.itemType === 'square' || item.itemType === 'rounded')
+    ) {
       console.log(`${item.tableId}번 테이블을 선택하였습니다.`);
       setAlertText(
         <ModalContainerStyled>
@@ -137,21 +145,28 @@ const SeatSelect = () => {
           </TableInfoWrapperStyled>
         </ModalContainerStyled>
       );
-      if (!isReserved) {
-        setModalType('alert');
-        setTitle(`${item.tableId} 번 테이블`);
-        setCancelText('닫기');
-        setIsOneButton(true);
-        open();
-      } else {
-        setTitle('예약 불가');
-        setAlertText(`${item.tableId}번 테이블은 예약이 불가능합니다.`);
-        setCancelText('닫기');
-        setIsOneButton(true);
-
-        open();
-      }
+      setModalType('alert');
+      setConfirmText('선택');
+      open();
     }
+  };
+
+  useEffect(() => {
+    console.log('현재 담긴 테이블: ', tableList);
+  }, [tableList]);
+
+  const handleAddTable = (tableId) => {
+    console.log('123213213213123');
+    console.log('tableId: ', tableId);
+
+    if (Array.isArray(tableList) && !tableList.includes(tableId)) {
+      const newItems = [...tableList, tableId];
+      setTableList(newItems);
+    } else {
+      window.alert('이미 선택된 테이블입니다.');
+    }
+
+    close();
   };
 
   const renderIcon = (itemType, tableId, reservedTable) => {

@@ -43,7 +43,8 @@ export const MenuContainer = styled.div`
   scrollbar-width: none;
   scroll-behavior: smooth;
   margin-top: 3%;
-  margin-bottom: 20%;
+  margin-bottom: 2%;
+  height: 55vh;
 `;
 
 export const MenuBox = styled.div`

@@ -108,13 +108,19 @@ const ChatPage = () => {
   const fetchChatData = async () => {
     if (isConnected) {
       console.log('연결상태:', isConnected);
-      const chatdata = await getChats(reservationUrl);
-      console.log(chatdata.data);
+      const chatResult = await getChats(reservationUrl);
+      console.log(chatResult);
+      console.log(chatResult.data);
       console.log('reservationUrl', reservationUrl);
-      if (chatdata) {
+      if (chatResult) {
         // 초기에 받은 데이터가 최신순이어서 순서를 바꾸고 chatMessages로 넣음
+        console.log(
+          'chatdata.data.chatMessageListResponseDto.chatMessageDetailResponseDtos.content',
+          chatResult.data.chatMessageListResponseDto
+            .chatMessageDetailResponseDtos.content
+        );
         await setChatMessages(
-          chatdata.data.chatMessageListResponseDto.chatMessageDetailResponseDtos.content
+          chatResult.data.chatMessageListResponseDto.chatMessageDetailResponseDtos.content
             .slice()
             .reverse()
         );
@@ -220,8 +226,9 @@ const ChatPage = () => {
     const chatdata = await getChatlist(reservationUrl, prevPage, chatSize);
     const prevScrollHeight = chatContainer.scrollHeight; // 이전 스크롤 높이 저장
     const prevScrollTop = chatContainer.scrollTop; // 현재 스크롤 위치 저장
-
-    if (chatdata && chatdata.data.chatMessageListResponseDto) {
+    console.log(chatdata);
+    console.log(chatdata.data);
+    if (chatdata && chatdata.data && chatdata.data.chatMessageListResponseDto) {
       // 새로 불러온 데이터를 기존 메시지 앞에 추가
       const prevMessages =
         chatdata.data.chatMessageListResponseDto.chatMessageDetailResponseDtos.content

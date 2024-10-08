@@ -12,6 +12,7 @@ export const MenuContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   height: 30px;
+  margin-bottom: 10px;
   align-items: center;
 `;
 
@@ -59,7 +60,7 @@ export const LineDiv = styled.div`
 
 export const MenuDiv = styled.div`
   padding: 0.5rem;
-  height: 45vh;
+  height: 53vh;
   overflow-y: auto;
   -ms-overflow-style: none; /* 인터넷 익스플로러용 스크롤바 숨김 */
   scrollbar-width: none; /* 파이어폭스용 스크롤바 숨김 */

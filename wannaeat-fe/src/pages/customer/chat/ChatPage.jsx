@@ -108,7 +108,7 @@ const ChatPage = () => {
   const fetchChatData = async () => {
     if (isConnected) {
       console.log('연결상태:', isConnected);
-      const chatResult = await getChats(reservationUrl);
+      const chatResult = await getChats(reservationUrl, 0, 10);
       console.log(chatResult);
       console.log(chatResult.data);
       console.log('reservationUrl', reservationUrl);

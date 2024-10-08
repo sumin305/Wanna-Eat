@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-
 import { Global, css } from '@emotion/react';
 import Main from './Main';
 
-import { requestPermission } from './firebase/firebaseCloudMessaging';
+import { requestPermission, onForegroundMessage } from './firebase/firebaseCloudMessaging';
 import { getRestaurantCategories } from 'api/customer/restaurant.js';
 import { getMerchantCategories } from 'api/common/ssafyPay/card.js';
+
 const globalStyles = css`
   @font-face {
     font-family: 'Paperlogy-5Regular';
@@ -31,7 +31,6 @@ const globalStyles = css`
   }
   * {
     font-family: 'Paperlogy-5Regular', sans-serif;
-    // letter-spacing: 1px;
     font-weight: 500;
     margin: 0;
     padding: 0;
@@ -44,11 +43,6 @@ const globalStyles = css`
   }
 `;
 
-// FCM permission & token
-if (Notification.permission !== 'granted') {
-  requestPermission();
-}
-
 const getCategories = async () => {
   const response = await getRestaurantCategories();
   if (response.status === 200) {
@@ -59,9 +53,12 @@ const getCategories = async () => {
   }
 };
 
-getCategories();
-getMerchantCategories();
 function App() {
+  useEffect(() => {
+    requestPermission(); // 알림 권한 요청 및 토큰 발급
+    onForegroundMessage(); // 포그라운드 알림 수신 설정
+  }, []);
+
   return (
     <BrowserRouter>
       <Global styles={globalStyles} />
@@ -69,5 +66,6 @@ function App() {
     </BrowserRouter>
   );
 }
+
 
 export default App;

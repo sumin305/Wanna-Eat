@@ -64,11 +64,12 @@ const ReservationAlertTime = styled.p`
 const ReservationLastTime = styled.p`
   color: ${theme.color.primary};
   font-weight: 900;
-  font-size: 1.7rem;
-  margin-right: 0.5rem;
+  font-size: 1.5rem;
+  margin-right: 0.3rem;
 
   @media (min-width: 480px) {
     font-size: 3rem;
+    margin-right: 0.5rem;
   }
 `;
 const ReservationTimeInfo = styled.p`
@@ -264,12 +265,12 @@ const RestaurantMyReservation = styled.div`
 `;
 
 const RestaurantInfoWrapper = styled.div`
-  width: 80%;
+  // width: 80%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  align-self: center;
+  // justify-content: center;
+  // align-items: center;
+  // align-self: center;
 }
 `;
 export {

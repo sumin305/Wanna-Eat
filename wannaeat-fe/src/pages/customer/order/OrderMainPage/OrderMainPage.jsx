@@ -9,7 +9,6 @@ import useOrderStore from 'stores/customer/useOrderStore';
 import useCartStore from 'stores/customer/useCartStore';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
-import { getChatlist, getChats } from 'api/customer/chat';
 
 import {
   TopBox,
@@ -47,7 +46,6 @@ const OrderMainPage = () => {
   const [orders, setOrders] = useState([]);
 
   const [myOrders, setMyOrders] = useState([]);
-  const [allOrders, setAllOrders] = useState([]);
 
   const [myTotalCnt, setMyTotalCnt] = useState(0);
   const [allTotalCnt, setAllTotalCnt] = useState(0);
@@ -81,6 +79,7 @@ const OrderMainPage = () => {
 
   const {
     allOrdersInfo,
+    setAllOrdersInfo,
     setReservationDate,
     setReservationStartTime,
     setReservationEndTime,
@@ -141,6 +140,8 @@ const OrderMainPage = () => {
         chatSize
       );
 
+      setAllOrdersInfo(allOrdersInfo);
+
       console.log('메인페이지 불러온 데이터:', allOrdersInfo.data);
       const totalData = allOrdersInfo.data;
 
@@ -177,13 +178,13 @@ const OrderMainPage = () => {
           : []
       );
 
-      setAllOrders(
+      setAllOrdersInfo(
         groupByNicknameWithTotalPrice(
           totalData.orderListResponseDto.orderDetailResponseDtos
         )
       );
       console.log(
-        'validate setAllOrders',
+        'validate setAllOrdersInfo',
         groupByNicknameWithTotalPrice(
           totalData.orderListResponseDto.orderDetailResponseDtos
         )
@@ -338,13 +339,13 @@ const OrderMainPage = () => {
           : []
       );
 
-      setAllOrders(
+      setAllOrdersInfo(
         groupByNicknameWithTotalPrice(
           totalData.orderListResponseDto.orderDetailResponseDtos
         )
       );
       console.log(
-        'validate setAllOrders',
+        'validate setAllOrdersInfo',
         groupByNicknameWithTotalPrice(
           totalData.orderListResponseDto.orderDetailResponseDtos
         )
@@ -518,7 +519,7 @@ const OrderMainPage = () => {
             ) : (
               // 전체 메뉴
               <div>
-                {Object.entries(allOrders).map(([nickname, group]) => (
+                {Object.entries(allOrdersInfo).map(([nickname, group]) => (
                   <div key={nickname}>
                     <PeopleP>{nickname}</PeopleP>
                     <LineDiv />

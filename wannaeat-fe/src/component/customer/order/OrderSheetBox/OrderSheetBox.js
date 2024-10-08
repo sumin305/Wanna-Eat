@@ -10,8 +10,8 @@ export const TotalPriceText = styled.p`
 
 export const MenuDiv = styled.div`
   /* background-color: rgba(212, 212, 212, 0.3); */
-  padding: 4vw;
-  height: 45vh;
+  padding: 0.5rem;
+  height: 53vh;
   overflow-y: auto;
   -ms-overflow-style: none; /* 인터넷 익스플로러용 스크롤바 숨김 */
   scrollbar-width: none; /* 파이어폭스용 스크롤바 숨김 */
@@ -84,8 +84,7 @@ export const FoodInfoCountLeftBtn = styled.button`
 `;
 
 export const FoodInfoCountP = styled.p`
-  border-top: 1px solid rgba(212, 212, 212, 1);
-  border-bottom: 1px solid rgba(212, 212, 212, 1);
+  border: 1px solid rgba(212, 212, 212, 1);
   font-size: 11px;
   font-weight: 600;
   display: flex;
@@ -94,6 +93,14 @@ export const FoodInfoCountP = styled.p`
   width: 25px;
   background-color: white;
   height: 22px;
+`;
+
+export const MenuNonPayDiv = styled.div`
+  display: flex;
+  align-items: center;
+  > * {
+    margin: 2px;
+  }
 `;
 
 export const FoodInfoCountRightBtn = styled.button`
@@ -190,7 +197,7 @@ export const TopBox = styled.div`
 export const TotalMenuP = styled.p`
   font-size: 15px;
   font-weight: 700;
-  margin-left: 4vw;
+  margin-left: 0.5rem;
 `;
 
 export const TotalPriceDiv = styled.div`

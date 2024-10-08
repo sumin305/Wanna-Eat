@@ -49,7 +49,6 @@ const DepositPaymentPage = () => {
     const fetchCards = async () => {
       const result = await getMyCreditCardList();
       if (result.status !== 200) {
-        alert('카드 목록 조회 실패');
         setCards([{ cardName: '카카오페이카드', cardNo: '0' }]);
         return;
       }
@@ -139,7 +138,7 @@ const DepositPaymentPage = () => {
     }
 
     // 카카오페이 시
-    if (selectedCard && selectedCard.cardNo === '0') {
+    if (cards && cards.length == 1) {
       kakaoPayment(
         depositPerMember * memberCount === 0
           ? 50000

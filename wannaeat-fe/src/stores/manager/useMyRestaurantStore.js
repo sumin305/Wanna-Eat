@@ -10,9 +10,12 @@ const useMyRestaurantStore = create((set) => ({
     businessType: -1,
     lat: 0,
     lng: 0,
+    restaurantOpenTime: '',
+    restaurantCloseTime: '',
+    depositPerMember: '',
   },
   reservationDetails: [],
-  restaurantId: window.localStorage.getItem('restaurantId') || '',
+  restaurantId: null,
   setManagerFormData: (field, value) =>
     set((state) => ({
       managerFormData: {

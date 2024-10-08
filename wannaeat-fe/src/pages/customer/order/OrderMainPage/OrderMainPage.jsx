@@ -9,6 +9,8 @@ import useOrderStore from 'stores/customer/useOrderStore';
 import useCartStore from 'stores/customer/useCartStore';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
+import { getChatlist, getChats } from 'api/customer/chat';
+
 import {
   TopBox,
   OrderContainer,
@@ -66,8 +68,16 @@ const OrderMainPage = () => {
     setIconAction,
   } = useHeaderStore();
   const { setCartElements } = useCartStore();
-  const { setIsConnected, stompClient, setStompClient, chatPage, chatSize } =
-    useChatStore();
+  const {
+    chatMessages,
+    setChatMessages,
+    setIsConnected,
+    stompClient,
+    setStompClient,
+    chatPage,
+    chatSize,
+    setChatPlusMessages,
+  } = useChatStore();
 
   const {
     allOrdersInfo,
@@ -117,7 +127,6 @@ const OrderMainPage = () => {
         'reservationParticipantId',
         reservationParticipantId
       );
-      console.log('reservationParticipantId', reservationParticipantId);
       setreservationParticipantId(reservationParticipantId);
 
       console.log('stompClient있나 확인', stompClient);
@@ -134,23 +143,19 @@ const OrderMainPage = () => {
 
       console.log('메인페이지 불러온 데이터:', allOrdersInfo.data);
       const totalData = allOrdersInfo.data;
+
       // 상태 업데이트
       setReservationDate(totalData.reservationDate);
       setReservationStartTime(totalData.reservationDate);
       setReservationEndTime(totalData.reservationEndTime);
       setRestaurantId(totalData.restaurantId);
       setReservationId(totalData.reservationId);
-      console.log('restaurantId', totalData.restaurantId);
       setCartElements(
         totalData.cartDetailResponseDto
           ? totalData.cartDetailResponseDto.cartElements
           : []
       );
       setOrders(totalData.orderListResponseDto.orderDetailResponseDtos || []);
-      console.log(allOrdersInfo);
-      console.log(allOrdersInfo.data);
-      console.log(allOrdersInfo.data.orderListResponseDto);
-      console.log(totalData.orderListResponseDto.orderDetailResponseDtos);
 
       setMyOrders(
         totalData.orderListResponseDto
@@ -255,14 +260,20 @@ const OrderMainPage = () => {
               `/topic/reservations/${reservationUrl}`,
               (response) => {
                 const content = JSON.parse(response.body);
-                console.log('main sumin Received message: ', content);
+                console.log('chatMessages 출력', chatMessages);
 
+                console.log('main sumin Received message: ', content);
                 if (content.socketType === 'CART') {
-                  console.log('cart socket message ');
-                  console.dir(content.cartElements);
                   setCartElements(content.cartElements);
                 } else if (content.socketType === 'ORDER') {
                   setCartElements([]);
+                } else if (content.socketType === 'CHAT') {
+                  console.log('원래 있던 메시지들1', chatMessages);
+                  if (chatMessages) {
+                    console.log('원래 있던 메시지들2', chatMessages);
+                    console.log('새로운 메시지', content);
+                    addMessage(content);
+                  }
                 }
               },
               (error) => {
@@ -286,6 +297,15 @@ const OrderMainPage = () => {
 
     validateAndConnect();
   }, []);
+  // 새로 온 메세지 추가
+  const addMessage = (message) => {
+    setChatPlusMessages(message);
+  };
+
+  console.log('main page - chatMessages :', chatMessages);
+  useEffect(() => {
+    console.log('main page - chatMessages :', chatMessages);
+  }, [chatMessages]);
 
   useEffect(() => {
     // 각 변수들 세팅

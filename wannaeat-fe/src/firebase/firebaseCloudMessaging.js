@@ -1,5 +1,5 @@
 // firebaseCloudMessaging.js
-import { getMessaging, getToken } from 'firebase/messaging';
+import { getMessaging, getToken, deleteToken  } from 'firebase/messaging';
 import { initializeApp } from 'firebase/app';
 
 // Firebase 설정 및 초기화
@@ -32,13 +32,21 @@ export function requestPermission() {
 // FCM 토큰 발급 함수
 export async function getFcmToken() {
   try {
-    const currentToken = await getToken(messaging, {
+    // 기존 토큰 삭제 (기존 토큰이 있다면)
+    await deleteToken(messaging).catch((err) => {
+      console.warn("기존 토큰 삭제 실패:", err);
+    });
+
+    // 새로운 토큰 발급
+    const newToken = await getToken(messaging, {
       vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY,
     });
 
-    if (currentToken) {
-      console.log('FCM 토큰 발급 완료:', currentToken);
-      return currentToken;
+    if (newToken) {
+      console.log('새로운 FCM 토큰 발급 완료:', newToken);
+      return newToken;
+    } else {
+      console.warn('새 토큰을 발급할 수 없습니다.');
     }
   } catch (error) {
     console.error('FCM 토큰 발급 실패:', error);

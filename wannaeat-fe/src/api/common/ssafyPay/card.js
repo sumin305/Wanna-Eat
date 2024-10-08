@@ -132,8 +132,7 @@ export const createCreditCard = async (
 // 내 카드 목록 조회
 export const getMyCreditCardList = async () => {
   if (!localStorage.getItem('userKey')) {
-    alert('유저 키가 없습니다.');
-    return;
+    return false;
   }
 
   return await ssafyClient

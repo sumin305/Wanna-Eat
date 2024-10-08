@@ -37,7 +37,6 @@ const TimeSelectPage = () => {
   const navigate = useNavigate();
   useEffect(() => {
     const setDate = async () => {
-      console.log(reservationDate);
       await setReservationDate(
         reservationDate !== ''
           ? reservationDate
@@ -56,7 +55,6 @@ const TimeSelectPage = () => {
   };
 
   const handleDateChange = (date) => {
-    console.log(date);
     setReservationDate(moment(date).format('YYYY-MM-DD'));
     setStartTime('00:00');
     setEndTime('00:00');
@@ -82,19 +80,12 @@ const TimeSelectPage = () => {
   };
 
   const checkSeatData = async (restaurantId, date, startTime, endTime) => {
-    console.log('시간 선택 페이지 restaurantId: ', restaurantId);
-    console.log('date:', date);
-    console.log('startTime:', startTime);
-    console.log('endTime:', endTime);
     try {
       const response = await authClientInstance.get(
         `/api/restaurants/${restaurantId}/reservations/available-tables?date=${date}&startTime=${startTime}&endTime=${endTime}`
       );
-      console.log('예약 가능 좌석 데이터 응답: ', response);
 
       if (response.status === 200) {
-        console.log('tableData: ', response.data.data);
-        console.log('TYPEOFTABLEDATA: ', Array.isArray(response.data.data));
         navigate('/customer/reservation/seat-select', {
           state: { tableData: response.data.data },
         });

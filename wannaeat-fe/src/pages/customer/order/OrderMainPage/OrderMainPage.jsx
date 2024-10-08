@@ -9,6 +9,8 @@ import useOrderStore from 'stores/customer/useOrderStore';
 import useCartStore from 'stores/customer/useCartStore';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
+import { getChatlist, getChats } from 'api/customer/chat';
+
 import {
   TopBox,
   OrderContainer,
@@ -36,6 +38,7 @@ import {
   MenuImageWrapper,
   PeopleP,
 } from './OrderMainPage.js';
+import useReservationStore from '../../../../stores/customer/useReservationStore.js';
 
 const OrderMainPage = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -56,7 +59,6 @@ const OrderMainPage = () => {
   const nav = useNavigate();
   const params = useParams();
   const reservationUrl = params.url;
-
   const {
     setIsCarrot,
     setPageName,
@@ -67,17 +69,18 @@ const OrderMainPage = () => {
   } = useHeaderStore();
   const { setCartElements } = useCartStore();
   const {
-    isConnected,
+    chatMessages,
+    setChatMessages,
     setIsConnected,
     stompClient,
     setStompClient,
     chatPage,
     chatSize,
+    setChatPlusMessages,
   } = useChatStore();
 
-  const { allOrdersInfo, setAllOrdersInfo } = useOrderStore();
-
   const {
+    allOrdersInfo,
     setReservationDate,
     setReservationStartTime,
     setReservationEndTime,
@@ -107,7 +110,7 @@ const OrderMainPage = () => {
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);
       console.log('validateAndConnectResponse', response);
-
+      console.log(reservationUrl);
       // reservationUrl 유효성 검사 실행 후 유효한 경우
       if (response.status !== 200) {
         alert('유효한 예약 URL이 아닙니다.');
@@ -126,6 +129,7 @@ const OrderMainPage = () => {
       );
       setreservationParticipantId(reservationParticipantId);
 
+      console.log('stompClient있나 확인', stompClient);
       // WebSocket 연결 후 데이터 불러오기
       if (!stompClient) {
         console.log('stompClient가 없어 소켓 연결을 시도합니다.');
@@ -139,23 +143,19 @@ const OrderMainPage = () => {
 
       console.log('메인페이지 불러온 데이터:', allOrdersInfo.data);
       const totalData = allOrdersInfo.data;
+
       // 상태 업데이트
       setReservationDate(totalData.reservationDate);
       setReservationStartTime(totalData.reservationDate);
       setReservationEndTime(totalData.reservationEndTime);
       setRestaurantId(totalData.restaurantId);
       setReservationId(totalData.reservationId);
-
       setCartElements(
         totalData.cartDetailResponseDto
           ? totalData.cartDetailResponseDto.cartElements
           : []
       );
       setOrders(totalData.orderListResponseDto.orderDetailResponseDtos || []);
-      console.log(allOrdersInfo);
-      console.log(allOrdersInfo.data);
-      console.log(allOrdersInfo.data.orderListResponseDto);
-      console.log(totalData.orderListResponseDto.orderDetailResponseDtos);
 
       setMyOrders(
         totalData.orderListResponseDto
@@ -248,6 +248,7 @@ const OrderMainPage = () => {
 
     const initializeConnection = async () => {
       return await new Promise((resolve, reject) => {
+        console.log('reservationUrl', reservationUrl);
         const socket = new SockJS(
           `${process.env.REACT_APP_REST_API_URL}/api/public/ws`
         );
@@ -259,14 +260,20 @@ const OrderMainPage = () => {
               `/topic/reservations/${reservationUrl}`,
               (response) => {
                 const content = JSON.parse(response.body);
-                console.log('main sumin Received message: ', content);
+                console.log('chatMessages 출력', chatMessages);
 
+                console.log('main sumin Received message: ', content);
                 if (content.socketType === 'CART') {
-                  console.log('cart socket message ');
-                  console.dir(content.cartElements);
                   setCartElements(content.cartElements);
                 } else if (content.socketType === 'ORDER') {
                   setCartElements([]);
+                } else if (content.socketType === 'CHAT') {
+                  console.log('원래 있던 메시지들1', chatMessages);
+                  if (chatMessages) {
+                    console.log('원래 있던 메시지들2', chatMessages);
+                    console.log('새로운 메시지', content);
+                    addMessage(content);
+                  }
                 }
               },
               (error) => {
@@ -280,7 +287,7 @@ const OrderMainPage = () => {
             resolve(); // WebSocket 연결 성공 시 resolve 호출
           },
           (error) => {
-            console.log('소켓 연결 오류:', error);
+            console.log('구독 실패 연결 오류:', error);
             setIsConnected(false);
             reject(error); // WebSocket 연결 실패 시 reject 호출
           }
@@ -290,6 +297,15 @@ const OrderMainPage = () => {
 
     validateAndConnect();
   }, []);
+  // 새로 온 메세지 추가
+  const addMessage = (message) => {
+    setChatPlusMessages(message);
+  };
+
+  console.log('main page - chatMessages :', chatMessages);
+  useEffect(() => {
+    console.log('main page - chatMessages :', chatMessages);
+  }, [chatMessages]);
 
   useEffect(() => {
     // 각 변수들 세팅

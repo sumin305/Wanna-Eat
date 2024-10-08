@@ -103,6 +103,7 @@ const OrderCartPage = () => {
       // // reservationUrl 유효성 검사 실행 후 유효한 경우
       // if (response.status === 200) {
       // stompClient가 없는 경우에만 소켓 연결 시도
+      console.log('stompClient', stompClient);
       if (!stompClient) {
         initializeConnection();
       } else {
@@ -129,23 +130,21 @@ const OrderCartPage = () => {
     client.connect(
       {},
       () => {
-        console.log('소켓연결');
+        console.log('소켓 연결 성공');
 
         // 구독
         client.subscribe(
           `/topic/reservations/${reservationUrl}`,
           (response) => {
             const content = JSON.parse(response.body);
-            console.log('soom Received message: ', content);
+            console.log('Received message:', content);
             if (content.socketType === 'CART') {
-              console.log('cart socket message ');
-              console.dir(content.cartElements);
-              setCartElements(content.cartElements);
-              console.log(content.cartElements);
+              const sorted = reorderArray(content.cartElements);
+              setCartElements(sorted);
             }
           }
         );
-
+        console.log('구독 성공:', `/topic/reservations/${reservationUrl}`);
         setStompClient(client);
         setIsConnected(true);
       },
@@ -173,9 +172,7 @@ const OrderCartPage = () => {
 
   // 모든 주문 데이터 불러오기
   useEffect(() => {
-    if (isConnected) {
-      fetchMenusData();
-    }
+    fetchMenusData();
   }, []);
 
   // allMenus를 reservationParticipantId 기준으로 정렬하는 함수
@@ -475,7 +472,8 @@ const OrderCartPage = () => {
             JSON.stringify(orderRegisterRequestDto)
           );
           console.log('주문에 보내는 내용:', orderRegisterRequestDto);
-
+          const sorted = reorderArray(cartElements);
+          setCartElements(sorted);
           setAllMenusInfo({ cartDetailResponseDto: { cartElements: [] } });
           setAllMenusSortInfo({ cartDetailResponseDto: { cartElements: [] } });
           setMenuCounts([]);

@@ -97,8 +97,6 @@ const FingerprintAuthPage = () => {
         },
       });
 
-      console.log('Assertion Received:', assertion);
-
       // 인증 성공 처리
       setIsAuthenticated(true); // 인증 성공 상태로 변경
       navigate('/customer/reservation/deposit-payment'); // 인증 성공 시 페이지 이동

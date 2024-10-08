@@ -1,20 +1,32 @@
 import { useState, useEffect } from 'react';
+
 import {
-  SeatingMapStyled,
+  SeatSelectStyled,
   Items,
   MapStyled,
   ItemWrapperStyled,
   LabelStyled,
-} from './SeatingMap.js';
+  TableInfoWrapperStyled,
+  SeatLabelStyled,
+  SeatValueStyled,
+  ModalContainerStyled,
+} from './SeatSelect.js';
 import { authClientInstance } from 'utils/http-client.js';
+import { useLocation } from 'react-router-dom';
 
 import FloorSelector from 'component/manager/restaurant/SeatDecorate/FloorSelector/FloorSelector.jsx';
 import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
 
-import { ReactComponent as SquareTablePointedIcon } from 'assets/icons/manager/restaurant/table-square-pointed.svg';
-import { ReactComponent as RoundTablePointedIcon } from 'assets/icons/manager/restaurant/table-rounded-pointed.svg';
+import { ReactComponent as SquareTableDisabledIcon } from 'assets/icons/manager/restaurant/table-square-disabled.svg';
+import { ReactComponent as RoundTableDisabledIcon } from 'assets/icons/manager/restaurant/table-rounded-disabled.svg';
 
-const SeatingMap = ({ OccupiedList, on404Error }) => {
+import useReservationStore from 'stores/customer/useReservationStore.js';
+import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
+import useModalStore from 'stores/common/useModalStore.js';
+
+const SeatSelect = () => {
+  const location = useLocation();
+  const { tableData } = location.state || {};
   const [floorData, setFloorData] = useState([]);
   const [originalData, setOriginalData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -25,26 +37,32 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
   const [IconWidth, setIconWidth] = useState(100);
   const [IconHeight, setIconHeight] = useState(100);
 
-  const restaurantId = window.localStorage.getItem('restaurantId');
+  const { tableList, setTableList } = useReservationStore();
+  const { restaurantId } = useRestaurantStore();
 
-  const reservedTable = OccupiedList;
+  const {
+    open,
+    close,
+    setAlertText,
+    setModalType,
+    setConfirmText,
+    setHandleButtonClick,
+  } = useModalStore();
+
+  const reservedTable = tableData;
 
   useEffect(() => {
-    console.log('restaurantId: ' + restaurantId);
     if (restaurantId > 0) {
       fetchFloorData(restaurantId);
     }
   }, [restaurantId]);
 
   const fetchFloorData = async (restaurantId) => {
-    console.log('restaurantId: ' + restaurantId + ' 으로 get요청 보냅니다!');
     try {
       const response = await authClientInstance.get(
         `/api/public/restaurants/${restaurantId}/structure`
       );
       const { data } = response.data;
-
-      console.log('data: ', data);
 
       setFloorCnt(data.floorCnt);
       setOriginalData(data);
@@ -71,10 +89,6 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
       setIconWidth(tempValue);
       setIconHeight(tempValue);
     } catch (error) {
-      if (error.response && error.response.status === 404) {
-        on404Error();
-      }
-
       console.error('배치 정보 요청 오류:', error);
       setLoading(false);
       return;
@@ -96,11 +110,53 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
   };
 
   const handleFloorChange = (selectedFloor) => {
-    console.log('currentFloor: ', currentFloor);
     setCurrentFloor(selectedFloor);
     if (originalData) {
       mergeFloorData(originalData, selectedFloor);
     }
+  };
+
+  const handleIconClick = (item) => {
+    const isReserved = reservedTable.some(
+      (reserved) => reserved.tableId === item.tableId
+    );
+
+    setHandleButtonClick(() => handleAddTable(item.tableId));
+
+    if (
+      !isReserved &&
+      (item.itemType === 'square' || item.itemType === 'rounded')
+    ) {
+      setAlertText(
+        <ModalContainerStyled>
+          <TableInfoWrapperStyled>
+            <SeatLabelStyled>{item.tableId} 번 테이블</SeatLabelStyled>
+          </TableInfoWrapperStyled>
+          <TableInfoWrapperStyled>
+            <SeatLabelStyled>좌석 수 :</SeatLabelStyled>
+            <SeatValueStyled>{item.assignedSeats}</SeatValueStyled>
+          </TableInfoWrapperStyled>
+        </ModalContainerStyled>
+      );
+      setModalType('alert');
+      setConfirmText('선택');
+      open();
+    }
+  };
+
+  // useEffect(() => {
+  //   console.log('현재 담긴 테이블: ', tableList);
+  // }, [tableList]);
+
+  const handleAddTable = (tableId) => {
+    if (Array.isArray(tableList) && !tableList.includes(tableId)) {
+      const newItems = [...tableList, tableId];
+      setTableList(newItems);
+    } else {
+      window.alert('이미 선택된 테이블입니다.');
+    }
+
+    close();
   };
 
   const renderIcon = (itemType, tableId, reservedTable) => {
@@ -113,12 +169,18 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
     if (item) {
       const IconComponent =
         isOccupied && itemType === 'square'
-          ? SquareTablePointedIcon
+          ? SquareTableDisabledIcon
           : isOccupied && itemType === 'rounded'
-            ? RoundTablePointedIcon
+            ? RoundTableDisabledIcon
             : item.icon;
 
-      return <IconComponent />;
+      const iconStyle = isOccupied
+        ? { pointerEvents: 'none' }
+        : itemType === 'square' || itemType === 'rounded'
+          ? { cursor: 'pointer' }
+          : {};
+
+      return <IconComponent style={iconStyle} />;
     }
 
     return null;
@@ -133,7 +195,7 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
   }
 
   return (
-    <SeatingMapStyled>
+    <SeatSelectStyled>
       <FloorSelector
         floors={Array.from({ length: floorCnt }, (_, i) => i + 1)}
         currentFloor={currentFloor}
@@ -148,6 +210,9 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
             y={item.y}
             svgWidth={IconWidth}
             svgHeight={IconHeight}
+            onClick={() => {
+              handleIconClick(item);
+            }}
           >
             {renderIcon(item.itemType, item.tableId, reservedTable)}
             {item.itemType === 'SQUARE' || item.itemType === 'ROUNDED' ? (
@@ -158,8 +223,8 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
           </ItemWrapperStyled>
         ))}
       </MapStyled>
-    </SeatingMapStyled>
+    </SeatSelectStyled>
   );
 };
 
-export default SeatingMap;
+export default SeatSelect;

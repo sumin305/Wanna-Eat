@@ -26,4 +26,5 @@ const useMyRestaurantStore = create((set) => ({
   setIsRegistered: (isRegistered) => set({ isRegistered }),
   setRestaurantId: (id) => set({ restaurantId: id }),
 }));
+
 export default useMyRestaurantStore;

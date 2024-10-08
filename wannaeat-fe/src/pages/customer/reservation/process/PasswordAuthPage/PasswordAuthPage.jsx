@@ -24,8 +24,15 @@ const PasswordAuthPage = () => {
   const { isSupported, isPasskeyRegistered, setIsAuthenticated } =
     useAuthStore();
   const { depositPerMember, restaurantId } = useRestaurantStore();
-  const { reservationDate, startTime, endTime, memberCount, selectedCard } =
-    useReservationStore();
+  const {
+    reservationDate,
+    startTime,
+    endTime,
+    memberCount,
+    selectedCard,
+    setReservationUrl,
+    tableList,
+  } = useReservationStore();
   useEffect(() => {
     suffleNumber();
   }, [inputNumber]);
@@ -72,6 +79,7 @@ const PasswordAuthPage = () => {
     }
 
     setInputNumber(inputNumber + num);
+
     // 비밀번호를 다 입력했을때,
     if (inputNumber.length === 5) {
       setPassword(inputNumber);
@@ -97,7 +105,7 @@ const PasswordAuthPage = () => {
         reservationStartTime: startTime,
         reservationEndTime: endTime,
         memberCnt: memberCount,
-        tableList: [],
+        tableList: tableList,
       },
       cardNo: selectedCard.cardNo,
       cvc: selectedCard.cvc,
@@ -109,6 +117,11 @@ const PasswordAuthPage = () => {
     if (result.status === 200) {
       alert('결제 성공');
       navigate('/customer/reservation/success');
+      setReservationUrl(
+        process.env.REACT_APP_CLIENT_URL +
+          '/customer/order/' +
+          result.data.data.reservationInfo.reservationUrl
+      );
       setIsAuthenticated(false);
     } else {
       alert(result.response.data.message);
@@ -117,13 +130,6 @@ const PasswordAuthPage = () => {
   // 생체 인증 (지문 등) 확인 함수
   const handleCheckFingerprint = async () => {
     try {
-      if (!isSupported || !isPasskeyRegistered) {
-        alert(
-          '이 기기는 지문 인식을 지원하지 않거나 패스키가 등록되지 않았습니다.'
-        );
-        return;
-      }
-
       const assertion = await navigator.credentials.get({
         publicKey: {
           challenge: new Uint8Array([117, 61, 252, 231, 191, 241, 32, 4]), // 서버에서 생성한 고유한 값 (랜덤 값)

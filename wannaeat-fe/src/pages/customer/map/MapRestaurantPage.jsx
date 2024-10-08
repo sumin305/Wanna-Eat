@@ -18,9 +18,6 @@ import useChatStore from '../../../stores/customer/useChatStore.js';
 import useMapFilterStore from '../../../stores/map/useMapFilterStore.js';
 
 const MapRestaurantPage = () => {
-  const { stompClient, isconneted } = useChatStore();
-  console.log('웹소켓연결확인', stompClient);
-  console.log('웹소켓연결확인', isconneted);
   const {
     open,
     close,
@@ -31,9 +28,9 @@ const MapRestaurantPage = () => {
     setHandleButtonClick,
   } = useModalStore();
 
-  const { reservationDate, startTime, endTime, memberCount, setKeyword } =
+  const { reservationDate, startTime, endTime, memberCount } =
     useReservationStore();
-  const { categoryId, keyword } = useMapFilterStore();
+  const { categoryId, keyword, setKeyword } = useMapFilterStore();
 
   const {
     setIsInitialLoad,

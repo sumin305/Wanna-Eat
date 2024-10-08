@@ -17,8 +17,10 @@ import { useLocation } from 'react-router-dom';
 import FloorSelector from 'component/manager/restaurant/SeatDecorate/FloorSelector/FloorSelector.jsx';
 import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
 
-import { ReactComponent as SquareTableIcon } from 'assets/icons/manager/restaurant/table-square.svg';
-import { ReactComponent as RoundTableIcon } from 'assets/icons/manager/restaurant/table-rounded.svg';
+import { ReactComponent as SquareTableIcon } from 'assets/icons/manager/restaurant/table-square-secondary.svg';
+import { ReactComponent as RoundTableIcon } from 'assets/icons/manager/restaurant/table-rounded-secondary.svg';
+import { ReactComponent as SelectedSquareTableIcon } from 'assets/icons/manager/restaurant/table-square.svg';
+import { ReactComponent as SelectedRoundTableIcon } from 'assets/icons/manager/restaurant/table-rounded.svg';
 
 import useReservationStore from 'stores/customer/useReservationStore.js';
 import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
@@ -37,7 +39,7 @@ const SeatSelect = () => {
   const [IconWidth, setIconWidth] = useState(100);
   const [IconHeight, setIconHeight] = useState(100);
 
-  const { tableList, setTableList, maxCapacity, setMaxCapacity } =
+  const { tableList, setTableList, maxCapacity, setMaxCapacity, memberCount } =
     useReservationStore();
   const { restaurantId } = useRestaurantStore();
 
@@ -147,11 +149,11 @@ const SeatSelect = () => {
     }
   };
 
-  useEffect(() => {
-    console.log('현재 선택된 사용 가능 좌석 수: ', maxCapacity);
-  }, [maxCapacity]);
-
   const handleAddTable = (item) => {
+    if (maxCapacity >= memberCount) {
+      window.alert('지나친 테이블 예약은 불가능합니다.');
+      return;
+    }
     if (Array.isArray(tableList) && !tableList.includes(item.tableId)) {
       const newItems = [...tableList, item.tableId];
       setTableList(newItems);
@@ -169,16 +171,21 @@ const SeatSelect = () => {
 
   const renderIcon = (itemType, tableId, canReserveTable) => {
     const isAvailable = canReserveTable.some((value) => value === tableId);
+    const isSelected = tableList.includes(tableId);
 
     const item = Items.find((item) => item.itemType === itemType);
 
     if (item) {
       let IconComponent =
-        isAvailable && itemType === 'square'
-          ? SquareTableIcon
-          : isAvailable && itemType === 'rounded'
-            ? RoundTableIcon
-            : item.icon;
+        isAvailable && isSelected && itemType === 'square'
+          ? SelectedSquareTableIcon
+          : isAvailable && isSelected && itemType === 'rounded'
+            ? SelectedRoundTableIcon
+            : isAvailable && itemType === 'square'
+              ? SquareTableIcon
+              : isAvailable && itemType === 'rounded'
+                ? RoundTableIcon
+                : item.icon;
 
       const iconStyle = !isAvailable
         ? { pointerEvents: 'none' }

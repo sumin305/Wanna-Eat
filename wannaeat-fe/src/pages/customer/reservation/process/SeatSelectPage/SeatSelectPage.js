@@ -1,4 +1,5 @@
 import styled from '@emotion/styled/macro';
+import theme from 'style/common/theme.js';
 
 const SeatSelectPageContainer = styled.div`
   display: grid;
@@ -6,4 +7,11 @@ const SeatSelectPageContainer = styled.div`
   justify-content: center;
 `;
 
-export { SeatSelectPageContainer };
+const MemberCountSyled = styled.div`
+  font-size: ${theme.fontSize.px15};
+  font-weight: bold;
+  text-align: end;
+  margin-right: 2%;
+`;
+
+export { SeatSelectPageContainer, MemberCountSyled };

@@ -72,8 +72,7 @@ const ManagerRegistPage = () => {
     if (response.status === 201) {
       const restaurantId = response.data.data;
       window.localStorage.setItem('restaurantId', restaurantId);
-      showAlert(response.data.message);
-      await nav('/manager');
+      showAlert(response.data.message, () => nav('/manager'));
     } else if (response.status === 400) {
       showAlert('값을 형식에 맞게 입력하세요.');
     } else {

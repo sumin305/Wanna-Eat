@@ -177,6 +177,7 @@ const SeatSelect = () => {
     }
 
     close();
+    setHandleButtonClick(close());
   };
 
   const renderIcon = (itemType, tableId, canReserveTable) => {

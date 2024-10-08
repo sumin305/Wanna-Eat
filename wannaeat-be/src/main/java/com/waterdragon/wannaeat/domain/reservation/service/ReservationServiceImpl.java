@@ -404,7 +404,7 @@ public class ReservationServiceImpl implements ReservationService {
 		User user = authUtil.getAuthenticatedUser();
 
 		// Repository에서 페이징된 Reservation 객체들을 가져옴
-		Page<Reservation> reservations = reservationRepository.findByUser(user, pageable);
+		Page<Reservation> reservations = reservationRepository.findByUserOrderByReservationDateDesc(user, pageable);
 
 		// Page<Reservation>을 Page<ReservationDetailResponseDto>로 변환
 		return reservations.map(ReservationDetailResponseDto::transferToReservationDetailResponseDto);

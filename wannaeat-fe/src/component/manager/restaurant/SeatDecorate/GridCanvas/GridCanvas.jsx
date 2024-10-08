@@ -18,7 +18,7 @@ import {
 } from './GridCanvas';
 import useModalStore from 'stores/common/useModalStore.js';
 
-import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore.js';
+const restaurantId = window.localStorage.getItem('restaurantId');
 
 const useStore = create((set, get) => ({
   itemsByFloor: {},
@@ -137,8 +137,6 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   const [selectedItem, setSelectedItem] = useState();
 
   const containerRef = useRef();
-
-  const { restaurantId } = useMyRestaurantStore();
 
   const calculateGridSize = () => {
     const width = window.innerWidth;

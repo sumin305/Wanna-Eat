@@ -28,9 +28,9 @@ const MapRestaurantPage = () => {
     setHandleButtonClick,
   } = useModalStore();
 
-  const { reservationDate, startTime, endTime, memberCount, setKeyword } =
+  const { reservationDate, startTime, endTime, memberCount } =
     useReservationStore();
-  const { categoryId, keyword } = useMapFilterStore();
+  const { categoryId, keyword, setKeyword } = useMapFilterStore();
 
   const {
     setIsInitialLoad,

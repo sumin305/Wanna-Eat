@@ -25,6 +25,7 @@ import {
 import { getFcmToken } from '../../../firebase/firebaseCloudMessaging.js';
 import { giveFcmToken } from '../../../api/common/login.js';
 import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore';
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const { getUserInfo, setEmail, setSocialType } = useCommonStore();
@@ -68,19 +69,20 @@ const LoginPage = () => {
           console.log('user Deposit Account 조회 실패해서 발급합니다.');
           await createAccount();
         }
-
         navigate('/customer');
       } else {
         const fcmToken = await getFcmToken();
         await giveFcmToken(fcmToken);
-        localStorage.setItem('restaurantId', userInfo.restaurantId);
+        // 로컬 스토리지에 restaurantId 저장
+        if (userInfo.restaurantId) {
+          window.localStorage.setItem('restaurantId', userInfo.restaurantId);
+        }
         navigate('/manager');
       }
     };
 
     const url = new URL(window.location.href);
     const searchParams = url.searchParams;
-
     // 로그인 된 상태라면
     if (searchParams.has('redirectedFromSocialLogin')) {
       // Access token 발급 후, role update

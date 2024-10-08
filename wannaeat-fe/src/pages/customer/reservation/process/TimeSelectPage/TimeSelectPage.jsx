@@ -14,7 +14,13 @@ import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
+import { authClientInstance } from 'utils/http-client.js';
+
+import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
+
 const TimeSelectPage = () => {
+  const { restaurantId } = useRestaurantStore();
+
   const { open, setModalType, setConfirmText, setTitle, setChildren } =
     useModalStore();
   const {
@@ -72,7 +78,34 @@ const TimeSelectPage = () => {
       alert('인원수를 입력하세요.');
       return;
     }
-    navigate('/customer/reservation/seat-select');
+
+    checkSeatData(restaurantId, reservationDate, startTime, endTime);
+  };
+
+  const checkSeatData = async (restaurantId, date, startTime, endTime) => {
+    console.log('시간 선택 페이지 restaurantId: ', restaurantId);
+    console.log('date:', date);
+    console.log('startTime:', startTime);
+    console.log('endTime:', endTime);
+    try {
+      const response = await authClientInstance.get(
+        `/api/restaurants/${restaurantId}/reservations/available-tables?date=${date}&startTime=${startTime}&endTime=${endTime}`
+      );
+      console.log('예약 가능 좌석 데이터 응답: ', response);
+
+      if (response.status === 200) {
+        console.log('tableData: ', response.data.data);
+        console.log('TYPEOFTABLEDATA: ', Array.isArray(response.data.data));
+        navigate('/customer/reservation/seat-select', {
+          state: { tableData: response.data.data },
+        });
+      }
+    } catch (error) {
+      if (error.response.status === 404) {
+        window.alert('예약 가능한 좌석이 없습니다!');
+      }
+      console.error('예약 가능 좌석 데이터 요청 실패', error);
+    }
   };
 
   return (

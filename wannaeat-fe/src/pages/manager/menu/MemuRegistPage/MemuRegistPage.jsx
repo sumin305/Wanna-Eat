@@ -10,17 +10,24 @@ import {
   PriceContainer,
   CloseButtonContainer,
   CloseButton,
+  DecorateButton, // 새로 추가된 꾸미기 버튼
+  ButtonContainer, // 버튼 컨테이너 임포트
 } from './MemuRegistPage.js'; // 스타일 임포트
 
 import PlusImg from '../../../../assets/icons/menu/Plus.svg';
-import { getCategoryList, registerMenu } from '../../../../api/manager/menu/menu.js'; // API 임포트
+import {
+  getCategoryList,
+  registerMenu,
+  editImage,
+} from '../../../../api/manager/menu/menu.js'; // API 임포트
 
 const MenuRegistPage = ({ onClose }) => {
   const [menuName, setMenuName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(''); // 선택된 카테고리
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(null); // 업로드된 원본 이미지
+  const [processedImage, setProcessedImage] = useState(null); // 꾸민 후의 이미지 (파일로 관리)
   const [previewUrl, setPreviewUrl] = useState(null); // 이미지 미리보기용 URL
   const [categories, setCategories] = useState([]); // 카테고리 목록 상태
   const [isSubmitting, setIsSubmitting] = useState(false); // 제출 중 여부 확인 상태 추가
@@ -43,8 +50,31 @@ const MenuRegistPage = ({ onClose }) => {
   // 이미지 업로드 핸들러
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    setImage(file);
+    setImage(file); // 원본 이미지 저장
+    setProcessedImage(null); // 꾸민 이미지는 초기화
     setPreviewUrl(URL.createObjectURL(file)); // 이미지 미리보기 URL 설정
+  };
+
+  // 이미지 꾸미기 (editImage API 호출)
+  const handleImageDecorate = async () => {
+    if (!image) {
+      alert('이미지를 먼저 업로드하세요.');
+      return;
+    }
+
+    try {
+      // API에서 Blob 형태의 이미지 데이터를 받아옴
+      const decoratedImageBlob = await editImage(image);
+
+      // Blob 형태의 데이터를 URL로 변환
+      const decoratedImageUrl = URL.createObjectURL(decoratedImageBlob);
+
+      // 수정된 이미지로 미리보기 업데이트 및 파일 저장
+      setPreviewUrl(decoratedImageUrl);
+      setProcessedImage(decoratedImageBlob); // 꾸민 이미지를 파일로 저장
+    } catch (error) {
+      console.error('이미지 꾸미기 중 오류가 발생했습니다.', error);
+    }
   };
 
   // 폼 제출 핸들러
@@ -63,7 +93,11 @@ const MenuRegistPage = ({ onClose }) => {
 
     try {
       setIsSubmitting(true); // 제출 중 상태로 변경
-      await registerMenu(menuData, image); // restaurantId 없이 API 호출
+
+      // 제출 시 최종 이미지로 처리 (꾸민 이미지가 있으면 그것을 사용)
+      const finalImage = processedImage || image;
+
+      await registerMenu(menuData, finalImage); // restaurantId 없이 API 호출
       onClose(); // 모달 닫기
     } catch (error) {
       console.error('메뉴 등록 중 오류가 발생했습니다.', error);
@@ -95,7 +129,10 @@ const MenuRegistPage = ({ onClose }) => {
           onChange={(e) => setSelectedCategory(e.target.value)}
         >
           {categories.map((category) => (
-            <option key={category.menuCategoryId} value={category.menuCategoryId}>
+            <option
+              key={category.menuCategoryId}
+              value={category.menuCategoryId}
+            >
               {category.menuCategoryName}
             </option>
           ))}
@@ -111,7 +148,7 @@ const MenuRegistPage = ({ onClose }) => {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             placeholder="가격을 입력하세요"
-            style={{ width: '150px' }}  // 인풋 필드의 너비를 줄임
+            style={{ width: '150px' }} // 인풋 필드의 너비를 줄임
           />
           <span style={{ marginLeft: '10px' }}>원</span>
         </div>
@@ -136,31 +173,41 @@ const MenuRegistPage = ({ onClose }) => {
           <img
             src={previewUrl}
             alt="미리보기"
-            width="100"
+            width="200"
             style={{ display: 'block', margin: '10px 0', borderRadius: '8px' }} // 버튼과 라벨 사이에 배치
           />
         )}
 
-        <UploadButton as="label">
-          <img
-            src={PlusImg}
-            alt="사진 추가"
-            style={{ width: '50px', height: '50px' }}
-          />
-          <input
-            type="file"
-            onChange={handleImageUpload}
-            style={{ display: 'none' }}
-          />
-        </UploadButton>
+        {/* 업로드 버튼과 꾸미기 버튼을 나란히 배치 */}
+        <ButtonContainer>
+          <UploadButton as="label">
+            <img
+              src={PlusImg}
+              alt="사진 추가"
+              style={{ width: '50px', height: '50px' }}
+            />
+            <input
+              type="file"
+              onChange={handleImageUpload}
+              style={{ display: 'none' }}
+            />
+          </UploadButton>
+
+          {/* 꾸미기 버튼 */}
+          {image && (
+            <DecorateButton onClick={handleImageDecorate}>
+              꾸미기
+            </DecorateButton>
+          )}
+        </ButtonContainer>
       </div>
 
       {/* 확인 및 닫기 버튼 */}
       <CloseButtonContainer>
+        <CloseButton onClick={onClose}>닫기</CloseButton> {/* 닫기 버튼 추가 */}
         <SubmitButton onClick={handleSubmit} disabled={isSubmitting}>
           {isSubmitting ? '등록 중...' : '확인'}
         </SubmitButton>
-        <CloseButton onClick={onClose}>닫기</CloseButton> {/* 닫기 버튼 추가 */}
       </CloseButtonContainer>
     </FormContainer>
   );

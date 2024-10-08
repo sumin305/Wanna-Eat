@@ -4,6 +4,7 @@ import { authClientInstance } from 'utils/http-client.js';
 import { v4 as uuid } from 'uuid';
 import { create } from 'zustand';
 import { paletteItems } from '../ItemPalette/ItemPalette';
+import { useNavigate } from 'react-router-dom';
 import {
   GridWrapperStyled,
   ZoomableGridWrapperStyled,
@@ -17,26 +18,37 @@ import {
 } from './GridCanvas';
 import useModalStore from 'stores/common/useModalStore.js';
 
+const restaurantId = window.localStorage.getItem('restaurantId');
+
 const useStore = create((set, get) => ({
   itemsByFloor: {},
   gridStatusByFloor: {},
 
   addItem: (floor, item) => {
-    const itemId = uuid();
+    // const itemId = uuid();
+    // item.itemId = itemId;
     console.log('추가된 아이템:', item);
+
+    const isTableItem =
+      item.itemType === 'SQUARE' || item.itemType === 'ROUNDED';
+
     set((state) => ({
       itemsByFloor: {
         ...state.itemsByFloor,
         [floor]: [
           ...(state.itemsByFloor[floor] || []),
-          { ...item, itemType: item.itemType, tableNumber: '', capacity: 0 },
+          {
+            ...item,
+            itemType: item.itemType,
+            ...(isTableItem && { tableId: '', assignedSeats: 0 }),
+          },
         ],
       },
       gridStatusByFloor: {
         ...state.gridStatusByFloor,
         [floor]: {
           ...state.gridStatusByFloor[floor],
-          [`${item.x},${item.y}`]: itemId,
+          [`${item.x},${item.y}`]: item.itemId,
         },
       },
     }));
@@ -97,19 +109,21 @@ const useStore = create((set, get) => ({
   },
 }));
 
-const GridCanvas = ({ currentFloor }) => {
-  const gridColumns = 10; // 가로
-  const gridRows = 10; // 세로
+const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   const [gridSize, setGridSize] = useState(50);
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
+
+  const navigate = useNavigate();
+
   const {
     itemsByFloor,
     addItem,
     setItemsByFloor,
     updateItem,
     updateItemPosition,
+    clearItemsByFloor,
   } = useStore();
 
   const {
@@ -145,16 +159,105 @@ const GridCanvas = ({ currentFloor }) => {
   }, []);
 
   useEffect(() => {
-    const restaurantId = '일단임시식당ID';
     authClientInstance
-      .get(`/api/restaurants/${restaurantId}/structure`)
+      .get(`/api/public/restaurants/${restaurantId}/structure`)
       .then((response) => {
-        setItemsByFloor(currentFloor, response.data);
+        console.log('response: ', response);
+
+        const { tableDetailResponseDtos = [], elementDetailResponseDtos = [] } =
+          response.data.data;
+
+        console.log('tableDetailResponseDtos:', tableDetailResponseDtos);
+        console.log('elementDetailResponseDtos:', elementDetailResponseDtos);
+
+        // const itemsByFloor = {};
+
+        // tableDetailResponseDtos.forEach((table) => {
+        //   const floor = table.floor;
+        //   if (!itemsByFloor[floor]) {
+        //     itemsByFloor[floor] = [];
+        //   }
+        //   itemsByFloor[floor].push({
+        //     itemId: table.itemId,
+        //     itemType: table.itemType.toUpperCase(),
+        //     x: table.x,
+        //     y: table.y,
+        //     tableId: table.tableId,
+        //     assignedSeats: table.assignedSeats,
+        //   });
+        // });
+
+        // elementDetailResponseDtos.forEach((element) => {
+        //   const floor = element.floor;
+        //   if (!itemsByFloor[floor]) {
+        //     itemsByFloor[floor] = [];
+        //   }
+        //   itemsByFloor[floor].push({
+        //     itemId: element.itemId,
+        //     itemType: element.itemType.toUpperCase(),
+        //     x: element.x,
+        //     y: element.y,
+        //   });
+        // });
+
+        tableDetailResponseDtos.forEach((table) => {
+          addItem(currentFloor, {
+            itemId: table.itemId,
+            itemType: table.itemType.toUpperCase(),
+            x: table.x,
+            y: table.y,
+            tableId: table.tableId,
+            assignedSeats: table.assignedSeats,
+          });
+        });
+
+        elementDetailResponseDtos.forEach((element) => {
+          addItem(currentFloor, {
+            itemId: element.itemId,
+            itemType: element.itemType.toUpperCase(),
+            x: element.x,
+            y: element.y,
+          });
+        });
+
+        // setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
+        console.error('성공: ', response);
       })
       .catch((error) => {
         console.error('꾸미기 정보 요청 오류:', error);
+        return;
       });
   }, [setItemsByFloor, currentFloor]);
+
+  useEffect(() => {
+    if (!selectedItem) {
+      console.log('selectedItem 없음');
+      return;
+    }
+
+    setModalType('setting');
+    setTitle(`${selectedItem.itemType} 설정`);
+
+    setHandleButtonClick(handleSubmit);
+    setChildren(
+      <GridCanvasModalStyled>
+        <label>
+          테이블 번호:
+          <input id="tableId" type="text" placeholder="테이블 번호 입력" />
+        </label>
+        <label>
+          최대 수용 인원:
+          <input
+            id="assignedSeats"
+            type="number"
+            min="0"
+            placeholder="최대 수용 인원 입력"
+          />
+        </label>
+      </GridCanvasModalStyled>
+    );
+    open();
+  }, [selectedItem]);
 
   const handleWheel = (e) => {
     if (e.ctrlKey) {
@@ -193,19 +296,20 @@ const GridCanvas = ({ currentFloor }) => {
   };
 
   const handleSubmit = () => {
+    console.log('selectedItem: ' + selectedItem);
     if (selectedItem && selectedItem.itemId) {
-      const tableNumber = document.querySelector('#tableNumber').value;
-      const capacity = document.querySelector('#capacity').value;
+      const tableId = document.querySelector('#tableId').value;
+      const assignedSeats = document.querySelector('#assignedSeats').value;
 
       console.log(
-        `${tableNumber}번 테이블, 최대 수용 인원 ${capacity}명으로 제출되었습니다!`
+        `${tableId}번 테이블, 최대 수용 인원 ${assignedSeats}명으로 제출되었습니다!`
       );
 
       console.log(selectedItem);
 
       updateItem(currentFloor, selectedItem.itemId, {
-        tableNumber,
-        capacity: parseInt(capacity, 10),
+        tableId,
+        assignedSeats: parseInt(assignedSeats, 10),
       });
 
       close();
@@ -240,52 +344,26 @@ const GridCanvas = ({ currentFloor }) => {
         );
 
         if (selectedItem) {
+          console.log('selectedItem: ' + selectedItem.itemId);
+          const newItemId = uuid();
           addItem(currentFloor, {
-            itemId: item.itemId,
+            itemId: newItemId,
             itemType: item.itemType,
             x,
             y,
             icon: selectedItem.icon,
-            label: selectedItem.label,
-            rotation: 0,
           });
 
           if (
-            selectedItem.itemType === 'square' ||
-            selectedItem.itemType === 'rounded'
+            selectedItem.itemType === 'SQUARE' ||
+            selectedItem.itemType === 'ROUNDED'
           ) {
             setSelectedItem({
               ...selectedItem,
-              itemId: item.itemId,
+              itemId: newItemId,
               x,
               y,
             });
-            setModalType('setting');
-            setTitle(`${selectedItem.label} 설정`);
-
-            setHandleButtonClick(handleSubmit);
-            setChildren(
-              <GridCanvasModalStyled>
-                <label>
-                  테이블 번호:
-                  <input
-                    id="tableNumber"
-                    type="text"
-                    placeholder="테이블 번호 입력"
-                  />
-                </label>
-                <label>
-                  최대 수용 인원:
-                  <input
-                    id="capacity"
-                    type="number"
-                    min="0"
-                    placeholder="최대 수용 인원 입력"
-                  />
-                </label>
-              </GridCanvasModalStyled>
-            );
-            open();
           }
         }
       } else if (item.type === 'GRID_ITEM') {
@@ -299,9 +377,9 @@ const GridCanvas = ({ currentFloor }) => {
   const handleClick = (item) => {
     console.log('클릭된 아이템:', item);
     setSelectedItem(item);
-    if (item.itemType === 'square' || item.itemType === 'rounded') {
+    if (item.itemType === 'SQUARE' || item.itemType === 'ROUNDED') {
       setModalType('setting');
-      setTitle(`${item.label} 설정`);
+      setTitle(`${item.itemType} 설정`);
 
       setHandleButtonClick(handleSubmit);
       setChildren(
@@ -309,20 +387,20 @@ const GridCanvas = ({ currentFloor }) => {
           <label>
             테이블 번호:
             <input
-              id="tableNumber"
+              id="tableId"
               type="text"
               placeholder="테이블 번호 입력"
-              defaultValue={item.tableNumber}
+              defaultValue={item.tableId}
             />
           </label>
           <label>
             최대 수용 인원:
             <input
-              id="capacity"
+              id="assignedSeats"
               type="number"
               min="0"
               placeholder="최대 수용 인원 입력"
-              defaultValue={item.capacity}
+              defaultValue={item.assignedSeats}
             />
           </label>
         </GridCanvasModalStyled>
@@ -332,10 +410,60 @@ const GridCanvas = ({ currentFloor }) => {
   };
 
   const handleCanvasSave = () => {
+    const size = (() => {
+      switch (gridColumns) {
+        case 5:
+          return 'SMALL';
+        case 10:
+          return 'MEDIUM';
+        case 15:
+          return 'LARGE';
+      }
+    })();
+
+    const tableRegisterRequestDtos = [];
+    const elementRegisterRequestDtos = [];
+
+    Object.keys(itemsByFloor).forEach((floor) => {
+      itemsByFloor[floor].forEach((item) => {
+        if (item.itemType === 'SQUARE' || item.itemType === 'ROUNDED') {
+          tableRegisterRequestDtos.push({
+            itemId: item.itemId,
+            tableId: item.tableId,
+            assignedSeats: item.assignedSeats,
+            x: item.x,
+            y: item.y,
+            itemType: item.itemType,
+            floor: parseInt(floor, 10),
+          });
+        } else {
+          elementRegisterRequestDtos.push({
+            itemId: item.itemId,
+            itemType: item.itemType,
+            x: item.x,
+            y: item.y,
+            floor: parseInt(floor, 10),
+          });
+        }
+      });
+    });
+
+    console.log({
+      size,
+      floorCnt,
+      tableRegisterRequestDtos,
+      elementRegisterRequestDtos,
+    });
+
     authClientInstance
       .post(
-        '/api/restaurants/{restaurantId}structure',
-        { itemsByFloor },
+        `/api/restaurants/structure`,
+        {
+          size,
+          floorCnt,
+          tableRegisterRequestDtos,
+          elementRegisterRequestDtos,
+        },
         {
           headers: {
             'Content-Type': 'application/json',
@@ -344,9 +472,11 @@ const GridCanvas = ({ currentFloor }) => {
       )
       .then((response) => {
         console.log('꾸미기 저장 성공:', response);
+        navigate('/manager');
       })
       .catch((error) => {
         console.error('꾸미기 저장 실패:', error);
+        return;
       });
   };
 
@@ -395,10 +525,28 @@ const GridCanvas = ({ currentFloor }) => {
         </ZoomableGridWrapperStyled>
         <ButtonWrapperStyled>
           <SaveButtonStyled onClick={handleCanvasSave}>저장</SaveButtonStyled>
-          <CancelButtonStyled>취소</CancelButtonStyled>
+          <CancelButtonStyled onClick={clearItemsByFloor}>
+            취소
+          </CancelButtonStyled>
         </ButtonWrapperStyled>
       </GridWrapperStyled>
     </div>
+  );
+};
+
+const renderIcon = (itemType) => {
+  const paletteItem = paletteItems.find((item) => item.itemType === itemType);
+
+  if (!paletteItem || !paletteItem.icon) {
+    return;
+  }
+
+  const IconComponent = paletteItem.icon;
+  return (
+    <IconComponent
+      className="grid-item-icon"
+      style={{ width: '100%', height: '100%' }}
+    />
   );
 };
 
@@ -418,16 +566,9 @@ const GridItem = ({ item, gridSize, onClick }) => {
       isDragging={isDragging}
       x={item.x}
       y={item.y}
-      rotation={item.rotation}
       onClick={() => onClick(item)}
     >
-      <item.icon
-        className="grid-item-icon"
-        style={{
-          width: '100%',
-          height: '100%',
-        }}
-      />
+      {renderIcon(item.itemType)}
     </GridItemStyled>
   );
 };

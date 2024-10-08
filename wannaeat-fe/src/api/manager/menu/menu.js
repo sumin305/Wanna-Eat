@@ -2,42 +2,42 @@ import { clientInstance, authClientInstance } from 'utils/http-client';
 
 // 모든 메뉴 조회
 export const getMenu = async () => {
+  const restaurantId = window.localStorage.getItem('restaurantId');
+
   return await clientInstance
-    .get('api/public/restaurants/1/menus')
-    .then((result) => result.data)  // Promise 결과를 반환
-    .catch((error) => error);  // 오류가 발생하면 error를 반환
+    .get(`api/public/restaurants/${restaurantId}/menus`)
+    .then((result) => result.data) // Promise 결과를 반환
+    .catch((error) => error); // 오류가 발생하면 error를 반환
 };
 
 // 카테고리 등록 API
 export const registerCategory = async (menuCategoryName) => {
-
-  const restaurantId = 1; // restaurantId를 하드코딩
+  const restaurantId = window.localStorage.getItem('restaurantId');
 
   return await authClientInstance
     .post(`/api/menu-categories`, {
       restaurantId,
       menuCategoryName,
     })
-    .then((result) => result.data)  // Promise 결과를 반환
+    .then((result) => result.data) // Promise 결과를 반환
     .catch((error) => {
       console.error('Error registering category:', error);
-      throw error;  // 오류가 발생하면 에러를 던짐
+      throw error; // 오류가 발생하면 에러를 던짐
     });
 };
 
 // 카테고리 조회 API
 export const getCategoryList = async () => {
-
-  const restaurantId = 1; // restaurantId를 하드코딩
+  const restaurantId = window.localStorage.getItem('restaurantId');
 
   return await clientInstance
     .get(`/api/public/restaurants/${restaurantId}/menu-categories`)
     .then((result) => {
-      return result.data.data.menuCategories;  // 필요한 데이터를 반환
+      return result.data.data.menuCategories; // 필요한 데이터를 반환
     })
     .catch((error) => {
       console.error('Error fetching categories:', error);
-      throw error;  // 오류가 발생하면 에러를 던짐
+      throw error; // 오류가 발생하면 에러를 던짐
     });
 };
 
@@ -50,7 +50,7 @@ export const editMenuCategory = async (menuCategoryId, menuCategoryName) => {
     .then((result) => result.data)
     .catch((error) => {
       console.error('Error editing category:', error);
-      throw error;  // 오류가 발생하면 에러를 던짐
+      throw error; // 오류가 발생하면 에러를 던짐
     });
 };
 
@@ -61,24 +61,29 @@ export const removeMenuCategory = async (menuCategoryId) => {
     .then((result) => result.data)
     .catch((error) => {
       console.error('Error deleting category:', error);
-      throw error;  // 오류가 발생하면 에러를 던짐
+      throw error; // 오류가 발생하면 에러를 던짐
     });
 };
 
 // 메뉴 등록 API
 export const registerMenu = async (menuData, menuImage) => {
-  const restaurantId = 1; // restaurantId를 하드코딩
+  const restaurantId = window.localStorage.getItem('restaurantId');
 
   const formData = new FormData();
   const menuDataWithRestaurantId = {
     ...menuData,
-    restaurantId,  // 하드코딩된 restaurantId 추가
+    restaurantId, // 하드코딩된 restaurantId 추가
   };
 
-  formData.append("menuRegisterRequestDto", new Blob([JSON.stringify(menuDataWithRestaurantId)], { type: "application/json" }));
+  formData.append(
+    'menuRegisterRequestDto',
+    new Blob([JSON.stringify(menuDataWithRestaurantId)], {
+      type: 'application/json',
+    })
+  );
 
   if (menuImage) {
-    formData.append("menuImage", menuImage);  // 이미지 파일 추가
+    formData.append('menuImage', menuImage); // 이미지 파일 추가
   }
 
   return await authClientInstance
@@ -90,13 +95,13 @@ export const registerMenu = async (menuData, menuImage) => {
     .then((result) => result.data)
     .catch((error) => {
       console.error('Error registering menu:', error);
-      throw error;  // 오류가 발생하면 에러를 던짐
+      throw error; // 오류가 발생하면 에러를 던짐
     });
 };
 
 // 메뉴 수정
 export const updateMenu = async (menuId, menuData, menuImage) => {
-  const restaurantId = 1; // restaurantId를 하드코딩
+  const restaurantId = window.localStorage.getItem('restaurantId');
 
   // restaurantId를 추가한 메뉴 데이터 생성
   const menuDataWithRestaurantId = {
@@ -109,27 +114,33 @@ export const updateMenu = async (menuId, menuData, menuImage) => {
 
   // JSON 데이터를 Blob으로 추가
   formData.append(
-    "menuEditRequestDto",
-    new Blob([JSON.stringify(menuDataWithRestaurantId)], { type: "application/json" })
+    'menuEditRequestDto',
+    new Blob([JSON.stringify(menuDataWithRestaurantId)], {
+      type: 'application/json',
+    })
   );
 
   // 이미지가 있을 경우에만 FormData에 추가
   if (menuImage) {
-    formData.append("menuImage", menuImage); // 이미지 파일 추가
+    formData.append('menuImage', menuImage); // 이미지 파일 추가
   }
 
   try {
     // API 요청
-    const result = await authClientInstance.patch(`/api/menus/${menuId}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data', // multipart/form-data로 전송
-      },
-    });
+    const result = await authClientInstance.patch(
+      `/api/menus/${menuId}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data', // multipart/form-data로 전송
+        },
+      }
+    );
     return result.data; // API 호출 성공 시 결과 반환
   } catch (error) {
     // 오류 발생 시 로그 출력 및 에러 던짐
     console.error('Error updating menu:', error);
-    throw error;  // 오류가 발생하면 에러를 던짐
+    throw error; // 오류가 발생하면 에러를 던짐
   }
 };
 
@@ -141,5 +152,38 @@ export const deleteMenu = async (menuId) => {
   } catch (error) {
     console.error('Error deleting menu:', error);
     throw error; // 오류 발생 시 에러 던짐
+  }
+};
+
+// 이미지 처리 API 호출
+export const editImage = async (imageFile) => {
+  const ngrokBaseUrl = process.env.REACT_APP_NGROK_BASE_URL;
+
+  if (!ngrokBaseUrl) {
+    console.error('ngrok URL이 설정되지 않았습니다.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', imageFile);
+
+  try {
+    // axios에서 Blob 형식으로 응답을 받아야 함
+    const result = await clientInstance.post(
+      `${ngrokBaseUrl}/edit-image`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        responseType: 'blob', // 여기가 중요함, Blob으로 받아옴
+        timeout: 10000000, // 타임아웃 설정
+      }
+    );
+
+    return result.data; // 성공 시 Blob 데이터 반환
+  } catch (error) {
+    console.error('Error editing image:', error);
+    throw error;
   }
 };

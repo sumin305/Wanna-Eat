@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import useChatStore from 'stores/customer/useChatStore';
@@ -16,7 +16,7 @@ import {
   ChatInputWrapper,
   ChatInput,
   ChatTextContainer,
-} from 'component/customer/chat/Chat';
+} from 'pages/customer/chat/Chat.js';
 import useHeaderStore from 'stores/common/useHeaderStore';
 import WETextfield from 'component/common/textfield/WETextfield/WETextfield.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
@@ -52,7 +52,7 @@ const ChatPage = () => {
     setIsShowBackIcon,
     setIconAction,
   } = useHeaderStore();
-
+  const messageEndRef = useRef(null);
   // 웹소켓 초기 연결
   useEffect(() => {
     setIsCarrot(true);
@@ -70,68 +70,17 @@ const ChatPage = () => {
     setIconAction([gotoSelectMenu, gotoChat]);
 
     const validateAndConnect = async () => {
-      const response = await validateReservationUrl(reservationUrl);
-
-      // reservationUrl 유효성 검사 실행 후 유효한 경우
-      if (response.status === 200) {
-        // stompClient가 없는 경우에만 소켓 연결 시도
-        if (!stompClient) {
-          initializeConnection();
-        } else {
-          console.log('이미 소켓이 연결되어 있습니다.');
-        }
+      if (!stompClient) {
+        initializeConnection();
       } else {
-        // 유효하지 않은 reservationUrl일 경우
-        console.log(response.response.data.message);
-        nav('/customer/order/notexist', {
-          state: { message: response.response.data.message },
-        });
+        console.log('이미 소켓이 연결되어 있습니다.');
       }
     };
     validateAndConnect();
     setMyReservationParticipantId(
-      localStorage.getItem('restaurantParticipantId')
+      localStorage.getItem('reservationParticipantId')
     );
   }, []);
-
-  useEffect(() => {
-    // 웹소켓 연결 시 초기 채팅메세지 불러옴
-    if (isConnected) {
-      fetchChatData();
-    }
-
-    // 페이지 언마운트 시 Messages 초기화
-    return setEmptyChatMessages([]);
-  }, [isConnected]);
-
-  // 초기 채팅 메세지 불러오는 함수
-  const fetchChatData = async () => {
-    if (isConnected) {
-      console.log('연결상태:', isConnected);
-      const chatResult = await getChats(reservationUrl, 0, 10);
-      console.log(chatResult);
-      console.log(chatResult.data);
-      console.log('reservationUrl', reservationUrl);
-      if (chatResult) {
-        // 초기에 받은 데이터가 최신순이어서 순서를 바꾸고 chatMessages로 넣음
-        console.log(
-          'chatdata.data.chatMessageListResponseDto.chatMessageDetailResponseDtos.content',
-          chatResult.data.chatMessageListResponseDto
-            .chatMessageDetailResponseDtos.content
-        );
-        await setChatMessages(
-          chatResult.data.chatMessageListResponseDto.chatMessageDetailResponseDtos.content
-            .slice()
-            .reverse()
-        );
-        console.log('zustand chatMessages :', chatMessages);
-      } else {
-        console.log('채팅 데이터 없음');
-      }
-    } else {
-      console.log('채팅 메세지 불러오기 실패');
-    }
-  };
 
   const initializeConnection = () => {
     const socket = new SockJS(
@@ -165,6 +114,33 @@ const ChatPage = () => {
       }
     );
   };
+  // 초기 채팅 메세지 불러오는 함수
+  const fetchChatData = async () => {
+    if (isConnected) {
+      const chatResult = await getChats(reservationUrl, 0, 10);
+      const chats = chatResult.data.data.chatMessageDetailResponseDtos;
+      if (chatResult) {
+        // 초기에 받은 데이터가 최신순이어서 순서를 바꾸고 chatMessages로 넣음
+        console.log(
+          'chatdata.data.chatMessageListResponseDto.chatMessageDetailResponseDtos.content',
+          chats.content
+        );
+        setChatMessages(chats.content.reverse());
+        console.log('zustand chatMessages :', chatMessages);
+      } else {
+        console.log('채팅 데이터 없음');
+      }
+    } else {
+      console.log('채팅 메세지 불러오기 실패');
+    }
+  };
+
+  useEffect(() => {
+    // 웹소켓 연결 시 초기 채팅메세지 불러옴
+    if (isConnected) {
+      fetchChatData();
+    }
+  }, []);
 
   const handleChatMessageInputChange = (e) => {
     setChatMessageInput(e.target.value);
@@ -173,11 +149,15 @@ const ChatPage = () => {
   const handleChatMessageSendButtonClick = () => {
     if (!chatMessageInput.trim()) return; // 공백 메시지는 전송하지 않음
 
+    console.log('buttonClick - chatMessages', chatMessages);
     const chatMessageRegisterRequestDto = {
       reservationUrl: reservationUrl,
       senderReservationParticipantId: myReservationParticipantId,
       content: chatMessageInput,
     };
+
+    console.log('stompClient', stompClient);
+    console.log('isConnected', isConnected);
 
     if (stompClient && isConnected) {
       try {
@@ -187,6 +167,7 @@ const ChatPage = () => {
           JSON.stringify(chatMessageRegisterRequestDto)
         );
         console.log('Sent message:', chatMessageInput);
+        console.log('chatMessages', chatMessages);
 
         setChatMessageInput(''); // 메시지 전송 후 입력창 비우기
       } catch (error) {
@@ -223,32 +204,11 @@ const ChatPage = () => {
   const fetchPrevChatData = async () => {
     const chatContainer = document.getElementById('chat-container');
     const prevPage = chatPage + 1;
-    const chatdata = await getChatlist(reservationUrl, prevPage, chatSize);
+    const chatdata = await getChats(reservationUrl, prevPage, chatSize);
     const prevScrollHeight = chatContainer.scrollHeight; // 이전 스크롤 높이 저장
     const prevScrollTop = chatContainer.scrollTop; // 현재 스크롤 위치 저장
     console.log(chatdata);
     console.log(chatdata.data);
-    if (chatdata && chatdata.data && chatdata.data.chatMessageListResponseDto) {
-      // 새로 불러온 데이터를 기존 메시지 앞에 추가
-      const prevMessages =
-        chatdata.data.chatMessageListResponseDto.chatMessageDetailResponseDtos.content
-          .slice()
-          .reverse();
-      console.log('조회된 메세지', prevMessages);
-      if (prevMessages.length === 0) {
-        chatContainer.removeEventListener('scroll', handleScroll);
-        return;
-      }
-      setPrevChatPlusMessages(prevMessages);
-      setChatPage(prevPage); // 페이지 번호 증가
-      console.log('새로운 페이지', prevPage);
-      // 새로운 메시지를 추가한 후 스크롤 위치를 유지
-      setTimeout(() => {
-        const newScrollHeight = chatContainer.scrollHeight;
-        chatContainer.scrollTop =
-          newScrollHeight - (prevScrollHeight - prevScrollTop);
-      }, 0);
-    }
   };
 
   useEffect(() => {
@@ -280,13 +240,17 @@ const ChatPage = () => {
     );
   };
 
-  console.log('웹소켓연결확인:', stompClient);
-  console.log('웹소켓연결확인:', isConnected);
+  // 메세지가 오면 가장 하단으로
+  useEffect(() => {
+    messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    console.log('chatMessages :', chatMessages);
+  }, [chatMessages]);
 
   return (
     <ChatContainer>
       <ChatTextContainer id="chat-container">
-        {chatMessages &&
+        {Array.isArray(chatMessages) &&
+          chatMessages.length > 0 &&
           chatMessages.map((chat, index) => {
             // 이전 메세지의 날짜와 현재 메세지의 날짜 비교
             const currentMessageDate = formatDate(chat.registerTime);
@@ -308,37 +272,37 @@ const ChatPage = () => {
 
                 <ChatWrapper
                   isMyMessage={
-                    chat.senderReservationParticipantId ===
-                    myReservationParticipantId
+                    Number(chat.senderReservationParticipantId) ===
+                    Number(myReservationParticipantId)
                   }
                   key={chat.id}
                 >
                   <ChatNickname
                     isMyMessage={
-                      chat.senderReservationParticipantId ===
-                      myReservationParticipantId
+                      Number(chat.senderReservationParticipantId) ===
+                      Number(myReservationParticipantId)
                     }
                   >
                     {chat.senderReservationParticipantNickname}
                   </ChatNickname>
                   <ChatMessageBox
                     isMyMessage={
-                      chat.senderReservationParticipantId ===
-                      myReservationParticipantId
+                      Number(chat.senderReservationParticipantId) ===
+                      Number(myReservationParticipantId)
                     }
                   >
                     <ChatContent
                       isMyMessage={
-                        chat.senderReservationParticipantId ===
-                        myReservationParticipantId
+                        Number(chat.senderReservationParticipantId) ===
+                        Number(myReservationParticipantId)
                       }
                     >
                       {chat.content}
                     </ChatContent>
                     <ChatTime
                       isMyMessage={
-                        chat.senderReservationParticipantId ===
-                        myReservationParticipantId
+                        Number(chat.senderReservationParticipantId) ===
+                        Number(myReservationParticipantId)
                       }
                     >
                       {showChatTime(chat.registerTime)}
@@ -348,6 +312,7 @@ const ChatPage = () => {
               </>
             );
           })}
+        <div ref={messageEndRef}></div>
       </ChatTextContainer>
       <ChatInputWrapper>
         <ChatInput

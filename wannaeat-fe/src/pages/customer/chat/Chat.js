@@ -88,6 +88,9 @@ export const ChatInput = styled.input`
   width: 95%;
   height: 5vh;
   border: none;
+  ::placeholder {
+    padding-left: 0.5rem;
+  }
 `;
 
 export const ChatInputButton = styled.button`

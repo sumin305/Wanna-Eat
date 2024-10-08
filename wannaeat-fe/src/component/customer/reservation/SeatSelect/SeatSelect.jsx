@@ -121,8 +121,18 @@ const SeatSelect = () => {
 
   const handleIconClick = (item) => {
     const canReserve = canReserveTable.some((id) => id === item.tableId);
+    const isSelected = tableList.includes(item.tableId);
 
     if (!canReserve) {
+      return;
+    }
+
+    if (isSelected) {
+      const newArray = tableList.filter((table) => table !== item.tableId);
+      setTableList(newArray);
+
+      const result = maxCapacity - item.assignedSeats;
+      setMaxCapacity(result);
       return;
     }
 

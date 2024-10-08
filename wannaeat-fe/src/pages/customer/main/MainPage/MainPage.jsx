@@ -210,13 +210,13 @@ const MainPage = () => {
   };
 
   const handleRestaurantClick = (id) => {
-    navigate('/customer/reservation/detail/' + id);
+    navigate('/customer/reservation/restaurant-detail/' + id);
   };
 
   const handleReservationDetailButtonClick = () => {
-    navigate('/customer/reservationlist');
     navigate('/customer/reservation/detail/' + reservationId);
   };
+
   return (
     <MainPageContainer>
       <SearchWrapper>
@@ -259,7 +259,7 @@ const MainPage = () => {
           {recentlyReservedRestaurants.map((restaurant) => (
             <RestaurantInfoBox
               key={restaurant.reservationId}
-              onClick={() => handleRestaurantClick(restaurant.reservationId)}
+              onClick={() => handleRestaurantClick(restaurant.restaurantId)}
             >
               <RestaurantInfoImage
                 src={

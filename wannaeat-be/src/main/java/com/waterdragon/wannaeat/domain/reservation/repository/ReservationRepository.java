@@ -23,6 +23,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
 	Page<Reservation> findByUser(User user, Pageable pageable);
 
+	Page<Reservation> findByUserOrderByReservationDateDesc(User user, Pageable pageable);
 	int countByUserAndRestaurant(User user, Restaurant restaurant);
 
 	Page<Reservation> findByRestaurantAndReservationDateAndCancelledIsFalse(Restaurant restaurant,

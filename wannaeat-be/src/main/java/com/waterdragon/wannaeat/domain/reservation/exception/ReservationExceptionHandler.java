@@ -11,6 +11,7 @@ import com.waterdragon.wannaeat.domain.reservation.exception.error.FailureGenera
 import com.waterdragon.wannaeat.domain.reservation.exception.error.InvalidQrTokenException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.QrTokenNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationOrderExistException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationParticipantNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.UnpaidOrderExistsException;
 import com.waterdragon.wannaeat.global.response.ErrorResponseDto;
@@ -48,6 +49,16 @@ public class ReservationExceptionHandler {
 		log.error("Conflict error : {}", ex.getMessage(), ex);
 		ex.printStackTrace();
 		ErrorResponseDto error = new ErrorResponseDto("Duplicate Reservation Table", ex.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+	}
+
+	// 이미 주문이 접수된 예약
+	@ExceptionHandler(ReservationOrderExistException.class)
+	public final ResponseEntity<ErrorResponseDto> handleReservationOrderExistException(
+		ReservationOrderExistException ex) {
+		log.error("Conflict error : {}", ex.getMessage(), ex);
+		ex.printStackTrace();
+		ErrorResponseDto error = new ErrorResponseDto("Reservation Order Exist", ex.getMessage());
 		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
 	}
 

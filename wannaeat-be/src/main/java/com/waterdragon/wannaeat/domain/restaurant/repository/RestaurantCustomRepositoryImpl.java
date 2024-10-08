@@ -32,7 +32,8 @@ public class RestaurantCustomRepositoryImpl implements RestaurantCustomRepositor
 		// 검색어(식당 이름 또는 메뉴 이름) 필터링
 		if (filter.getKeyword() != null && !filter.getKeyword().isEmpty()) {
 			builder.and(restaurant.name.contains(filter.getKeyword())
-				.or(restaurant.menus.any().name.contains(filter.getKeyword())));
+				.or(restaurant.menus.any().name.contains(filter.getKeyword()))
+				.or(restaurant.category.categoryName.contains(filter.getKeyword())));
 		}
 
 		// memberCount 필터링 추가 (restaurant.minMemberCount 이상, restaurant.maxMemberCount 이하

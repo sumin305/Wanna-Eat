@@ -47,6 +47,7 @@ const RestaurantDetailPage = () => {
   } = useHeaderStore();
 
   const {
+    restaurant,
     breakEndTime,
     breakStartTime,
     menus,
@@ -63,6 +64,7 @@ const RestaurantDetailPage = () => {
     setRestaurantLike,
   } = useRestaurantStore();
 
+  console.log('restaurant: ', restaurant);
   useEffect(() => {
     const fetchRestaurant = async () => {
       await setRestaurant(params.id);

@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
 import theme from 'style/common/theme.js';
 
-import { ReactComponent as SquareTableIcon } from 'assets/icons/manager/restaurant/table-square.svg';
-import { ReactComponent as RoundTableIcon } from 'assets/icons/manager/restaurant/table-rounded.svg';
+import { ReactComponent as SquareTableDisabledIcon } from 'assets/icons/manager/restaurant/table-square-disabled.svg';
+import { ReactComponent as RoundTableDisabledIcon } from 'assets/icons/manager/restaurant/table-rounded-disabled.svg';
+
 import { ReactComponent as RestroomIcon } from 'assets/icons/manager/restaurant/restroom.svg';
 import { ReactComponent as CounterIcon } from 'assets/icons/manager/restaurant/cashier.svg';
 import { ReactComponent as EntranceIcon } from 'assets/icons/manager/restaurant/door.svg';
@@ -12,12 +13,12 @@ const Items = [
   {
     itemType: 'square',
     label: '사각 테이블',
-    icon: SquareTableIcon,
+    icon: SquareTableDisabledIcon,
   },
   {
     itemType: 'rounded',
     label: '원형 테이블',
-    icon: RoundTableIcon,
+    icon: RoundTableDisabledIcon,
   },
   {
     itemType: 'restroom',

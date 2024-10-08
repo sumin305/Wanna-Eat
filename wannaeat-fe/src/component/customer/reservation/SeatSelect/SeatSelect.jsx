@@ -52,21 +52,17 @@ const SeatSelect = () => {
   const reservedTable = tableData;
 
   useEffect(() => {
-    console.log('restaurantId: ' + restaurantId);
     if (restaurantId > 0) {
       fetchFloorData(restaurantId);
     }
   }, [restaurantId]);
 
   const fetchFloorData = async (restaurantId) => {
-    console.log('restaurantId: ' + restaurantId + ' 으로 get요청 보냅니다!');
     try {
       const response = await authClientInstance.get(
         `/api/public/restaurants/${restaurantId}/structure`
       );
       const { data } = response.data;
-
-      console.log('data: ', data);
 
       setFloorCnt(data.floorCnt);
       setOriginalData(data);
@@ -114,7 +110,6 @@ const SeatSelect = () => {
   };
 
   const handleFloorChange = (selectedFloor) => {
-    console.log('currentFloor: ', currentFloor);
     setCurrentFloor(selectedFloor);
     if (originalData) {
       mergeFloorData(originalData, selectedFloor);
@@ -126,14 +121,12 @@ const SeatSelect = () => {
       (reserved) => reserved.tableId === item.tableId
     );
 
-    console.log('item.tableId: ', item.tableId);
     setHandleButtonClick(() => handleAddTable(item.tableId));
 
     if (
       !isReserved &&
       (item.itemType === 'square' || item.itemType === 'rounded')
     ) {
-      console.log(`${item.tableId}번 테이블을 선택하였습니다.`);
       setAlertText(
         <ModalContainerStyled>
           <TableInfoWrapperStyled>
@@ -151,14 +144,11 @@ const SeatSelect = () => {
     }
   };
 
-  useEffect(() => {
-    console.log('현재 담긴 테이블: ', tableList);
-  }, [tableList]);
+  // useEffect(() => {
+  //   console.log('현재 담긴 테이블: ', tableList);
+  // }, [tableList]);
 
   const handleAddTable = (tableId) => {
-    console.log('123213213213123');
-    console.log('tableId: ', tableId);
-
     if (Array.isArray(tableList) && !tableList.includes(tableId)) {
       const newItems = [...tableList, tableId];
       setTableList(newItems);

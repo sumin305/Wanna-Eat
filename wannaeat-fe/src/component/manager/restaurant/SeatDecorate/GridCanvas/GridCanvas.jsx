@@ -170,36 +170,6 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
         console.log('tableDetailResponseDtos:', tableDetailResponseDtos);
         console.log('elementDetailResponseDtos:', elementDetailResponseDtos);
 
-        // const itemsByFloor = {};
-
-        // tableDetailResponseDtos.forEach((table) => {
-        //   const floor = table.floor;
-        //   if (!itemsByFloor[floor]) {
-        //     itemsByFloor[floor] = [];
-        //   }
-        //   itemsByFloor[floor].push({
-        //     itemId: table.itemId,
-        //     itemType: table.itemType.toUpperCase(),
-        //     x: table.x,
-        //     y: table.y,
-        //     tableId: table.tableId,
-        //     assignedSeats: table.assignedSeats,
-        //   });
-        // });
-
-        // elementDetailResponseDtos.forEach((element) => {
-        //   const floor = element.floor;
-        //   if (!itemsByFloor[floor]) {
-        //     itemsByFloor[floor] = [];
-        //   }
-        //   itemsByFloor[floor].push({
-        //     itemId: element.itemId,
-        //     itemType: element.itemType.toUpperCase(),
-        //     x: element.x,
-        //     y: element.y,
-        //   });
-        // });
-
         tableDetailResponseDtos.forEach((table) => {
           addItem(currentFloor, {
             itemId: table.itemId,

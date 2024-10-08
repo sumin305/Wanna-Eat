@@ -6,6 +6,10 @@ import {
   MapStyled,
   ItemWrapperStyled,
   LabelStyled,
+  TableInfoWrapperStyled,
+  SeatLabelStyled,
+  SeatValueStyled,
+  ModalContainerStyled,
 } from './SeatSelect.js';
 import { authClientInstance } from 'utils/http-client.js';
 import { useLocation } from 'react-router-dom';
@@ -13,9 +17,10 @@ import { useLocation } from 'react-router-dom';
 import FloorSelector from 'component/manager/restaurant/SeatDecorate/FloorSelector/FloorSelector.jsx';
 import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
 
-import { ReactComponent as SquareTablePointedIcon } from 'assets/icons/manager/restaurant/table-square-pointed.svg';
-import { ReactComponent as RoundTablePointedIcon } from 'assets/icons/manager/restaurant/table-rounded-pointed.svg';
+import { ReactComponent as SquareTableDisabledIcon } from 'assets/icons/manager/restaurant/table-square-disabled.svg';
+import { ReactComponent as RoundTableDisabledIcon } from 'assets/icons/manager/restaurant/table-rounded-disabled.svg';
 
+import useReservationStore from 'stores/customer/useReservationStore.js';
 import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
 import useModalStore from 'stores/common/useModalStore.js';
 
@@ -32,36 +37,32 @@ const SeatSelect = () => {
   const [IconWidth, setIconWidth] = useState(100);
   const [IconHeight, setIconHeight] = useState(100);
 
+  const { tableList, setTableList } = useReservationStore();
   const { restaurantId } = useRestaurantStore();
 
   const {
     open,
-    setTitle,
+    close,
     setAlertText,
-    setCancelText,
-    setConfirmText,
-    setIsOneButton,
     setModalType,
+    setConfirmText,
+    setHandleButtonClick,
   } = useModalStore();
 
   const reservedTable = tableData;
 
   useEffect(() => {
-    console.log('restaurantId: ' + restaurantId);
     if (restaurantId > 0) {
       fetchFloorData(restaurantId);
     }
   }, [restaurantId]);
 
   const fetchFloorData = async (restaurantId) => {
-    console.log('restaurantId: ' + restaurantId + ' 으로 get요청 보냅니다!');
     try {
       const response = await authClientInstance.get(
         `/api/public/restaurants/${restaurantId}/structure`
       );
       const { data } = response.data;
-
-      console.log('data: ', data);
 
       setFloorCnt(data.floorCnt);
       setOriginalData(data);
@@ -109,7 +110,6 @@ const SeatSelect = () => {
   };
 
   const handleFloorChange = (selectedFloor) => {
-    console.log('currentFloor: ', currentFloor);
     setCurrentFloor(selectedFloor);
     if (originalData) {
       mergeFloorData(originalData, selectedFloor);
@@ -121,22 +121,42 @@ const SeatSelect = () => {
       (reserved) => reserved.tableId === item.tableId
     );
 
-    if (item.itemType === 'square' || item.itemType === 'rounded') {
-      console.log(`${item.tableId}번 테이블을 선택하였습니다.`);
-      if (!isReserved) {
-        setModalType('setting');
-        setTitle(`${item.tableId} 번 테이블`);
-        setCancelText('닫기');
-        setIsOneButton(true);
-        open();
-      } else {
-        setTitle('예약 불가');
-        setAlertText(`${item.tableId}번 테이블은 예약이 불가능합니다.`);
-        setCancelText('닫기');
-        setIsOneButton(true);
-        open();
-      }
+    setHandleButtonClick(() => handleAddTable(item.tableId));
+
+    if (
+      !isReserved &&
+      (item.itemType === 'square' || item.itemType === 'rounded')
+    ) {
+      setAlertText(
+        <ModalContainerStyled>
+          <TableInfoWrapperStyled>
+            <SeatLabelStyled>{item.tableId} 번 테이블</SeatLabelStyled>
+          </TableInfoWrapperStyled>
+          <TableInfoWrapperStyled>
+            <SeatLabelStyled>좌석 수 :</SeatLabelStyled>
+            <SeatValueStyled>{item.assignedSeats}</SeatValueStyled>
+          </TableInfoWrapperStyled>
+        </ModalContainerStyled>
+      );
+      setModalType('alert');
+      setConfirmText('선택');
+      open();
     }
+  };
+
+  // useEffect(() => {
+  //   console.log('현재 담긴 테이블: ', tableList);
+  // }, [tableList]);
+
+  const handleAddTable = (tableId) => {
+    if (Array.isArray(tableList) && !tableList.includes(tableId)) {
+      const newItems = [...tableList, tableId];
+      setTableList(newItems);
+    } else {
+      window.alert('이미 선택된 테이블입니다.');
+    }
+
+    close();
   };
 
   const renderIcon = (itemType, tableId, reservedTable) => {
@@ -149,12 +169,18 @@ const SeatSelect = () => {
     if (item) {
       const IconComponent =
         isOccupied && itemType === 'square'
-          ? SquareTablePointedIcon
+          ? SquareTableDisabledIcon
           : isOccupied && itemType === 'rounded'
-            ? RoundTablePointedIcon
+            ? RoundTableDisabledIcon
             : item.icon;
 
-      return <IconComponent />;
+      const iconStyle = isOccupied
+        ? { pointerEvents: 'none' }
+        : itemType === 'square' || itemType === 'rounded'
+          ? { cursor: 'pointer' }
+          : {};
+
+      return <IconComponent style={iconStyle} />;
     }
 
     return null;

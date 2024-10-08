@@ -74,8 +74,11 @@ public class MenuServiceImpl implements MenuService {
 				"해당 메뉴 카테고리는 식당에 존재하지 않음. : " + menuCategory.getCategoryName());
 		}
 
-		// 메뉴 사진 등록
-		String uploadedMenuImageFileName = fileUtil.uploadFile(multipartFile);
+		String uploadedMenuImageFileName = null;
+		if(multipartFile != null || !multipartFile.isEmpty()){
+			// 메뉴 사진 등록
+			uploadedMenuImageFileName = fileUtil.uploadFile(multipartFile);
+		}
 
 		// Menu 엔티티 생성 후 저장
 		Menu menu = Menu.builder()

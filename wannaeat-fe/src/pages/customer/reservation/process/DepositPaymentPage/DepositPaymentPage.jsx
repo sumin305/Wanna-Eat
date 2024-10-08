@@ -138,7 +138,10 @@ const DepositPaymentPage = () => {
     }
 
     // 카카오페이 시
-    if (cards && cards.length == 1) {
+    if (
+      (cards && cards.length == 1) ||
+      (selectedCard && selectedCard.cardNo === '0')
+    ) {
       kakaoPayment(
         depositPerMember * memberCount === 0
           ? 50000

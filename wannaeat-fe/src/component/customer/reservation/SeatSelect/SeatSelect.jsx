@@ -13,8 +13,8 @@ import { useLocation } from 'react-router-dom';
 import FloorSelector from 'component/manager/restaurant/SeatDecorate/FloorSelector/FloorSelector.jsx';
 import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
 
-import { ReactComponent as SquareTablePointedIcon } from 'assets/icons/manager/restaurant/table-square-pointed.svg';
-import { ReactComponent as RoundTablePointedIcon } from 'assets/icons/manager/restaurant/table-rounded-pointed.svg';
+import { ReactComponent as SquareTablePointedIcon } from 'assets/icons/manager/restaurant/table-square-disabled.svg';
+import { ReactComponent as RoundTablePointedIcon } from 'assets/icons/manager/restaurant/table-rounded-disabled.svg';
 
 import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
 import useModalStore from 'stores/common/useModalStore.js';
@@ -39,9 +39,9 @@ const SeatSelect = () => {
     setTitle,
     setAlertText,
     setCancelText,
-    setConfirmText,
     setIsOneButton,
     setModalType,
+    setChildren,
   } = useModalStore();
 
   const reservedTable = tableData;
@@ -123,6 +123,7 @@ const SeatSelect = () => {
 
     if (item.itemType === 'square' || item.itemType === 'rounded') {
       console.log(`${item.tableId}번 테이블을 선택하였습니다.`);
+      setChildren(<div>123</div>);
       if (!isReserved) {
         setModalType('setting');
         setTitle(`${item.tableId} 번 테이블`);
@@ -134,6 +135,7 @@ const SeatSelect = () => {
         setAlertText(`${item.tableId}번 테이블은 예약이 불가능합니다.`);
         setCancelText('닫기');
         setIsOneButton(true);
+
         open();
       }
     }

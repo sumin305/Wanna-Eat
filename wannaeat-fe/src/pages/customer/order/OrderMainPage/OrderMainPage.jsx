@@ -37,6 +37,7 @@ import {
   MenuImageWrapper,
   PeopleP,
 } from './OrderMainPage.js';
+import MenuIcon from 'assets/icons/menu/basic-menu.svg';
 import useReservationStore from '../../../../stores/customer/useReservationStore.js';
 
 const OrderMainPage = () => {
@@ -472,7 +473,7 @@ const OrderMainPage = () => {
                         <FoodDiv>
                           <MenuImageWrapper>
                             <MenuImg
-                              src={order.menuImage ? order.menuImage : Logo}
+                              src={order.menuImage ? order.menuImage : MenuIcon}
                               alt="메뉴사진"
                             />
                           </MenuImageWrapper>
@@ -529,7 +530,9 @@ const OrderMainPage = () => {
                           <FoodDiv>
                             <MenuImageWrapper>
                               <MenuImg
-                                src={order.menuImage ? order.menuImage : Logo}
+                                src={
+                                  order.menuImage ? order.menuImage : MenuIcon
+                                }
                               />
                             </MenuImageWrapper>
                             <FoodInfoDiv>

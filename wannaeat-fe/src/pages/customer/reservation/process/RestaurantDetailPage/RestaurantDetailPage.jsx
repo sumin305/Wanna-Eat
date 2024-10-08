@@ -169,22 +169,23 @@ const RestaurantDetailPage = () => {
         />
       </WETabContainer>
       <MenuContainer>
-        {activeMenus.map((menu, index) => (
-          <MenuBox key={index}>
-            <ImageBox key={menu.menuId}>
-              <MenuImg
-                src={menu.menuImage ? menu.menuImage : MenuIcon}
-                alt={menu.menuName}
-                width="100"
-              />
-            </ImageBox>
-            <MenuContentContainer>
-              <MenuName>{menu.menuName}</MenuName>
-              <MenuPrice>{menu.menuPrice}원</MenuPrice>
-              <MenuDescription>{menu.menuDescription}</MenuDescription>
-            </MenuContentContainer>
-          </MenuBox>
-        ))}
+        {activeMenus &&
+          activeMenus.map((menu, index) => (
+            <MenuBox key={index}>
+              <ImageBox key={menu.menuId}>
+                <MenuImg
+                  src={menu.menuImage ? menu.menuImage : MenuIcon}
+                  alt={menu.menuName}
+                  width="100"
+                />
+              </ImageBox>
+              <MenuContentContainer>
+                <MenuName>{menu.menuName}</MenuName>
+                <MenuPrice>{menu.menuPrice}원</MenuPrice>
+                <MenuDescription>{menu.menuDescription}</MenuDescription>
+              </MenuContentContainer>
+            </MenuBox>
+          ))}
       </MenuContainer>
       <ButtonBox>
         <Button size={'long'} onClick={handleReservationButtonClick}>

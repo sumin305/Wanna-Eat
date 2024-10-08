@@ -84,6 +84,12 @@ const ItemWrapperStyled = styled.div`
   svg {
     width: 100%;
     height: 100%;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    /* cursor: pointer; */
   }
 `;
 
@@ -92,4 +98,37 @@ const LabelStyled = styled.div`
   font-weight: ${theme.fontWeight.default};
 `;
 
-export { Items, SeatSelectStyled, MapStyled, ItemWrapperStyled, LabelStyled };
+const TableInfoWrapperStyled = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const SeatLabelStyled = styled.div`
+  font-size: ${theme.fontSize.px17};
+  font-weight: ${theme.fontWeight.bold};
+`;
+
+const SeatValueStyled = styled.div`
+  font-size: ${theme.fontSize.px17};
+  margin-left: 10%;
+`;
+
+const ModalContainerStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: 100%;
+`;
+
+export {
+  Items,
+  SeatSelectStyled,
+  MapStyled,
+  ItemWrapperStyled,
+  LabelStyled,
+  TableInfoWrapperStyled,
+  SeatLabelStyled,
+  SeatValueStyled,
+  ModalContainerStyled,
+};

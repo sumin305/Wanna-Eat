@@ -60,6 +60,10 @@ export const ChatContent = styled.p`
   padding: 5px 10px;
   border-radius: ${({ isMyMessage }) =>
     isMyMessage ? '10px 10px 0 10px' : '10px 10px 10px 0'};
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px13};
+  }
 `;
 
 export const ChatTime = styled.p`
@@ -71,6 +75,7 @@ export const ChatTime = styled.p`
 `;
 
 export const ChatInputWrapper = styled.div`
+  position: relative;
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -85,12 +90,22 @@ export const ChatInputWrapper = styled.div`
 `;
 
 export const ChatInput = styled.input`
-  width: 95%;
+  width: 100%;
   height: 5vh;
   border: none;
   padding-left: 0.5rem;
 `;
 
 export const ChatInputButton = styled.button`
-  width: 5%;
+  position: absolute;
+  right: 0;
+  margin: 3px;
+  background: ${theme.color.primary};
+  border-radius: 5px;
+  width: 2rem;
+  height: 4vh;
+  @media (min-width: 480px) {
+    width: 5rem;
+    height: 4vh;
+  }
 `;

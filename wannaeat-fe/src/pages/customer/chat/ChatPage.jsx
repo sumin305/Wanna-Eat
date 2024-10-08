@@ -16,6 +16,7 @@ import {
   ChatInputWrapper,
   ChatInput,
   ChatTextContainer,
+  ChatInputButton,
 } from 'pages/customer/chat/Chat.js';
 import useHeaderStore from 'stores/common/useHeaderStore';
 import WETextfield from 'component/common/textfield/WETextfield/WETextfield.jsx';
@@ -367,13 +368,9 @@ const ChatPage = () => {
           placeholder="메시지를 입력하세요"
           onKeyDown={(e) => handleKeyPress(e)}
         />
-        <WEButton
-          height={'5vh'}
-          width={'2rem'}
-          onClick={handleChatMessageSendButtonClick}
-        >
+        <ChatInputButton onClick={handleChatMessageSendButtonClick}>
           <img src={SendIcon} alt="전송아이콘" />
-        </WEButton>
+        </ChatInputButton>
       </ChatInputWrapper>
     </ChatContainer>
   );

@@ -230,8 +230,6 @@ public class SsafyPaymentServiceImpl implements SsafyPaymentService {
 			restaurant.getDepositPerMember() * ssafyPaymentDepositRequestDto.getReservationRegisterRequestDto()
 				.getMemberCnt();
 		if (ssafyPaymentDepositRequestDto.getPrice() != totalPrice) {
-			log.info(String.valueOf(totalPrice));
-			log.info(ssafyPaymentDepositRequestDto.getPrice().toString());
 			throw new InvalidPriceException("보증금이 서버 정보와 일치하지 않습니다.");
 		}
 

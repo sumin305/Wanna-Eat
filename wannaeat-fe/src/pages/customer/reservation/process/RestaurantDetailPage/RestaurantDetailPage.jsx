@@ -123,7 +123,6 @@ const RestaurantDetailPage = () => {
 
   return (
     <Box>
-      {/* <div> {params.id}번 가게 상세페이지</div> */}
       <RestaurantImageBox src={RestaurantImg} />
       <InformationContainer>
         <InformationText>
@@ -141,7 +140,12 @@ const RestaurantDetailPage = () => {
           <InformationText>
             {restaurantOpenTime ? restaurantOpenTime : '00:00'}~
             {restaurantCloseTime ? restaurantCloseTime : '00:00'}
-            &nbsp;(브레이크타임 {breakStartTime}~{breakEndTime})
+            &nbsp;
+            {breakStartTime && breakEndTime && (
+              <>
+                (브레이크타임 {breakStartTime}~{breakEndTime})
+              </>
+            )}
           </InformationText>
         </InformationWrapper>
         <InformationWrapper>

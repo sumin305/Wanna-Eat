@@ -19,7 +19,7 @@ import {
   MenuDescription,
   ButtonBox,
 } from './RestaurantDetailPage';
-import RestaurantImg from '../../../../../assets/customer/restaurant.jpg';
+import RestaurantImg from 'assets/customer/restaurant.jpg';
 import WETab from '../../../../../component/common/tab/WETab/WETab.jsx';
 import Button from '../../../../../component/common/button/WEButton/WEButton.jsx';
 import Location from '../../../../../assets/icons/reservation/location.svg';
@@ -61,13 +61,15 @@ const RestaurantDetailPage = () => {
     menuCategories,
     restaurantLike,
     setRestaurantLike,
+    restaurantImage,
   } = useRestaurantStore();
 
   useEffect(() => {
     const fetchRestaurant = async () => {
-      await setRestaurant(params.id);
+      const restaurantResult = await setRestaurant(params.id);
       await setRestaurantId(params.id);
     };
+
     setRestaurant(params.id);
     setIsCarrot(true);
     setPageName(restaurantName ? restaurantName : '맛있는 식당');
@@ -122,7 +124,9 @@ const RestaurantDetailPage = () => {
   return (
     <Box>
       {/* <div> {params.id}번 가게 상세페이지</div> */}
-      <RestaurantImageBox src={RestaurantImg} />
+      <RestaurantImageBox
+        src={restaurantImage ? restaurantImage : RestaurantImg}
+      />
       <InformationContainer>
         <InformationText>
           &emsp;

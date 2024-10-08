@@ -59,11 +59,12 @@ const MapRestaurantPage = () => {
         latitude: lat,
         longitude: lon,
         ...(categoryId !== -1 && { categoryId: categoryId }),
-        ...(keyword !== '' && { keyword: keyword }),
-        ...(reservationDate !== '' && { reservationDate: reservationDate }),
-        ...(startTime !== '' && { startTime: startTime }),
-        ...(endTime !== '' && { endTime: endTime }),
-        ...(memberCount !== -1 && { memberCount: memberCount ?? 0 }),
+        ...(keyword && { keyword: keyword }),
+        ...(reservationDate &&
+          reservationDate != '' && { reservationDate: reservationDate }),
+        ...(startTime && startTime != '00:00' && { startTime: startTime }),
+        ...(endTime && endTime != '00:00' && { endTime: endTime }),
+        ...(memberCount && memberCount !== -1 && { memberCount: memberCount }),
       })
     );
   };

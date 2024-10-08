@@ -186,7 +186,7 @@ public class MenuServiceImpl implements MenuService {
 
 		String menuImage = menu.getImage();
 
-		if(multipartFile != null) {
+		if (multipartFile != null) {
 			// 기존 메뉴 사진 삭제
 			if (menu.getImage() != null) {
 				fileUtil.deleteFile(menu.getImage());
@@ -194,10 +194,9 @@ public class MenuServiceImpl implements MenuService {
 			}
 
 			// 새로운 메뉴 사진 등록
-			menuImage= fileUtil.uploadFile(multipartFile);
+			menuImage = fileUtil.uploadFile(multipartFile);
 			log.info("uplaoded file : " + menu.getImage());
 		}
-
 
 		// 메뉴 엔티티 수정 후 저장
 		menu.update(menuCategory, menuEditRequestDto.getMenuName(), menuEditRequestDto.getMenuPrice(),

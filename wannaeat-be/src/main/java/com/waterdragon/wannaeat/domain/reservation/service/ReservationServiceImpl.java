@@ -191,14 +191,13 @@ public class ReservationServiceImpl implements ReservationService {
 		LocalTime breakStartTime = restaurant.getBreakStartTime();
 		LocalTime breakEndTime = restaurant.getBreakEndTime();
 
-		if(breakStartTime != null && breakEndTime != null){
+		if (breakStartTime != null && breakEndTime != null) {
 			// 예약 시간이 브레이크타임에 포함되는 경우 예외 발생
 			if ((startTime.isBefore(breakEndTime) && endTime.isAfter(breakStartTime)) ||
 				(startTime.isAfter(breakStartTime) && startTime.isBefore(breakEndTime))) {
 				throw new InvalidFilterTimeSequenceException("브레이크타임 중에는 예약할 수 없습니다.");
 			}
 		}
-
 
 		// 식당 테이블 체크 : 유효한 테이블인지 확인
 		RestaurantStructure restaurantStructure = restaurantStructureRepository.findByRestaurantId(
@@ -298,14 +297,13 @@ public class ReservationServiceImpl implements ReservationService {
 		LocalTime breakStartTime = restaurant.getBreakStartTime();
 		LocalTime breakEndTime = restaurant.getBreakEndTime();
 
-		if(breakStartTime != null && breakEndTime != null){
+		if (breakStartTime != null && breakEndTime != null) {
 			// 예약 시간이 브레이크타임에 포함되는 경우 예외 발생
 			if ((startTime.isBefore(breakEndTime) && endTime.isAfter(breakStartTime)) ||
 				(startTime.isAfter(breakStartTime) && startTime.isBefore(breakEndTime))) {
 				throw new InvalidFilterTimeSequenceException("브레이크타임 중에는 예약할 수 없습니다.");
 			}
 		}
-
 
 		List<ReservationTable> reservedTables = reservationTableRepository.findReservedTables(
 			restaurant.getRestaurantId(),

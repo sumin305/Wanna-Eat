@@ -63,13 +63,13 @@ public class StatisticServiceImpl implements StatisticService {
 		Map<String, Long> dayStatistics = getDayOfWeekStatsByMonths(reservations);
 		Map<String, Long> hourStatistics = getHourlyStatsByMonths(restaurant, reservations);
 
-		if(!monthStatistics.isEmpty()){
+		if (!monthStatistics.isEmpty()) {
 			monthStatistics = filterTop3ByValueByIntegerMap(monthStatistics);
 		}
-		if(!dayStatistics.isEmpty()){
+		if (!dayStatistics.isEmpty()) {
 			dayStatistics = filterTop3ByValueByStringMap(dayStatistics);
 		}
-		if(!hourStatistics.isEmpty()){
+		if (!hourStatistics.isEmpty()) {
 			hourStatistics = filterTop3ByValueByStringMap(hourStatistics);
 		}
 

@@ -71,7 +71,8 @@ public class JwtService {
 			.withClaim(EMAIL_CLAIM, email)
 			.withClaim(SOCIAL_TYPE_CLAIM, socialType.name())
 			.withClaim(ROLE_CLAIM, role.toString())
-			.withClaim(RESTAURANT_ID_CLAIM, restaurant != null ? restaurant.getRestaurantId() : null) // restaurant가 null이면 null 설정
+			.withClaim(RESTAURANT_ID_CLAIM,
+				restaurant != null ? restaurant.getRestaurantId() : null) // restaurant가 null이면 null 설정
 			.sign(Algorithm.HMAC512(secretKey)); // HMAC512 알고리즘 사용, application-jwt.yml에서 지정한 secret 키로 암호화
 	}
 

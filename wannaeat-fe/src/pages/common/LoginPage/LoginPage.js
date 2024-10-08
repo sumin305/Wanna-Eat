@@ -31,7 +31,7 @@ const KakaoLoginButton = styled.button`
 `;
 
 const KakaoLoginButtonImg = styled.img`
-  width: 15.625rem;
+  width: 18rem;
   @media (min-width: 480px) {
     width: 20rem;
   }
@@ -47,8 +47,8 @@ const GoogleLoginButton = styled.button`
   border-radius: 0.313rem;
   background: white;
   color: black;
-  width: 15.625rem;
-  height: 2.344rem;
+  width: 18rem;
+  height: 2.8rem;
   padding: 0 0.5rem;
 
   @media (min-width: 480px) {
@@ -59,7 +59,6 @@ const GoogleLoginButton = styled.button`
 
 const GoogleLoginButtonImg = styled.img`
   width: 1.5rem;
-  left: 0;
 
   @media (min-width: 480px) {
     width: 2rem;
@@ -68,7 +67,7 @@ const GoogleLoginButtonImg = styled.img`
 
 const GoogleLoginTitle = styled.p`
   margin-left: 1rem;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-family: 'Roboto', sans-serif;
   font-weight: 500;
   font-style: normal;

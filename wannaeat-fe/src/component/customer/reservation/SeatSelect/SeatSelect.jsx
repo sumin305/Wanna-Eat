@@ -17,8 +17,8 @@ import { useLocation } from 'react-router-dom';
 import FloorSelector from 'component/manager/restaurant/SeatDecorate/FloorSelector/FloorSelector.jsx';
 import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
 
-import { ReactComponent as SquareTableDisabledIcon } from 'assets/icons/manager/restaurant/table-square-disabled.svg';
-import { ReactComponent as RoundTableDisabledIcon } from 'assets/icons/manager/restaurant/table-rounded-disabled.svg';
+import { ReactComponent as SquareTableIcon } from 'assets/icons/manager/restaurant/table-square.svg';
+import { ReactComponent as RoundTableIcon } from 'assets/icons/manager/restaurant/table-rounded.svg';
 
 import useReservationStore from 'stores/customer/useReservationStore.js';
 import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
@@ -37,7 +37,8 @@ const SeatSelect = () => {
   const [IconWidth, setIconWidth] = useState(100);
   const [IconHeight, setIconHeight] = useState(100);
 
-  const { tableList, setTableList } = useReservationStore();
+  const { tableList, setTableList, maxCapacity, setMaxCapacity } =
+    useReservationStore();
   const { restaurantId } = useRestaurantStore();
 
   const {
@@ -49,7 +50,7 @@ const SeatSelect = () => {
     setHandleButtonClick,
   } = useModalStore();
 
-  const reservedTable = tableData;
+  const canReserveTable = tableData;
 
   useEffect(() => {
     if (restaurantId > 0) {
@@ -117,14 +118,16 @@ const SeatSelect = () => {
   };
 
   const handleIconClick = (item) => {
-    const isReserved = reservedTable.some(
-      (reserved) => reserved.tableId === item.tableId
-    );
+    const canReserve = canReserveTable.some((id) => id === item.tableId);
 
-    setHandleButtonClick(() => handleAddTable(item.tableId));
+    if (!canReserve) {
+      return;
+    }
+
+    setHandleButtonClick(() => handleAddTable(item));
 
     if (
-      !isReserved &&
+      canReserve &&
       (item.itemType === 'square' || item.itemType === 'rounded')
     ) {
       setAlertText(
@@ -144,14 +147,19 @@ const SeatSelect = () => {
     }
   };
 
-  // useEffect(() => {
-  //   console.log('현재 담긴 테이블: ', tableList);
-  // }, [tableList]);
+  useEffect(() => {
+    console.log('현재 선택된 사용 가능 좌석 수: ', maxCapacity);
+  }, [maxCapacity]);
 
-  const handleAddTable = (tableId) => {
-    if (Array.isArray(tableList) && !tableList.includes(tableId)) {
-      const newItems = [...tableList, tableId];
+  const handleAddTable = (item) => {
+    if (Array.isArray(tableList) && !tableList.includes(item.tableId)) {
+      const newItems = [...tableList, item.tableId];
       setTableList(newItems);
+
+      const result = maxCapacity + item.assignedSeats;
+      setMaxCapacity(result);
+
+      window.alert(`${item.tableId} 번 테이블이 추가되었습니다.`);
     } else {
       window.alert('이미 선택된 테이블입니다.');
     }
@@ -159,22 +167,20 @@ const SeatSelect = () => {
     close();
   };
 
-  const renderIcon = (itemType, tableId, reservedTable) => {
-    const isOccupied = reservedTable.some(
-      (reserved) => reserved.tableId === tableId
-    );
+  const renderIcon = (itemType, tableId, canReserveTable) => {
+    const isAvailable = canReserveTable.some((value) => value === tableId);
 
     const item = Items.find((item) => item.itemType === itemType);
 
     if (item) {
-      const IconComponent =
-        isOccupied && itemType === 'square'
-          ? SquareTableDisabledIcon
-          : isOccupied && itemType === 'rounded'
-            ? RoundTableDisabledIcon
+      let IconComponent =
+        isAvailable && itemType === 'square'
+          ? SquareTableIcon
+          : isAvailable && itemType === 'rounded'
+            ? RoundTableIcon
             : item.icon;
 
-      const iconStyle = isOccupied
+      const iconStyle = !isAvailable
         ? { pointerEvents: 'none' }
         : itemType === 'square' || itemType === 'rounded'
           ? { cursor: 'pointer' }
@@ -214,7 +220,7 @@ const SeatSelect = () => {
               handleIconClick(item);
             }}
           >
-            {renderIcon(item.itemType, item.tableId, reservedTable)}
+            {renderIcon(item.itemType, item.tableId, canReserveTable)}
             {item.itemType === 'SQUARE' || item.itemType === 'ROUNDED' ? (
               <LabelStyled>{item.tableId}번</LabelStyled>
             ) : (

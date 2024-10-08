@@ -23,6 +23,7 @@ const useReservationStore = create((set) => ({
   selectedCategory: '', // 선택한 카테고리,
   reservationUrl: '',
   tableList: [], // 선택한 테이블
+  maxCapacity: 0, // 이용 가능한 최대 인원 수
   setIsLunch: (isLunch) => set({ isLunch: isLunch }),
   setReservationDate: (date) => set({ reservationDate: date }),
   setStartTime: (time) => set({ startTime: time }),
@@ -36,6 +37,7 @@ const useReservationStore = create((set) => ({
   setSelectedCard: (card) => set({ selectedCard: card }),
   setReservationUrl: (url) => set({ reservationUrl: url }),
   setTableList: (tableList) => set({ tableList: tableList }),
+  setMaxCapacity: (maxCapacity) => set({ maxCapacity: maxCapacity }),
   resetReservation: () =>
     set({
       isLunch: true,
@@ -75,6 +77,7 @@ const useReservationStore = create((set) => ({
       ],
       selectedDurationTime: '', // 머무는 시간
       selectedCategory: '', // 선택한 카테고리
+      tableList: [], // 선택한 테이블 목록
     }),
 }));
 

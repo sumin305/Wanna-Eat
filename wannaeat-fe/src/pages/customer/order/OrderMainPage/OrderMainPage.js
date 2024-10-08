@@ -1,9 +1,7 @@
 import styled from '@emotion/styled';
 import theme from 'style/common/theme';
 
-export const OrderContainer = styled.div`
-  margin-bottom: 20%;
-`;
+export const OrderContainer = styled.div``;
 
 export const ButtonWrapper = styled.div`
   display: flex;

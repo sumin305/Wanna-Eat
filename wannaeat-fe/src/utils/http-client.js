@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 // 로컬 변수로 accessToken 설정
 let accessToken = '';
-let isReissueRequested = false;
 // accessToken 설정
 const setAccessToken = (newAccessToken) => {
   accessToken = newAccessToken;
@@ -132,27 +131,26 @@ authClientInstance.interceptors.response.use(
     if (error.status === 401) {
       console.log('interceptor에서 reissue 재요청');
       console.log(config);
-      isReissueRequested = false;
-      // RefreshToken으로 AccessToken Reissue 요청
-      const reissueResponse =
-        await authWithRefreshClientInstance.get('/api/users/reissue');
+      localStorage.setItem('isReissueRequested', false);
 
-      //  AccessToken Reissue 성공
-      if (reissueResponse.status === 200 && !isReissueRequested) {
-        isReissueRequested = true;
-        console.log(reissueResponse.headers['authorization-wannaeat']);
-        setAccessToken(reissueResponse.headers['authorization-wannaeat']);
-        config.headers['authorization-wannaeat'] = accessToken;
-        console.log('AccessToken Reissue 성공');
-        console.dir(authClientInstance(config));
-        return await authClientInstance(config);
+      // RefreshToken으로 AccessToken Reissue 요청
+      if (!localStorage.getItem('isReissueRequested')) {
+        const reissueResponse =
+          await authWithRefreshClientInstance.get('/api/users/reissue');
+        //  AccessToken Reissue 성공
+        if (reissueResponse.status === 200) {
+          localStorage.setItem('isReissueRequested', true);
+          setAccessToken(reissueResponse.headers['authorization-wannaeat']);
+          config.headers['authorization-wannaeat'] = accessToken;
+          return await authClientInstance(config);
+        } else {
+          console.log('AccessToken Reissue 실패');
+          return;
+        }
       } else {
         console.log('AccessToken Reissue 실패');
-        const alert = useAlert();
-        const navigate = useNavigate();
-
         alert('로그인 해주세요');
-        navigate('/');
+        window.location.href = '/';
         return;
       }
     } else {

@@ -19,7 +19,7 @@ import { authClientInstance } from 'utils/http-client.js';
 import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
 
 const TimeSelectPage = () => {
-  const { restaurant, restaurantId, setRestaurant } = useRestaurantStore();
+  const { restaurant, restaurantId } = useRestaurantStore();
 
   const { open, setModalType, setConfirmText, setTitle, setChildren } =
     useModalStore();
@@ -44,15 +44,7 @@ const TimeSelectPage = () => {
           : moment(new Date()).format('YYYY-MM-DD')
       );
     };
-    // const setRestaurant = async () => {
-    //   const response = await getRestaurantInfo(restaurantId);
-    //   console.log('식당정보', response);
-    //   set
-    // };
     setDate();
-    console.log('식당id', restaurantId);
-    setRestaurant(restaurantId);
-    console.log('restaurant: ', restaurant);
   }, []);
 
   const handleTimeSelectButtonClick = () => {

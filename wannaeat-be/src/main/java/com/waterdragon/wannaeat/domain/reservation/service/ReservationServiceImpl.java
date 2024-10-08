@@ -213,7 +213,11 @@ public class ReservationServiceImpl implements ReservationService {
 
 		// 예약된 테이블이 있을 경우 예외 처리
 		if (!reservedTables.isEmpty()) {
-			throw new DuplicateReservationTableException("이미 예약된 테이블입니다.");
+			for(ReservationTable reservationTable : reservedTables){
+				if(reservationRegisterRequestDto.getTableList().contains(reservationTable.getTableId())){
+					throw new DuplicateReservationTableException("이미 예약된 테이블입니다.");
+				}
+			}
 		}
 
 		User user = userRepository.findByUserId(reservationRegisterRequestDto.getUserId()).orElse(null);
@@ -516,7 +520,7 @@ public class ReservationServiceImpl implements ReservationService {
 
 		List<Order> orders = orderRepository.findAllByReservation(reservation);
 
-		if (!orders.isEmpty()) {
+		if (orders.size() == 0) {
 			throw new ReservationOrderExistException("해당 예약의 주문이 존재하여 취소할 수 없습니다.");
 		}
 

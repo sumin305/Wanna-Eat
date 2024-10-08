@@ -6,6 +6,9 @@ import {
   MapStyled,
   ItemWrapperStyled,
   LabelStyled,
+  TableInfoWrapperStyled,
+  SeatLabelStyled,
+  SeatValueStyled,
 } from './SeatSelect.js';
 import { authClientInstance } from 'utils/http-client.js';
 import { useLocation } from 'react-router-dom';
@@ -13,8 +16,8 @@ import { useLocation } from 'react-router-dom';
 import FloorSelector from 'component/manager/restaurant/SeatDecorate/FloorSelector/FloorSelector.jsx';
 import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
 
-import { ReactComponent as SquareTablePointedIcon } from 'assets/icons/manager/restaurant/table-square-disabled.svg';
-import { ReactComponent as RoundTablePointedIcon } from 'assets/icons/manager/restaurant/table-rounded-disabled.svg';
+import { ReactComponent as SquareTableDisabledIcon } from 'assets/icons/manager/restaurant/table-square-disabled.svg';
+import { ReactComponent as RoundTableDisabledIcon } from 'assets/icons/manager/restaurant/table-rounded-disabled.svg';
 
 import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
 import useModalStore from 'stores/common/useModalStore.js';
@@ -123,7 +126,12 @@ const SeatSelect = () => {
 
     if (item.itemType === 'square' || item.itemType === 'rounded') {
       console.log(`${item.tableId}번 테이블을 선택하였습니다.`);
-      setChildren(<div>123</div>);
+      setChildren(
+        <TableInfoWrapperStyled>
+          <SeatLabelStyled>좌석 수 :</SeatLabelStyled>
+          <SeatValueStyled>{item.assignedSeats}</SeatValueStyled>
+        </TableInfoWrapperStyled>
+      );
       if (!isReserved) {
         setModalType('setting');
         setTitle(`${item.tableId} 번 테이블`);
@@ -151,12 +159,18 @@ const SeatSelect = () => {
     if (item) {
       const IconComponent =
         isOccupied && itemType === 'square'
-          ? SquareTablePointedIcon
+          ? SquareTableDisabledIcon
           : isOccupied && itemType === 'rounded'
-            ? RoundTablePointedIcon
+            ? RoundTableDisabledIcon
             : item.icon;
 
-      return <IconComponent />;
+      const iconStyle = isOccupied
+        ? { pointerEvents: 'none' }
+        : itemType === 'square' || itemType === 'rounded'
+          ? { cursor: 'pointer' }
+          : {};
+
+      return <IconComponent style={iconStyle} />;
     }
 
     return null;

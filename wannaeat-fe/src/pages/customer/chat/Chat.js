@@ -5,7 +5,7 @@ export const DateBox = styled.div`
   display: flex;
   justify-content: center;
   color: ${theme.color.white};
-  font-size: ${theme.fontSize.px9};
+  font-size: ${theme.fontSize.px10};
   margin: 10px 0;
 `;
 
@@ -88,9 +88,7 @@ export const ChatInput = styled.input`
   width: 95%;
   height: 5vh;
   border: none;
-  ::placeholder {
-    padding-left: 0.5rem;
-  }
+  padding-left: 0.5rem;
 `;
 
 export const ChatInputButton = styled.button`

@@ -13,7 +13,11 @@ const messaging = getMessaging(firebaseApp);
 export function requestPermission() {
   console.log('요청 확인 할게요');
   Notification.requestPermission().then((permission) => {
-    console.log('권한 요청 완료');
+    if (permission === 'granted') {
+      console.log('알림 권한이 부여되었습니다.');
+    } else {
+      console.log('알림 권한이 거부되었습니다.');
+    }
   });
 }
 

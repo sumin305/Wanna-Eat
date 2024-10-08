@@ -24,6 +24,7 @@ import {
 import useAlert from 'utils/alert.js';
 import useReservationStore from 'stores/customer/useReservationStore.js';
 import PlusImg from 'assets/icons/menu/Plus.svg';
+import { useNavigate } from 'react-router-dom';
 
 const ManagerRegistPage = () => {
   const { setIsCarrot, setPageName, setIsUnderLine } = useHeaderStore();
@@ -41,6 +42,8 @@ const ManagerRegistPage = () => {
 
   const showAlert = useAlert();
   const allTimes = [...lunchTimes, ...dinnerTimes];
+
+  const nav = useNavigate();
 
   const handleAddressClick = () => {
     setIsMapModalOpen(true);
@@ -70,6 +73,7 @@ const ManagerRegistPage = () => {
       const restaurantId = response.data.data;
       window.localStorage.setItem('restaurantId', restaurantId);
       showAlert(response.data.message);
+      await nav('/manager');
     } else if (response.status === 400) {
       showAlert('값을 형식에 맞게 입력하세요.');
     } else {
@@ -116,6 +120,7 @@ const ManagerRegistPage = () => {
               showErrorMessageSpace={true}
               onChange={(e) => setManagerFormData('address', e.target.value)}
               onClick={handleAddressClick}
+              onFocus={handleAddressClick}
             />
             <MapModal
               isOpen={isMapModalOpen}

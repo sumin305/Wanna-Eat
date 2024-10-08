@@ -16,12 +16,16 @@ import Textfield from '../../../common/textfield/WETextfield/WETextfield.jsx';
 import moment from 'moment';
 
 // 30분 단위로 시간을 계산하는 함수
-const generateTimes = (startTime, endTime) => {
+const generateTimes = (startTime, endTime, isToday = false) => {
   let times = [];
   let currentTime = moment(startTime, 'HH:mm');
+  const now = moment();
 
   while (currentTime.isBefore(moment(endTime, 'HH:mm'))) {
-    times.push(currentTime.format('HH:mm'));
+    // 오늘 날짜인 경우 현재 시간 이후의 시간만 추가
+    if (!isToday || currentTime.isAfter(now)) {
+      times.push(currentTime.format('HH:mm'));
+    }
     currentTime = currentTime.add(30, 'minutes');
   }
 
@@ -30,6 +34,7 @@ const generateTimes = (startTime, endTime) => {
 
 const TimeSelectModalBox = () => {
   const {
+    reservationDate,
     isLunch,
     setIsLunch,
     setStartTime,
@@ -43,6 +48,9 @@ const TimeSelectModalBox = () => {
   const { restaurant } = useRestaurantStore();
   console.log('restaurant: ', restaurant);
 
+  const today = moment().format('YYYY-MM-DD');
+  const isToday = today === reservationDate;
+
   // 기본 lunch, dinner 나누는 시간은 16:00
   const defaultBreakStartTime = '16:00';
   const defaultBreakEndTime = '16:00';
@@ -50,11 +58,13 @@ const TimeSelectModalBox = () => {
     restaurant.restaurantOpenTime,
     restaurant.breakStartTime
       ? restaurant.breakStartTime
-      : defaultBreakStartTime
+      : defaultBreakStartTime,
+    isToday
   );
   const dinnerTimes = generateTimes(
     restaurant.breakEndTime ? restaurant.breakEndTime : defaultBreakEndTime,
-    restaurant.restaurantCloseTime
+    restaurant.restaurantCloseTime,
+    isToday
   );
   console.log('lunchTimes', lunchTimes);
   console.log('dinnerTimes', dinnerTimes);

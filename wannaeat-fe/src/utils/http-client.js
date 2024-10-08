@@ -157,7 +157,7 @@ authClientInstance.interceptors.response.use(
         return;
       }
     } else {
-      console.log('인증 성공');
+      return Promise.reject(error);
     }
   }
 );

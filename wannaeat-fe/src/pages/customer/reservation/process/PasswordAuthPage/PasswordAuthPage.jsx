@@ -31,6 +31,7 @@ const PasswordAuthPage = () => {
     memberCount,
     selectedCard,
     setReservationUrl,
+    tableList,
   } = useReservationStore();
   useEffect(() => {
     suffleNumber();
@@ -104,7 +105,7 @@ const PasswordAuthPage = () => {
         reservationStartTime: startTime,
         reservationEndTime: endTime,
         memberCnt: memberCount,
-        tableList: [],
+        tableList: tableList,
       },
       cardNo: selectedCard.cardNo,
       cvc: selectedCard.cvc,

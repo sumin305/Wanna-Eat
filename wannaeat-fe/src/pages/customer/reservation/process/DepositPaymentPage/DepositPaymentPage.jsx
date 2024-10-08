@@ -38,6 +38,7 @@ const DepositPaymentPage = () => {
     reservationDate,
     startTime,
     endTime,
+    tableList,
   } = useReservationStore();
 
   useEffect(() => {
@@ -118,7 +119,7 @@ const DepositPaymentPage = () => {
         reservationStartTime: startTime,
         reservationEndTime: endTime,
         memberCnt: memberCount,
-        tableList: [],
+        tableList: tableList,
       },
     });
 

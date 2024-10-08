@@ -5,7 +5,7 @@ const useChatStore = create((set) => ({
   isConnected: 'false',
   stompClient: null,
   chatPage: 0,
-  chatSize: 10,
+  chatSize: 20,
   setChatMessages: (messages) => set(() => ({ chatMessages: messages })),
   setChatPlusMessages: (newMessage) =>
     set((state) => ({

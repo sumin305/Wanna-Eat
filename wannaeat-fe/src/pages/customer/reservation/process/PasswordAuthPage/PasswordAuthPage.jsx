@@ -1,6 +1,6 @@
 import { PasswordInputContainer } from './PasswordAuthPage';
 import { payDepositPaymentBySsafyPay } from 'api/common/payment.js';
-
+import { payMenuBySsafyPay } from 'api/common/payment';
 import {
   BlackOutLayout,
   PasswordTitle,
@@ -14,6 +14,7 @@ import FingerPrint from 'assets/icons/common/fingerprint.svg';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from 'stores/customer/useAuthStore';
 import useRestaurantStore from 'stores/customer/useRestaurantStore';
+import useOrderStore from 'stores/customer/useOrderStore';
 import useReservationStore from '../../../../../stores/customer/useReservationStore.js';
 const PasswordAuthPage = () => {
   const [title, setTitle] = useState('결제 비밀번호를 입력해주세요');
@@ -36,14 +37,15 @@ const PasswordAuthPage = () => {
   useEffect(() => {
     suffleNumber();
   }, [inputNumber]);
+  const { selectedCard: selectedOrderCard, payOrders } = useOrderStore();
 
   const randomPassword = () => {
     let newPassword = JSON.parse(JSON.stringify(number));
     newPassword.push('<');
-    newPassword.splice(9, 0, '지문');
+    newPassword.splice(9, 0, '취소');
     let newJSXArr = newPassword.map((num) => (
       <PasswordKey key={num} onClick={() => handleNumberButtonClick(num)}>
-        {num === '지문' ? <img src={FingerPrint}></img> : num}
+        {num}
       </PasswordKey>
     ));
 
@@ -73,11 +75,10 @@ const PasswordAuthPage = () => {
       return;
     }
 
-    if (num === '지문') {
-      handleCheckFingerprint();
+    if (num === '취소') {
+      navigate(-1);
       return;
     }
-
     setInputNumber(inputNumber + num);
 
     // 비밀번호를 다 입력했을때,
@@ -85,8 +86,17 @@ const PasswordAuthPage = () => {
       setPassword(inputNumber);
       setInputNumber('');
 
+      // 주문 결제인 경우
+      const url = new URL(window.location.href);
+      const searchParams = url.searchParams;
+
+      console.log(searchParams.has('type'));
+      console.log(searchParams.get('type'));
+      if (searchParams.has('type') && searchParams.get('type') === 'order') {
+        ssafyOrderPayment(searchParams.get('url'), inputNumber + num);
+      }
       // 싸피페이 결제
-      ssafyPayment(
+      ssafyDepositPayment(
         depositPerMember * memberCount === 0
           ? 50000
           : depositPerMember * memberCount,
@@ -95,7 +105,32 @@ const PasswordAuthPage = () => {
     }
   };
 
-  const ssafyPayment = async (price, password) => {
+  const ssafyOrderPayment = async (url, password) => {
+    const result = await payMenuBySsafyPay({
+      reservationUrl: url,
+      paymentMenuRequestDtos: payOrders.map((order) => {
+        return {
+          menuId: order.menuId,
+          orderId: order.orderId,
+          menuCount: order.count,
+        };
+      }),
+      cardNo: selectedOrderCard.cardNo,
+      cvc: selectedOrderCard.cvc,
+      userKey: localStorage.getItem('userKey'),
+      userPassword: password,
+    });
+
+    console.log(result);
+    if (result.status === 200) {
+      console.log('결제 성공');
+    } else {
+      alert('결제에 실패했습니다.');
+    }
+
+    navigate('/customer/order/' + url);
+  };
+  const ssafyDepositPayment = async (price, password) => {
     const result = await payDepositPaymentBySsafyPay({
       price: price,
       restaurantId: restaurantId,
@@ -115,7 +150,7 @@ const PasswordAuthPage = () => {
     });
     console.log('결제 결과', result);
     if (result.status === 200) {
-      alert('결제 성공');
+      console.log('결제 성공');
       navigate('/customer/reservation/success');
       setReservationUrl(
         process.env.REACT_APP_CLIENT_URL +

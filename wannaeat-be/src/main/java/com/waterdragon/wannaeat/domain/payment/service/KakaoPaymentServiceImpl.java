@@ -151,8 +151,6 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 			restaurant.getDepositPerMember() * kakaoPaymentDepositRequestDto.getReservationRegisterRequestDto()
 				.getMemberCnt();
 		if (kakaoPaymentDepositRequestDto.getPrice() != totalPrice) {
-			log.info(String.valueOf(totalPrice));
-			log.info(kakaoPaymentDepositRequestDto.getPrice().toString());
 			throw new InvalidPriceException("보증금이 서버 정보와 일치하지 않습니다.");
 		}
 

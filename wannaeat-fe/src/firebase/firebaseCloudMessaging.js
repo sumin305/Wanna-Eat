@@ -1,8 +1,6 @@
-// firebaseCloudMessaging.js (애플리케이션 코드 파일)
-
-import { getMessaging, getToken, onMessage, deleteToken  } from 'firebase/messaging';
+// firebaseCloudMessaging.js
+import { getMessaging, getToken } from 'firebase/messaging';
 import { initializeApp } from 'firebase/app';
-import LogoIcon from 'assets/icons/header/logo.svg';
 
 // Firebase 설정 및 초기화
 const firebaseConfig = {
@@ -31,47 +29,16 @@ export function requestPermission() {
   });
 }
 
-// 포그라운드 알림 수신
-export function onForegroundMessage() {
-  onMessage(messaging, (payload) => {
-    console.log('포그라운드 메시지 수신:', payload);
-
-    const notificationTitle = payload.notification.title;
-    const notificationOptions = {
-      body: payload.notification.body,
-      icon: LogoIcon,
-    };
-
-    if (Notification.permission === 'granted') {
-      new Notification(notificationTitle, notificationOptions);
-    } else {
-      console.log('알림 권한이 없습니다.');
-    }
-  });
-}
-
-// FCM 토큰 삭제 및 재발급
+// FCM 토큰 발급 함수
 export async function getFcmToken() {
   try {
-    // 현재 토큰이 존재하는지 확인
     const currentToken = await getToken(messaging, {
       vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY,
     });
 
     if (currentToken) {
-      // 기존 토큰 삭제
-      await deleteToken(messaging);
-      console.log('기존 FCM 토큰 삭제 완료');
-    }
-
-    // 새로운 FCM 토큰 발급
-    const newToken = await getToken(messaging, {
-      vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY,
-    });
-
-    if (newToken) {
-      console.log('새로운 FCM 토큰 발급 완료:', newToken);
-      return newToken;
+      console.log('FCM 토큰 발급 완료:', currentToken);
+      return currentToken;
     }
   } catch (error) {
     console.error('FCM 토큰 발급 실패:', error);

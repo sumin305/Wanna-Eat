@@ -2,11 +2,15 @@ package com.waterdragon.wannaeat.domain.restaurant.dto.response;
 
 import com.waterdragon.wannaeat.domain.menu.dto.response.MenuListResponseDto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RestaurantDetailResponseDto {
 
 	private String restaurantBusinessNumber;
@@ -48,4 +52,6 @@ public class RestaurantDetailResponseDto {
 	private Boolean restaurantLike;
 
 	private MenuListResponseDto menuListResponseDto;
+
+	private RestaurantImageListResponseDto restaurantImageListResponseDto;
 }

@@ -63,6 +63,16 @@ public class StatisticServiceImpl implements StatisticService {
 		Map<String, Long> dayStatistics = getDayOfWeekStatsByMonths(reservations);
 		Map<String, Long> hourStatistics = getHourlyStatsByMonths(restaurant, reservations);
 
+		if(!monthStatistics.isEmpty()){
+			monthStatistics = filterTop3ByValueByIntegerMap(monthStatistics);
+		}
+		if(!dayStatistics.isEmpty()){
+			dayStatistics = filterTop3ByValueByStringMap(dayStatistics);
+		}
+		if(!hourStatistics.isEmpty()){
+			hourStatistics = filterTop3ByValueByStringMap(hourStatistics);
+		}
+
 		Map<String, Long> revenues = getRevenueByLastFiveDays(restaurant);
 		List<MenuStatisticResponseDto> menuStatistics = getPopularMenusByLastThreeMonths(restaurant);
 
@@ -585,6 +595,44 @@ public class StatisticServiceImpl implements StatisticService {
 		}
 
 		return totalTableCount;
+	}
+
+	/**
+	 * 상위 3개의 Map 데이터만 가져오는 메소드
+	 *
+	 * @param originalMap Integer, Long 형태의 Map
+	 * @return 상위 3개의 key-value
+	 */
+	public static Map<Integer, Long> filterTop3ByValueByIntegerMap(Map<Integer, Long> originalMap) {
+		return originalMap.entrySet()
+			.stream()
+			.sorted(Map.Entry.<Integer, Long>comparingByValue().reversed())
+			.limit(3)
+			.collect(Collectors.toMap(
+				Map.Entry::getKey,
+				Map.Entry::getValue,
+				(e1, e2) -> e1,
+				LinkedHashMap::new
+			));
+	}
+
+	/**
+	 * 상위 3개의 Map 데이터만 가져오는 메소드
+	 *
+	 * @param originalMap String, Long 형태의 Map
+	 * @return 상위 3개의 key-value
+	 */
+	public static Map<String, Long> filterTop3ByValueByStringMap(Map<String, Long> originalMap) {
+		return originalMap.entrySet()
+			.stream()
+			.sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+			.limit(3)
+			.collect(Collectors.toMap(
+				Map.Entry::getKey,
+				Map.Entry::getValue,
+				(e1, e2) -> e1,
+				LinkedHashMap::new
+			));
 	}
 
 	/**

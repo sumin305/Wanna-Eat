@@ -46,13 +46,22 @@ const SeatSelectStyled = styled.div`
   flex-direction: column;
   align-items: center;
 
-  width: 60vh;
-  height: 60vh;
+  width: 48vh;
+  height: 48vh;
+
+  @media (min-width: 480px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 60vh;
+    height: 60vh;
+  }
 `;
 
 const MapStyled = styled.div`
   position: relative;
-  width: 75%;
+  width: 95%;
   height: 100%;
   max-width: 480px;
   border: 1px solid ${theme.color.primary};
@@ -84,6 +93,12 @@ const ItemWrapperStyled = styled.div`
   svg {
     width: 100%;
     height: 100%;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    /* cursor: pointer; */
   }
 `;
 
@@ -92,4 +107,61 @@ const LabelStyled = styled.div`
   font-weight: ${theme.fontWeight.default};
 `;
 
-export { Items, SeatSelectStyled, MapStyled, ItemWrapperStyled, LabelStyled };
+const ModalContainerStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  width: 180px;
+  height: fit-content;
+
+  margin-top: -20%;
+
+  @media (min-width: 480px) {
+    width: 200px;
+    height: fit-content;
+
+    margin-top: -20%;
+  }
+`;
+
+const TableInfoWrapperStyled = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+
+  margin-top: 12%;
+`;
+
+const SeatLabelStyled = styled.div`
+  width: 100%;
+  font-size: ${theme.fontSize.px15};
+  font-weight: ${theme.fontWeight.bold};
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px17};
+    font-weight: ${theme.fontWeight.bold};
+  }
+`;
+
+const SeatValueStyled = styled.div`
+  width: 100%;
+  font-size: ${theme.fontSize.px15};
+  text-align: start;
+
+  @media (min-width: 480px) {
+    font-size: ${theme.fontSize.px17};
+    text-align: start;
+  }
+`;
+
+export {
+  Items,
+  SeatSelectStyled,
+  MapStyled,
+  ItemWrapperStyled,
+  LabelStyled,
+  TableInfoWrapperStyled,
+  SeatLabelStyled,
+  SeatValueStyled,
+  ModalContainerStyled,
+};

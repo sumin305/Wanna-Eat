@@ -55,14 +55,14 @@ const RestaurantRegistPage = () => {
   const allTimes = [...lunchTimes, ...dinnerTimes];
 
   const [restaurantFormData, setRestaurantFormData] = useState({
-    restaurantOpenTime: '',
-    restaurantCloseTime: '',
+    // restaurantOpenTime: '',
+    // restaurantCloseTime: '',
     breakStartTime: '',
     breakEndTime: '',
     maxReservationTime: '',
     minMemberCount: '',
     maxMemberCount: '',
-    depositPerMember: '',
+    // depositPerMember: '',
     restaurantDescription: '',
     restaurantImages: [],
   });
@@ -91,6 +91,9 @@ const RestaurantRegistPage = () => {
       restaurantCategoryId: managerFormData.businessType,
       latitude: managerFormData.lat,
       longitude: managerFormData.lng,
+      restaurantOpenTime: managerFormData.restaurantOpenTime,
+      restaurantCloseTime: managerFormData.restaurantCloseTime,
+      depositPerMember: managerFormData.depositPerMember,
     });
     console.log(response);
     if (response.status === 201) {
@@ -136,14 +139,15 @@ const RestaurantRegistPage = () => {
         (category) => category.restaurantCategoryName
       )
     );
+    setVisitTimeItems(allTimes);
+    setEndTimeItems(allTimes);
   }, []);
 
   useEffect(() => {
     if (activeTab === 1) {
-      setVisitTimeItems(allTimes);
-      setEndTimeItems(allTimes);
       setBreakStartTimeItems(allTimes);
       setBreakEndTimeItems(allTimes);
+      setItems([30, 60, 90, 120]);
     }
   }, [activeTab]);
 
@@ -237,41 +241,89 @@ const RestaurantRegistPage = () => {
                 />
               </InputWithLabelStyled>
             </InputWrapperStyled>
+
+            <InputWrapperStyled>
+              <label>영업시간</label>
+              <DropdownWrapperStyled>
+                <WEDropdown
+                  useDropdownStore={useVisitTimeDropdownStore}
+                  placeholder="시작시간"
+                  onSelect={(value) => {
+                    setManagerFormData('restaurantOpenTime', value);
+                  }}
+                />
+                <WEDropdown
+                  useDropdownStore={useEndTimeDropdownStore}
+                  placeholder="끝나는시간"
+                  onSelect={(value) => {
+                    setManagerFormData('restaurantCloseTime', value);
+                  }}
+                />
+              </DropdownWrapperStyled>
+            </InputWrapperStyled>
+
+            <InputWrapperStyled>
+              <InputWithLabelStyled>
+                <label>인당 보증금(원)</label>
+                <WETextField
+                  name="restaurantRegist-restaurantName"
+                  placeholder="숫자로 입력하세요."
+                  value={managerFormData.depositPerMember}
+                  showErrorMessageSpace={true}
+                  onChange={(e) =>
+                    setManagerFormData('depositPerMember', e.target.value)
+                  }
+                />
+              </InputWithLabelStyled>
+            </InputWrapperStyled>
           </ContentWrapperStyled>
         );
       case 1:
         return (
           <ContentWrapperStyled>
             <InputWrapperStyled>
-              <label>영업시간</label>
+              <label>브레이크 타임</label>
               <DropdownWrapperStyled>
-                {/* <InputWithLabelStyled> */}
                 <WEDropdown
-                  useDropdownStore={useVisitTimeDropdownStore}
+                  useDropdownStore={useBreakStartTimeDropdownStore}
                   placeholder="시작시간"
-                  value={restaurantFormData.restaurantOpenTime}
+                  value={restaurantFormData.breakStartTime}
                   onSelect={(value) =>
                     setRestaurantFormData((prevData) => ({
                       ...prevData,
-                      restaurantOpenTime: value,
+                      breakStartTime: value,
                     }))
                   }
                 />
-                {/* </InputWithLabelStyled> */}
-                {/* <InputWithLabelStyled> */}
 
                 <WEDropdown
-                  useDropdownStore={useEndTimeDropdownStore}
+                  useDropdownStore={useBreakEndTimeDropdownStore}
                   placeholder="끝나는시간"
-                  value={restaurantFormData.restaurantCloseTime}
+                  value={restaurantFormData.breakEndTime}
                   onSelect={(value) =>
                     setRestaurantFormData((prevData) => ({
                       ...prevData,
-                      restaurantCloseTime: value,
+                      breakEndTime: value,
                     }))
                   }
                 />
-                {/* </InputWithLabelStyled> */}
+              </DropdownWrapperStyled>
+            </InputWrapperStyled>
+
+            <InputWrapperStyled>
+              <label>최대 이용 가능 시간(분)</label>
+              <DropdownWrapperStyled>
+                <WEDropdown
+                  useDropdownStore={useDropdownStore}
+                  placeholder="최대 이용 가능 시간을 선택하세요."
+                  value={restaurantFormData.maxReservationTime}
+                  onSelect={(value) =>
+                    setRestaurantFormData((prevData) => ({
+                      ...prevData,
+                      maxReservationTime: value,
+                    }))
+                  }
+                />
               </DropdownWrapperStyled>
             </InputWrapperStyled>
 

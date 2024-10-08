@@ -19,7 +19,7 @@ import {
   MenuDescription,
   ButtonBox,
 } from './RestaurantDetailPage';
-import RestaurantImg from '../../../../../assets/customer/restaurant.jpeg';
+import RestaurantImg from '../../../../../assets/customer/restaurant.jpg';
 import WETab from '../../../../../component/common/tab/WETab/WETab.jsx';
 import Button from '../../../../../component/common/button/WEButton/WEButton.jsx';
 import Location from '../../../../../assets/icons/reservation/location.svg';

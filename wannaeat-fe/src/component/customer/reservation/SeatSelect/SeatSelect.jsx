@@ -36,12 +36,12 @@ const SeatSelect = () => {
 
   const {
     open,
-    close,
     setTitle,
     setAlertText,
     setCancelText,
     setConfirmText,
     setIsOneButton,
+    setModalType,
   } = useModalStore();
 
   const reservedTable = tableData;
@@ -121,14 +121,21 @@ const SeatSelect = () => {
       (reserved) => reserved.tableId === item.tableId
     );
 
-    if (!isReserved) {
-      setTitle('예약 불가');
-      setAlertText(`${item.tableId}번 테이블은 예약이 불가능합니다.`);
-      setCancelText('닫기');
-      setIsOneButton(true);
-      open();
-    } else {
+    if (item.itemType === 'square' || item.itemType === 'rounded') {
       console.log(`${item.tableId}번 테이블을 선택하였습니다.`);
+      if (!isReserved) {
+        setModalType('setting');
+        setTitle(`${item.tableId} 번 테이블`);
+        setCancelText('닫기');
+        setIsOneButton(true);
+        open();
+      } else {
+        setTitle('예약 불가');
+        setAlertText(`${item.tableId}번 테이블은 예약이 불가능합니다.`);
+        setCancelText('닫기');
+        setIsOneButton(true);
+        open();
+      }
     }
   };
 
@@ -177,7 +184,9 @@ const SeatSelect = () => {
             y={item.y}
             svgWidth={IconWidth}
             svgHeight={IconHeight}
-            onClick={handleIconClick}
+            onClick={() => {
+              handleIconClick(item);
+            }}
           >
             {renderIcon(item.itemType, item.tableId, reservedTable)}
             {item.itemType === 'SQUARE' || item.itemType === 'ROUNDED' ? (

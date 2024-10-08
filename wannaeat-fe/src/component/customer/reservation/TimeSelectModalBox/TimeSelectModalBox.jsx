@@ -38,8 +38,6 @@ const TimeSelectModalBox = () => {
     setSelectedTimes,
     selectedTimes,
     memberCount,
-    setLunchTimes,
-    setDinnerTimes,
   } = useReservationStore();
 
   const { restaurant } = useRestaurantStore();
@@ -65,9 +63,8 @@ const TimeSelectModalBox = () => {
 
   useEffect(() => {
     setMemCnt(memberCount === -1 ? 0 : memberCount);
-    // setLunchTimes(lunchTimes);
-    // setDinnerTimes(dinnerTimes);
   }, []);
+
   const handleHeadCountChange = (e) => {
     if (e.target.value === '') {
       setMemCnt(0);

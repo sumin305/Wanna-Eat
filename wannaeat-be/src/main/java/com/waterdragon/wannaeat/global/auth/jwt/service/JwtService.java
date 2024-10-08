@@ -101,9 +101,6 @@ public class JwtService {
 		refreshTokenCookie.setMaxAge(Math.toIntExact(refreshTokenExpirationPeriod)); // 쿠키 만료 시간 설정
 		response.addCookie(refreshTokenCookie);
 
-		log.info(accessToken);
-		log.info(refreshToken);
-		log.info("Access Token은 헤더에, Refresh Token은 쿠키에 설정되었습니다.");
 	}
 
 	// 쿠키에서 RefreshToken 추출
@@ -210,7 +207,6 @@ public class JwtService {
 
 	public void removeAccessToken(HttpServletResponse response) {
 		response.setHeader(accessHeader, "");
-		log.info("AccessToken이 삭제되었습니다.");
 	}
 
 	public void removeRefreshTokenCookie(HttpServletResponse response) {
@@ -220,7 +216,5 @@ public class JwtService {
 		refreshTokenCookie.setPath("/"); // 모든 경로에서 적용되도록 설정
 		refreshTokenCookie.setMaxAge(0); // 쿠키 만료 시간 0으로 설정하여 삭제
 		response.addCookie(refreshTokenCookie);
-
-		log.info("RefreshToken이 쿠키에서 삭제되었습니다.");
 	}
 }

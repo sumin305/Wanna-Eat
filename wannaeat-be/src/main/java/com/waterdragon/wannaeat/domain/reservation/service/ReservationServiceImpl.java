@@ -48,6 +48,7 @@ import com.waterdragon.wannaeat.domain.reservation.exception.error.FailureGenera
 import com.waterdragon.wannaeat.domain.reservation.exception.error.InvalidQrTokenException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.QrTokenNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationNotFoundException;
+import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationOrderExistException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.ReservationParticipantNotFoundException;
 import com.waterdragon.wannaeat.domain.reservation.exception.error.UnpaidOrderExistsException;
 import com.waterdragon.wannaeat.domain.reservation.repository.ReservationParticipantRepository;
@@ -513,6 +514,12 @@ public class ReservationServiceImpl implements ReservationService {
 
 		if (!user.equals(reservation.getUser()) && !user.equals(reservation.getRestaurant().getUser())) {
 			throw new NotAuthorizedException("권한이 없습니다.");
+		}
+
+		List<Order> orders = orderRepository.findAllByReservation(reservation);
+
+		if (!orders.isEmpty()) {
+			throw new ReservationOrderExistException("해당 예약의 주문이 존재하여 취소할 수 없습니다.");
 		}
 
 		List<ReservationTable> reservationTables = reservation.getReservationTables();

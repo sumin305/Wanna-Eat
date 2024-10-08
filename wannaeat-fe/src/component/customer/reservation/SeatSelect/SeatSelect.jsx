@@ -9,6 +9,7 @@ import {
   TableInfoWrapperStyled,
   SeatLabelStyled,
   SeatValueStyled,
+  ModalContainerStyled,
 } from './SeatSelect.js';
 import { authClientInstance } from 'utils/http-client.js';
 import { useLocation } from 'react-router-dom';
@@ -44,7 +45,6 @@ const SeatSelect = () => {
     setCancelText,
     setIsOneButton,
     setModalType,
-    setChildren,
   } = useModalStore();
 
   const reservedTable = tableData;
@@ -126,14 +126,19 @@ const SeatSelect = () => {
 
     if (item.itemType === 'square' || item.itemType === 'rounded') {
       console.log(`${item.tableId}번 테이블을 선택하였습니다.`);
-      setChildren(
-        <TableInfoWrapperStyled>
-          <SeatLabelStyled>좌석 수 :</SeatLabelStyled>
-          <SeatValueStyled>{item.assignedSeats}</SeatValueStyled>
-        </TableInfoWrapperStyled>
+      setAlertText(
+        <ModalContainerStyled>
+          <TableInfoWrapperStyled>
+            <SeatLabelStyled>{item.tableId} 번 테이블</SeatLabelStyled>
+          </TableInfoWrapperStyled>
+          <TableInfoWrapperStyled>
+            <SeatLabelStyled>좌석 수 :</SeatLabelStyled>
+            <SeatValueStyled>{item.assignedSeats}</SeatValueStyled>
+          </TableInfoWrapperStyled>
+        </ModalContainerStyled>
       );
       if (!isReserved) {
-        setModalType('setting');
+        setModalType('alert');
         setTitle(`${item.tableId} 번 테이블`);
         setCancelText('닫기');
         setIsOneButton(true);

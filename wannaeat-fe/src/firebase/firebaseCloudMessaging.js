@@ -1,44 +1,35 @@
-import {
-  getMessaging,
-  getToken,
-  deleteToken,
-  onMessage,
-} from 'firebase/messaging';
-import { app as firebaseApp } from './firebase';
-import LogoIcon from 'assets/icons/header/logo.svg';
+// firebaseCloudMessaging.js
+import { getMessaging, getToken } from 'firebase/messaging';
+import { initializeApp } from 'firebase/app';
 
-const messaging = getMessaging(firebaseApp);
+// Firebase 설정 및 초기화
+const firebaseConfig = {
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
+};
 
-// Request notification permission & FCM token
+const app = initializeApp(firebaseConfig);
+const messaging = getMessaging(app);
+
+// 알림 권한 요청
 export function requestPermission() {
-  console.log('요청 확인 할게요');
+  console.log('알림 권한 요청 중...');
   Notification.requestPermission().then((permission) => {
-    console.log('권한 요청 완료');
-  });
-}
-
-//FCM foreground
-export function onForegroundMessage() {
-  onMessage(messaging, (payload) => {
-    console.log('Message received in foreground: ', payload);
-
-    // 알림 제목과 내용 설정
-    const notificationTitle = payload.notification.title;
-    const notificationOptions = {
-      body: payload.notification.body,
-      icon: LogoIcon, // 아이콘 경로 지정
-    };
-
-    // Notification API를 사용해 포그라운드에서도 푸시 알림을 보여줌
-    if (Notification.permission === 'granted') {
-      new Notification(notificationTitle, notificationOptions);
+    if (permission === 'granted') {
+      console.log('알림 권한 허용됨');
+      getFcmToken();
     } else {
-      console.log('알림 권한이 없습니다.');
+      console.log('알림 권한이 거부되었습니다.');
     }
   });
 }
 
-// Get FCM token
+// FCM 토큰 발급 함수
 export async function getFcmToken() {
   try {
     const currentToken = await getToken(messaging, {
@@ -46,11 +37,10 @@ export async function getFcmToken() {
     });
 
     if (currentToken) {
-      onForegroundMessage(); // 토큰 사용
-      console.log('토큰발급완료');
+      console.log('FCM 토큰 발급 완료:', currentToken);
       return currentToken;
     }
   } catch (error) {
-    console.error('FCM 토큰 갱신 실패:', error);
+    console.error('FCM 토큰 발급 실패:', error);
   }
 }

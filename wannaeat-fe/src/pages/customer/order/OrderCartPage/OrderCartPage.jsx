@@ -139,7 +139,8 @@ const OrderCartPage = () => {
             const content = JSON.parse(response.body);
             console.log('Received message:', content);
             if (content.socketType === 'CART') {
-              setCartElements(content.cartElements);
+              const sorted = reorderArray(content.cartElements);
+              setCartElements(sorted);
             }
           }
         );
@@ -471,7 +472,8 @@ const OrderCartPage = () => {
             JSON.stringify(orderRegisterRequestDto)
           );
           console.log('주문에 보내는 내용:', orderRegisterRequestDto);
-
+          const sorted = reorderArray(cartElements);
+          setCartElements(sorted);
           setAllMenusInfo({ cartDetailResponseDto: { cartElements: [] } });
           setAllMenusSortInfo({ cartDetailResponseDto: { cartElements: [] } });
           setMenuCounts([]);

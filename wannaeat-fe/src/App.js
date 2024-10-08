@@ -1,12 +1,13 @@
-import React from 'react';
+// App.js
+import React, { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-
 import { Global, css } from '@emotion/react';
 import Main from './Main';
 
 import { requestPermission } from './firebase/firebaseCloudMessaging';
 import { getRestaurantCategories } from 'api/customer/restaurant.js';
 import { getMerchantCategories } from 'api/common/ssafyPay/card.js';
+
 const globalStyles = css`
   @font-face {
     font-family: 'Paperlogy-5Regular';
@@ -31,7 +32,6 @@ const globalStyles = css`
   }
   * {
     font-family: 'Paperlogy-5Regular', sans-serif;
-    // letter-spacing: 1px;
     font-weight: 500;
     margin: 0;
     padding: 0;
@@ -44,11 +44,6 @@ const globalStyles = css`
   }
 `;
 
-// FCM permission & token
-if (Notification.permission !== 'granted') {
-  requestPermission();
-}
-
 const getCategories = async () => {
   const response = await getRestaurantCategories();
   if (response.status === 200) {
@@ -59,9 +54,16 @@ const getCategories = async () => {
   }
 };
 
-getCategories();
-getMerchantCategories();
 function App() {
+  useEffect(() => {
+    // 알림 권한 요청 및 포그라운드 알림 처리
+    requestPermission();
+
+    // 카테고리 데이터 가져오기
+    getCategories();
+    getMerchantCategories();
+  }, []); // 빈 배열을 의존성 배열로 사용하여 초기 실행 시 한 번만 호출되도록 설정
+
   return (
     <BrowserRouter>
       <Global styles={globalStyles} />

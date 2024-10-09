@@ -141,9 +141,10 @@ const OrderMainPage = () => {
         chatSize
       );
 
-      setAllOrdersInfo(allOrdersInfo);
+      setAllOrdersInfo(allOrdersInfo ? allOrdersInfo : []);
 
       console.log('메인페이지 불러온 데이터:', allOrdersInfo.data);
+
       const totalData = allOrdersInfo.data;
 
       // 상태 업데이트

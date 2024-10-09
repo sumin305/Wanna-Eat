@@ -141,7 +141,7 @@ const AppRoutes = () => {
           path="/customer/order/order-sheet/:url"
           element={<OrderSheetPage />}
         />
-        <Route path="/customer/pay/:url" element={<OrderPaymentPage />} />
+        <Route path="/customer/order/pay/:url" element={<OrderPaymentPage />} />
         <Route path="/customer/myinfo" element={<MyInfoPage />} />
         <Route path="/customer/card-manage" element={<CardManagePage />} />
         <Route path="/customer/card-regist" element={<CardRegistPage />} />

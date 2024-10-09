@@ -59,48 +59,56 @@ const OrderSheetBox = ({ reservationUrl }) => {
     setGroupedCompleteOrdersWithTotalPrice,
   ] = useState([]);
 
+  const [totalPendingOrdersCount, setTotalPendingOrdersCount] = useState(0);
+  const [totalCompletedOrdersCount, setTotalCompletedOrdersCount] = useState(0);
+
   useEffect(() => {
     // 모든 주문 데이터 가져오기 및 그룹화된 결제 전/후 주문 처리
     const ordersArray = Object.entries(allOrdersInfo).map(([key, value]) => ({
       reservationParticipantNickname: key,
       ...value,
     }));
+
     setAllOrders(ordersArray);
 
-    // 결제 전 주문 그룹화
-    setGroupedPendingOrdersWithTotalPrice(
-      groupByNicknameWithTotalPrice(
-        ordersArray.filter((order) =>
-          order.orders.some((o) => o.totalCnt - o.paidCnt > 0)
-        )
-      )
-    );
-    console.log(
-      'groupedPendingOrdersWithTotalPrice',
-      groupByNicknameWithTotalPrice(
-        ordersArray.filter((order) =>
-          order.orders.some((o) => o.totalCnt - o.paidCnt > 0)
-        )
-      )
-    );
-    // 결제 완료 주문 그룹화
-    setGroupedCompleteOrdersWithTotalPrice(
-      groupByNicknameWithTotalPrice(
-        ordersArray.filter((order) =>
-          order.orders.some((o) => o.totalCnt === o.paidCnt)
-        )
+    const pendingGroup = groupByNicknameWithTotalPrice(
+      ordersArray.filter((order) =>
+        order.orders ? order.orders.some((o) => o.totalCnt - o.paidCnt > 0) : []
       )
     );
 
-    console.log(
-      'groupedCompleteOrdersWithTotalPrice',
-      Object.keys(
-        groupByNicknameWithTotalPrice(
-          ordersArray.filter((order) =>
-            order.orders.some((o) => o.totalCnt === o.paidCnt)
-          )
-        )
+    const completedGroup = groupByNicknameWithTotalPrice(
+      ordersArray.filter((order) =>
+        order.orders ? order.orders.some((o) => o.totalCnt === o.paidCnt) : []
       )
+    );
+
+    // 결제 전 주문 그룹화
+    setGroupedPendingOrdersWithTotalPrice(pendingGroup);
+    // 결제 완료 주문 그룹화
+    setGroupedCompleteOrdersWithTotalPrice(completedGroup);
+
+    setTotalPendingOrdersCount(
+      Object.values(pendingGroup).reduce((acc, user) => {
+        // 각 user의 orders를 순회하면서 totalCnt - paidCnt 값을 누적
+        const userPendingCount = user.orders.reduce((orderAcc, order) => {
+          return orderAcc + (order.totalCnt - order.paidCnt);
+        }, 0);
+
+        // 모든 user의 결제 전 상품 수량을 누적
+        return acc + userPendingCount;
+      }, 0)
+    );
+    setTotalCompletedOrdersCount(
+      Object.values(completedGroup).reduce((acc, user) => {
+        // 각 user의 orders를 순회하면서 totalCnt - paidCnt 값을 누적
+        const userCompletedCount = user.orders.reduce((orderAcc, order) => {
+          return orderAcc + order.paidCnt;
+        }, 0);
+
+        // 모든 user의 결제 전 상품 수량을 누적
+        return acc + userCompletedCount;
+      }, 0)
     );
   }, [allOrdersInfo]);
 
@@ -108,10 +116,12 @@ const OrderSheetBox = ({ reservationUrl }) => {
   const groupByNicknameWithTotalPrice = (orders) => {
     return orders.reduce((acc, order) => {
       const nickname = order.reservationParticipantNickname;
-      const totalPriceForOrder = order.orders.reduce((acc, o) => {
-        const cnt = isComplete ? o.totalCnt : o.totalCnt - o.paidCnt;
-        return acc + cnt * o.menuPrice;
-      }, 0);
+      const totalPriceForOrder = order.orders
+        ? order.orders.reduce((acc, o) => {
+            const cnt = isComplete ? o.totalCnt : o.totalCnt - o.paidCnt;
+            return acc + cnt * o.menuPrice;
+          }, 0)
+        : 0;
 
       if (!acc[nickname]) {
         acc[nickname] = { orders: [], totalPrice: 0 };
@@ -122,20 +132,6 @@ const OrderSheetBox = ({ reservationUrl }) => {
 
       return acc;
     }, {});
-  };
-
-  // 결제 전 총 메뉴 수 계산 함수
-  const calculateTotalPendingMenuCount = () => {
-    return allOrders
-      .filter((order) => order.totalCnt - order.paidCnt > 0)
-      .reduce((acc, order) => acc + (order.totalCnt - order.paidCnt), 0);
-  };
-
-  // 결제 완료 총 메뉴 수 계산 함수
-  const calculateTotalCompleteMenuCount = () => {
-    return allOrders
-      .filter((order) => order.totalCnt - order.paidCnt === 0)
-      .reduce((acc, order) => acc + order.totalCnt, 0);
   };
 
   // 수량 증가 함수
@@ -209,37 +205,45 @@ const OrderSheetBox = ({ reservationUrl }) => {
         Object.values(orderCounts).filter((order) => order.count > 0)
       )
     );
-    setPayPrice(calculateTotalPriceForOrdersToSend(ordersToSend));
-    nav(`/customer/pay/${reservationUrl}`);
-  };
 
-  useEffect(() => {
-    console.log('모든 주문 내용', allOrdersInfo);
-    console.log('수량 증가 버튼 클릭', orderCounts);
-  }, [orderCounts]);
+    if (calculateTotalPriceForOrdersToSend(ordersToSend) === 0) {
+      showAlert('결제할 메뉴를 선택해주세요');
+      return;
+    }
+    setPayPrice(calculateTotalPriceForOrdersToSend(ordersToSend));
+    nav(`/customer/order/pay/${reservationUrl}`);
+  };
 
   // 전체 선택 버튼 클릭 시, 각 주문의 paidCnt 값만큼 수량을 채우기
   const handleAllCheckButtonClick = () => {
-    setIsChecked(!isChecked);
-
     if (!isChecked) {
-      // 전체 선택이 체크되었을 때 각 주문의 paidCnt만큼 count 채움
-      const updatedOrderCounts = allOrders.reduce((acc, order) => {
-        if (order.totalCnt - order.paidCnt > 0) {
-          acc[order.orderId] = {
-            count: order.totalCnt - order.paidCnt, // paidCnt 값만큼 채우기
-            menuId: order.menuId,
-            orderId: order.orderId,
-          };
+      // 전체 선택이 체크되었을 때
+      const updatedOrderCounts = {};
+
+      // 모든 주문을 순회하여 paidCnt만큼 count를 채움
+      allOrders.forEach((order) => {
+        if (order.orders) {
+          order.orders.forEach((item) => {
+            const availableCount = item.totalCnt - item.paidCnt;
+            if (availableCount > 0) {
+              updatedOrderCounts[item.orderId] = {
+                count: availableCount, // paidCnt 값만큼 채우기
+                menuId: item.menuId,
+                orderId: item.orderId,
+                menuPrice: item.menuPrice,
+              };
+            }
+          });
         }
-        return acc;
-      }, {});
+      });
 
       setOrderCounts(updatedOrderCounts);
     } else {
       // 전체 선택 해제 시 초기화
       setOrderCounts({});
     }
+
+    setIsChecked(!isChecked);
   };
 
   return (
@@ -253,8 +257,8 @@ const OrderSheetBox = ({ reservationUrl }) => {
             <TotalMenuP>
               총 메뉴{' '}
               {activeTab === 0
-                ? calculateTotalPendingMenuCount()
-                : calculateTotalCompleteMenuCount()}
+                ? totalPendingOrdersCount
+                : totalCompletedOrdersCount}
               개
             </TotalMenuP>
             <DeleteDiv>
@@ -346,9 +350,19 @@ const OrderSheetBox = ({ reservationUrl }) => {
                     <TotalPriceDiv>
                       <TotalPriceP>
                         총 :{' '}
-                        {groupedPendingOrdersWithTotalPrice[
-                          nickname
-                        ].totalPrice.toLocaleString('ko-KR')}{' '}
+                        {groupedPendingOrdersWithTotalPrice[nickname].orders
+                          .reduce((acc, order) => {
+                            return (
+                              acc +
+                              Number(
+                                orderCounts[order.orderId]?.count > 0
+                                  ? orderCounts[order.orderId]?.count *
+                                      order.menuPrice
+                                  : 0
+                              )
+                            );
+                          }, 0)
+                          .toLocaleString('ko-KR')}{' '}
                         원
                       </TotalPriceP>
                     </TotalPriceDiv>

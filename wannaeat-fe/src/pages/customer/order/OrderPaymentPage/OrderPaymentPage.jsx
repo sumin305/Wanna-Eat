@@ -24,7 +24,7 @@ const OrderPaymentPage = () => {
   const [cards, setCards] = useState([]);
   const [goToSlide, setGoToSlide] = useState(null);
   const [selectedardIndex, setSelectedCardIndex] = useState(0);
-  const { selectedCard, setSelectedCard, payPrice, payOrders } =
+  const { selectedCard, setSelectedCard, payPrice, payOrders, setIsAllPaid } =
     useOrderStore();
   const params = useParams();
   // 화면 렌더링될때 호출되는 함수 // 카드 조회

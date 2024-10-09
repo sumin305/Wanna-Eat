@@ -53,7 +53,13 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
   useEffect(() => {
     if (reservationInfo) {
       setReservationId(reservationInfo.reservationId);
-      setReservationStartTime(formatTime(reservationInfo.reservationStartTime));
+      setReservationStartTime(
+        formatTime(
+          reservationInfo.reservationStartTime
+            ? reservationInfo.reservationStartTime
+            : ''
+        )
+      );
       setReservationEndTime(formatTime(reservationInfo.reservationEndTime));
 
       if (reservationEndTime && reservationStartTime) {
@@ -190,8 +196,12 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
       reservationDetails.reservationEndTime
     ) {
       setReservationId(reservationDetails.reservationId);
-      setReservationStartTime(formatTime(reservationInfo.reservationStartTime));
-      setReservationEndTime(formatTime(reservationInfo.reservationEndTime));
+      setReservationStartTime(
+        formatTime(reservationInfo?.reservationStartTime || '08:00')
+      );
+      setReservationEndTime(
+        formatTime(reservationInfo?.reservationEndTime || '18:00')
+      );
     }
 
     setHandleButtonClick(() => handleGotoReservationDetail(item));
@@ -208,7 +218,7 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
           <TableInfoWrapperStyled>
             <SeatLabelStyled>예약 시간 :</SeatLabelStyled>
             <SeatValueStyled>
-              {reservationEndTime} ~ {reservationStartTime}
+              {reservationStartTime} ~ {reservationEndTime}
             </SeatValueStyled>
           </TableInfoWrapperStyled>
           {/* <TableInfoWrapperStyled>

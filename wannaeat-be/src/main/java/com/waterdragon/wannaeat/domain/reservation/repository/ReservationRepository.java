@@ -24,6 +24,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	Page<Reservation> findByUser(User user, Pageable pageable);
 
 	Page<Reservation> findByUserOrderByReservationDateDesc(User user, Pageable pageable);
+
 	int countByUserAndRestaurant(User user, Restaurant restaurant);
 
 	Page<Reservation> findByRestaurantAndReservationDateAndCancelledIsFalse(Restaurant restaurant,
@@ -56,7 +57,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 		@Param("year") int year,
 		@Param("month") int month);
 
-	List<Reservation> findByRestaurantAndReservationDateAndCancelledFalse(Restaurant restaurant, LocalDate reservationDate);
+	List<Reservation> findByRestaurantAndReservationDateAndCancelledFalse(Restaurant restaurant,
+		LocalDate reservationDate);
 
 	List<Reservation> findByRestaurantAndReservationDateAndCancelledFalseAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
 		Restaurant restaurant, LocalDate reservationDate, LocalTime now, LocalTime now2);
@@ -88,13 +90,15 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	@Query("SELECT r FROM Reservation r WHERE r.user = :user AND r.reservationUrl IS NOT NULL AND r.cancelled = false "
 		+ "AND (r.reservationDate > :today OR (r.reservationDate = :today AND r.startTime > :now)) "
 		+ "ORDER BY r.reservationDate ASC, r.startTime ASC")
-	Page<Reservation> findFirstUpcomingReservation(@Param("user") User user, @Param("today") LocalDate today, @Param("now") LocalTime now, Pageable pageable);
+	Page<Reservation> findFirstUpcomingReservation(@Param("user") User user, @Param("today") LocalDate today,
+		@Param("now") LocalTime now, Pageable pageable);
 
 	// 오늘 현재 시간 범위 내에 있는 예약 중 가장 빠른 예약을 찾음 (reservationDate + startTime 기준)
 	@Query("SELECT r FROM Reservation r WHERE r.user = :user AND r.reservationDate = :today "
 		+ "AND r.startTime <= :now AND r.endTime >= :now "
 		+ "ORDER BY r.reservationDate ASC, r.startTime ASC")
-	Page<Reservation> findFirstOngoingReservation(@Param("user") User user, @Param("today") LocalDate today, @Param("now") LocalTime now, Pageable pageable);
+	Page<Reservation> findFirstOngoingReservation(@Param("user") User user, @Param("today") LocalDate today,
+		@Param("now") LocalTime now, Pageable pageable);
 
 	@Query("SELECT r FROM Reservation r WHERE r.user = :user " +
 		"AND r.cancelled = false " +

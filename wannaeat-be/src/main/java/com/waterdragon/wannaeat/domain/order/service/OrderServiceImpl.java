@@ -102,7 +102,8 @@ public class OrderServiceImpl implements OrderService {
 
 		// url로 Reservation 조회하는 시점에 비관적 락 사용 (같은 url이라면 다음 트랜잭션은 여기서 대기)
 		Reservation reservation = reservationRepository.findByReservationUrlWithLock(reservationUrl)
-			.orElseThrow(() -> new ReservationNotFoundException("해당 예약은 존재하지 않거나 퇴실처리 되었습니다. 예약 url : " + reservationUrl));
+			.orElseThrow(
+				() -> new ReservationNotFoundException("해당 예약은 존재하지 않거나 퇴실처리 되었습니다. 예약 url : " + reservationUrl));
 
 		String cartKey = CART_KEY_PREFIX + reservationUrl;
 		Object cachedObject = redisService.getValues(cartKey);

@@ -73,11 +73,13 @@ const usePreventRefresh = (shouldPrevent) => {
 };
 
 function App() {
-  // 로그인 페이지 체크
+  // 로그인페이지, 결제페이지, 보증금 결제페이지 체크
   const isLoginPage = window.location.pathname === '/';
-
-  // 로그인 페이지를 제외한 모든 페이지 새로고침 방지
-  usePreventRefresh(!isLoginPage);
+  const isPayPage = window.location.pathname.startsWith('/customer/order/pay');
+  const isDepositPage =
+    window.location.pathname === '/customer/reservation/deposit-payment';
+  // 로그인페이지, 결제페이지, 보증금 결제페이지를 제외한 모든 페이지 새로고침 방지
+  usePreventRefresh(!(isLoginPage || isPayPage || isDepositPage));
 
   useEffect(() => {
     // 알림 권한 요청 및 포그라운드 알림 처리
@@ -86,7 +88,7 @@ function App() {
     // 카테고리 데이터 가져오기
     getCategories();
     getMerchantCategories();
-  }, []); // 빈 배열을 의존성 배열로 사용하여 초기 실행 시 한 번만 호출되도록 설정
+  }, [window.location.pathname]); // 빈 배열을 의존성 배열로 사용하여 초기 실행 시 한 번만 호출되도록 설정
 
   return (
     <BrowserRouter>

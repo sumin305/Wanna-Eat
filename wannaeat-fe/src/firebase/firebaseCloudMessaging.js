@@ -22,7 +22,6 @@ export function requestPermission() {
   Notification.requestPermission().then((permission) => {
     if (permission === 'granted') {
       console.log('알림 권한 허용됨');
-      getFcmToken();
     } else {
       console.log('알림 권한이 거부되었습니다.');
     }
@@ -32,11 +31,6 @@ export function requestPermission() {
 // FCM 토큰 발급 함수
 export async function getFcmToken() {
   try {
-    // 기존 토큰 삭제 (기존 토큰이 있다면)
-    await deleteToken(messaging).catch((err) => {
-      console.warn('기존 토큰 삭제 실패:', err);
-    });
-
     // 새로운 토큰 발급
     const newToken = await getToken(messaging, {
       vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY,

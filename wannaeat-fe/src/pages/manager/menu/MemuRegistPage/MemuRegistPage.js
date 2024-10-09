@@ -62,7 +62,7 @@ export const UploadButton = styled.button`
 export const CloseButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  gap: 20px;  // 버튼 간의 간격을 추가
+  gap: 20px; // 버튼 간의 간격을 추가
   margin-top: 20px;
 `;
 
@@ -74,7 +74,7 @@ export const CloseButton = styled.button`
   font-size: 18px;
   border-radius: 5px;
   cursor: pointer;
-  width: 48%;  // 버튼 너비를 줄여서 간격 조정
+  width: 48%; // 버튼 너비를 줄여서 간격 조정
   margin-top: 20px;
 
   &:hover {
@@ -90,7 +90,7 @@ export const SubmitButton = styled.button`
   font-size: 18px;
   border-radius: 5px;
   cursor: pointer;
-  width: 48%;  // 버튼 너비를 줄여서 간격 조정
+  width: 48%; // 버튼 너비를 줄여서 간격 조정
   margin-top: 20px;
 
   &:hover {
@@ -106,9 +106,8 @@ export const PriceContainer = styled.div`
 
 // 가격 인풋 필드 크기 조정
 export const PriceInput = styled(InputField)`
-  width: 180px;  // 가격 인풋 크기를 줄임
+  width: 180px; // 가격 인풋 크기를 줄임
 `;
-
 
 // 꾸미기 버튼 스타일 추가
 export const DecorateButton = styled.button`
@@ -119,7 +118,7 @@ export const DecorateButton = styled.button`
   font-size: 18px;
   border-radius: 5px;
   cursor: pointer;
-  width: 48%;  // 버튼 너비를 줄여서 간격 조정
+  width: 48%; // 버튼 너비를 줄여서 간격 조정
   margin-top: 20px;
 
   &:hover {
@@ -131,6 +130,6 @@ export const DecorateButton = styled.button`
 export const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;  // 버튼 간의 간격
+  gap: 10px; // 버튼 간의 간격
   margin-top: 10px;
 `;

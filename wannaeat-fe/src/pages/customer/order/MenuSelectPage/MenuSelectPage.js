@@ -80,7 +80,7 @@ export const MenuContentContainer = styled.div`
   justify-content: center;
   position: relative;
   width: 70%;
-  padding-left: 4%;
+  padding: 4%;
 `;
 
 export const MenuName = styled.p`

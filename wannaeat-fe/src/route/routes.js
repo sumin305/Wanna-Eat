@@ -9,6 +9,7 @@ import PasswordRegistPage from 'pages/common/PasswordRegistPage/PasswordRegistPa
 import ManagerMainPage from '../pages/manager/main/MainPage.jsx';
 import AdminPage from '../pages/manager/reservation/AdminPage/AdminPage.jsx';
 import SeatDecoratePage from '../pages/manager/restaurant/SeatDecoratePage/SeatDecoratePage.jsx';
+import ManagerRegistPage from 'pages/manager/restaurant/ManagerRegistPage/ManagerRegistPage.jsx';
 import RestaurantManagePage from '../pages/manager/restaurant/RestaurantManagePage/RestaurantManagePage.jsx';
 import StatisticsPage from 'pages/manager/statistics/StatisticsPage/StatisticsPage.jsx';
 import PeakTimePage from 'pages/manager/statistics/PeakTimePage/PeakTimePage.jsx';
@@ -65,6 +66,10 @@ const AppRoutes = () => {
         <Route
           path="/manager/nickname-edit"
           element={<ManagerNicknameEditPage />}
+        />
+        <Route
+          path="/manager/restaurant-regist"
+          element={<ManagerRegistPage />}
         />
         <Route
           path="/manager/restaurant/restaurant-manage"

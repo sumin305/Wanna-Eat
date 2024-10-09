@@ -91,8 +91,8 @@ export const ReservationMenuList = styled.div`
     display: none; /* WebKit 기반 브라우저에서 스크롤바 숨기기 */
   }
 
-  -ms-overflow-style: none;  /* IE, Edge에서 스크롤바 숨기기 */
-  scrollbar-width: none;  /* Firefox에서 스크롤바 숨기기 */
+  -ms-overflow-style: none; /* IE, Edge에서 스크롤바 숨기기 */
+  scrollbar-width: none; /* Firefox에서 스크롤바 숨기기 */
 `;
 
 // 개별 메뉴 항목 스타일
@@ -127,39 +127,39 @@ export const ButtonGroup = styled.div`
 
 // 증감 버튼 스타일
 export const IncrementButton = styled.button`
-    background-color: #e67e22;
-    color: white;
-    border: 1px solid #e67e22;
-    padding: 5px 7px;
-    font-size: 13px;
-    font-weight: bold;
-    border-radius: 20px; /* 둥글게 만듦 */
-    cursor: pointer;
-    margin-left: 3px;
-    transition: all 0.3s ease;
+  background-color: #e67e22;
+  color: white;
+  border: 1px solid #e67e22;
+  padding: 5px 7px;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 20px; /* 둥글게 만듦 */
+  cursor: pointer;
+  margin-left: 3px;
+  transition: all 0.3s ease;
 
-    &:hover {
-        background-color: white;
-        color: #e67e22;
-    }
+  &:hover {
+    background-color: white;
+    color: #e67e22;
+  }
 `;
 
 export const DecrementButton = styled.button`
-    background-color: #e67e22;
-    color: white;
-    border: 1px solid #e67e22;
-    padding: 5px 8px;
-    font-size: 13px;
-    font-weight: bold;
-    border-radius: 20px; /* 둥글게 만듦 */
-    cursor: pointer;
-    margin-left: 3px;
-    transition: all 0.3s ease;
+  background-color: #e67e22;
+  color: white;
+  border: 1px solid #e67e22;
+  padding: 5px 8px;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 20px; /* 둥글게 만듦 */
+  cursor: pointer;
+  margin-left: 3px;
+  transition: all 0.3s ease;
 
-    &:hover {
-        background-color: white;
-        color: #e67e22;
-    }
+  &:hover {
+    background-color: white;
+    color: #e67e22;
+  }
 `;
 
 // 서빙 수량 표시 스타일

@@ -7,6 +7,7 @@ import {
 import useHeaderStore from 'stores/common/useHeaderStore';
 import paper from '../../../.././../assets/icons/common/paper.svg';
 import Button from '../../../../../component/common/button/WEButton/WEButton';
+import SeatingMap from 'component/manager/main/SeatingMap/SeatingMap.jsx';
 import moment from 'moment';
 import useModalStore from 'stores/common/useModalStore';
 import {
@@ -126,7 +127,9 @@ const ReservationDetailPage = () => {
           ':' +
           reservationEndTime.split(':')[1]}
       </ReservationInfoTitle>
-      <SeatDecorateInfo></SeatDecorateInfo>
+      <SeatDecorateInfo>
+        <SeatingMap />
+      </SeatDecorateInfo>
       <LinkInfoWrapper>
         <LinkInfoTitle>링크를 단톡방에 공유해주세요</LinkInfoTitle>
         <LinkInfoTextWrapper>

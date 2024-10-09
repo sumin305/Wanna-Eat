@@ -73,6 +73,7 @@ const MainPage = () => {
 
   const [isMyRestaurant, setIsMyRestaurant] = useState(true);
 
+  // 매장 구조도 등록이 안 되어 있는 경우!!!!!
   const handle404Error = () => {
     setIsMyRestaurant(false);
   };
@@ -125,6 +126,10 @@ const MainPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleModalOpen = () => {
+    // if (isMyRestaurant) {
+    //   navigate('/manager/restaurant/seat-decorate');
+    // }
+
     setIsModalOpen(true);
   };
 

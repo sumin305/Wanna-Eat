@@ -3,8 +3,18 @@ import theme from '../../../../../style/common/theme';
 
 const ReservationDetailPageContainer = styled.div`
   overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (min-width: 480px) {
+    overflow-y: scroll;
+  }
 `;
+
 const ReservationTitleWrapper = styled.div`
   display: flex;
   justify-content: space-between;

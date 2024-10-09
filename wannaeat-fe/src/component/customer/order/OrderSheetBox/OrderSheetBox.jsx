@@ -210,7 +210,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
       )
     );
     setPayPrice(calculateTotalPriceForOrdersToSend(ordersToSend));
-    nav(`/customer/pay/${reservationUrl}`);
+    nav(`/customer/order/pay/${reservationUrl}`);
   };
 
   useEffect(() => {

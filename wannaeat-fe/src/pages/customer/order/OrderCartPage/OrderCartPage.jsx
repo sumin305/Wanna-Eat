@@ -57,7 +57,7 @@ const OrderCartPage = () => {
   const [menuCounts, setMenuCounts] = useState([]);
   const showAlert = useAlert();
   const [activeTab, setActiveTab] = useState(0);
-  const tabs = ['나의 메뉴', '전체 메뉴'];
+  const tabs = ['전체 메뉴', '나의 메뉴'];
 
   const {
     isConnected,
@@ -98,24 +98,19 @@ const OrderCartPage = () => {
     setIsShowBackIcon(true);
 
     const validateAndConnect = async () => {
-      // const response = await validateReservationUrl(reservationUrl);
+      const response = await validateReservationUrl(reservationUrl);
 
       // // reservationUrl 유효성 검사 실행 후 유효한 경우
-      // if (response.status === 200) {
-      // stompClient가 없는 경우에만 소켓 연결 시도
-      console.log('stompClient', stompClient);
-      if (!stompClient) {
+      if (response.status === 200) {
+        console.log('stompClient', stompClient);
         initializeConnection();
       } else {
-        console.log('이미 소켓이 연결되어 있습니다.');
+        // 유효하지 않은 reservationUrl일 경우
+        console.log(response.response.data.message);
+        nav('/customer/order/notexist', {
+          state: { message: response.response.data.message },
+        });
       }
-      // } else {
-      //   // 유효하지 않은 reservationUrl일 경우
-      //   console.log(response.response.data.message);
-      //   nav('/customer/order/notexist', {
-      //     state: { message: response.response.data.message },
-      //   });
-      // }
     };
 
     validateAndConnect();
@@ -466,17 +461,7 @@ const OrderCartPage = () => {
 
       if (stompClient && isConnected) {
         try {
-          stompClient.send(
-            `/api/public/sockets/orders/register`,
-            {},
-            JSON.stringify(orderRegisterRequestDto)
-          );
-          console.log('주문에 보내는 내용:', orderRegisterRequestDto);
-          const sorted = reorderArray(cartElements);
-          setCartElements(sorted);
-          setAllMenusInfo({ cartDetailResponseDto: { cartElements: [] } });
-          setAllMenusSortInfo({ cartDetailResponseDto: { cartElements: [] } });
-          setMenuCounts([]);
+          sendOrder(orderRegisterRequestDto);
         } catch (error) {
           console.log('주문 실패:', error);
           showAlert('주문에 실패했습니다.');
@@ -490,6 +475,20 @@ const OrderCartPage = () => {
     open();
   };
 
+  const sendOrder = async (orderRegisterRequestDto) => {
+    console.log('전송하기');
+    console.log(orderRegisterRequestDto);
+    await stompClient.send(
+      `/api/public/sockets/orders/register`,
+      {},
+      JSON.stringify(orderRegisterRequestDto)
+    );
+    const sorted = reorderArray(cartElements);
+    setCartElements(sorted);
+    setAllMenusInfo([]);
+    setAllMenusSortInfo([]);
+    setMenuCounts(0);
+  };
   const handleDeleteMenuButton = (menuId) => {
     const cartDeleteRequestDto = {
       reservationUrl: reservationUrl,
@@ -579,7 +578,16 @@ const OrderCartPage = () => {
           <MenuContainer>
             <TotalMenuP>
               {activeTab === 0
-                ? `총 메뉴 ${cartElements
+                ? `총 메뉴 ${cartElements.reduce((total, menu) => {
+                    return (
+                      total +
+                      Object.values(menu.menuInfo).reduce(
+                        (count, menuItem) => count + menuItem.menuCnt,
+                        0
+                      )
+                    );
+                  }, 0)}개`
+                : `총 메뉴 ${cartElements
                     .filter(
                       (menu) =>
                         Number(menu.reservationParticipantId) ===
@@ -593,16 +601,7 @@ const OrderCartPage = () => {
                           0
                         )
                       );
-                    }, 0)}개`
-                : `총 메뉴 ${cartElements.reduce((total, menu) => {
-                    return (
-                      total +
-                      Object.values(menu.menuInfo).reduce(
-                        (count, menuItem) => count + menuItem.menuCnt,
-                        0
-                      )
-                    );
-                  }, 0)}개`}
+                    }, 0)}개`}
             </TotalMenuP>
             <DeleteDiv>
               {activeTab === 0 ? (
@@ -623,6 +622,65 @@ const OrderCartPage = () => {
         </TopBox>
         <MenuDiv>
           {activeTab === 0 ? (
+            <>
+              {cartElements &&
+                cartElements.map((menus, menuIndex) => (
+                  <div key={menuIndex}>
+                    <PeopleP>
+                      {menus.reservationParticipantNickname || ''}
+                    </PeopleP>
+                    <LineDiv />
+                    <div>
+                      {menus.menuInfo ? (
+                        Object.values(menus.menuInfo).map((menu, itemIndex) => (
+                          <div key={itemIndex}>
+                            <FoodDiv>
+                              <MenuImg src={menu.menuImage}></MenuImg>
+                              <FoodInfoDiv>
+                                <FoodInfoTopDiv>
+                                  <MenuNameP>{menu.menuName}</MenuNameP>
+                                </FoodInfoTopDiv>
+                                <FoodInfoBottomDiv>
+                                  <FoodInfoCountDiv>
+                                    <FoodInfoCountP>
+                                      {menu.menuCnt}
+                                    </FoodInfoCountP>
+                                  </FoodInfoCountDiv>
+                                  <FoodPriceP>
+                                    {menu.menuTotalPrice}원
+                                  </FoodPriceP>
+                                </FoodInfoBottomDiv>
+                              </FoodInfoDiv>
+                            </FoodDiv>
+                            <LineDiv />
+                          </div>
+                        ))
+                      ) : (
+                        <p>메뉴 정보가 없습니다.</p>
+                      )}
+                    </div>
+                    <TotalPriceDiv>
+                      <TotalPriceP>
+                        총:{' '}
+                        {calculateTotalPrice(menuIndex).toLocaleString(
+                          'ko-KR'
+                        ) || ''}
+                        원
+                      </TotalPriceP>
+                    </TotalPriceDiv>
+                    <br />
+                  </div>
+                ))}
+              <LineDiv />
+              <TotalPriceDiv>
+                {menuCounts.length > 0 ? (
+                  <TotalPriceP>
+                    총: {calculateTotalMenuPrice().toLocaleString('ko-KR')}원
+                  </TotalPriceP>
+                ) : null}
+              </TotalPriceDiv>
+            </>
+          ) : (
             <>
               {cartElements &&
                 cartElements
@@ -709,74 +767,17 @@ const OrderCartPage = () => {
                       <TotalPriceDiv>
                         <TotalPriceP>
                           총:{' '}
-                          {calculateTotalPrice(menuIndex).toLocaleString(
-                            'ko-KR'
-                          ) || ''}{' '}
+                          {calculateTotalPrice(menuIndex)
+                            ? calculateTotalPrice(menuIndex).toLocaleString(
+                                'ko-KR'
+                              )
+                            : 0}{' '}
                           원
                         </TotalPriceP>
                       </TotalPriceDiv>
                       <br />
                     </div>
                   ))}
-            </>
-          ) : (
-            <>
-              {cartElements &&
-                cartElements.map((menus, menuIndex) => (
-                  <div key={menuIndex}>
-                    <PeopleP>
-                      {menus.reservationParticipantNickname || ''}
-                    </PeopleP>
-                    <LineDiv />
-                    <div>
-                      {menus.menuInfo ? (
-                        Object.values(menus.menuInfo).map((menu, itemIndex) => (
-                          <div key={itemIndex}>
-                            <FoodDiv>
-                              <MenuImg src={menu.menuImage}></MenuImg>
-                              <FoodInfoDiv>
-                                <FoodInfoTopDiv>
-                                  <MenuNameP>{menu.menuName}</MenuNameP>
-                                </FoodInfoTopDiv>
-                                <FoodInfoBottomDiv>
-                                  <FoodInfoCountDiv>
-                                    <FoodInfoCountP>
-                                      {menu.menuCnt}
-                                    </FoodInfoCountP>
-                                  </FoodInfoCountDiv>
-                                  <FoodPriceP>
-                                    {menu.menuTotalPrice}원
-                                  </FoodPriceP>
-                                </FoodInfoBottomDiv>
-                              </FoodInfoDiv>
-                            </FoodDiv>
-                            <LineDiv />
-                          </div>
-                        ))
-                      ) : (
-                        <p>메뉴 정보가 없습니다.</p>
-                      )}
-                    </div>
-                    <TotalPriceDiv>
-                      <TotalPriceP>
-                        총:{' '}
-                        {calculateTotalPrice(menuIndex).toLocaleString(
-                          'ko-KR'
-                        ) || ''}
-                        원
-                      </TotalPriceP>
-                    </TotalPriceDiv>
-                    <br />
-                  </div>
-                ))}
-              <LineDiv />
-              <TotalPriceDiv>
-                {menuCounts.length > 0 ? (
-                  <TotalPriceP>
-                    총: {calculateTotalMenuPrice().toLocaleString('ko-KR')}원
-                  </TotalPriceP>
-                ) : null}
-              </TotalPriceDiv>
             </>
           )}
         </MenuDiv>

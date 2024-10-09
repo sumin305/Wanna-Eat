@@ -10,7 +10,7 @@ const TabContainer = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
-  padding: 0.625rem 0;
+  padding: 1rem 0 0 0;
   max-width: 100vw;
   box-sizing: border-box;
   position: relative;
@@ -23,10 +23,10 @@ const TabContainer = styled.div`
 `;
 
 const Tab = styled.button`
+  width: 3.5rem;
   flex: 0 0 auto;
-  padding: 0.38rem 1.25rem;
   margin: 0 0.625rem;
-  font-size: ${theme.fontSize.px11};
+  font-size: ${theme.fontSize.px15};
   font-weight: ${(props) => (props.active ? 700 : 500)};
   border: none;
   background-color: transparent;
@@ -36,6 +36,25 @@ const Tab = styled.button`
   white-space: nowrap;
 `;
 
+const TabWrapper = styled.div`
+  margin-right: 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+const TabHr = styled.hr`
+  width: 3.8rem;
+  height: 2.5px;
+  border: none;
+  background-color: ${(props) =>
+    props.active ? theme.color.primary : theme.color.disabled};
+  display: ${(props) => (props.active ? 'block' : 'none')};
+  margin: 0.5rem 0.625rem;
+  @media (min-width: 480px) {
+    width: 3.8rem;
+    height: 3px;
+  }
+`;
 const TabUnderline = styled.div`
   position: absolute;
   bottom: 0;
@@ -43,7 +62,7 @@ const TabUnderline = styled.div`
   height: 0.25rem;
   background-color: ${theme.color.primary};
   width: ${(props) => props.width}px;
-  transform: translateX(${(props) => props.offset}px);
+  transform: translateX(${(props) => props.offset + window.innerWidth / 2}px);
 `;
 
-export { TabContainer, Tab, TabUnderline };
+export { TabContainer, Tab, TabUnderline, TabHr, TabWrapper };

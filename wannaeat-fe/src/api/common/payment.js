@@ -18,8 +18,9 @@ export const readyMenuPaymentByKakaoPay = async () => {
 };
 
 // 음식비 결제 카페
-export const payMenuByKakaoPay = async () => {
-  return (await clientInstance.post('/api/payments/menus/kakao'))
+export const payMenuByKakaoPay = async (requestDto) => {
+  return await clientInstance
+    .post('/api/public/payments/menus/kakao', requestDto)
     .then((result) => result)
     .catch((error) => error);
 };
@@ -30,6 +31,14 @@ export const payMenuByKakaoPay = async () => {
 export const payDepositPaymentBySsafyPay = async (requestDto) => {
   return await authClientInstance
     .post('/api/payments/deposit/ssafy', requestDto)
+    .then((result) => result)
+    .catch((error) => error);
+};
+
+// 음식비 결제 싸페
+export const payMenuBySsafyPay = async (requestDto) => {
+  return await authClientInstance
+    .post('/api/payments/menus/ssafy', requestDto)
     .then((result) => result)
     .catch((error) => error);
 };

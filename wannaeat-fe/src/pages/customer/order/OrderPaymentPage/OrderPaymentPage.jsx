@@ -91,7 +91,7 @@ const OrderPaymentPage = () => {
       return;
     }
 
-    window.location.href = result.data.data.next_redirect_pc_url;
+    window.location.href = result.data.data.next_redirect_mobile_url;
     return;
   };
 

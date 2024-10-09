@@ -4,12 +4,21 @@ import WEBlackOutLayout from './layout/common/WEBlackOutLayout/WEBlackOutLayout.
 import WEModal from './component/common/modal/WEModal.jsx';
 import AppRoutes from './route/routes.js';
 import WEHeader from './layout/common/WEHeader/WEHeader.jsx';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useCommonStore from './stores/common/useCommonStore.js';
 import { useLocation } from 'react-router-dom';
+
 const Main = () => {
   const { setCategories } = useCommonStore();
   const location = useLocation();
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    const storageRole = window.localStorage.getItem('role');
+    setRole(storageRole);
+    console.log('storageRole', storageRole);
+    console.log('location.pathname', location.pathname);
+  }, []);
 
   // 헤더 렌더링할 조건
   const shouldRenderHeader = () => {
@@ -20,9 +29,13 @@ const Main = () => {
       '/password-regist',
     ].includes(location.pathname);
   };
+  console.log('역할', window.localStorage.getItem('role'));
   // 푸터 렌더링할 조건
   const shouldRenderFooter = () => {
-    return !['/', '/join', '/password-regist'].includes(location.pathname);
+    return (
+      !['/', '/join', '/password-regist'].includes(location.pathname) &&
+      (!location.pathname.startsWith('/customer/order') || role !== null)
+    );
   };
 
   return (

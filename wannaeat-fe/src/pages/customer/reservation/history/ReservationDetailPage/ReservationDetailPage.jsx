@@ -7,7 +7,7 @@ import {
 import useHeaderStore from 'stores/common/useHeaderStore';
 import paper from '../../../.././../assets/icons/common/paper.svg';
 import Button from '../../../../../component/common/button/WEButton/WEButton';
-import SeatingMap from 'component/manager/main/SeatingMap/SeatingMap.jsx';
+import ReservationSeatMap from 'component/customer/reservation/ReservationSeatMap/ReservationSeatMap.jsx';
 import moment from 'moment';
 import useModalStore from 'stores/common/useModalStore';
 import {
@@ -50,12 +50,12 @@ const ReservationDetailPage = () => {
   useEffect(() => {
     const fetchReservationDetail = async () => {
       const result = await getReservationDetail(id);
-      console.log(result);
       if (result.status !== 200) {
         alert('예약 상세 조회 실패');
         navigate(-1);
         return;
       }
+
       const reservation = result.data.data;
       setRestaurantName(reservation.restaurantName);
       setReservationDate(reservation.reservationDate);
@@ -128,7 +128,7 @@ const ReservationDetailPage = () => {
           reservationEndTime.split(':')[1]}
       </ReservationInfoTitle>
       <SeatDecorateInfo>
-        <SeatingMap />
+        <ReservationSeatMap OccupiedList={seatList} />
       </SeatDecorateInfo>
       <LinkInfoWrapper>
         <LinkInfoTitle>링크를 단톡방에 공유해주세요</LinkInfoTitle>

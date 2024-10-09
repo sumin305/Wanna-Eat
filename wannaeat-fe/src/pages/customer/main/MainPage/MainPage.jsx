@@ -272,7 +272,7 @@ const MainPage = () => {
                 </RestaurantInfoName>
                 <RestaurantDetailWrapper>
                   <RestaurantMyReservation>
-                    {restaurant.restaurantVisitCount}명
+                    {restaurant.restaurantVisitCount}번 방문
                   </RestaurantMyReservation>
                   <RestaurantMyReservation>
                     {restaurant.restaurantCategory}

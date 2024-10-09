@@ -19,7 +19,7 @@ import paper from '../../../.././../assets/icons/common/paper.svg';
 import useReservationStore from '../../../../../stores/customer/useReservationStore.js';
 import useMapFilterStore from '../../../../../stores/map/useMapFilterStore.js';
 import { useNavigate } from 'react-router-dom';
-
+import useRestaurantStore from 'stores/customer/useRestaurantStore';
 const SuccessPage = () => {
   const {
     reservationDate,
@@ -32,7 +32,7 @@ const SuccessPage = () => {
   } = useReservationStore();
   const { resetMapFilterStore } = useMapFilterStore();
 
-  const { restaurantName } = useReservationStore();
+  const { restaurantName } = useRestaurantStore();
   const navigate = useNavigate();
   const handleCopyButtonClick = (e) => {
     navigator.clipboard.writeText(reservationUrl);

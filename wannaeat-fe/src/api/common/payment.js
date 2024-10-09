@@ -10,6 +10,20 @@ export const payDepositPaymentByKakaoPay = async (requestDto) => {
     .catch((error) => error);
 };
 
+// 보증금 결제완료 카페
+export const payDepositPaymentSuccessByKakaoPay = async (
+  paymentId,
+  pgToken,
+  type
+) => {
+  return await clientInstance
+    .get(
+      `/api/public/payments/completed/kakao?payment_id=${paymentId}&pg_token=${pgToken}&type=${type}`
+    )
+    .then((result) => result)
+    .catch((error) => error);
+};
+
 // 음식비 결제준비완료 카페
 export const readyMenuPaymentByKakaoPay = async () => {
   return (await clientInstance.post('/api/payments/menus/ready/kakao'))
@@ -25,6 +39,7 @@ export const payMenuByKakaoPay = async (requestDto) => {
     .catch((error) => error);
 };
 
+export const payMenuSuccessByKakaoPay = async (paymentId, pg_token, type) => {};
 /*싸피페이*/
 
 // 보증금 결제 싸페

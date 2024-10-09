@@ -1,4 +1,5 @@
 import useReservationStore from '../../../../stores/customer/useReservationStore.js';
+import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
 import {
   TimeSelectModalBoxContainer,
   TimeSelectModalTitleStyled,
@@ -12,11 +13,29 @@ import Button from '../../../common/button/WEButton/WEButton';
 import theme from '../../../../style/common/theme';
 import { useEffect, useState } from 'react';
 import Textfield from '../../../common/textfield/WETextfield/WETextfield.jsx';
+import moment from 'moment';
+
+// 30분 단위로 시간을 계산하는 함수
+const generateTimes = (startTime, endTime, isToday = false) => {
+  let times = [];
+  let currentTime = moment(startTime, 'HH:mm');
+  const now = moment();
+
+  while (currentTime.isBefore(moment(endTime, 'HH:mm'))) {
+    // 오늘 날짜인 경우 현재 시간 이후의 시간만 추가
+    if (!isToday || currentTime.isAfter(now)) {
+      times.push(currentTime.format('HH:mm'));
+    }
+    currentTime = currentTime.add(30, 'minutes');
+  }
+
+  return times;
+};
+
 const TimeSelectModalBox = () => {
   const {
+    reservationDate,
     isLunch,
-    lunchTimes,
-    dinnerTimes,
     setIsLunch,
     setStartTime,
     setEndTime,
@@ -26,11 +45,36 @@ const TimeSelectModalBox = () => {
     memberCount,
   } = useReservationStore();
 
+  const { restaurant } = useRestaurantStore();
+  console.log('restaurant: ', restaurant);
+
+  const today = moment().format('YYYY-MM-DD');
+  const isToday = today === reservationDate;
+
+  // 기본 lunch, dinner 나누는 시간은 16:00
+  const defaultBreakStartTime = '16:00';
+  const defaultBreakEndTime = '16:00';
+  const lunchTimes = generateTimes(
+    restaurant.restaurantOpenTime,
+    restaurant.breakStartTime
+      ? restaurant.breakStartTime
+      : defaultBreakStartTime,
+    isToday
+  );
+  const dinnerTimes = generateTimes(
+    restaurant.breakEndTime ? restaurant.breakEndTime : defaultBreakEndTime,
+    restaurant.restaurantCloseTime,
+    isToday
+  );
+  console.log('lunchTimes', lunchTimes);
+  console.log('dinnerTimes', dinnerTimes);
+
   const [memCnt, setMemCnt] = useState(0);
 
   useEffect(() => {
     setMemCnt(memberCount === -1 ? 0 : memberCount);
   }, []);
+
   const handleHeadCountChange = (e) => {
     if (e.target.value === '') {
       setMemCnt(0);

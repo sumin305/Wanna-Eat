@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import useHeaderStore from 'stores/common/useHeaderStore.js';
 import useTextfieldStore from 'stores/common/useTextfieldStore.js';
-// import useDropdownStore from 'stores/common/useDropdownStore.js';
 import validateName from 'utils/manager/restaurantRegistValidation.js';
 import {
   RestaurantRegistPageStyled,
@@ -11,15 +10,19 @@ import {
   DropdownWrapperStyled,
   InputWithLabelStyled,
   InputWrapperStyled,
+  UploadButton,
 } from './RestaurantManagePage.js';
 import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore.js';
 import WETextField from 'component/common/textfield/WETextfield/WETextfield.jsx';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
-// import WETimeDropdown from 'component/manager/WETimeDropdown.jsx';
 import MapModal from 'component/manager/map/MapModal.jsx';
-import { registRestaurant } from 'api/manager/restaurant/restaurant.js';
-import WEDropdown from '../../../../component/common/dropdown/WEDropdown.jsx';
+import {
+  registRestaurant,
+  updateRestaurant,
+  getRestaurantData,
+} from 'api/manager/restaurant/restaurant.js';
+import WEDropdown from 'component/common/dropdown/WEDropdown.jsx';
 import useMapFilterStore from 'stores/map/useMapFilterStore.js';
 import {
   useDropdownStore,
@@ -27,12 +30,14 @@ import {
   useEndTimeDropdownStore,
   useBreakStartTimeDropdownStore,
   useBreakEndTimeDropdownStore,
-} from '../../../../stores/common/useDropdownStore.js';
+  useDurationDropdownStore,
+} from 'stores/common/useDropdownStore.js';
 import useAlert from 'utils/alert.js';
-import useReservationStore from '../../../../stores/customer/useReservationStore.js';
+import useReservationStore from 'stores/customer/useReservationStore.js';
 import { useNavigate } from 'react-router-dom';
+import PlusImg from 'assets/icons/menu/Plus.svg';
 
-const RestaurantRegistPage = () => {
+const RestaurantManagePage = () => {
   const nav = useNavigate();
   const tabs = ['사업자', '매장'];
   const { setIsCarrot, setPageName, setIsUnderLine } = useHeaderStore();
@@ -46,23 +51,23 @@ const RestaurantRegistPage = () => {
   const { lunchTimes, dinnerTimes } = useReservationStore();
 
   const { setItems: setVisitTimeItems } = useVisitTimeDropdownStore();
+  const { setItems: setDurationTimeItems } = useDurationDropdownStore();
   const { setItems: setEndTimeItems } = useEndTimeDropdownStore();
   const { setItems: setBreakStartTimeItems } = useBreakStartTimeDropdownStore();
   const { setItems: setBreakEndTimeItems } = useBreakEndTimeDropdownStore();
+
+  const [previewUrl, setPreviewUrl] = useState(null); // 이미지 미리보기용 URL
 
   const showAlert = useAlert();
   const restaurantId = window.localStorage.getItem('restaurantId') || '';
   const allTimes = [...lunchTimes, ...dinnerTimes];
 
   const [restaurantFormData, setRestaurantFormData] = useState({
-    // restaurantOpenTime: '',
-    // restaurantCloseTime: '',
     breakStartTime: '',
     breakEndTime: '',
     maxReservationTime: '',
     minMemberCount: '',
     maxMemberCount: '',
-    // depositPerMember: '',
     restaurantDescription: '',
     restaurantImages: [],
   });
@@ -72,82 +77,147 @@ const RestaurantRegistPage = () => {
   };
 
   const handleMapConfirm = (latitude, longitude, address) => {
-    console.log('주소 잘왔나', address);
     setManagerFormData('lat', latitude);
     setManagerFormData('lng', longitude);
     setManagerFormData('address', address);
   };
-  console.log('사업자 정보', managerFormData);
-  console.log('레스토랑 정보', restaurantFormData);
 
-  // 확인 버튼을 누르면 호출되는 함수
-  const handleRegistButtonClick = async () => {
-    const response = await registRestaurant({
-      restaurantOwnerName: managerFormData.name,
-      restaurantBusinessNumber: managerFormData.number,
-      restaurantAddress: managerFormData.address,
-      restaurantPhone: managerFormData.phone,
-      restaurantName: managerFormData.restaurantName,
-      restaurantCategoryId: managerFormData.businessType,
-      latitude: managerFormData.lat,
-      longitude: managerFormData.lng,
-      restaurantOpenTime: managerFormData.restaurantOpenTime,
-      restaurantCloseTime: managerFormData.restaurantCloseTime,
-      depositPerMember: managerFormData.depositPerMember,
-    });
-    console.log(response);
-    if (response.status === 201) {
-      const restaurantId = response.data.data;
-      // 매장 등록 시 로컬스토리지에 restaurantId 저장
-      window.localStorage.setItem('restaurantId', restaurantId);
-      setActiveTab(1);
-      showAlert(response.data.message);
-    } else if (response.status === 400) {
-      showAlert('값을 형식에 맞게 입력하세요.');
-    } else {
-      showAlert(response.response.data.message);
-    }
-  };
-
-  // 카테고리가 선택되면 호출되는 함수
   const handleCategoryOnSelect = (e) => {
     const categories = JSON.parse(localStorage.getItem('categories'));
-    const categoryId = categories.filter(
+    const categoryId = categories.find(
       (category) => category.restaurantCategoryName === e
-    )[0].restaurantCategoryId;
-    console.log(categoryId);
+    ).restaurantCategoryId;
     setManagerFormData('businessType', categoryId);
   };
 
-  // 메뉴버튼을 클릭하면 호출되는 함수
   const handleMenuButtonClick = () => {
     nav(`/manager/menu`);
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    setRestaurantFormData((prevData) => ({
+      ...prevData,
+      restaurantImages: file,
+    }));
+    setPreviewUrl(URL.createObjectURL(file)); // 이미지 미리보기 URL 설정
+  };
+
+  const handleRegistButtonClick = async () => {
+    if (activeTab === 0) {
+      const response = await registRestaurant({
+        restaurantOwnerName: managerFormData.name,
+        restaurantBusinessNumber: managerFormData.number,
+        restaurantAddress: managerFormData.address,
+        restaurantPhone: managerFormData.phone,
+        restaurantName: managerFormData.restaurantName,
+        restaurantCategoryId: managerFormData.businessType,
+        latitude: managerFormData.lat,
+        longitude: managerFormData.lng,
+        restaurantOpenTime: managerFormData.restaurantOpenTime,
+        restaurantCloseTime: managerFormData.restaurantCloseTime,
+        depositPerMember: managerFormData.depositPerMember,
+      });
+      if (response.status === 201) {
+        const restaurantId = response.data.data;
+        window.localStorage.setItem('restaurantId', restaurantId);
+        setActiveTab(1);
+        showAlert(response.data.message);
+      } else {
+        showAlert('값을 형식에 맞게 입력하세요.');
+      }
+    } else if (activeTab === 1) {
+      const formData = new FormData();
+
+      // managerFormData와 restaurantFormData를 객체로 묶어서 JSON 문자열로 변환
+      const restaurantEditRequestDto = {
+        restaurantOwnerName: managerFormData.name,
+        restaurantBusinessNumber: managerFormData.number,
+        restaurantAddress: managerFormData.address,
+        restaurantPhone: managerFormData.phone,
+        restaurantName: managerFormData.restaurantName,
+        restaurantCategoryId: managerFormData.businessType,
+        latitude: managerFormData.lat,
+        longitude: managerFormData.lng,
+        restaurantOpenTime: managerFormData.restaurantOpenTime,
+        restaurantCloseTime: managerFormData.restaurantCloseTime,
+        depositPerMember: managerFormData.depositPerMember,
+        restaurantDescription: restaurantFormData.restaurantDescription || '',
+        breakStartTime: restaurantFormData.breakStartTime || '',
+        breakEndTime: restaurantFormData.breakEndTime || '',
+        maxReservationTime: restaurantFormData.maxReservationTime || '',
+        minMemberCount: restaurantFormData.minMemberCount || '',
+        maxMemberCount: restaurantFormData.maxMemberCount || '',
+      };
+
+      // JSON 문자열로 변환 후 FormData에 추가
+      formData.append(
+        'restaurantEditRequestDto',
+        new Blob([JSON.stringify(restaurantEditRequestDto)], {
+          type: 'application/json',
+        })
+      );
+
+      console.log('이미지파일', restaurantFormData.restaurantImages);
+      console.log('입력정보', restaurantEditRequestDto);
+      console.log('요청데이터1', formData);
+
+      // 이미지 파일 추가 (파일이 있을 경우)
+      if (restaurantFormData.restaurantImages) {
+        console.log('이미지 파일 추가');
+        formData.append(
+          'restaurantImages',
+          restaurantFormData.restaurantImages
+        );
+      }
+
+      try {
+        const response = await updateRestaurant(restaurantId, formData);
+        console.log('가게정보 수정 정보', response);
+      } catch (error) {
+        console.log('가게 정보 수정 중 오류', error);
+      }
+    }
+  };
+  console.log('레스토랑 정보', restaurantFormData);
+  console.log('사장님 정보', managerFormData);
+
+  // 가게 정보 조회
+  const fetchRestaurantData = async () => {
+    try {
+      const response = await getRestaurantData(restaurantId);
+      console.log('가게정보조회결과', response);
+    } catch (error) {
+      console.log('가게 정보 조회 중 오류', error);
+    }
   };
 
   useEffect(() => {
     setIsCarrot(false);
     setIsUnderLine(true);
     setPageName('매장 정보 입력');
+    fetchRestaurantData();
   }, []);
 
-  useEffect(() => {
-    if (restaurantId) {
-      setActiveTab(1);
-    }
-    setItems(
-      JSON.parse(localStorage.getItem('categories')).map(
-        (category) => category.restaurantCategoryName
-      )
-    );
-    setVisitTimeItems(allTimes);
-    setEndTimeItems(allTimes);
-  }, []);
+  // useEffect(() => {
+  //   if (restaurantId) {
+  //     setActiveTab(1);
+  //   }
+  // }, []);
 
   useEffect(() => {
-    if (activeTab === 1) {
+    if (activeTab === 0) {
+      setItems(
+        JSON.parse(localStorage.getItem('categories')).map(
+          (category) => category.restaurantCategoryName
+        )
+      );
+      setVisitTimeItems(allTimes);
+      setEndTimeItems(allTimes);
+    } else if (activeTab === 1) {
       setBreakStartTimeItems(allTimes);
       setBreakEndTimeItems(allTimes);
-      setItems([30, 60, 90, 120]);
+      setDurationTimeItems([30, 60, 90, 120]);
     }
   }, [activeTab]);
 
@@ -314,8 +384,8 @@ const RestaurantRegistPage = () => {
               <label>최대 이용 가능 시간(분)</label>
               <DropdownWrapperStyled>
                 <WEDropdown
-                  useDropdownStore={useDropdownStore}
-                  placeholder="최대 이용 가능 시간을 선택하세요."
+                  useDropdownStore={useDurationDropdownStore}
+                  placeholder="시간을 선택하세요."
                   value={restaurantFormData.maxReservationTime}
                   onSelect={(value) =>
                     setRestaurantFormData((prevData) => ({
@@ -329,53 +399,85 @@ const RestaurantRegistPage = () => {
 
             <InputWrapperStyled>
               <InputWithLabelStyled>
-                {/* <label>사업장 주소</label>
-                <WETextField
-                  name="restaurantRegist-address"
-                  placeholder="사업장 주소를 입력하세요."
-                  value={managerFormData.address}
-                  showErrorMessageSpace={true}
-                  onChange={(e) => setRestaurantFormData(e.target.value)}
-                /> */}
+                <label>최소 이용 가능 인원(명)</label>
+                <input
+                  type="number"
+                  name="minPeople"
+                  id="minPeople"
+                  value={restaurantFormData.minMemberCount}
+                  onChange={(e) =>
+                    setRestaurantFormData((prevData) => ({
+                      ...prevData,
+                      minMemberCount: e.target.value,
+                    }))
+                  }
+                />
               </InputWithLabelStyled>
             </InputWrapperStyled>
 
             <InputWrapperStyled>
               <InputWithLabelStyled>
-                {/* <label>전화번호</label>
-                <WETextField
-                  name="restaurantRegist-phone"
-                  placeholder="전화번호를 입력하세요."
-                  value={managerFormData.phone}
-                  showErrorMessageSpace={true}
-                  onChange={(e) => setRestaurantFormData(e.target.value)}
-                /> */}
+                <label>최대 이용 가능 인원(명)</label>
+                <input
+                  type="number"
+                  name="maxPeople"
+                  id="maxPeople"
+                  value={restaurantFormData.maxMemberCount}
+                  onChange={(e) =>
+                    setRestaurantFormData((prevData) => ({
+                      ...prevData,
+                      maxMemberCount: e.target.value,
+                    }))
+                  }
+                />
               </InputWithLabelStyled>
             </InputWrapperStyled>
 
             <InputWrapperStyled>
               <InputWithLabelStyled>
-                {/* <label>매장명</label>
+                <label>식당 소개</label>
                 <WETextField
-                  name="restaurantRegist-restaurantName"
-                  placeholder="매장명을 입력하세요."
-                  value={managerFormData.restaurantName}
-                  showErrorMessageSpace={true}
-                  onChange={(e) => setRestaurantFormData(e.target.value)}
-                /> */}
-              </InputWithLabelStyled>
-            </InputWrapperStyled>
-
-            <InputWrapperStyled>
-              <InputWithLabelStyled>
-                {/* <label>업종</label>
-                <WETextField
-                  name="restaurantRegist-businessType"
+                  name="restaurantRegist-description"
                   placeholder="업종을 입력하세요."
-                  value={managerFormData.businessType}
+                  value={restaurantFormData.restaurantDescription}
                   showErrorMessageSpace={true}
-                  onChange={(e) => setRestaurantFormData(e.target.value)}
-                /> */}
+                  onChange={(e) =>
+                    setRestaurantFormData((prevData) => ({
+                      ...prevData,
+                      restaurantDescription: e.target.value,
+                    }))
+                  }
+                />
+              </InputWithLabelStyled>
+            </InputWrapperStyled>
+
+            <InputWrapperStyled>
+              <InputWithLabelStyled>
+                <label>매장 사진</label>
+                {previewUrl && (
+                  <img
+                    src={previewUrl}
+                    alt="미리보기"
+                    width="200"
+                    style={{
+                      display: 'block',
+                      margin: '10px 0',
+                      borderRadius: '8px',
+                    }}
+                  />
+                )}
+                <UploadButton as="label">
+                  <img
+                    src={PlusImg}
+                    alt="사진 추가"
+                    style={{ width: '50px', height: '50px' }}
+                  />
+                  <input
+                    type="file"
+                    onChange={handleImageUpload}
+                    style={{ display: 'none' }}
+                  />
+                </UploadButton>
               </InputWithLabelStyled>
             </InputWrapperStyled>
           </ContentWrapperStyled>
@@ -392,16 +494,12 @@ const RestaurantRegistPage = () => {
           <WETab
             tabs={tabs}
             activeTab={activeTab}
-            setActiveTab={(index) => {
-              if (!restaurantId || index !== 0) {
-                setActiveTab(index);
-              }
-            }}
+            setActiveTab={setActiveTab}
           />
         </TabWrapperStyled>
         <WEButton
           className="testButton"
-          size={'menu'}
+          size="menu"
           onClick={handleMenuButtonClick}
         >
           메뉴
@@ -413,7 +511,7 @@ const RestaurantRegistPage = () => {
       <WEButton
         className="testButton"
         onClick={handleRegistButtonClick}
-        size={'long'}
+        size="long"
       >
         확인
       </WEButton>
@@ -421,4 +519,4 @@ const RestaurantRegistPage = () => {
   );
 };
 
-export default RestaurantRegistPage;
+export default RestaurantManagePage;

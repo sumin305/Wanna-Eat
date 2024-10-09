@@ -32,6 +32,7 @@ import {
 } from './OrderSheetBox.js';
 import WECheck from '../../../common/check/WECheck.jsx';
 import useAlert from 'utils/alert.js';
+import MenuIcon from 'assets/icons/menu/basic-menu.svg';
 
 const OrderSheetBox = ({ reservationUrl }) => {
   const nav = useNavigate();
@@ -280,9 +281,10 @@ const OrderSheetBox = ({ reservationUrl }) => {
                       (order) => (
                         <div key={order.orderId}>
                           <FoodDiv>
-                            {order.menuImage && (
-                              <MenuImg src={order.menuImage} alt="메뉴 사진" />
-                            )}
+                            <MenuImg
+                              src={order.menuImage ? order.menuImage : MenuIcon}
+                              alt="메뉴 사진"
+                            />
                             <FoodInfoDiv>
                               <FoodInfoTopDiv>
                                 <MenuNameP>{order.menuName}</MenuNameP>
@@ -364,12 +366,12 @@ const OrderSheetBox = ({ reservationUrl }) => {
                         (order) => (
                           <div key={order.orderId}>
                             <FoodDiv>
-                              {order.menuImage && (
-                                <MenuImg
-                                  src={order.menuImage}
-                                  alt="메뉴 사진"
-                                />
-                              )}
+                              <MenuImg
+                                src={
+                                  order.menuImage ? order.menuImage : MenuIcon
+                                }
+                                alt="메뉴 사진"
+                              />
                               <FoodInfoDiv>
                                 <FoodInfoTopDiv>
                                   <MenuNameP>{order.menuName}</MenuNameP>

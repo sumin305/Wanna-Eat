@@ -11,12 +11,12 @@ const InputFieldContainer = styled.div`
 `;
 
 const InputFieldText = styled.p`
-  flex: 1; // 전체 width의 1/4을 차지하게끔 비율 설정
+  flex: 1;
   font-size: ${theme.fontSize.px15};
 `;
 
 const InputFieldContent = styled.div`
-  flex: 3; // 나머지 3/4를 차지하도록 설정
+  flex: 3;
   display: flex;
   align-items: ${(props) =>
     props.isCalendarVisible || props.isShowOption ? 'flex-start' : 'center'};
@@ -29,13 +29,13 @@ const BoxStyled = styled.div`
   border: 1px solid ${theme.color.disabled};
   border-radius: 0.3rem;
   padding: 0.625rem 2rem;
-  box-sizing: border-box;
   font-size: ${theme.fontSize.px11};
   color: ${theme.color.info};
   background-color: ${theme.color.white};
   display: flex;
   align-items: center;
   cursor: pointer;
+  box-sizing: border-box;
 
   &:hover {
     border: 1px solid ${theme.color.primary};
@@ -43,7 +43,7 @@ const BoxStyled = styled.div`
 `;
 
 const CalendarContainer = styled.div`
-  flex: 3; // 나머지 3/4를 차지하도록 설정
+  flex: 3;
   padding: 0 1.7rem;
   display: flex;
   flex-direction: column;
@@ -62,7 +62,6 @@ const CalendarWrapper = styled.div`
 const CalendarStyled = styled(Calendar)`
   .react-calendar {
     width: 90%;
-    max-width: 100%;
     background-color: #fff;
     color: #222;
     border-radius: 8px;
@@ -72,7 +71,7 @@ const CalendarStyled = styled(Calendar)`
 
   .react-calendar__navigation {
     display: flex;
-    justify-content: space-between; // 화살표를 양쪽으로 배치
+    justify-content: space-between;
     align-items: center;
     width: 100%;
   }
@@ -87,26 +86,6 @@ const CalendarStyled = styled(Calendar)`
     height: 50px;
   }
 
-  .react-calendar__navigation__label__labelText {
-    font-weight: bold;
-    color: black;
-    border: none;
-  }
-
-  .react-calendar__navigation button:enabled:hover,
-  .react-calendar__navigation button:enabled:focus {
-    background-color: #f8f8fa;
-    border: none;
-  }
-  .react-calendar__navigation button[disabled] {
-    background-color: #f0f0f0;
-    border: none;
-  }
-  abbr[title] {
-    text-decoration: none;
-    border: none;
-  }
-
   .react-calendar__tile {
     border: none;
     background: white;
@@ -115,47 +94,38 @@ const CalendarStyled = styled(Calendar)`
     font-weight: bold;
     border-radius: 8px;
   }
+
   .react-calendar__tile:enabled:hover,
-  .react-calendar__tile:enabled:focus {
-    background: #ff6528;
-    color: white;
-    border-radius: 6px;
-    border: none;
-    font-weight: bold;
-  }
-  .react-calendar__tile--now {
-    background: #fff1aa;
-    border-radius: 6px;
-    font-weight: bold;
-    color: black;
-    border: none;
-  }
-  .react-calendar__tile--now:enabled:hover,
-  .react-calendar__tile--now:enabled:focus {
-    background: #ff6528;
-    color: white;
-    border-radius: 6px;
-    border: none;
-    font-weight: bold;
-  }
-  .react-calendar__tile--hasActive:enabled:hover,
-  .react-calendar__tile--hasActive:enabled:focus {
-    background: #ff6528;
-    border: none;
-  }
   .react-calendar__tile--active {
     background: #ff6528;
+    color: white;
     border-radius: 6px;
     font-weight: bold;
-    color: white;
-    border: none;
   }
-  .react-calendar__tile--active:enabled:hover,
-  .react-calendar__tile--active:enabled:focus {
-    background: #ff6528;
-    color: white;
-    border: none;
-    font-weight: bold;
+`;
+
+const StyledSelect = styled.select`
+  width: 100%;
+  height: ${(props) => (props.height ? props.height : theme.height.textfield)};
+  padding: 0.625rem;
+  font-size: ${theme.fontSize.px11};
+  color: ${theme.color.info};
+  background-color: ${theme.color.white};
+  border: 1px solid ${theme.color.disabled};
+  border-radius: 0.3rem;
+  box-sizing: border-box;
+  background-size: 15px 15px;
+  background-position: right 10px center;
+  background-repeat: no-repeat;
+  appearance: none;
+  cursor: pointer;
+
+  &:hover {
+    border-color: ${theme.color.primary};
+  }
+
+  &::-ms-expand {
+    display: none;
   }
 `;
 
@@ -167,4 +137,5 @@ export {
   CalendarContainer,
   CalendarWrapper,
   CalendarStyled,
+  StyledSelect,
 };

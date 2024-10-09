@@ -61,7 +61,7 @@ const ReservationDetailButton = styled.button`
   font-size: ${theme.fontSize.px11};
   font-weight: bold;
   color: #c0c0c0;
-  width: 3rem;
+  // width: 3rem;
   height: 1.5rem;
   margin: 0.5rem 0;
 `;

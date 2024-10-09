@@ -87,6 +87,8 @@ const OrderMainPage = () => {
     setReservationEndTime,
     setRestaurantId,
     setReservationId,
+    isAllPaid,
+    setIsAllPaid,
   } = useOrderStore();
 
   // 주문 메인페이지에 들어왔을 때 실행
@@ -248,6 +250,26 @@ const OrderMainPage = () => {
           )
         )
       );
+
+      // 모든 상품 결제 완료 시 isAllPaid 변경
+      const ordersArray = Object.entries(
+        groupByNicknameWithTotalPrice(
+          totalData.orderListResponseDto.orderDetailResponseDtos
+        )
+      ).map(([key, value]) => ({
+        reservationParticipantNickname: key,
+        ...value,
+      }));
+
+      console.log('ordersArray', ordersArray);
+
+      const allPaid = Object.values(ordersArray).every((user) =>
+        user.orders.every((order) => order.paidCnt === order.totalCnt)
+      );
+
+      console.log('allPaid', allPaid);
+
+      setIsAllPaid(allPaid);
     };
 
     const initializeConnection = async () => {
@@ -335,6 +357,28 @@ const OrderMainPage = () => {
       }
     }
     validateAndConnect();
+
+    // 모든 상품 결제 완료 시 isAllPaid 변경
+    const ordersArray = Object.entries(allOrdersInfo).map(([key, value]) => ({
+      reservationParticipantNickname: key,
+      ...value,
+    }));
+    const pendingGroup = groupByNicknameWithTotalPrice(
+      ordersArray.filter((order) =>
+        order.orders ? order.orders.some((o) => o.totalCnt - o.paidCnt > 0) : []
+      )
+    );
+
+    console.log('pendingGroup', pendingGroup);
+    const allPaid = Object.values(pendingGroup).every((user) =>
+      user.orders.every((order) => order.totalCnt === order.paidCnt)
+    );
+
+    console.log('allPaid', allPaid);
+
+    setIsAllPaid(allPaid);
+
+    console.log(ordersArray);
   }, []);
   // 새로 온 메세지 추가
   const addMessage = (message) => {
@@ -633,22 +677,43 @@ const OrderMainPage = () => {
           </MenuDiv>
         </div>
 
-        <ButtonWrapper>
-          <WEButton
-            size="medium"
-            outlined="true"
-            onClick={handleGotoCartButtonClick}
-          >
-            장바구니 보기
-          </WEButton>
-          <WEButton
-            size="medium"
-            outlined="true"
-            onClick={handleOrderSheetButtonClick}
-          >
-            결제하기
-          </WEButton>
-        </ButtonWrapper>
+        {isAllPaid ? (
+          <ButtonWrapper>
+            <WEButton
+              size="medium"
+              outlined="true"
+              onClick={() =>
+                nav(`/customer/order/menu-select/${reservationUrl}`)
+              }
+            >
+              추가주문 하기
+            </WEButton>
+            <WEButton
+              size="medium"
+              outlined="true"
+              onClick={() => nav(`/customer/order/success`)}
+            >
+              퇴실하기
+            </WEButton>
+          </ButtonWrapper>
+        ) : (
+          <ButtonWrapper>
+            <WEButton
+              size="medium"
+              outlined="true"
+              onClick={handleGotoCartButtonClick}
+            >
+              장바구니 보기
+            </WEButton>
+            <WEButton
+              size="medium"
+              outlined="true"
+              onClick={handleOrderSheetButtonClick}
+            >
+              결제하기
+            </WEButton>
+          </ButtonWrapper>
+        )}
       </OrderContainer>
     </>
   );

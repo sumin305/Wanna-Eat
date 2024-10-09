@@ -23,7 +23,6 @@ export function requestPermission() {
     Notification.requestPermission().then((permission) => {
       if (permission === 'granted') {
         console.log('알림 권한 허용됨');
-        getFcmToken();
       } else {
         console.log('알림 권한이 거부되었습니다.');
       }

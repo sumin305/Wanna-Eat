@@ -20,8 +20,10 @@ import {
   registerMenu,
   editImage,
 } from '../../../../api/manager/menu/menu.js'; // API 임포트
+import useAlert from '../../../../utils/alert.js';
 
 const MenuRegistPage = ({ onClose }) => {
+  const showAlert = useAlert();
   const [menuName, setMenuName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(''); // 선택된 카테고리
   const [price, setPrice] = useState('');
@@ -58,7 +60,7 @@ const MenuRegistPage = ({ onClose }) => {
   // 이미지 꾸미기 (editImage API 호출)
   const handleImageDecorate = async () => {
     if (!image) {
-      alert('이미지를 먼저 업로드하세요.');
+      showAlert('이미지를 먼저 업로드하세요.');
       return;
     }
 

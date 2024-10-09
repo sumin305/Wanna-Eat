@@ -33,8 +33,10 @@ import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore.js';
 
 import WEDropdown from 'component/common/dropdown/WEDropdown.jsx';
 import { ReactComponent as RefreshIcon } from 'assets/icons/manager/restaurant/refresh.svg';
+import useAlert from 'utils/alert.js';
 
 const MainPage = () => {
+  const showAlert = useAlert();
   const {
     setPageName,
     setIsCarrot,
@@ -123,7 +125,7 @@ const MainPage = () => {
 
   const handleSubmit = () => {
     if (floor === '') {
-      window.alert('층을 입력해 주세요');
+      showAlert('층을 입력해 주세요');
       return;
     }
 

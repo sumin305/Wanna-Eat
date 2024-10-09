@@ -29,7 +29,7 @@ const DepositPaymentPage = () => {
   const [depositPrice, setDepositPrice] = useState(0);
   const [cards, setCards] = useState([]);
   const [goToSlide, setGoToSlide] = useState(null);
-  const alert = useAlert();
+  const showAlert = useAlert();
   const [selectedardIndex, setSelectedCardIndex] = useState(0);
   const {
     selectedCard,
@@ -72,12 +72,12 @@ const DepositPaymentPage = () => {
     if (searchParams.has('status')) {
       // 결제 성공
       if (searchParams.get('status') === 'success') {
-        alert('결제에 성공했습니다.');
+        showAlert('결제에 성공했습니다.');
         navigate('/customer/reservation/success');
       } else if (searchParams.get('status') === 'fail') {
-        alert('결제에 실패했습니다.');
+        showAlert('결제에 실패했습니다.');
       } else if (searchParams.get('status') === 'cancel') {
-        alert('결제가 취소되었습니다.');
+        showAlert('결제가 취소되었습니다.');
       }
     }
   }, []);
@@ -124,7 +124,7 @@ const DepositPaymentPage = () => {
 
     console.log(result);
     if (result.status !== 200) {
-      alert('결제에 실패했습니다.');
+      showAlert('결제에 실패했습니다.');
       return;
     }
 

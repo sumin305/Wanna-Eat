@@ -9,8 +9,10 @@ import { SeatSelectPageContainer, MemberCountSyled } from './SeatSelectPage.js';
 import SeatSelect from 'component/customer/reservation/SeatSelect/SeatSelect.jsx';
 import useReservationStore from 'stores/customer/useReservationStore.js';
 import useModalStore from 'stores/common/useModalStore.js';
+import useAlert from '../../../../../utils/alert.js';
 
 const SeatSelectPage = (tableData) => {
+  const showAlert = useAlert();
   const { maxCapacity, memberCount, setMaxCapacity, setTableList } =
     useReservationStore();
 
@@ -26,7 +28,7 @@ const SeatSelectPage = (tableData) => {
   };
   const handleNextButtonClick = () => {
     if (maxCapacity < memberCount) {
-      window.alert('방문 인원에 맞춰 테이블을 선택해 주세요.');
+      showAlert('방문 인원에 맞춰 테이블을 선택해 주세요.');
     } else {
       navigate('/customer/reservation/deposit-payment');
     }

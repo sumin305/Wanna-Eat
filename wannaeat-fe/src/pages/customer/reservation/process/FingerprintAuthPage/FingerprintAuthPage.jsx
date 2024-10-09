@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import theme from '../../../../../style/common/theme';
 import { ButtonWrapper } from '../TimeSelectPage/TimeSelectPage';
 import Button from '../../../../../component/common/button/WEButton/WEButton';
+import useAlert from 'utils/alert.js';
 
 // 생체 인증 (지문 등) 확인 함수
 export const handleCheckFingerprint = async () => {
@@ -26,6 +27,7 @@ export const handleCheckFingerprint = async () => {
   }
 };
 const FingerprintAuthPage = () => {
+  const showAlert = useAlert();
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false); // 인증 상태 저장
   const [isSupported, setIsSupported] = useState(false); // WebAuthn 지원 여부 저장
@@ -36,7 +38,7 @@ const FingerprintAuthPage = () => {
     if (window.PublicKeyCredential) {
       setIsSupported(true);
     } else {
-      alert('이 브라우저는 생체 인증을 지원하지 않습니다.');
+      showAlert('이 브라우저는 생체 인증을 지원하지 않습니다.');
     }
   }, []);
 
@@ -44,7 +46,7 @@ const FingerprintAuthPage = () => {
   const handleRegisterPasskey = async () => {
     try {
       if (!isSupported) {
-        alert('이 기기는 생체 인증을 지원하지 않습니다.');
+        showAlert('이 기기는 생체 인증을 지원하지 않습니다.');
         return;
       }
 
@@ -71,10 +73,10 @@ const FingerprintAuthPage = () => {
       // await serverRegisterPasskey(attestation);
 
       setIsPasskeyRegistered(true); // 패스키 등록 완료 상태로 변경
-      alert('패스키가 성공적으로 등록되었습니다.');
+      showAlert('패스키가 성공적으로 등록되었습니다.');
     } catch (e) {
       console.error('Registration error:', e);
-      alert('패스키 등록에 실패했습니다.');
+      showAlert('패스키 등록에 실패했습니다.');
     }
   };
 
@@ -82,7 +84,7 @@ const FingerprintAuthPage = () => {
   const handleCheckFingerprint = async () => {
     try {
       if (!isSupported || !isPasskeyRegistered) {
-        alert(
+        showAlert(
           '이 기기는 지문 인식을 지원하지 않거나 패스키가 등록되지 않았습니다.'
         );
         return;
@@ -101,7 +103,7 @@ const FingerprintAuthPage = () => {
       setIsAuthenticated(true); // 인증 성공 상태로 변경
       navigate('/customer/reservation/deposit-payment'); // 인증 성공 시 페이지 이동
     } catch (e) {
-      alert('인증에 실패했습니다. 다시 시도해주세요.');
+      showAlert('인증에 실패했습니다. 다시 시도해주세요.');
       navigate('/customer/reservation/deposit-payment'); // 인증 성공 시 페이지 이동
     }
   };

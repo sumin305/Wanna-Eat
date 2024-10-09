@@ -25,8 +25,10 @@ import { ReactComponent as SelectedRoundTableIcon } from 'assets/icons/manager/r
 import useReservationStore from 'stores/customer/useReservationStore.js';
 import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
 import useModalStore from 'stores/common/useModalStore.js';
+import useAlert from '../../../../utils/alert.js';
 
 const SeatSelect = () => {
+  const showAlert = useAlert();
   const location = useLocation();
   const { tableData } = location.state || {};
   const [floorData, setFloorData] = useState([]);
@@ -161,7 +163,7 @@ const SeatSelect = () => {
 
   const handleAddTable = (item) => {
     if (maxCapacity >= memberCount) {
-      window.alert('이미 충분한 수의 테이블이 선택되었습니다.');
+      showAlert('이미 충분한 수의 테이블이 선택되었습니다.');
       return;
     }
     if (Array.isArray(tableList) && !tableList.includes(item.tableId)) {
@@ -171,9 +173,9 @@ const SeatSelect = () => {
       const result = maxCapacity + item.assignedSeats;
       setMaxCapacity(result);
 
-      window.alert(`${item.tableId} 번 테이블이 추가되었습니다.`);
+      showAlert(`${item.tableId} 번 테이블이 추가되었습니다.`);
     } else {
-      window.alert('이미 선택된 테이블입니다.');
+      showAlert('이미 선택된 테이블입니다.');
     }
 
     close();

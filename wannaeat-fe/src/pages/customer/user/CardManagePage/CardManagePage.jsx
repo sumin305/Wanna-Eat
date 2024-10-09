@@ -13,7 +13,10 @@ import useHeaderStore from 'stores/common/useHeaderStore.js';
 import { cardMaps } from 'assets';
 import useAuthStore from 'stores/customer/useAuthStore.js';
 import useMyInfoStore from '../../../../stores/customer/useMyInfoStore.js';
+import useAlert from '../../../../utils/alert.js';
+
 const CardManagePage = () => {
+  const showAlert = useAlert();
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
   const [goToSlide, setGoToSlide] = useState(null);
@@ -32,7 +35,7 @@ const CardManagePage = () => {
   };
 
   const handleFingerPrintRegistButtonClick = () => {
-    alert('지문 등록!');
+    showAlert('지문 등록!');
     handleRegisterPasskey();
   };
   const slides = cards.map((card, index) => ({
@@ -75,11 +78,11 @@ const CardManagePage = () => {
       // await serverRegisterPasskey(attestation);
 
       setIsPasskeyRegistered(true); // 패스키 등록 완료 상태로 변경
-      alert('결제 패스키가 성공적으로 등록되었습니다.');
+      showAlert('결제 패스키가 성공적으로 등록되었습니다.');
       return true;
     } catch (e) {
       console.error('Registration error:', e);
-      alert('결제 패스키 등록에 실패했습니다.');
+      showAlert('결제 패스키 등록에 실패했습니다.');
       return false;
     }
   };

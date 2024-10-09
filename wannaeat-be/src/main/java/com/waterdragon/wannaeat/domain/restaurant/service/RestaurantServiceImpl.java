@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -36,6 +37,7 @@ import com.waterdragon.wannaeat.domain.restaurant.dto.request.RestaurantRegister
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantCategoryDetailResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantCategoryListResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantDetailResponseDto;
+import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantImageListResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantMapDetailResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.RestaurantMapListResponseDto;
 import com.waterdragon.wannaeat.domain.restaurant.dto.response.SsafyRestaurantResponseDto;
@@ -411,6 +413,18 @@ public class RestaurantServiceImpl implements RestaurantService {
 		// 식당 메뉴 목록 불러오기
 		MenuListResponseDto menuListResponseDto = menuService.getListMenuByRestaurantId(restaurantId);
 
+		List<RestaurantImage> restaurantImages = restaurantImageRepository.findAllByRestaurant(restaurant);
+
+		// RestaurantImage의 imageUrl만 추출하여 List<String>에 저장
+		List<String> imageUrls = restaurantImages.stream()
+			.map(RestaurantImage::getImageUrl)
+			.collect(Collectors.toList());
+
+		// RestaurantImageListResponseDto로 변환
+		RestaurantImageListResponseDto restaurantImageListResponseDto = RestaurantImageListResponseDto.builder()
+			.restaurantImages(imageUrls)
+			.build();
+
 		return RestaurantDetailResponseDto.builder()
 			.restaurantBusinessNumber(restaurant.getBusinessNumber())
 			.restaurantOwnerName(restaurant.getOwnerName())
@@ -432,6 +446,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 			.merchantId(restaurant.getMerchantId())
 			.menuListResponseDto(menuListResponseDto)
 			.restaurantLike(isLiking)
+			.restaurantImageListResponseDto(restaurantImageListResponseDto)
 			.build();
 	}
 

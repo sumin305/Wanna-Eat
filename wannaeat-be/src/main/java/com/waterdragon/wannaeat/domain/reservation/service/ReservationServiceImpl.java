@@ -191,14 +191,13 @@ public class ReservationServiceImpl implements ReservationService {
 		LocalTime breakStartTime = restaurant.getBreakStartTime();
 		LocalTime breakEndTime = restaurant.getBreakEndTime();
 
-		if(breakStartTime != null && breakEndTime != null){
+		if (breakStartTime != null && breakEndTime != null) {
 			// 예약 시간이 브레이크타임에 포함되는 경우 예외 발생
 			if ((startTime.isBefore(breakEndTime) && endTime.isAfter(breakStartTime)) ||
 				(startTime.isAfter(breakStartTime) && startTime.isBefore(breakEndTime))) {
 				throw new InvalidFilterTimeSequenceException("브레이크타임 중에는 예약할 수 없습니다.");
 			}
 		}
-
 
 		// 식당 테이블 체크 : 유효한 테이블인지 확인
 		RestaurantStructure restaurantStructure = restaurantStructureRepository.findByRestaurantId(
@@ -214,7 +213,11 @@ public class ReservationServiceImpl implements ReservationService {
 
 		// 예약된 테이블이 있을 경우 예외 처리
 		if (!reservedTables.isEmpty()) {
-			throw new DuplicateReservationTableException("이미 예약된 테이블입니다.");
+			for(ReservationTable reservationTable : reservedTables){
+				if(reservationRegisterRequestDto.getTableList().contains(reservationTable.getTableId())){
+					throw new DuplicateReservationTableException("이미 예약된 테이블입니다.");
+				}
+			}
 		}
 
 		User user = userRepository.findByUserId(reservationRegisterRequestDto.getUserId()).orElse(null);
@@ -298,14 +301,13 @@ public class ReservationServiceImpl implements ReservationService {
 		LocalTime breakStartTime = restaurant.getBreakStartTime();
 		LocalTime breakEndTime = restaurant.getBreakEndTime();
 
-		if(breakStartTime != null && breakEndTime != null){
+		if (breakStartTime != null && breakEndTime != null) {
 			// 예약 시간이 브레이크타임에 포함되는 경우 예외 발생
 			if ((startTime.isBefore(breakEndTime) && endTime.isAfter(breakStartTime)) ||
 				(startTime.isAfter(breakStartTime) && startTime.isBefore(breakEndTime))) {
 				throw new InvalidFilterTimeSequenceException("브레이크타임 중에는 예약할 수 없습니다.");
 			}
 		}
-
 
 		List<ReservationTable> reservedTables = reservationTableRepository.findReservedTables(
 			restaurant.getRestaurantId(),
@@ -518,7 +520,7 @@ public class ReservationServiceImpl implements ReservationService {
 
 		List<Order> orders = orderRepository.findAllByReservation(reservation);
 
-		if (!orders.isEmpty()) {
+		if (orders.size() == 0) {
 			throw new ReservationOrderExistException("해당 예약의 주문이 존재하여 취소할 수 없습니다.");
 		}
 

@@ -74,8 +74,11 @@ public class MenuServiceImpl implements MenuService {
 				"해당 메뉴 카테고리는 식당에 존재하지 않음. : " + menuCategory.getCategoryName());
 		}
 
-		// 메뉴 사진 등록
-		String uploadedMenuImageFileName = fileUtil.uploadFile(multipartFile);
+		String uploadedMenuImageFileName = null;
+		if(multipartFile != null || !multipartFile.isEmpty()){
+			// 메뉴 사진 등록
+			uploadedMenuImageFileName = fileUtil.uploadFile(multipartFile);
+		}
 
 		// Menu 엔티티 생성 후 저장
 		Menu menu = Menu.builder()
@@ -186,7 +189,7 @@ public class MenuServiceImpl implements MenuService {
 
 		String menuImage = menu.getImage();
 
-		if(multipartFile != null) {
+		if (multipartFile != null) {
 			// 기존 메뉴 사진 삭제
 			if (menu.getImage() != null) {
 				fileUtil.deleteFile(menu.getImage());
@@ -194,10 +197,9 @@ public class MenuServiceImpl implements MenuService {
 			}
 
 			// 새로운 메뉴 사진 등록
-			menuImage= fileUtil.uploadFile(multipartFile);
+			menuImage = fileUtil.uploadFile(multipartFile);
 			log.info("uplaoded file : " + menu.getImage());
 		}
-
 
 		// 메뉴 엔티티 수정 후 저장
 		menu.update(menuCategory, menuEditRequestDto.getMenuName(), menuEditRequestDto.getMenuPrice(),

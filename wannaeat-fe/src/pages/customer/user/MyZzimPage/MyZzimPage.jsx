@@ -13,6 +13,7 @@ import {
   MyZzimReservationButton,
 } from './MyZzimPage';
 import ZzimOff from 'assets/icons/header/zzim-off.svg';
+import RestaurantImg from 'assets/customer/restaurant.jpg';
 import { getMyZzimRestaurants, removeZzimRestaurant } from 'api/customer/zzim';
 import { useNavigate } from 'react-router-dom';
 const MyZzimPage = () => {
@@ -44,14 +45,20 @@ const MyZzimPage = () => {
       {zzimList.length > 0 ? (
         zzimList.map((restaurant, index) => (
           <MyZzimItem key={index}>
-            <MyZzimItemImage src={restaurant.restaurantImageUrl} />
+            <MyZzimItemImage
+              src={
+                restaurant.restaurantImageUrl
+                  ? restaurant.restaurantImageUrl
+                  : RestaurantImg
+              }
+            />
             <MyZzimInfoWrapper>
               <MyZzimInfoTitle>
                 {restaurant.restaurantName}
                 <MyZzimInconImage src={ZzimOff} />
               </MyZzimInfoTitle>
               <MyZzimInfoText>
-                {restaurant.restaurantDescription ?? '매장 상세 정보'}
+                {restaurant.restaurantDescription ?? '맛있는 식당입니다.'}
               </MyZzimInfoText>
               <MyZzimReservationWrapper>
                 <MyZzimReservationCount>
@@ -69,7 +76,7 @@ const MyZzimPage = () => {
           </MyZzimItem>
         ))
       ) : (
-        <p>내가 찜한 매장이 없습니다.</p>
+        <p>찜한 매장이 없습니다.</p>
       )}
     </MyZzimPageContainer>
   );

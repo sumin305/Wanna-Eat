@@ -55,7 +55,7 @@ const CalendarStyled = styled(Calendar)`
     border: none;
   }
   .react-calendar__navigation button[disabled] {
-    background-color: #f0f0f0;
+    background-color: ${theme.color.white};
     border: none;
   }
   abbr[title] {

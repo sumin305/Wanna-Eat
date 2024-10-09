@@ -13,6 +13,7 @@ import { getOrderData } from 'api/customer/socket.js';
 import useCartStore from 'stores/customer/useCartStore';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
+import MenuIcon from 'assets/icons/menu/basic-menu.svg';
 
 import {
   TopBox,
@@ -635,7 +636,9 @@ const OrderCartPage = () => {
                         Object.values(menus.menuInfo).map((menu, itemIndex) => (
                           <div key={itemIndex}>
                             <FoodDiv>
-                              <MenuImg src={menu.menuImage}></MenuImg>
+                              <MenuImg
+                                src={menu.menuImage ? menu.menuImage : MenuIcon}
+                              ></MenuImg>
                               <FoodInfoDiv>
                                 <FoodInfoTopDiv>
                                   <MenuNameP>{menu.menuName}</MenuNameP>
@@ -647,7 +650,10 @@ const OrderCartPage = () => {
                                     </FoodInfoCountP>
                                   </FoodInfoCountDiv>
                                   <FoodPriceP>
-                                    {menu.menuTotalPrice}원
+                                    {menu.menuTotalPrice.toLocaleString(
+                                      'ko-KR'
+                                    )}
+                                    원
                                   </FoodPriceP>
                                 </FoodInfoBottomDiv>
                               </FoodInfoDiv>
@@ -699,7 +705,11 @@ const OrderCartPage = () => {
                             (menu, itemIndex) => (
                               <div key={itemIndex}>
                                 <FoodDiv>
-                                  <MenuImg src={menu.menuImage}></MenuImg>
+                                  <MenuImg
+                                    src={
+                                      menu.menuImage ? menu.menuImage : MenuIcon
+                                    }
+                                  ></MenuImg>
                                   <FoodInfoDiv>
                                     <FoodInfoTopDiv>
                                       <MenuNameP>{menu.menuName}</MenuNameP>

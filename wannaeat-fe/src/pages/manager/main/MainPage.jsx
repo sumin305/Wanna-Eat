@@ -59,6 +59,7 @@ const MainPage = () => {
     setIconAction,
   ]);
 
+  const restaurantId = window.localStorage.getItem('restaurantId');
   const navigate = useNavigate();
 
   const [dropdownId, setDropdownId] = useState(1);
@@ -77,6 +78,13 @@ const MainPage = () => {
   const handle404Error = () => {
     setIsMyRestaurant(false);
   };
+
+  // 매장이 없으면 매장등록페이지로 이동
+  useEffect(() => {
+    if (!restaurantId) {
+      navigate(`/manager/restaurant-regist`);
+    }
+  });
 
   useEffect(() => {
     setItems(['소형 (50m² 이하)', '중형 (50m² ~ 150m²)', '대형 (150m² 이상)']);

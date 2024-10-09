@@ -25,8 +25,10 @@ import Button from '../../../../../component/common/button/WEButton/WEButton.jsx
 import Location from '../../../../../assets/icons/reservation/location.svg';
 import Clock from '../../../../../assets/icons/reservation/clock-white.svg';
 import Phone from '../../../../../assets/icons/reservation/phone.svg';
+import MenuIcon from 'assets/icons/menu/basic-menu.svg';
 import useRestaurantStore from 'stores/customer/useRestaurantStore';
 import { addZzimRestaurant, removeZzimRestaurant } from 'api/customer/zzim.js';
+
 const RestaurantDetailPage = () => {
   const params = useParams();
   const nav = useNavigate();
@@ -47,6 +49,7 @@ const RestaurantDetailPage = () => {
   } = useHeaderStore();
 
   const {
+    restaurant,
     breakEndTime,
     breakStartTime,
     menus,
@@ -64,6 +67,7 @@ const RestaurantDetailPage = () => {
     restaurantImage,
   } = useRestaurantStore();
 
+  console.log('restaurant: ', restaurant);
   useEffect(() => {
     const fetchRestaurant = async () => {
       const restaurantResult = await setRestaurant(params.id);
@@ -123,7 +127,6 @@ const RestaurantDetailPage = () => {
 
   return (
     <Box>
-      {/* <div> {params.id}번 가게 상세페이지</div> */}
       <RestaurantImageBox
         src={restaurantImage ? restaurantImage : RestaurantImg}
       />
@@ -143,7 +146,12 @@ const RestaurantDetailPage = () => {
           <InformationText>
             {restaurantOpenTime ? restaurantOpenTime : '00:00'}~
             {restaurantCloseTime ? restaurantCloseTime : '00:00'}
-            &nbsp;(브레이크타임 {breakStartTime}~{breakEndTime})
+            &nbsp;
+            {breakStartTime && breakEndTime && (
+              <>
+                (브레이크타임 {breakStartTime}~{breakEndTime})
+              </>
+            )}
           </InformationText>
         </InformationWrapper>
         <InformationWrapper>
@@ -161,18 +169,23 @@ const RestaurantDetailPage = () => {
         />
       </WETabContainer>
       <MenuContainer>
-        {activeMenus.map((menu, index) => (
-          <MenuBox key={index}>
-            <ImageBox key={menu.menuId}>
-              <MenuImg src={menu.menuImage} alt={menu.menuName} width="100" />
-            </ImageBox>
-            <MenuContentContainer>
-              <MenuName>{menu.menuName}</MenuName>
-              <MenuPrice>{menu.menuPrice}원</MenuPrice>
-              <MenuDescription>{menu.menuDescription}</MenuDescription>
-            </MenuContentContainer>
-          </MenuBox>
-        ))}
+        {activeMenus &&
+          activeMenus.map((menu, index) => (
+            <MenuBox key={index}>
+              <ImageBox key={menu.menuId}>
+                <MenuImg
+                  src={menu.menuImage ? menu.menuImage : MenuIcon}
+                  alt={menu.menuName}
+                  width="100"
+                />
+              </ImageBox>
+              <MenuContentContainer>
+                <MenuName>{menu.menuName}</MenuName>
+                <MenuPrice>{menu.menuPrice}원</MenuPrice>
+                <MenuDescription>{menu.menuDescription}</MenuDescription>
+              </MenuContentContainer>
+            </MenuBox>
+          ))}
       </MenuContainer>
       <ButtonBox>
         <Button size={'long'} onClick={handleReservationButtonClick}>

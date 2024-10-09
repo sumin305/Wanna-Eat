@@ -1,5 +1,5 @@
 // firebaseCloudMessaging.js
-import { getMessaging, getToken, deleteToken  } from 'firebase/messaging';
+import { getMessaging, getToken, deleteToken } from 'firebase/messaging';
 import { initializeApp } from 'firebase/app';
 
 // Firebase 설정 및 초기화
@@ -34,7 +34,7 @@ export async function getFcmToken() {
   try {
     // 기존 토큰 삭제 (기존 토큰이 있다면)
     await deleteToken(messaging).catch((err) => {
-      console.warn("기존 토큰 삭제 실패:", err);
+      console.warn('기존 토큰 삭제 실패:', err);
     });
 
     // 새로운 토큰 발급

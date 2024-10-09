@@ -65,6 +65,19 @@ const DropdownWrapperStyled = styled.div`
   width: 90%;
 `;
 
+const UploadButton = styled.button`
+  width: 50px;
+  height: 50px;
+  color: #ff4500;
+  background: none;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-top: 10px;
+`;
+
 export {
   RestaurantRegistPageStyled,
   TabWithButtonStyled,
@@ -73,4 +86,5 @@ export {
   DropdownWrapperStyled,
   InputWithLabelStyled,
   InputWrapperStyled,
+  UploadButton,
 };

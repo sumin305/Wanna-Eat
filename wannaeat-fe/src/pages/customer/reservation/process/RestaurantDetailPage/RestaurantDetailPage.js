@@ -8,7 +8,6 @@ const Box = styled.div`
 `;
 
 const RestaurantImageBox = styled.img`
-  src: ${(props) => props.src};
   height: 26vh;
 `;
 

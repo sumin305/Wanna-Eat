@@ -122,6 +122,7 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
   const handleGotoReservationDetail = () => {
     close();
     setHandleButtonClick(close());
+    navigate(`/manager/reservation/reservation-detail/${reservationId}`);
   };
 
   const handleIconClick = (item) => {

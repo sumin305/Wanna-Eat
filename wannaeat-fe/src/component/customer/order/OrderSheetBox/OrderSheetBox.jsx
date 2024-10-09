@@ -74,19 +74,32 @@ const OrderSheetBox = ({ reservationUrl }) => {
         )
       )
     );
-
+    console.log(
+      'groupedPendingOrdersWithTotalPrice',
+      groupByNicknameWithTotalPrice(
+        ordersArray.filter((order) =>
+          order.orders.some((o) => o.totalCnt - o.paidCnt > 0)
+        )
+      )
+    );
     // 결제 완료 주문 그룹화
     setGroupedCompleteOrdersWithTotalPrice(
       groupByNicknameWithTotalPrice(
         ordersArray.filter((order) =>
-          order.orders.every((o) => o.totalCnt === o.paidCnt)
+          order.orders.some((o) => o.totalCnt === o.paidCnt)
         )
       )
     );
 
     console.log(
       'groupedCompleteOrdersWithTotalPrice',
-      groupedCompleteOrdersWithTotalPrice
+      Object.keys(
+        groupByNicknameWithTotalPrice(
+          ordersArray.filter((order) =>
+            order.orders.some((o) => o.totalCnt === o.paidCnt)
+          )
+        )
+      )
     );
   }, [allOrdersInfo]);
 
@@ -341,13 +354,12 @@ const OrderSheetBox = ({ reservationUrl }) => {
                   </div>
                 )
               )
-            : groupedPendingOrdersWithTotalPrice.length > 0 &&
-              Object.keys(groupedPendingOrdersWithTotalPrice).map(
+            : Object.keys(groupedCompleteOrdersWithTotalPrice).map(
                 (nickname) => (
                   <div key={nickname}>
                     <PeopleP>{nickname}</PeopleP>
                     <LineDiv />
-                    {groupedCompleteOrdersWithTotalPrice[nickname] ? (
+                    {groupedCompleteOrdersWithTotalPrice[nickname].orders ? (
                       groupedCompleteOrdersWithTotalPrice[nickname].orders.map(
                         (order) => (
                           <div key={order.orderId}>
@@ -380,14 +392,17 @@ const OrderSheetBox = ({ reservationUrl }) => {
                         )
                       )
                     ) : (
-                      <div>{groupedCompleteOrdersWithTotalPrice[nickname]}</div>
+                      <div>없음</div>
                     )}
                     <TotalPriceDiv>
                       <TotalPriceP>
                         총:{' '}
-                        {groupedCompleteOrdersWithTotalPrice[
-                          nickname
-                        ].totalPrice.toLocaleString('ko-KR')}{' '}
+                        {groupedCompleteOrdersWithTotalPrice[nickname]
+                          .totalPrice
+                          ? groupedCompleteOrdersWithTotalPrice[
+                              nickname
+                            ].totalPrice.toLocaleString('ko-KR')
+                          : 0}{' '}
                         원
                       </TotalPriceP>
                     </TotalPriceDiv>

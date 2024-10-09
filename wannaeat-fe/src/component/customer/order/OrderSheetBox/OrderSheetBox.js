@@ -29,8 +29,6 @@ export const CheckText = styled.p`
 export const DeleteDiv = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 3vw;
-
   & > button {
     padding: 5px;
     border-radius: 9px;
@@ -44,7 +42,6 @@ export const DeleteDiv = styled.div`
 export const FoodDiv = styled.div`
   display: flex;
   flex-direction: row;
-  padding: 1vw;
 `;
 
 export const FoodInfoBottomDiv = styled.div`
@@ -52,7 +49,10 @@ export const FoodInfoBottomDiv = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 10px 0;
+
+  @media (min-width: 480px) {
+    margin: 10px 0;
+  }
 `;
 
 export const FoodInfoCountDiv = styled.div`

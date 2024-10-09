@@ -52,7 +52,41 @@ import {
   getPriorityVisitingRestaurant,
   getTop5Reservations,
 } from 'api/customer/reservation.js';
+
+import Asian from 'assets/icons/food/asian.svg';
+import Baegban from 'assets/icons/food/baegban.svg';
+import Bossam from 'assets/icons/food/bossam.svg';
+import Chicken from 'assets/icons/food/chicken.svg';
+import Chinesefood from 'assets/icons/food/chinesefood.svg';
+import Dessert from 'assets/icons/food/dessert.svg';
+import Fastfood from 'assets/icons/food/fastfood.svg';
+import Honbab from 'assets/icons/food/honbab.svg';
+import Japanesefood from 'assets/icons/food/japanesefood.svg';
+import Meat from 'assets/icons/food/meat.svg';
+import Pizza from 'assets/icons/food/pizza.svg';
+import Porkcutlet from 'assets/icons/food/porkcutlet.svg';
+import Snackfood from 'assets/icons/food/snackfood.svg';
+import Soup from 'assets/icons/food/soup.svg';
+import Westernfood from 'assets/icons/food/westernfood.svg';
+
 const MainPage = () => {
+  const categories = {
+    1: Bossam,
+    2: Soup,
+    3: Japanesefood,
+    4: Porkcutlet,
+    5: Pizza,
+    6: Chicken,
+    7: Meat,
+    8: Westernfood,
+    9: Chinesefood,
+    10: Asian,
+    11: Baegban,
+    12: Honbab,
+    13: Snackfood,
+    14: Dessert,
+    15: Fastfood,
+  };
   const { setKeyword } = useMapFilterStore();
   const { nickname, setNickname } = useCommonStore();
   const { setIsShowLogo, setActiveIcons, setPageName } = useHeaderStore();

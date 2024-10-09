@@ -28,17 +28,9 @@ const MapRestaurantPage = () => {
     setHandleButtonClick,
   } = useModalStore();
 
-  const { reservationDate, startTime, endTime, memberCount } =
-    useReservationStore();
+  const { reservationDate, startTime, endTime, memberCount } = useReservationStore();
   const { categoryId, keyword, setKeyword } = useMapFilterStore();
-
-  const {
-    setIsInitialLoad,
-    lat,
-    lon,
-    getRestaurantPositions,
-    setMarkerPositions,
-  } = useMapStore();
+  const { setIsInitialLoad, lat, lon, getRestaurantPositions, setMarkerPositions } = useMapStore();
 
   const handleFilterModalButtonClick = () => {
     setIsInitialLoad(false);
@@ -60,10 +52,9 @@ const MapRestaurantPage = () => {
         longitude: lon,
         ...(categoryId !== -1 && { categoryId: categoryId }),
         ...(keyword && { keyword: keyword }),
-        ...(reservationDate &&
-          reservationDate != '' && { reservationDate: reservationDate }),
-        ...(startTime && startTime != '00:00' && { startTime: startTime }),
-        ...(endTime && endTime != '00:00' && { endTime: endTime }),
+        ...(reservationDate && { reservationDate: reservationDate }),
+        ...(startTime && startTime !== '00:00' && { startTime: startTime }),
+        ...(endTime && endTime !== '00:00' && { endTime: endTime }),
         ...(memberCount && memberCount !== -1 && { memberCount: memberCount }),
       })
     );
@@ -81,17 +72,15 @@ const MapRestaurantPage = () => {
     const categories = JSON.parse(localStorage.getItem('categories'));
     const categoryName = categories.filter(
       (c) => c.restaurantCategoryId === categoryId
-    )[0].restaurantCategoryName;
-    console.log(categoryName);
-
+    )[0]?.restaurantCategoryName || '';
     return categoryName;
   };
+
   // 버튼을 동적으로 생성하는 함수
   const renderFilterButtons = () => {
     const buttons = [];
 
-    // selectedDate가 있을 때 버튼 생성
-    if (reservationDate !== '') {
+    if (reservationDate) {
       buttons.push(
         <FilterButton
           onClick={handleFilterModalButtonClick}
@@ -127,6 +116,18 @@ const MapRestaurantPage = () => {
       );
     }
 
+    if (buttons.length === 0) {
+      buttons.push(
+        <FilterButton
+          onClick={handleFilterModalButtonClick}
+          key="default"
+          isEven={true}
+        >
+          검색 조건 설정하기
+        </FilterButton>
+      );
+    }
+
     return buttons;
   };
 
@@ -147,13 +148,7 @@ const MapRestaurantPage = () => {
           ></SearchIcon>
         </SearchWrapper>
         <ButtonContainer>
-          {buttons.length === 0 ? (
-            <FilterButton onClick={handleFilterModalButtonClick} isEven={true}>
-              검색 조건 설정하기
-            </FilterButton>
-          ) : (
-            buttons
-          )}
+          {buttons}
         </ButtonContainer>
       </HeaderContainer>
       <MapBox>

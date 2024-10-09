@@ -57,10 +57,12 @@ const ReservationAlertDate = styled.p`
     font-size: ${theme.fontSize.px15};
   }
 `;
+
 const ReservationAlertTime = styled.p`
   display: flex;
   align-items: center;
 `;
+
 const ReservationLastTime = styled.p`
   color: ${theme.color.primary};
   font-weight: 900;
@@ -72,6 +74,7 @@ const ReservationLastTime = styled.p`
     margin-right: 0.5rem;
   }
 `;
+
 const ReservationTimeInfo = styled.p`
   font-size: ${theme.fontSize.px13};
   @media (min-width: 480px) {
@@ -84,11 +87,14 @@ const ReservationiInfoButtonWrapper = styled.div`
   align-self: end;
   margin: 0 1rem;
 `;
+
 const ReservationInfoButton = styled.button`
   background: none;
   border: none;
   color: ${theme.color.secondary};
+  cursor: pointer;
 `;
+
 const ReservationAlertWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -145,10 +151,17 @@ const BannerButton = styled.button`
   font-size: ${theme.fontSize.px11};
   justify-content: right;
   align-items: center;
+  cursor: pointer;
+
+  &:hover {
+    color: ${theme.color.primary};
+  }
+
   @media (min-width: 480px) {
     font-size: ${theme.fontSize.px13};
   }
 `;
+
 const CategoryWrapper = styled.div``;
 
 const CategoryContainer = styled.div`
@@ -168,7 +181,14 @@ const CategoryTitle = styled.div`
   }
 `;
 
-const CategoryImage = styled.img``;
+const CategoryImage = styled.img`
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+`;
 
 const CategoryName = styled.p`
   font-size: ${theme.fontSize.px9};
@@ -178,6 +198,7 @@ const CategoryName = styled.p`
     font-size: ${theme.fontSize.px11};
   }
 `;
+
 const RestaurantWrapper = styled.div`
   background: ${theme.color.gray};
   margin: 1rem 0;
@@ -192,6 +213,7 @@ const RestaurantHeader = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+
 const RestaurantInfoContainer = styled.div`
   display: flex;
   overflow-x: scroll;
@@ -215,11 +237,13 @@ const RestaurantTitleButton = styled.button`
   font-size: ${theme.fontSize.px11};
   font-weight: light;
   align-items: center;
+  cursor: pointer;
 
   @media (min-width: 480px) {
     font-size: ${theme.fontSize.px13};
   }
 `;
+
 const RestaurantInfoBox = styled.div`
   margin-right: 1rem;
   margin-bottom: 1rem;
@@ -245,9 +269,11 @@ const RestaurantInfoName = styled.p`
     font-size: ${theme.fontSize.px15};
   }
 `;
+
 const RestaurantDetailWrapper = styled.div`
   display: flex;
 `;
+
 const RestaurantMyReservation = styled.div`
   padding: 3px;
   margin-right: 0.3rem;
@@ -265,14 +291,10 @@ const RestaurantMyReservation = styled.div`
 `;
 
 const RestaurantInfoWrapper = styled.div`
-  // width: 80%;
   display: flex;
   flex-direction: column;
-  // justify-content: center;
-  // align-items: center;
-  // align-self: center;
-}
 `;
+
 export {
   MainPageContainer,
   SearchWrapper,

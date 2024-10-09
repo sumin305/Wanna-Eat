@@ -1,15 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   SeatingMapStyled,
   Items,
   MapStyled,
   ItemWrapperStyled,
-  TableInfoWrapperStyled,
-  SeatLabelStyled,
-  SeatValueStyled,
-  ModalContainerStyled,
-} from './SeatingMap.js';
+  LabelStyled,
+} from './ReservationSeatMap.js';
 import { authClientInstance } from 'utils/http-client.js';
 
 import FloorSelector from 'component/manager/restaurant/SeatDecorate/FloorSelector/FloorSelector.jsx';
@@ -18,10 +14,7 @@ import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
 import { ReactComponent as SquareTablePointedIcon } from 'assets/icons/manager/restaurant/table-square.svg';
 import { ReactComponent as RoundTablePointedIcon } from 'assets/icons/manager/restaurant/table-rounded.svg';
 
-import useModalStore from 'stores/common/useModalStore.js';
-import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore.js';
-
-const SeatingMap = ({ OccupiedList, on404Error }) => {
+const ReservationSeatMap = ({ OccupiedList, on404Error }) => {
   const [floorData, setFloorData] = useState([]);
   const [originalData, setOriginalData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -31,12 +24,6 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
 
   const [IconWidth, setIconWidth] = useState(100);
   const [IconHeight, setIconHeight] = useState(100);
-
-  const [reservationId, setReservationId] = useState(1);
-  const [reservationStartTime, setReservationStartTime] = useState(null);
-  const [reservationEndTime, setReservationEndTime] = useState(null);
-
-  const navigate = useNavigate();
 
   const restaurantId = window.localStorage.getItem('restaurantId');
 
@@ -48,18 +35,13 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
     }
   }, [restaurantId]);
 
-  const { setRestaurantSize, setRestaurantFloorCnt } = useMyRestaurantStore();
-
   const fetchFloorData = async (restaurantId) => {
     try {
       const response = await authClientInstance.get(
         `/api/public/restaurants/${restaurantId}/structure`
       );
       const { data } = response.data;
-      console.log(data);
 
-      setRestaurantSize(data.size);
-      setRestaurantFloorCnt(data.floorCnt);
       setFloorCnt(data.floorCnt);
       setOriginalData(data);
       mergeFloorData(data, currentFloor);
@@ -116,73 +98,8 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
     }
   };
 
-  const {
-    open,
-    close,
-    setAlertText,
-    setModalType,
-    setConfirmText,
-    setHandleButtonClick,
-  } = useModalStore();
-
-  const handleGotoReservationDetail = () => {
-    close();
-    setHandleButtonClick(close());
-    navigate(`/manager/reservation/reservation-detail/${reservationId}`);
-  };
-
-  const handleIconClick = (item) => {
-    const isOccupied = reservedTable.some(
-      (table) => table.tableId === item.tableId
-    );
-
-    if (!isOccupied) {
-      return;
-    }
-
-    const reservationDetails = reservedTable.find(
-      (reserved) => reserved.tableId === item.tableId
-    );
-
-    if (reservationDetails) {
-      setReservationId(reservationDetails.reservationId);
-      setReservationStartTime(reservationDetails.reservationStartTime);
-      setReservationEndTime(reservationDetails.reservationEndTime);
-    }
-
-    setHandleButtonClick(() => handleGotoReservationDetail(item));
-
-    if (
-      isOccupied &&
-      (item.itemType === 'square' || item.itemType === 'rounded')
-    ) {
-      setAlertText(
-        <ModalContainerStyled>
-          <TableInfoWrapperStyled>
-            <SeatLabelStyled>{item.tableId} 번 테이블</SeatLabelStyled>
-          </TableInfoWrapperStyled>
-          <TableInfoWrapperStyled>
-            <SeatLabelStyled>예약 시간 :</SeatLabelStyled>
-            <SeatValueStyled>
-              {reservationEndTime} ~ {reservationStartTime}
-            </SeatValueStyled>
-          </TableInfoWrapperStyled>
-          {/* <TableInfoWrapperStyled>
-            <SeatLabelStyled>좌석 수 :</SeatLabelStyled>
-            <SeatValueStyled>{item.assignedSeats}</SeatValueStyled>
-          </TableInfoWrapperStyled> */}
-        </ModalContainerStyled>
-      );
-      setModalType('alert');
-      setConfirmText('예약 상세');
-      open();
-    }
-  };
-
   const renderIcon = (itemType, tableId, reservedTable) => {
-    const isOccupied = reservedTable.some(
-      (reserved) => reserved.tableId === tableId
-    );
+    const isOccupied = reservedTable.some((reserved) => reserved === tableId);
 
     const item = Items.find((item) => item.itemType === itemType);
 
@@ -194,13 +111,7 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
             ? RoundTablePointedIcon
             : item.icon;
 
-      const iconStyle = !isOccupied
-        ? { pointerEvents: 'none' }
-        : itemType === 'square' || itemType === 'rounded'
-          ? { cursor: 'pointer' }
-          : {};
-
-      return <IconComponent style={iconStyle} />;
+      return <IconComponent />;
     }
 
     return null;
@@ -230,11 +141,13 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
             y={item.y}
             svgWidth={IconWidth}
             svgHeight={IconHeight}
-            onClick={() => {
-              handleIconClick(item);
-            }}
           >
             {renderIcon(item.itemType, item.tableId, reservedTable)}
+            {item.itemType === 'SQUARE' || item.itemType === 'ROUNDED' ? (
+              <LabelStyled>{item.tableId}번</LabelStyled>
+            ) : (
+              ''
+            )}
           </ItemWrapperStyled>
         ))}
       </MapStyled>
@@ -242,4 +155,4 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
   );
 };
 
-export default SeatingMap;
+export default ReservationSeatMap;

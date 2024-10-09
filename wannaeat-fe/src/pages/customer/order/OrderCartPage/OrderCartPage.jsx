@@ -471,6 +471,8 @@ const OrderCartPage = () => {
         console.log('stompClient is not initialized or not connected');
         showAlert('웹소켓이 연결되지 않습니다.');
       }
+
+      nav('/customer/order/' + reservationUrl);
       close();
     });
     open();

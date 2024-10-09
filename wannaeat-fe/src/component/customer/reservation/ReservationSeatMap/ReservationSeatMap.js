@@ -46,8 +46,8 @@ const SeatingMapStyled = styled.div`
   flex-direction: column;
   align-items: center;
 
-  width: 60vh;
-  height: 60vh;
+  width: 58vh;
+  height: 58vh;
 `;
 
 const MapStyled = styled.div`
@@ -92,61 +92,4 @@ const LabelStyled = styled.div`
   font-weight: ${theme.fontWeight.default};
 `;
 
-const ModalContainerStyled = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  width: 180px;
-  height: fit-content;
-
-  margin-top: -20%;
-
-  @media (min-width: 480px) {
-    width: 200px;
-    height: fit-content;
-
-    margin-top: -20%;
-  }
-`;
-
-const TableInfoWrapperStyled = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-
-  margin-top: 12%;
-`;
-
-const SeatLabelStyled = styled.div`
-  width: 100%;
-  font-size: ${theme.fontSize.px15};
-  font-weight: ${theme.fontWeight.bold};
-
-  @media (min-width: 480px) {
-    font-size: ${theme.fontSize.px13};
-    font-weight: ${theme.fontWeight.bold};
-  }
-`;
-
-const SeatValueStyled = styled.div`
-  width: 100%;
-  font-size: ${theme.fontSize.px15};
-  text-align: start;
-
-  @media (min-width: 480px) {
-    font-size: ${theme.fontSize.px13};
-    text-align: start;
-  }
-`;
-
-export {
-  Items,
-  SeatingMapStyled,
-  MapStyled,
-  ItemWrapperStyled,
-  LabelStyled,
-  TableInfoWrapperStyled,
-  SeatLabelStyled,
-  SeatValueStyled,
-  ModalContainerStyled,
-};
+export { Items, SeatingMapStyled, MapStyled, ItemWrapperStyled, LabelStyled };

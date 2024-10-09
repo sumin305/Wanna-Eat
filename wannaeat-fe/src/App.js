@@ -1,8 +1,9 @@
 // App.js
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Global, css } from '@emotion/react';
 import Main from './Main';
+import Loading from './component/common/loading/Loading';
 
 import { requestPermission } from './firebase/firebaseCloudMessaging';
 import { getRestaurantCategories } from 'api/customer/restaurant.js';
@@ -57,7 +58,6 @@ const getCategories = async () => {
 // 알람창 띄워서 새로고침 방지
 const usePreventRefresh = (shouldPrevent) => {
   useEffect(() => {
-    // 새로고침 시 알람창 띄우는 것 해제하는 조건
     if (!shouldPrevent) return;
 
     const handleBeforeunload = (event) => {
@@ -69,7 +69,7 @@ const usePreventRefresh = (shouldPrevent) => {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeunload);
     };
-  }, []);
+  }, [shouldPrevent]);
 };
 
 function App() {
@@ -78,22 +78,31 @@ function App() {
   const isPayPage = window.location.pathname.startsWith('/customer/order/pay');
   const isDepositPage =
     window.location.pathname === '/customer/reservation/deposit-payment';
+  const [isLoading, setIsLoading] = useState(true);
+
   // 로그인페이지, 결제페이지, 보증금 결제페이지를 제외한 모든 페이지 새로고침 방지
   usePreventRefresh(!(isLoginPage || isPayPage || isDepositPage));
 
   useEffect(() => {
-    // 알림 권한 요청 및 포그라운드 알림 처리
-    requestPermission();
+    const initializeApp = async () => {
+      try {
+        await requestPermission();
+        await getCategories();
+        await getMerchantCategories();
+      } catch (error) {
+        console.error('Error initializing app:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    // 카테고리 데이터 가져오기
-    getCategories();
-    getMerchantCategories();
-  }, [window.location.pathname]); // 빈 배열을 의존성 배열로 사용하여 초기 실행 시 한 번만 호출되도록 설정
+    initializeApp();
+  }, [window.location.pathname]);
 
   return (
     <BrowserRouter>
       <Global styles={globalStyles} />
-      <Main />
+      {isLoading ? <Loading /> : <Main />}
     </BrowserRouter>
   );
 }

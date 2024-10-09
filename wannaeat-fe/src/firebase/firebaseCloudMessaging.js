@@ -19,13 +19,16 @@ const messaging = getMessaging(app);
 // 알림 권한 요청
 export function requestPermission() {
   console.log('알림 권한 요청 중...');
-  Notification.requestPermission().then((permission) => {
-    if (permission === 'granted') {
-      console.log('알림 권한 허용됨');
-    } else {
-      console.log('알림 권한이 거부되었습니다.');
-    }
-  });
+  if (Notification) {
+    Notification.requestPermission().then((permission) => {
+      if (permission === 'granted') {
+        console.log('알림 권한 허용됨');
+        getFcmToken();
+      } else {
+        console.log('알림 권한이 거부되었습니다.');
+      }
+    });
+  }
 }
 
 // FCM 토큰 발급 함수

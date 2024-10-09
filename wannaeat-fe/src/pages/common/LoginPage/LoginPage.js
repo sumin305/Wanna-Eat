@@ -28,19 +28,27 @@ const KakaoLoginButton = styled.button`
   border: none;
   background: none;
   color: black;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.05); /* 버튼 커지는 효과 */
+    transition: transform 0.2s ease-in-out;
+  }
 `;
 
 const KakaoLoginButtonImg = styled.img`
   width: 18rem;
+
   @media (min-width: 480px) {
     width: 20rem;
   }
 `;
 
 const GoogleLoginButton = styled.button`
-  display: grid;
+  display: inline-grid; /* inline-grid로 변경 */
   grid-template-columns: repeat(3, 1fr);
   align-items: center;
+  justify-content: center; /* 가운데 정렬 */
   margin: 0 auto;
   grid-row: 7;
   border: none;
@@ -50,6 +58,15 @@ const GoogleLoginButton = styled.button`
   width: 18rem;
   height: 2.8rem;
   padding: 0 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
+  /* CSS 우선순위 강화 */
+  &:hover {
+    background-color: #f5f5f5 !important; /* !important 사용하여 우선순위 증가 */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transform: scale(1.05); /* 살짝 확대 효과 추가 */
+  }
 
   @media (min-width: 480px) {
     width: 20rem;
@@ -72,6 +89,7 @@ const GoogleLoginTitle = styled.p`
   font-weight: 500;
   font-style: normal;
   white-space: nowrap;
+
   @media (min-width: 480px) {
     font-size: 1rem;
   }

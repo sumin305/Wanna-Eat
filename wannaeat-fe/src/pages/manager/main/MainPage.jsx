@@ -29,6 +29,7 @@ import Button from 'component/common/button/WEButton/WEButton.jsx';
 
 import useHeaderStore from '../../../stores/common/useHeaderStore.js';
 import { useDropdownStore } from 'stores/common/useDropdownStore.js';
+import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore.js';
 
 import WEDropdown from 'component/common/dropdown/WEDropdown.jsx';
 import { ReactComponent as RefreshIcon } from 'assets/icons/manager/restaurant/refresh.svg';
@@ -42,6 +43,8 @@ const MainPage = () => {
     setIsShowLogo,
     setIconAction,
   } = useHeaderStore();
+
+  const { restaurantSize, restaurantFloorCnt } = useMyRestaurantStore();
 
   useEffect(() => {
     setIsCarrot(true);
@@ -93,6 +96,10 @@ const MainPage = () => {
     fetchMainData();
   }, [setItems, setWidth, setSelectedId]);
 
+  useEffect(() => {
+    setFloor(restaurantFloorCnt);
+  }, [restaurantFloorCnt]);
+
   const handleDropdownOnSelect = (selectedValue) => {
     let mappedIndex;
 
@@ -134,9 +141,27 @@ const MainPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleModalOpen = () => {
-    // if (isMyRestaurant) {
-    //   navigate('/manager/restaurant/seat-decorate');
-    // }
+    if (isMyRestaurant) {
+      let mappedIndex;
+      switch (restaurantSize) {
+        case 'SMALL':
+          mappedIndex = 0;
+          break;
+        case 'MEDIUM':
+          mappedIndex = 1;
+          break;
+        case 'LARGE':
+          mappedIndex = 2;
+          break;
+        default:
+          mappedIndex = 1;
+          break;
+      }
+
+      navigate('/manager/restaurant/seat-decorate', {
+        state: { mappedIndex, floor },
+      });
+    }
 
     setIsModalOpen(true);
   };

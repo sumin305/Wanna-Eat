@@ -54,7 +54,24 @@ const getCategories = async () => {
   }
 };
 
+const usePreventRefresh = () => {
+  useEffect(() => {
+    const handleBeforeunload = (event) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handleBeforeunload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeunload);
+    };
+  }, []);
+};
+
 function App() {
+  // 새로고침 방지
+  usePreventRefresh();
+
   useEffect(() => {
     // 알림 권한 요청 및 포그라운드 알림 처리
     requestPermission();

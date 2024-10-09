@@ -299,7 +299,7 @@ const OrderCartBox = ({ reservationUrl }) => {
             {},
             JSON.stringify(orderRegisterRequestDto)
           );
-          console.log('주문에 보내는 내용:', orderRegisterRequestDto);
+          console.log('주문에 보내는 내용2:', orderRegisterRequestDto);
 
           setAllMenusInfo({ cartDetailResponseDto: { menus: [] } });
           setAllMenusSortInfo({ cartDetailResponseDto: { menus: [] } });

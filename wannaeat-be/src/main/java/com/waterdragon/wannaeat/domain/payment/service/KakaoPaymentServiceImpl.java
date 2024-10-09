@@ -50,10 +50,10 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 	private String REDIRECT_URL;
 
 	@Value("${kakaopay.order-redirect-path}")
-	private String ORDER_REDIRECT_PATH = "/customer/order/order-payment";
+	private String ORDER_REDIRECT_PATH;
 
 	@Value("${kakaopay.deposit-redirect-path}")
-	private String DEPOSIT_REDIRECT_PATH = "/customer/reservation/deposit-payment";
+	private String DEPOSIT_REDIRECT_PATH;
 
 	private final OrderService orderService;
 	private final OrderRepository orderRepository;
@@ -114,7 +114,7 @@ public class KakaoPaymentServiceImpl implements KakaoPaymentService {
 		parameters.put("total_amount", String.valueOf(totalPrice));             // 상품 총액
 		parameters.put("tax_free_amount", "0");                                 // 상품 비과세 금액
 		parameters.put("approval_url",
-			REDIRECT_URL + ORDER_REDIRECT_PATH + "?payment_id=" + paymentId
+			REDIRECT_URL + ORDER_REDIRECT_PATH + "/" + reservation.getReservationUrl() + "?payment_id=" + paymentId
 				+ "&type=menu" + "&status=success"); // 결제 성공 시 URL
 		parameters.put("cancel_url", REDIRECT_URL + ORDER_REDIRECT_PATH + "?status=cancel");      // 결제 취소 시 URL
 		parameters.put("fail_url", REDIRECT_URL + ORDER_REDIRECT_PATH + "?status=fail");          // 결제 실패 시 URL

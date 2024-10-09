@@ -169,19 +169,21 @@ const ListPage = () => {
               </ReservationItemText>
               <ReservationDetailButton
                 onClick={() =>
-                  handleReservationDetailButtonClick(reservation.reservationId)
+                  handleRevisitButtonClick(reservation.restaurantId)
                 }
               >
-                예약상세
+                다시 방문하기
               </ReservationDetailButton>
             </ReservationItemInfo>
             <Button
-              onClick={() => handleRevisitButtonClick(reservation.restaurantId)}
+              onClick={() =>
+                handleReservationDetailButtonClick(reservation.reservationId)
+              }
               size={'long'}
               outlined={true}
               height={'2.5rem'}
             >
-              다시 방문하기
+              예약상세
             </Button>
           </ReservationItem>
         ))

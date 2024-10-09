@@ -14,6 +14,9 @@ const useOrderStore = create((set) => ({
   selectedCard: null,
   payPrice: 0,
   payOrders: [],
+  isAllPaid: false,
+  orderCounts: {},
+  setOrderCounts: (counts) => set(() => ({ orderCounts: counts })),
   setPayOrders: (orders) => set(() => ({ payOrders: orders })),
   setAllMenusInfo: (menusInfo) => set(() => ({ allMenusInfo: menusInfo })),
   setAllMenusSortInfo: (sortedMenusInfo) =>
@@ -30,6 +33,7 @@ const useOrderStore = create((set) => ({
   setReservationEndTime: (time) => set(() => ({ reservationEndTime: time })),
   setRestaurantId: (id) => set(() => ({ restaurantId: id })),
   setReservationId: (id) => set(() => ({ reservationId: id })),
+  setIsAllPaid: (isAllPaid) => set(() => ({ isAllPaid: isAllPaid })),
 }));
 
 export default useOrderStore;

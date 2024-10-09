@@ -19,6 +19,7 @@ import { ReactComponent as SquareTablePointedIcon } from 'assets/icons/manager/r
 import { ReactComponent as RoundTablePointedIcon } from 'assets/icons/manager/restaurant/table-rounded.svg';
 
 import useModalStore from 'stores/common/useModalStore.js';
+import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore.js';
 
 const SeatingMap = ({ OccupiedList, on404Error }) => {
   const [floorData, setFloorData] = useState([]);
@@ -47,13 +48,18 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
     }
   }, [restaurantId]);
 
+  const { setRestaurantSize, setRestaurantFloorCnt } = useMyRestaurantStore();
+
   const fetchFloorData = async (restaurantId) => {
     try {
       const response = await authClientInstance.get(
         `/api/public/restaurants/${restaurantId}/structure`
       );
       const { data } = response.data;
+      console.log(data);
 
+      setRestaurantSize(data.size);
+      setRestaurantFloorCnt(data.floorCnt);
       setFloorCnt(data.floorCnt);
       setOriginalData(data);
       mergeFloorData(data, currentFloor);
@@ -122,6 +128,7 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
   const handleGotoReservationDetail = () => {
     close();
     setHandleButtonClick(close());
+    navigate(`/manager/reservation/reservation-detail/${reservationId}`);
   };
 
   const handleIconClick = (item) => {

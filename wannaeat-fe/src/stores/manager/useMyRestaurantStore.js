@@ -16,6 +16,12 @@ const useMyRestaurantStore = create((set) => ({
   },
   reservationDetails: [],
   restaurantId: null,
+  restaurantSize: '',
+  restaurantFloorCnt: -1,
+  setRestaurantSize: (restaurantSize) =>
+    set({ restaurantSize: restaurantSize }),
+  setRestaurantFloorCnt: (restaurantFloorCnt) =>
+    set({ restaurantFloorCnt: restaurantFloorCnt }),
   setManagerFormData: (field, value) =>
     set((state) => ({
       managerFormData: {

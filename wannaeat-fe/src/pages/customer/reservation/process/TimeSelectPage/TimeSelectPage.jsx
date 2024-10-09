@@ -35,13 +35,14 @@ const TimeSelectPage = () => {
   } = useReservationStore();
 
   const navigate = useNavigate();
+
   useEffect(() => {
     const setDate = async () => {
-      await setReservationDate(
-        reservationDate !== ''
-          ? reservationDate
-          : moment(new Date()).format('YYYY-MM-DD')
-      );
+      if (!reservationDate || reservationDate === '') {
+        await setReservationDate(moment().format('YYYY-MM-DD'));
+      } else {
+        await setReservationDate(reservationDate);
+      }
     };
     setDate();
   }, []);

@@ -59,6 +59,7 @@ const MainPage = () => {
     setIconAction,
   ]);
 
+  const restaurantId = window.localStorage.getItem('restaurantId');
   const navigate = useNavigate();
 
   const [dropdownId, setDropdownId] = useState(1);
@@ -73,9 +74,17 @@ const MainPage = () => {
 
   const [isMyRestaurant, setIsMyRestaurant] = useState(true);
 
+  // 매장 구조도 등록이 안 되어 있는 경우!!!!!
   const handle404Error = () => {
     setIsMyRestaurant(false);
   };
+
+  // 매장이 없으면 매장등록페이지로 이동
+  useEffect(() => {
+    if (!restaurantId) {
+      navigate(`/manager/restaurant-regist`);
+    }
+  });
 
   useEffect(() => {
     setItems(['소형 (50m² 이하)', '중형 (50m² ~ 150m²)', '대형 (150m² 이상)']);
@@ -125,6 +134,10 @@ const MainPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleModalOpen = () => {
+    // if (isMyRestaurant) {
+    //   navigate('/manager/restaurant/seat-decorate');
+    // }
+
     setIsModalOpen(true);
   };
 

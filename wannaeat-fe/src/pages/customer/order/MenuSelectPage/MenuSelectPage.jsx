@@ -11,6 +11,7 @@ import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
 import { useState } from 'react';
 import useCartStore from 'stores/customer/useCartStore';
+import MenuIcon from 'assets/icons/menu/basic-menu.svg';
 
 import CartIcon from 'assets/icons/order/cart.svg';
 import {
@@ -195,7 +196,9 @@ const MenuSelectPage = () => {
           currentMenuDetails.map((menu, menuId) => (
             <MenuBox key={menuId}>
               <ImageBox>
-                <MenuImg src={menu.menuImage}></MenuImg>
+                <MenuImg
+                  src={menu.menuImage ? menu.menuImage : MenuIcon}
+                ></MenuImg>
               </ImageBox>
               <MenuContentContainer>
                 <MenuName>{menu.menuName}</MenuName>

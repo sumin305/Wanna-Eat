@@ -408,6 +408,10 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
     }
   };
 
+  const handleGotoMain = () => {
+    navigate('/manager');
+  };
+
   const handleCanvasSave = () => {
     const size = (() => {
       switch (gridColumns) {
@@ -527,9 +531,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
         </ZoomableGridWrapperStyled>
         <ButtonWrapperStyled>
           <SaveButtonStyled onClick={handleCanvasSave}>저장</SaveButtonStyled>
-          <CancelButtonStyled onClick={clearItemsByFloor}>
-            취소
-          </CancelButtonStyled>
+          <CancelButtonStyled onClick={handleGotoMain}>취소</CancelButtonStyled>
         </ButtonWrapperStyled>
       </GridWrapperStyled>
     </div>

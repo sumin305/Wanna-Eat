@@ -28,6 +28,7 @@ const useRestaurantStore = create((set) => ({
   setRestaurantId: (id) => set({ restaurantId: id }),
   setReservationDetails: (details) => set({ reservationDetails: details }),
   setRestaurantLike: (like) => set({ restaurantLike: like }),
+  setRestaurantName: (name) => set({ restaurantName: name }),
   setRestaurant: async (id) => {
     const result = await getRestaurantInfo(id);
 

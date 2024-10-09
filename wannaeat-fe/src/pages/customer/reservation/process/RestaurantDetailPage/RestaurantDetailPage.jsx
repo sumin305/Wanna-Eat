@@ -34,7 +34,7 @@ const RestaurantDetailPage = () => {
   const nav = useNavigate();
   const [activeMenus, setActiveMenus] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
-
+  const [restaurantImage, setRestaurantImage] = useState('');
   const handleReservationButtonClick = () => {
     nav('/customer/reservation/time-select');
   };
@@ -64,14 +64,17 @@ const RestaurantDetailPage = () => {
     menuCategories,
     restaurantLike,
     setRestaurantLike,
-    restaurantImage,
   } = useRestaurantStore();
 
-  console.log('restaurant: ', restaurant);
   useEffect(() => {
+    console.log('restaurant: ', restaurant);
+
     const fetchRestaurant = async () => {
       const restaurantResult = await setRestaurant(params.id);
       await setRestaurantId(params.id);
+      setRestaurantImage(
+        restaurantResult.restaurantImageListResponseDto.restaurantImages[0]
+      );
     };
 
     setRestaurant(params.id);

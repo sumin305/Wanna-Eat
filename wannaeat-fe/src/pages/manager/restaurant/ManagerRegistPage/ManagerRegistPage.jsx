@@ -25,6 +25,7 @@ import useAlert from 'utils/alert.js';
 import useReservationStore from 'stores/customer/useReservationStore.js';
 import PlusImg from 'assets/icons/menu/Plus.svg';
 import { useNavigate } from 'react-router-dom';
+import useModalStore from '../../../../stores/common/useModalStore.js';
 
 const ManagerRegistPage = () => {
   const { setIsCarrot, setPageName, setIsUnderLine } = useHeaderStore();
@@ -37,6 +38,14 @@ const ManagerRegistPage = () => {
 
   const { setItems: setVisitTimeItems } = useVisitTimeDropdownStore();
   const { setItems: setEndTimeItems } = useEndTimeDropdownStore();
+  const {
+    setModalType,
+    setIsOneButton,
+    setAlertText,
+    setHandleButtonClick,
+    close,
+    open,
+  } = useModalStore();
 
   const [previewUrl, setPreviewUrl] = useState(null); // 이미지 미리보기용 URL
 
@@ -69,10 +78,22 @@ const ManagerRegistPage = () => {
       restaurantCloseTime: managerFormData.restaurantCloseTime,
       depositPerMember: managerFormData.depositPerMember,
     });
+
+    const showModal = () => {
+      setModalType('alert');
+      setIsOneButton(true);
+      setAlertText(response.data.message);
+      setHandleButtonClick(() => {
+        nav('/manager');
+        close();
+      });
+      open();
+    };
+
     if (response.status === 201) {
       const restaurantId = response.data.data;
       window.localStorage.setItem('restaurantId', restaurantId);
-      showAlert(response.data.message, () => nav('/manager'));
+      showModal();
     } else if (response.status === 400) {
       showAlert('값을 형식에 맞게 입력하세요.');
     } else {

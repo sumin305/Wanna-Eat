@@ -10,13 +10,10 @@ const useAlert = () => {
     open,
   } = useModalStore();
 
-  const showAlert = (text, callback) => {
+  const showAlert = (text) => {
     setModalType('alert');
     setAlertText(text);
-    setHandleButtonClick(() => {
-      close();
-      if (callback) callback();
-    });
+    setHandleButtonClick(close);
     setIsOneButton(true);
     open();
   };

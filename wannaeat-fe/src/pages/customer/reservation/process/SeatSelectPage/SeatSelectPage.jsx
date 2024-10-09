@@ -10,7 +10,8 @@ import useReservationStore from 'stores/customer/useReservationStore.js';
 import useModalStore from 'stores/common/useModalStore.js';
 
 const SeatSelectPage = (tableData) => {
-  const { maxCapacity, memberCount } = useReservationStore();
+  const { maxCapacity, memberCount, setMaxCapacity, setTableList } =
+    useReservationStore();
 
   const { close, setHandleButtonClick } = useModalStore();
 
@@ -18,6 +19,8 @@ const SeatSelectPage = (tableData) => {
 
   const handleBeforeButtonClick = () => {
     setHandleButtonClick(close());
+    setMaxCapacity(0);
+    setTableList([]);
     navigate(-1);
   };
   const handleNextButtonClick = () => {

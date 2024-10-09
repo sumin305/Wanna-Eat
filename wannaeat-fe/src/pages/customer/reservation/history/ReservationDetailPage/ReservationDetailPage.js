@@ -50,8 +50,10 @@ const ReservationInfoTitle = styled.p`
 `;
 
 const SeatDecorateInfo = styled.div`
-  height: 40vh;
-  background: pink;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   margin: 1rem;
   @media (min-width: 480px) {
     margin: 1.5rem;

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import WEStep from '../../../../../component/customer/reservation/WEStep/WEStep.jsx';
 import { ButtonWrapper } from '../TimeSelectPage/TimeSelectPage';
 import theme from '../../../../../style/common/theme';
@@ -7,22 +8,35 @@ import { SeatSelectPageContainer, MemberCountSyled } from './SeatSelectPage.js';
 
 import SeatSelect from 'component/customer/reservation/SeatSelect/SeatSelect.jsx';
 import useReservationStore from 'stores/customer/useReservationStore.js';
+import useModalStore from 'stores/common/useModalStore.js';
 
 const SeatSelectPage = (tableData) => {
-  const { maxCapacity, memberCount } = useReservationStore();
+  const { maxCapacity, memberCount, setMaxCapacity, setTableList } =
+    useReservationStore();
+
+  const { close, setHandleButtonClick } = useModalStore();
 
   const navigate = useNavigate();
 
   const handleBeforeButtonClick = () => {
+    setHandleButtonClick(close());
+    setMaxCapacity(0);
+    setTableList([]);
     navigate(-1);
   };
   const handleNextButtonClick = () => {
-    if (maxCapacity <= memberCount) {
+    if (maxCapacity < memberCount) {
       window.alert('방문 인원에 맞춰 테이블을 선택해 주세요.');
     } else {
       navigate('/customer/reservation/deposit-payment');
     }
   };
+
+  useEffect(() => {
+    setHandleButtonClick(close());
+    setMaxCapacity(0);
+    setTableList([]);
+  }, []);
 
   return (
     <SeatSelectPageContainer>

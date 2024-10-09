@@ -161,7 +161,7 @@ const SeatSelect = () => {
 
   const handleAddTable = (item) => {
     if (maxCapacity >= memberCount) {
-      window.alert('지나친 테이블 예약은 불가능합니다.');
+      window.alert('이미 충분한 수의 테이블이 선택되었습니다.');
       return;
     }
     if (Array.isArray(tableList) && !tableList.includes(item.tableId)) {
@@ -182,7 +182,7 @@ const SeatSelect = () => {
 
   const renderIcon = (itemType, tableId, canReserveTable) => {
     const isAvailable = canReserveTable.some((value) => value === tableId);
-    const isSelected = tableList.includes(tableId);
+    const isSelected = tableList ? tableList.includes(tableId) : [];
 
     const item = Items.find((item) => item.itemType === itemType);
 

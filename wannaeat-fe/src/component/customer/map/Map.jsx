@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { MapView, FindRestaurantButton } from './Map';
 import PinkMarker from '../../../assets/icons/map/pink-maker.png';
-import ArrowWhite from '../../../assets/icons/map/arrow-white.png';
-import VertexWhite from '../../../assets/icons/map/vertex-white.png';
 import useMapStore from '../../../stores/map/useMapStore';
 import { useNavigate } from 'react-router-dom';
 import useMapFilterStore from 'stores/map/useMapFilterStore';
-import useRestaurantStore from 'stores/customer/useRestaurantStore';
 import useReservationStore from '../../../stores/customer/useReservationStore';
+import debounce from 'lodash.debounce';
 
 const MapContainer = () => {
   const { kakao } = window;
@@ -16,163 +14,184 @@ const MapContainer = () => {
     lon,
     setLat,
     setLon,
-    isInitialLoad,
-    setIsInitialLoad,
     setMarkerPositions,
-    markerPositions,
     centerLatLng,
     setCenterLatLng,
     getRestaurantPositions,
   } = useMapStore();
 
-  const { reservationDate, startTime, endTime, memberCount } =
-    useReservationStore();
-  const { categoryId, keyword } = useMapFilterStore();
+  const {
+    reservationDate,
+    startTime,
+    endTime,
+    memberCount,
+    setReservationDate,
+    setStartTime,
+    setEndTime,
+    setMemberCount,
+  } = useReservationStore();
+
+  const { categoryId, setCategoryId, keyword } = useMapFilterStore();
 
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const navigate = useNavigate();
-
-  // 초기 렌더링 시 사용자 현재 위치 기반 식당 검색
-  useEffect(() => {
-    const fetchMarketPositions = async () => {
-      console.log(reservationDate, startTime, endTime, memberCount);
-      try {
-        const restaurantMarkers = await getRestaurantPositions({
-          latitude: lat,
-          longitude: lon,
-          ...(categoryId !== -1 && { categoryId: categoryId }),
-          ...(keyword && { keyword: keyword }),
-          ...(reservationDate &&
-            reservationDate !== '' && { reservationDate: reservationDate }),
-          ...(startTime && startTime !== '00:00' && { startTime: startTime }),
-          ...(endTime && endTime !== '00:00' && { endTime: endTime }),
-          ...(memberCount &&
-            memberCount !== -1 && { memberCount: memberCount }),
-        });
-
-        if (restaurantMarkers) {
-          setMarkerPositions(restaurantMarkers); // 마커 위치를 설정
-        }
-      } catch (error) {
-        console.error('Failed to fetch restaurant markers', error);
-      }
-    };
-    fetchMarketPositions();
-  }, [lat, lon, setMarkerPositions]);
+  const mapRef = useRef(null);
+  const markersRef = useRef([]);
+  const lastPositionRef = useRef({ lat, lon });
 
   useEffect(() => {
-    const { kakao } = window;
-    const container = document.getElementById('map'); // 지도를 표시할 div
-    const options = {
-      center: new kakao.maps.LatLng(lat, lon), // 지도의 중심좌표
-      level: 4, // 지도의 확대 레벨
+    const initializeMap = (latitude, longitude) => {
+      const container = document.getElementById('map');
+      const options = { center: new kakao.maps.LatLng(latitude, longitude), level: 2 };
+      mapRef.current = new kakao.maps.Map(container, options);
+
+      kakao.maps.event.addListener(
+        mapRef.current,
+        'center_changed',
+        debounce(handleCenterChange, 1500) // 1.5초로 debounce 시간 증가
+      );
+
+      fetchAndDisplayMarkers(latitude, longitude);
     };
 
-    const map = new kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
-
-    // 처음에 사용자의 현재 위치로 지도를 설정
-    if (isInitialLoad && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        const currentLat = position.coords.latitude;
-        const currentLon = position.coords.longitude;
-        console.log(currentLat, currentLon);
-        setLat(currentLat);
-        setLon(currentLon);
-        setCenterLatLng({ lat: currentLat, lon: currentLon });
-        map.setCenter(new kakao.maps.LatLng(currentLat, currentLon));
-        setIsInitialLoad(false);
-      });
-    }
-
-    // 지도 드래그나 확대/축소로 중심 좌표가 변경될 때 이벤트 등록
-    kakao.maps.event.addListener(map, 'center_changed', function () {
-      const latlng = map.getCenter();
-      setCenterLatLng({ lat: latlng.getLat(), lon: latlng.getLng() });
-      setIsButtonVisible(true);
-    });
-
-    // 비동기 처리를 기다리도록 추가
-    (async () => {
-      console.log('markerPositions', markerPositions);
-      var positions = await markerPositions; // 마커 위치 데이터를 비동기로 기다림
-
-      var imageSrc = PinkMarker;
-
-      console.log('positions', positions);
-      console.log('typeof positions', typeof positions);
-
-      if (Array.isArray(positions)) {
-        positions.forEach((position) => {
-          var imageSize = new kakao.maps.Size(35, 35),
-            imageOption = { offset: new kakao.maps.Point(18, 50) }; // 마커이미지 옵션
-
-          var markerImage = new kakao.maps.MarkerImage(
-              imageSrc,
-              imageSize,
-              imageOption
-            ),
-            markerPosition = position.latlng; // 마커가 표시될 위치
-
-          var marker = new kakao.maps.Marker({
-            position: markerPosition,
-            image: markerImage, // 마커이미지 설정
-          });
-
-          marker.setMap(map);
-
-          kakao.maps.event.addListener(marker, 'click', () =>
-            handleMarkerClick(position.id)
-          );
-
-          var content = `
-           <div class="customoverlay">
-             <span class="title">${position.title}</span>
-           </div>
-         `;
-          var customOverlay = new kakao.maps.CustomOverlay({
-            map: map,
-            position: markerPosition,
-            content: content,
-            yAnchor: 1,
-          });
-
-          const styleTag = document.createElement('style');
-          styleTag.textContent = `
-           .customoverlay {position:relative;bottom:60px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;}
-           .customoverlay:nth-of-type(n) {border:0; box-shadow:0px 1px 2px #888;}
-           .customoverlay a {display:block;text-decoration:none;color:#000;text-align:center;border-radius:6px;font-size:14px;font-weight:bold;overflow:hidden;background: #d95050;background: #d95050 url(${ArrowWhite}) no-repeat right 14px center;}
-           .customoverlay .title {display:block;text-align:center;background:#fff;margin-right:35px;padding:10px 15px;font-size:14px;font-weight:bold;}
-           .customoverlay:after {content:'';position:absolute;margin-left:-12px;left:50%;bottom:-12px;width:22px;height:12px;background:url(${VertexWhite})}
-         `;
-          document.head.appendChild(styleTag);
-        });
+    const fetchUserLocationAndInitializeMap = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const currentLat = position.coords.latitude;
+            const currentLon = position.coords.longitude;
+            setLat(currentLat);
+            setLon(currentLon);
+            setCenterLatLng({ lat: currentLat, lon: currentLon });
+            initializeMap(currentLat, currentLon);
+          },
+          () => {
+            const defaultLat = 36.3504;
+            const defaultLon = 127.3845;
+            setLat(defaultLat);
+            setLon(defaultLon);
+            setCenterLatLng({ lat: defaultLat, lon: defaultLon });
+            initializeMap(defaultLat, defaultLon);
+          }
+        );
       }
-    })();
-  }, [lat, lon, markerPositions]); // lat, lon, markerPositions이 변경될 때만 다시 실행됨
+    };
 
-  // 현재 위치 근처의 레스토랑 찾는 함수
-  const handleRestaurantFindButtonClick = async () => {
-    setLat(centerLatLng.lat);
-    setLon(centerLatLng.lon);
-    const restaurantPositions = await getRestaurantPositions({
-      latitude: lat,
-      longitude: lon,
-      ...(categoryId !== -1 && { categoryId: categoryId }),
-      ...(keyword && { keyword: keyword }),
-      ...(reservationDate &&
-        reservationDate !== '' && { reservationDate: reservationDate }),
-      ...(startTime && startTime !== '00:00' && { startTime: startTime }),
-      ...(endTime && endTime !== '00:00' && { endTime: endTime }),
-      ...(memberCount && memberCount !== -1 && { memberCount: memberCount }),
-    });
-    console.log('restaurantPositions', restaurantPositions);
-    setMarkerPositions(restaurantPositions);
+    fetchUserLocationAndInitializeMap();
+    return () => resetFilters();
+  }, []);
+
+  const resetFilters = () => {
+    setReservationDate(null);
+    setStartTime(null);
+    setEndTime(null);
+    setMemberCount(-1);
+    setCategoryId(-1);
     setIsButtonVisible(false);
   };
 
-  // 마커 클릭 시 해당 레스토랑 정보 상세보기로 이동
-  const handleMarkerClick = async (id) => {
-    console.log('handleMarkerClick', id);
+  const fetchAndDisplayMarkers = useCallback(
+    async (latitude, longitude) => {
+      const params = {
+        latitude,
+        longitude,
+        ...(categoryId !== -1 && { categoryId }),
+        ...(keyword && { keyword }),
+        ...(reservationDate && { reservationDate }),
+        ...(startTime && startTime !== '00:00' && { startTime }),
+        ...(endTime && endTime !== '00:00' && { endTime }),
+        ...(memberCount && memberCount !== -1 && { memberCount }),
+      };
+
+      try {
+        const restaurantMarkers = await getRestaurantPositions(params);
+        setMarkerPositions(restaurantMarkers);
+        updateMarkers(restaurantMarkers);
+      } catch (error) {
+        console.error('Failed to fetch restaurant markers', error);
+      }
+    },
+    [categoryId, keyword, reservationDate, startTime, endTime, memberCount, getRestaurantPositions, setMarkerPositions]
+  );
+
+  const handleCenterChange = () => {
+    const latlng = mapRef.current.getCenter();
+    const newLat = latlng.getLat();
+    const newLon = latlng.getLng();
+
+    // 중심 위치가 500m 이상 변경된 경우에만 요청
+    if (getDistance(lastPositionRef.current.lat, lastPositionRef.current.lon, newLat, newLon) > 0.5) {
+      setCenterLatLng({ lat: newLat, lon: newLon });
+      setIsButtonVisible(true);
+      lastPositionRef.current = { lat: newLat, lon: newLon };
+    }
+  };
+
+  const updateMarkers = (positions) => {
+    const imageSize = new kakao.maps.Size(50, 50);
+    const imageOption = { offset: new kakao.maps.Point(25, 50) };
+    const markerImage = new kakao.maps.MarkerImage(PinkMarker, imageSize, imageOption);
+
+    clearMarkers(); // 기존 마커 초기화
+
+    positions.forEach((position) => {
+      const marker = new kakao.maps.Marker({
+        position: position.latlng,
+        image: markerImage,
+      });
+      marker.setMap(mapRef.current);
+      markersRef.current.push(marker);
+
+      // 식당 이름 오버레이 생성
+      const overlayContent = `
+        <div style="
+          padding:5px 10px; 
+          background-color:white; 
+          border:1px solid #ddd; 
+          border-radius:5px; 
+          box-shadow:0px 1px 2px rgba(0,0,0,0.3); 
+          font-weight: bold;">
+          ${position.title}
+        </div>
+      `;
+      const customOverlay = new kakao.maps.CustomOverlay({
+        map: mapRef.current,
+        position: position.latlng,
+        content: overlayContent,
+        yAnchor: 2.7, // 마커 위에 위치하도록 설정
+        clickable: true,
+      });
+      
+      markersRef.current.push(customOverlay);
+      kakao.maps.event.addListener(marker, 'click', () => handleMarkerClick(position.id));
+    });
+  };
+
+  const clearMarkers = () => {
+    markersRef.current.forEach((marker) => marker.setMap(null));
+    markersRef.current = [];
+  };
+
+  const getDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // 지구 반경 (km)
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // km 단위 거리 반환
+  };
+
+  const handleRestaurantFindButtonClick = () => {
+    setIsButtonVisible(false);
+    fetchAndDisplayMarkers(centerLatLng.lat, centerLatLng.lon);
+  };
+
+  const handleMarkerClick = (id) => {
     navigate(`/customer/reservation/restaurant-detail/${id}`);
   };
 

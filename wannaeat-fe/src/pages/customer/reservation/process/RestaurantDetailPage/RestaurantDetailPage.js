@@ -8,7 +8,6 @@ const Box = styled.div`
 `;
 
 const RestaurantImageBox = styled.img`
-  src: ${(props) => props.src};
   height: 26vh;
 `;
 
@@ -75,7 +74,7 @@ const ImageBox = styled.div`
   left: 0;
   width: 7rem;
   height: 7rem;
-  border-radius: ${theme.borderRadius.px15};
+  flex-shrink: 0;
 `;
 
 const MenuImg = styled.img`
@@ -83,13 +82,16 @@ const MenuImg = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  flex-shrink: 0;
+  border-radius: ${theme.borderRadius.px15};
 `;
 
 const MenuContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-left: 4%;
+  padding: 4%;
 `;
 
 const MenuName = styled.p`

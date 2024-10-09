@@ -19,7 +19,7 @@ import { authClientInstance } from 'utils/http-client.js';
 import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
 
 const TimeSelectPage = () => {
-  const { restaurantId } = useRestaurantStore();
+  const { restaurant, restaurantId } = useRestaurantStore();
 
   const { open, setModalType, setConfirmText, setTitle, setChildren } =
     useModalStore();
@@ -35,7 +35,6 @@ const TimeSelectPage = () => {
   } = useReservationStore();
 
   const navigate = useNavigate();
-
   useEffect(() => {
     const setDate = async () => {
       await setReservationDate(
@@ -119,6 +118,7 @@ const TimeSelectPage = () => {
             onChange={handleDateChange}
             value={reservationDate}
             formatDay={(locale, date) => moment(date).format('DD')}
+            minDate={new Date()} // 오늘 날짜 이전은 선택 불가
           />
         </CalendarWrapper>
       </div>

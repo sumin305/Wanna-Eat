@@ -94,6 +94,7 @@ const PasswordAuthPage = () => {
       console.log(searchParams.get('type'));
       if (searchParams.has('type') && searchParams.get('type') === 'order') {
         ssafyOrderPayment(searchParams.get('url'), inputNumber + num);
+        return;
       }
       // 싸피페이 결제
       ssafyDepositPayment(
@@ -123,7 +124,7 @@ const PasswordAuthPage = () => {
 
     console.log(result);
     if (result.status === 200) {
-      console.log('결제 성공');
+      alert('결제 성공.');
     } else {
       alert('결제에 실패했습니다.');
     }

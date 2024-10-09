@@ -54,7 +54,31 @@ const getCategories = async () => {
   }
 };
 
+// 알람창 띄워서 새로고침 방지
+const usePreventRefresh = (shouldPrevent) => {
+  useEffect(() => {
+    // 새로고침 시 알람창 띄우는 것 해제하는 조건
+    if (!shouldPrevent) return;
+
+    const handleBeforeunload = (event) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handleBeforeunload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeunload);
+    };
+  }, []);
+};
+
 function App() {
+  // 로그인 페이지 체크
+  const isLoginPage = window.location.pathname === '/';
+
+  // 로그인 페이지를 제외한 모든 페이지 새로고침 방지
+  usePreventRefresh(!isLoginPage);
+
   useEffect(() => {
     // 알림 권한 요청 및 포그라운드 알림 처리
     requestPermission();

@@ -68,9 +68,18 @@ const useRestaurantStore = create((set) => ({
           : '',
         restaurantOwnerName: restaurant.restaurantOwnerName || '',
         restaurantPhone: restaurant.restaurantPhone || '',
-        restaurantImage: restaurant.restaurantImage || '',
+        restaurantImage:
+          restaurant.restaurantImageListResponseDto &&
+          restaurant.restaurantImageListResponseDto.length > 0
+            ? restaurant.restaurantImageListResponseDto.restaurantImages[0]
+            : '',
         restaurantLike: restaurant.restaurantLike || false,
       });
+      console.log(
+        'restaurant.restaurantImageListResponseDto',
+        restaurant.restaurantImageListResponseDto
+      );
+      return restaurant;
     } else {
       console.log('매장 상세 정보 조회 실패');
     }

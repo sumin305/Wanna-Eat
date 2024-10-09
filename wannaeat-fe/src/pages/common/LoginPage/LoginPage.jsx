@@ -83,6 +83,7 @@ const LoginPage = () => {
 
     const url = new URL(window.location.href);
     const searchParams = url.searchParams;
+
     // 로그인 된 상태라면
     if (searchParams.has('redirectedFromSocialLogin')) {
       // Access token 발급 후, role update

@@ -482,15 +482,18 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
             {Array.from({ length: gridColumns * gridRows }).map((_, index) => (
               <GridCellStyled key={index} />
             ))}
-            {(itemsByFloor[currentFloor] || []).map((item) => (
-              <GridItem
-                key={item.itemId}
-                item={item}
-                gridSize={gridSize}
-                setSelectedItem={setSelectedItem}
-                onClick={handleClick}
-              />
-            ))}
+
+            {Array.isArray(itemsByFloor[currentFloor])
+              ? itemsByFloor[currentFloor].map((item) => (
+                  <GridItem
+                    key={item.itemId}
+                    item={item}
+                    gridSize={gridSize}
+                    setSelectedItem={setSelectedItem}
+                    onClick={handleClick}
+                  />
+                ))
+              : null}
           </GridBackgroundStyled>
         </ZoomableGridWrapperStyled>
         <ButtonWrapperStyled>

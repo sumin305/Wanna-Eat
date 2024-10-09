@@ -1,11 +1,14 @@
+// WEFooter.js
+
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import useMapFilterStore from 'stores/map/useMapFilterStore'; // 키워드 초기화 위해 import
 import {
   FooterContainer,
   FooterWrapper,
   FooterImg,
   FooterText,
 } from './WEFooter.js';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 
 import HomeOff from '../../../assets/icons/footer/home-off.svg';
 import HomeOn from '../../../assets/icons/footer/home-on.svg';
@@ -18,7 +21,7 @@ import StatisticsOn from '../../../assets/icons/footer/statistics-on.svg';
 import MyinfoOff from '../../../assets/icons/footer/myinfo-off.svg';
 import MyinfoOn from '../../../assets/icons/footer/myinfo-on.svg';
 
-import useCommonStore, { ROLE } from '../../../stores/common/useCommonStore.js';
+import useCommonStore from '../../../stores/common/useCommonStore.js';
 import useFooterStore from '../../../stores/common/useFooterStore.js';
 
 const tabs = {
@@ -76,6 +79,7 @@ const tabs = {
 const WEFooter = () => {
   const { getUserRole } = useCommonStore();
   const { activeId, handleClickTab } = useFooterStore();
+  const { setKeyword } = useMapFilterStore(); // 키워드 초기화 함수
   const nav = useNavigate();
   const location = useLocation();
   const [currentTabs, setCurrentTabs] = useState([]);
@@ -94,7 +98,7 @@ const WEFooter = () => {
       setCurrentTabs(role === 'MANAGER' ? tabs.manager : tabs.customer);
     };
 
-    fetchTabs(); // Async 함수 호출
+    fetchTabs();
   }, []);
 
   useEffect(() => {
@@ -109,6 +113,10 @@ const WEFooter = () => {
         <FooterWrapper
           key={tab.id}
           onClick={() => {
+            // 예약하기 클릭 시 키워드 초기화
+            if (tab.path === '/customer/reservation') {
+              setKeyword('');
+            }
             handleClickTab(tab.id, tab.path);
             nav(tab.path);
           }}

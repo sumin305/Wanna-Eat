@@ -125,7 +125,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
     setItemsByFloor,
     updateItem,
     updateItemPosition,
-    clearItemsByFloor,
+    // clearItemsByFloor,
   } = useStore();
 
   const {
@@ -164,13 +164,8 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
     authClientInstance
       .get(`/api/public/restaurants/${restaurantId}/structure`)
       .then((response) => {
-        console.log('response: ', response);
-
         const { tableDetailResponseDtos = [], elementDetailResponseDtos = [] } =
           response.data.data;
-
-        console.log('tableDetailResponseDtos:', tableDetailResponseDtos);
-        console.log('elementDetailResponseDtos:', elementDetailResponseDtos);
 
         tableDetailResponseDtos.forEach((table) => {
           addItem(currentFloor, {
@@ -207,7 +202,6 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
 
   useEffect(() => {
     if (!selectedItem) {
-      console.log('selectedItem 없음');
       return;
     }
 
@@ -288,16 +282,9 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   };
 
   const handleSubmit = () => {
-    console.log('selectedItem: ' + selectedItem);
     if (selectedItem && selectedItem.itemId) {
       const tableId = document.querySelector('#tableId').value;
       const assignedSeats = document.querySelector('#assignedSeats').value;
-
-      console.log(
-        `${tableId}번 테이블, 최대 수용 인원 ${assignedSeats}명으로 제출되었습니다!`
-      );
-
-      console.log(selectedItem);
 
       updateItem(currentFloor, selectedItem.itemId, {
         tableId,
@@ -336,7 +323,6 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
         );
 
         if (selectedItem) {
-          console.log('selectedItem: ' + selectedItem.itemId);
           const newItemId = uuid();
           addItem(currentFloor, {
             itemId: newItemId,
@@ -367,7 +353,6 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   });
 
   const handleClick = (item) => {
-    console.log('클릭된 아이템:', item);
     setSelectedItem(item);
     if (item.itemType === 'SQUARE' || item.itemType === 'ROUNDED') {
       setSelectedTableId(item.tableId || '');
@@ -451,13 +436,6 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
       });
     });
 
-    console.log({
-      size,
-      floorCnt,
-      tableRegisterRequestDtos,
-      elementRegisterRequestDtos,
-    });
-
     authClientInstance
       .post(
         `/api/restaurants/structure`,
@@ -474,11 +452,16 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
         }
       )
       .then((response) => {
-        console.log('꾸미기 저장 성공:', response);
-        navigate('/manager');
+        if (response.status === 201) {
+          window.alert(
+            '매장 구조 저장에 성공했습니다. 메인 페이지로 이동합니다.'
+          );
+          navigate('/manager');
+        }
       })
       .catch((error) => {
-        console.error('꾸미기 저장 실패:', error);
+        window.alert('꾸미기 저장 실패');
+        console.log('꾸미기 저장 실패: ', error);
         return;
       });
   };

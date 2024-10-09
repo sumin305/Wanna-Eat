@@ -36,6 +36,8 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
   const [reservationStartTime, setReservationStartTime] = useState(null);
   const [reservationEndTime, setReservationEndTime] = useState(null);
 
+  const [reservationInfo, setReservationInfo] = useState(null);
+
   const navigate = useNavigate();
 
   const restaurantId = window.localStorage.getItem('restaurantId');
@@ -47,6 +49,33 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
       fetchFloorData(restaurantId);
     }
   }, [restaurantId]);
+
+  useEffect(() => {
+    if (reservationInfo) {
+      setReservationId(reservationInfo.reservationId);
+      setReservationStartTime(formatTime(reservationInfo.reservationStartTime));
+      setReservationEndTime(formatTime(reservationInfo.reservationEndTime));
+
+      setAlertText(
+        <ModalContainerStyled>
+          <TableInfoWrapperStyled>
+            <SeatLabelStyled>
+              {reservationInfo.tableId} 번 테이블
+            </SeatLabelStyled>
+          </TableInfoWrapperStyled>
+          <TableInfoWrapperStyled>
+            <SeatLabelStyled>예약 시간 :</SeatLabelStyled>
+            <SeatValueStyled>
+              {reservationEndTime} ~ {reservationStartTime}
+            </SeatValueStyled>
+          </TableInfoWrapperStyled>
+        </ModalContainerStyled>
+      );
+      setModalType('alert');
+      setConfirmText('예약 상세');
+      open();
+    }
+  }, [reservationInfo]);
 
   const { setRestaurantSize, setRestaurantFloorCnt } = useMyRestaurantStore();
 
@@ -144,10 +173,19 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
       (reserved) => reserved.tableId === item.tableId
     );
 
-    if (reservationDetails) {
+    if (!reservationDetails) {
+      return;
+    }
+
+    setReservationInfo(reservationDetails);
+
+    if (
+      reservationDetails.reservationStartTime &&
+      reservationDetails.reservationEndTime
+    ) {
       setReservationId(reservationDetails.reservationId);
-      setReservationStartTime(reservationDetails.reservationStartTime);
-      setReservationEndTime(reservationDetails.reservationEndTime);
+      setReservationStartTime(formatTime(reservationInfo.reservationStartTime));
+      setReservationEndTime(formatTime(reservationInfo.reservationEndTime));
     }
 
     setHandleButtonClick(() => handleGotoReservationDetail(item));
@@ -204,6 +242,11 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
     }
 
     return null;
+  };
+
+  const formatTime = (timeString) => {
+    const [hours, minutes] = timeString.split(':');
+    return `${parseInt(hours, 10)}시 ${parseInt(minutes, 10)}분`;
   };
 
   if (loading) {

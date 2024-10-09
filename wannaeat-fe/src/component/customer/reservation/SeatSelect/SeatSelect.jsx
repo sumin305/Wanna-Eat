@@ -182,7 +182,7 @@ const SeatSelect = () => {
 
   const renderIcon = (itemType, tableId, canReserveTable) => {
     const isAvailable = canReserveTable.some((value) => value === tableId);
-    const isSelected = tableList.includes(tableId);
+    const isSelected = tableList ? tableList.includes(tableId) : [];
 
     const item = Items.find((item) => item.itemType === itemType);
 

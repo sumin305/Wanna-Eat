@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import WEStep from '../../../../../component/customer/reservation/WEStep/WEStep.jsx';
 import { ButtonWrapper } from '../TimeSelectPage/TimeSelectPage';
 import theme from '../../../../../style/common/theme';
@@ -30,6 +31,12 @@ const SeatSelectPage = (tableData) => {
       navigate('/customer/reservation/deposit-payment');
     }
   };
+
+  useEffect(() => {
+    setHandleButtonClick(close());
+    setMaxCapacity(0);
+    setTableList([]);
+  }, []);
 
   return (
     <SeatSelectPageContainer>

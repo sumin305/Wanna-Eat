@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 
-// FormContainer 스타일 정의
 export const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -62,7 +61,7 @@ export const UploadButton = styled.button`
 export const CloseButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  gap: 20px; // 버튼 간의 간격을 추가
+  gap: 20px;
   margin-top: 20px;
 `;
 
@@ -74,7 +73,7 @@ export const CloseButton = styled.button`
   font-size: 18px;
   border-radius: 5px;
   cursor: pointer;
-  width: 48%; // 버튼 너비를 줄여서 간격 조정
+  width: 48%;
   margin-top: 20px;
 
   &:hover {
@@ -90,7 +89,7 @@ export const SubmitButton = styled.button`
   font-size: 18px;
   border-radius: 5px;
   cursor: pointer;
-  width: 48%; // 버튼 너비를 줄여서 간격 조정
+  width: 48%;
   margin-top: 20px;
 
   &:hover {
@@ -104,12 +103,37 @@ export const PriceContainer = styled.div`
   align-items: center;
 `;
 
-// 가격 인풋 필드 크기 조정
-export const PriceInput = styled(InputField)`
-  width: 180px; // 가격 인풋 크기를 줄임
+export const ImageContainer = styled.div`
+  display: inline-block;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+
+  &.highlight {
+    animation: highlightAnimation 0.8s ease forwards; // 애니메이션 추가
+  }
+
+  @keyframes highlightAnimation {
+    0% {
+      transform: scale(1);
+      box-shadow: 0px 0px 0px rgba(255, 165, 0, 0);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.1);
+      box-shadow: 0px 0px 20px rgba(255, 165, 0, 0.6);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0px 0px 0px rgba(255, 165, 0, 0);
+      opacity: 0.9;
+    }
+  }
 `;
 
-// 꾸미기 버튼 스타일 추가
+
 export const DecorateButton = styled.button`
   background-color: #ffa500;
   color: white;
@@ -118,7 +142,7 @@ export const DecorateButton = styled.button`
   font-size: 18px;
   border-radius: 5px;
   cursor: pointer;
-  width: 48%; // 버튼 너비를 줄여서 간격 조정
+  width: 48%;
   margin-top: 20px;
 
   &:hover {
@@ -126,10 +150,9 @@ export const DecorateButton = styled.button`
   }
 `;
 
-// 버튼 컨테이너 스타일 추가
 export const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px; // 버튼 간의 간격
+  gap: 10px;
   margin-top: 10px;
 `;

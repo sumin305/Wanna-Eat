@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 
 const ReservationListContainer = styled.div`
   background-color: #f2f2f2;
+  margin-bottom: 10vh;
 `;
 
 const ReservationItem = styled.div`
@@ -60,7 +61,7 @@ const ReservationDetailButton = styled.button`
   font-size: ${theme.fontSize.px11};
   font-weight: bold;
   color: #c0c0c0;
-  width: 3rem;
+  // width: 3rem;
   height: 1.5rem;
   margin: 0.5rem 0;
 `;

@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { payMenuBySsafyPay, payMenuByKakaoPay } from 'api/common/payment';
+import { payMenuByKakaoPay } from 'api/common/payment';
 import { useEffect, useState } from 'react';
 import useOrderStore from 'stores/customer/useOrderStore';
 import { getMyCreditCardList } from 'api/common/ssafyPay/card.js';
@@ -24,7 +24,7 @@ const OrderPaymentPage = () => {
   const [cards, setCards] = useState([]);
   const [goToSlide, setGoToSlide] = useState(null);
   const [selectedardIndex, setSelectedCardIndex] = useState(0);
-  const { selectedCard, setSelectedCard, payPrice, payOrders } =
+  const { selectedCard, setSelectedCard, payPrice, payOrders, setIsAllPaid } =
     useOrderStore();
   const params = useParams();
   // 화면 렌더링될때 호출되는 함수 // 카드 조회
@@ -41,24 +41,6 @@ const OrderPaymentPage = () => {
     };
 
     fetchCards();
-
-    const url = new URL(window.location.href);
-    const searchParams = url.searchParams;
-
-    // 카카오페이 후 redirect 되었을 경우,
-    if (searchParams.has('status')) {
-      // 결제 성공
-      if (searchParams.get('status') === 'success') {
-        alert('결제에 성공했습니다.');
-        navigate('/customer/order/' + params.url);
-      } else if (searchParams.get('status') === 'fail') {
-        alert('결제에 실패했습니다.');
-        navigate('/customer/order/' + params.url);
-      } else if (searchParams.get('status') === 'cancel') {
-        alert('결제가 취소되었습니다.');
-        navigate('/customer/order/' + params.url);
-      }
-    }
   }, []);
 
   useEffect(() => {

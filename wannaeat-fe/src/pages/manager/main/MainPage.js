@@ -13,8 +13,17 @@ const MainPageStyled = styled.div`
   height: 80vh;
   flex-shrink: 0;
 
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
   @media (min-width: 480px) {
     height: 80vh;
+    overflow-y: scroll;
   }
 `;
 

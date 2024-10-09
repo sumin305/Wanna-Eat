@@ -1,7 +1,20 @@
 import styled from '@emotion/styled';
 import theme from '../../../../../style/common/theme';
 
-const ReservationDetailPageContainer = styled.div``;
+const ReservationDetailPageContainer = styled.div`
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (min-width: 480px) {
+    overflow-y: scroll;
+  }
+`;
+
 const ReservationTitleWrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -11,9 +24,12 @@ const ReservationTitleWrapper = styled.div`
 
 const ReservationTitleText = styled.p`
   display: flex;
-  justify-content: center;
-  font-size: ${theme.fontSize.px17};
+  font-size: ${theme.fontSize.px15};
   font-weight: bold;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   @media (min-width: 480px) {
     font-size: ${theme.fontSize.px25};

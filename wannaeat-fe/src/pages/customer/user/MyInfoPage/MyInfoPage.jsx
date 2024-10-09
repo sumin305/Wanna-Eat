@@ -58,6 +58,9 @@ const MyInfoPage = () => {
   const handleLogoutButtonClick = async () => {
     const result = await logout();
     console.log(result);
+    if (window.localStorage.getItem('role') && result.status === 200) {
+      window.localStorage.removeItem('role');
+    }
     navigate('/');
   };
   return (

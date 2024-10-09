@@ -38,14 +38,19 @@ const OrderSheetBox = ({ reservationUrl }) => {
   const nav = useNavigate();
   const showAlert = useAlert();
 
-  const { allOrdersInfo, setPayOrders, setPayPrice } = useOrderStore();
+  const {
+    allOrdersInfo,
+    setPayOrders,
+    setPayPrice,
+    orderCounts,
+    setOrderCounts,
+  } = useOrderStore();
   const [allOrders, setAllOrders] = useState([]);
 
   const tabs = ['결제 전', '결제 완료'];
   const [activeTab, setActiveTab] = useState(0);
   const [isChecked, setIsChecked] = useState(false);
   // menuId, orderId, menuCount 정보를 넣을 빈 객체 생성
-  const [orderCounts, setOrderCounts] = useState({});
   // 결제 완료 상태
   const isComplete = activeTab === 1;
   // 결제 전/완료 주문의 닉네임 별 그룹화 + 총 금액

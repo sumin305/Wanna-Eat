@@ -29,7 +29,6 @@ const Main = () => {
       '/password-regist',
     ].includes(location.pathname);
   };
-  console.log('역할', window.localStorage.getItem('role'));
   // 푸터 렌더링할 조건
   const shouldRenderFooter = () => {
     return (

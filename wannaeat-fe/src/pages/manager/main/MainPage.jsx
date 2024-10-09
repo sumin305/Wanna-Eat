@@ -174,20 +174,20 @@ const MainPage = () => {
     setIsRotating(true);
     try {
       const response = await authClientInstance.get(`/api/users/restaurants`);
-      console.log('데이터 불러옵니다!', response);
 
       const data = response.data.data;
       setPastReservationCnt(data.pastReservationCount);
       setTotalReservationCnt(data.totalReservationCount);
 
       setOccupiedList(data.currentReservedTables);
-      console.log('occupiedList: ', occupiedList);
     } catch (error) {
-      if (error.response && error.response.status === 404) {
-        setIsMyRestaurant(false);
+      if (error.response) {
+        if (error.response.status === 404) {
+          setIsMyRestaurant(false);
+        } else {
+          console.error('사업자 메인 데이터 요청 오류:', error);
+        }
       }
-
-      console.error('사업자 메인 데이터 요청 오류:', error);
       return;
     } finally {
       setTimeout(() => setIsRotating(false), 1000);

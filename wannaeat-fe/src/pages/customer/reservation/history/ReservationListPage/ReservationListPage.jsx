@@ -38,6 +38,7 @@ const ListPage = () => {
   const { remainingTime } = useCountDownTimer(date);
   const [hasPriorityVisitingRestaurant, setHasPriorityVisitingRestaurant] =
     useState(false);
+  const [reservation, setReservation] = useState(null);
 
   useEffect(() => {
     const fetchMyReservationList = async () => {
@@ -69,6 +70,7 @@ const ListPage = () => {
         setRestaurantName(data.restaurantName);
         setDate(data.reservationDate + ' ' + data.reservationStartTime);
         setMemberCount(data.memberCnt);
+        setReservation(data);
       }
       console.log(data);
     };
@@ -130,7 +132,13 @@ const ListPage = () => {
             </ReservationAlertTime>
           </ReservationDateWrapper>
           <ReservationiInfoButtonWrapper>
-            <ReservationInfoButton>더보기 ></ReservationInfoButton>
+            <ReservationInfoButton
+              onClick={() =>
+                handleReservationDetailButtonClick(reservation.reservationId)
+              }
+            >
+              더보기 >
+            </ReservationInfoButton>
           </ReservationiInfoButtonWrapper>
         </ReservationAlertWrapper>
       )}
@@ -161,19 +169,21 @@ const ListPage = () => {
               </ReservationItemText>
               <ReservationDetailButton
                 onClick={() =>
-                  handleReservationDetailButtonClick(reservation.reservationId)
+                  handleRevisitButtonClick(reservation.restaurantId)
                 }
               >
-                예약상세
+                다시 방문하기
               </ReservationDetailButton>
             </ReservationItemInfo>
             <Button
-              onClick={() => handleRevisitButtonClick(reservation.restaurantId)}
+              onClick={() =>
+                handleReservationDetailButtonClick(reservation.reservationId)
+              }
               size={'long'}
               outlined={true}
               height={'2.5rem'}
             >
-              다시 방문하기
+              예약상세
             </Button>
           </ReservationItem>
         ))

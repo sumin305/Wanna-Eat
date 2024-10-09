@@ -55,7 +55,7 @@ const getCategories = async () => {
   }
 };
 
-// 알람창 띄워서 새로고침 방지
+// // 알람창 띄워서 새로고침 방지
 const usePreventRefresh = (shouldPrevent) => {
   useEffect(() => {
     if (!shouldPrevent) return;
@@ -73,10 +73,15 @@ const usePreventRefresh = (shouldPrevent) => {
 };
 
 function App() {
+  // 로그인페이지, 결제페이지, 보증금 결제페이지 체크
   const isLoginPage = window.location.pathname === '/';
+  const isPayPage = window.location.pathname.startsWith('/customer/order/pay');
+  const isDepositPage =
+    window.location.pathname === '/customer/reservation/deposit-payment';
   const [isLoading, setIsLoading] = useState(true);
 
-  usePreventRefresh(!isLoginPage);
+  // 로그인페이지, 결제페이지, 보증금 결제페이지를 제외한 모든 페이지 새로고침 방지
+  usePreventRefresh(!(isLoginPage || isPayPage || isDepositPage));
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -85,14 +90,14 @@ function App() {
         await getCategories();
         await getMerchantCategories();
       } catch (error) {
-        console.error("Error initializing app:", error);
+        console.error('Error initializing app:', error);
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     initializeApp();
-  }, []);
+  }, [window.location.pathname]);
 
   return (
     <BrowserRouter>

@@ -119,7 +119,7 @@ const TableInfoWrapperStyled = styled.div`
 
 const SeatLabelStyled = styled.div`
   width: 100%;
-  font-size: ${theme.fontSize.px15};
+  font-size: ${theme.fontSize.px13};
   font-weight: ${theme.fontWeight.bold};
 
   @media (min-width: 480px) {
@@ -129,8 +129,10 @@ const SeatLabelStyled = styled.div`
 `;
 
 const SeatValueStyled = styled.div`
-  width: 100%;
-  font-size: ${theme.fontSize.px15};
+  display: flex;
+  align-items: center;
+  width: 130%;
+  font-size: ${theme.fontSize.px10};
   text-align: start;
 
   @media (min-width: 480px) {

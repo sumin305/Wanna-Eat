@@ -173,9 +173,16 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
       (reserved) => reserved.tableId === item.tableId
     );
 
+    if (!reservationDetails) {
+      return;
+    }
+
     setReservationInfo(reservationDetails);
 
-    if (reservationDetails) {
+    if (
+      reservationDetails.reservationStartTime &&
+      reservationDetails.reservationEndTime
+    ) {
       setReservationId(reservationDetails.reservationId);
       setReservationStartTime(formatTime(reservationInfo.reservationStartTime));
       setReservationEndTime(formatTime(reservationInfo.reservationEndTime));

@@ -58,12 +58,10 @@ const MyInfoPage = () => {
   const handleLogoutButtonClick = async () => {
     const result = await logout();
     console.log(result);
-    if (result.status === 200) {
-      ['role', 'reservationParticipantId'].forEach((key) => {
-        window.localStorage.getItem(key) && window.localStorage.removeItem(key);
-      });
-      navigate('/');
+    if (window.localStorage.getItem('role') && result.status === 200) {
+      window.localStorage.removeItem('role');
     }
+    navigate('/');
   };
   return (
     <UserInfoContainer>

@@ -38,6 +38,7 @@ const ListPage = () => {
   const { remainingTime } = useCountDownTimer(date);
   const [hasPriorityVisitingRestaurant, setHasPriorityVisitingRestaurant] =
     useState(false);
+  const [reservation, setReservation] = useState(null);
 
   useEffect(() => {
     const fetchMyReservationList = async () => {
@@ -69,6 +70,7 @@ const ListPage = () => {
         setRestaurantName(data.restaurantName);
         setDate(data.reservationDate + ' ' + data.reservationStartTime);
         setMemberCount(data.memberCnt);
+        setReservation(data);
       }
       console.log(data);
     };
@@ -130,7 +132,13 @@ const ListPage = () => {
             </ReservationAlertTime>
           </ReservationDateWrapper>
           <ReservationiInfoButtonWrapper>
-            <ReservationInfoButton>더보기 ></ReservationInfoButton>
+            <ReservationInfoButton
+              onClick={() =>
+                handleReservationDetailButtonClick(reservation.reservationId)
+              }
+            >
+              더보기 >
+            </ReservationInfoButton>
           </ReservationiInfoButtonWrapper>
         </ReservationAlertWrapper>
       )}

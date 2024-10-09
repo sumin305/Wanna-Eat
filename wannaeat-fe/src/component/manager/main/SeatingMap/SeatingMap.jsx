@@ -33,8 +33,8 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
   const [IconHeight, setIconHeight] = useState(100);
 
   const [reservationId, setReservationId] = useState(1);
-  const [reservationStartTime, setReservationStartTime] = useState(null);
-  const [reservationEndTime, setReservationEndTime] = useState(null);
+  const [reservationStartTime, setReservationStartTime] = useState('');
+  const [reservationEndTime, setReservationEndTime] = useState('');
 
   const [reservationInfo, setReservationInfo] = useState(null);
 
@@ -48,29 +48,37 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
     if (restaurantId > 0) {
       fetchFloorData(restaurantId);
     }
-  }, [restaurantId]);
+  }, []);
 
   useEffect(() => {
     if (reservationInfo) {
       setReservationId(reservationInfo.reservationId);
-      setReservationStartTime(formatTime(reservationInfo.reservationStartTime));
+      setReservationStartTime(
+        formatTime(
+          reservationInfo.reservationStartTime
+            ? reservationInfo.reservationStartTime
+            : ''
+        )
+      );
       setReservationEndTime(formatTime(reservationInfo.reservationEndTime));
 
-      setAlertText(
-        <ModalContainerStyled>
-          <TableInfoWrapperStyled>
-            <SeatLabelStyled>
-              {reservationInfo.tableId} 번 테이블
-            </SeatLabelStyled>
-          </TableInfoWrapperStyled>
-          <TableInfoWrapperStyled>
-            <SeatLabelStyled>예약 시간 :</SeatLabelStyled>
-            <SeatValueStyled>
-              {reservationEndTime} ~ {reservationStartTime}
-            </SeatValueStyled>
-          </TableInfoWrapperStyled>
-        </ModalContainerStyled>
-      );
+      if (reservationEndTime && reservationStartTime) {
+        setAlertText(
+          <ModalContainerStyled>
+            <TableInfoWrapperStyled>
+              <SeatLabelStyled>
+                {reservationInfo.tableId} 번 테이블
+              </SeatLabelStyled>
+            </TableInfoWrapperStyled>
+            <TableInfoWrapperStyled>
+              <SeatLabelStyled>예약 시간 :</SeatLabelStyled>
+              <SeatValueStyled>
+                {reservationEndTime} ~ {reservationStartTime}
+              </SeatValueStyled>
+            </TableInfoWrapperStyled>
+          </ModalContainerStyled>
+        );
+      }
       setModalType('alert');
       setConfirmText('예약 상세');
       open();
@@ -173,7 +181,11 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
       (reserved) => reserved.tableId === item.tableId
     );
 
-    if (!reservationDetails) {
+    if (
+      !reservationDetails ||
+      !reservationDetails.reservationStartTime ||
+      !reservationDetails.reservationEndTime
+    ) {
       return;
     }
 
@@ -184,8 +196,12 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
       reservationDetails.reservationEndTime
     ) {
       setReservationId(reservationDetails.reservationId);
-      setReservationStartTime(formatTime(reservationInfo.reservationStartTime));
-      setReservationEndTime(formatTime(reservationInfo.reservationEndTime));
+      setReservationStartTime(
+        formatTime(reservationInfo?.reservationStartTime || '08:00')
+      );
+      setReservationEndTime(
+        formatTime(reservationInfo?.reservationEndTime || '18:00')
+      );
     }
 
     setHandleButtonClick(() => handleGotoReservationDetail(item));
@@ -202,7 +218,7 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
           <TableInfoWrapperStyled>
             <SeatLabelStyled>예약 시간 :</SeatLabelStyled>
             <SeatValueStyled>
-              {reservationEndTime} ~ {reservationStartTime}
+              {reservationStartTime} ~ {reservationEndTime}
             </SeatValueStyled>
           </TableInfoWrapperStyled>
           {/* <TableInfoWrapperStyled>
@@ -245,6 +261,7 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
   };
 
   const formatTime = (timeString) => {
+    if (!timeString) return '';
     const [hours, minutes] = timeString.split(':');
     return `${parseInt(hours, 10)}시 ${parseInt(minutes, 10)}분`;
   };

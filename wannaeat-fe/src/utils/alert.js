@@ -8,10 +8,12 @@ const useAlert = () => {
     setModalType,
     setAlertText,
     open,
+    setConfirmText,
   } = useModalStore();
 
   const showAlert = (text) => {
     setModalType('alert');
+    setConfirmText('확인');
     setAlertText(text);
     setHandleButtonClick(close);
     setIsOneButton(true);

@@ -168,53 +168,63 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   }, [currentFloor]);
 
   useEffect(() => {
-    authClientInstance
-      .get(`/api/public/restaurants/${restaurantId}/structure`)
-      .then((response) => {
-        console.log('response.data.data: ', response.data.data);
-        const { tableDetailResponseDtos = [], elementDetailResponseDtos = [] } =
-          response.data.data;
+    if (
+      !itemsByFloor[currentFloor] ||
+      itemsByFloor[currentFloor].length === 0
+    ) {
+      authClientInstance
+        .get(`/api/public/restaurants/${restaurantId}/structure`)
+        .then((response) => {
+          const {
+            tableDetailResponseDtos = [],
+            elementDetailResponseDtos = [],
+          } = response.data.data;
 
-        tableDetailResponseDtos.forEach((table) => {
-          // const { floor, itemId, itemType, x, y, tableId, assignedSeats } =
-          //   table;
+          tableDetailResponseDtos.forEach((table) => {
+            const { floor, itemId, itemType, x, y, tableId, assignedSeats } =
+              table;
 
-          const existingItems =
-            useStore.getState().itemsByFloor[currentFloor] || [];
+            if (
+              !itemsByFloor[floor] ||
+              !itemsByFloor[floor].some((item) => item.itemId === itemId)
+            ) {
+              addItem(floor, {
+                itemId,
+                itemType: itemType.toUpperCase(),
+                x,
+                y,
+                tableId,
+                assignedSeats,
+              });
+            }
+          });
 
-          if (!existingItems.some((item) => item.itemId === table.itemId)) {
-            addItem(currentFloor, {
-              itemId: table.itemId,
-              itemType: table.itemType.toUpperCase(),
-              x: table.x,
-              y: table.y,
-              tableId: table.tableId,
-              assignedSeats: table.assignedSeats,
-            });
+          elementDetailResponseDtos.forEach((element) => {
+            const { floor, itemId, itemType, x, y } = element;
+            if (
+              !itemsByFloor[floor] ||
+              !itemsByFloor[floor].some((item) => item.itemId === itemId)
+            ) {
+              addItem(floor, {
+                itemId,
+                itemType: itemType.toUpperCase(),
+                x,
+                y,
+              });
+            }
+          });
+
+          console.log('성공: ', response);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 404) {
+            return;
+          } else {
+            console.error('꾸미기 정보 요청 오류:', error);
           }
         });
-
-        elementDetailResponseDtos.forEach((element) => {
-          addItem(currentFloor, {
-            itemId: element.itemId,
-            itemType: element.itemType.toUpperCase(),
-            x: element.x,
-            y: element.y,
-          });
-        });
-
-        // setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
-        console.error('성공: ', response);
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 404) {
-          return;
-        } else {
-          console.error('꾸미기 정보 요청 오류:', error);
-        }
-        return;
-      });
-  }, []);
+    }
+  }, [currentFloor]);
 
   useEffect(() => {
     if (!selectedItem) {

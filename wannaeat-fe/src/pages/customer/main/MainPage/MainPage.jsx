@@ -275,7 +275,10 @@ const MainPage = () => {
                 handleClickCategoryItem(category.restaurantCategoryName)
               }
             >
-              <CategoryImage src={category.restaurantCategoryImage} />
+              <CategoryImage
+                src={categories[category.restaurantCategoryId]}
+                alt={category.restaurantCategoryName}
+              />
               <CategoryName>{category.restaurantCategoryName}</CategoryName>
             </div>
           ))}
@@ -306,7 +309,7 @@ const MainPage = () => {
                 </RestaurantInfoName>
                 <RestaurantDetailWrapper>
                   <RestaurantMyReservation>
-                    {restaurant.restaurantVisitCount}번 방문
+                    {restaurant.restaurantVisitCount}번 예약
                   </RestaurantMyReservation>
                   <RestaurantMyReservation>
                     {restaurant.restaurantCategory}

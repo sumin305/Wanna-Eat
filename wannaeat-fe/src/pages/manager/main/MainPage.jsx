@@ -33,8 +33,10 @@ import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore.js';
 
 import WEDropdown from 'component/common/dropdown/WEDropdown.jsx';
 import { ReactComponent as RefreshIcon } from 'assets/icons/manager/restaurant/refresh.svg';
+import useAlert from 'utils/alert.js';
 
 const MainPage = () => {
+  const showAlert = useAlert();
   const {
     setPageName,
     setIsCarrot,
@@ -123,13 +125,10 @@ const MainPage = () => {
 
   const handleSubmit = () => {
     if (floor === '') {
-      window.alert('층을 입력해 주세요');
+      showAlert('층을 입력해 주세요');
       return;
     }
 
-    console.log(
-      'dropdownId:' + dropdownId + ' floor:' + floor + ' 제출되었습니다.'
-    );
     close();
     navigate('/manager/restaurant/seat-decorate', {
       state: { dropdownId, floor },
@@ -254,7 +253,7 @@ const MainPage = () => {
                         type="number"
                         min={1}
                         max={5}
-                        value={floor || ''}
+                        value={floor > 0 ? floor : ''}
                         inputMode="numeric"
                         onChange={(e) => {
                           const value = e.target.value;

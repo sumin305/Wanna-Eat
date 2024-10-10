@@ -5,6 +5,7 @@ import useOrderStore from 'stores/customer/useOrderStore';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import {
   TotalPriceText,
+  TotalPayPriceDiv,
   MenuDiv,
   CheckText,
   DeleteDiv,
@@ -38,14 +39,11 @@ const OrderSheetBox = ({ reservationUrl }) => {
   const nav = useNavigate();
   const showAlert = useAlert();
 
-  const {
-    allOrdersInfo,
-    setPayOrders,
-    setPayPrice,
-    orderCounts,
-    setOrderCounts,
-  } = useOrderStore();
+  const { allOrdersInfo, setPayOrders, setPayPrice } = useOrderStore();
+
+  const [orderCounts, setOrderCounts] = useState({});
   const [allOrders, setAllOrders] = useState([]);
+  const [role, setRole] = useState(null);
 
   const tabs = ['결제 전', '결제 완료'];
   const [activeTab, setActiveTab] = useState(0);
@@ -68,6 +66,10 @@ const OrderSheetBox = ({ reservationUrl }) => {
   const [totalCompletedOrdersCount, setTotalCompletedOrdersCount] = useState(0);
 
   useEffect(() => {
+    // localStorage에서 role 가져오기
+    const storedRole = localStorage.getItem('role');
+    setRole(storedRole);
+
     // 모든 주문 데이터 가져오기 및 그룹화된 결제 전/후 주문 처리
     const ordersArray = Object.entries(allOrdersInfo).map(([key, value]) => ({
       reservationParticipantNickname: key,
@@ -90,6 +92,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
 
     // 결제 전 주문 그룹화
     setGroupedPendingOrdersWithTotalPrice(pendingGroup);
+
     // 결제 완료 주문 그룹화
     setGroupedCompleteOrdersWithTotalPrice(completedGroup);
 
@@ -141,40 +144,50 @@ const OrderSheetBox = ({ reservationUrl }) => {
 
   // 수량 증가 함수
   const handleIncrease = (menuPrice, orderId, menuId, availableCount) => {
-    const currentCount = orderCounts[orderId]?.count || 0;
-    if (currentCount < availableCount) {
-      setOrderCounts((prev) => ({
-        ...prev,
-        [orderId]: {
-          ...prev[orderId],
-          count: currentCount + 1,
-          menuId: menuId,
-          orderId: orderId,
-          menuPrice: menuPrice,
-        },
-      }));
-    } else {
-      showAlert('더 이상 추가할 수 없습니다.');
-    }
+    setOrderCounts((prev) => {
+      const currentCount = prev[orderId]?.count || 0;
+
+      // 추가 가능 여부 체크
+      if (currentCount < availableCount) {
+        return {
+          ...prev,
+          [orderId]: {
+            ...prev[orderId],
+            count: currentCount + 1,
+            menuId: menuId,
+            orderId: orderId,
+            menuPrice: menuPrice,
+          },
+        };
+      } else {
+        showAlert('더 이상 추가할 수 없습니다.');
+        return prev; // 값이 변경되지 않도록 이전 상태 반환
+      }
+    });
   };
 
   // 수량 감소 함수
   const handleDecrease = (menuPrice, orderId, menuId) => {
-    const currentCount = orderCounts[orderId]?.count || 0;
-    if (currentCount > 0) {
-      setOrderCounts((prev) => ({
-        ...prev,
-        [orderId]: {
-          ...prev[orderId],
-          count: currentCount - 1,
-          menuId: menuId,
-          orderId: orderId,
-          menuPrice: menuPrice,
-        },
-      }));
-    } else {
-      showAlert('수량은 0보다 작을 수 없습니다.');
-    }
+    setOrderCounts((prev) => {
+      const currentCount = prev[orderId]?.count || 0;
+
+      // 수량 감소 가능 여부 체크
+      if (currentCount > 0) {
+        return {
+          ...prev,
+          [orderId]: {
+            ...prev[orderId],
+            count: currentCount - 1,
+            menuId: menuId,
+            orderId: orderId,
+            menuPrice: menuPrice,
+          },
+        };
+      } else {
+        showAlert('수량은 0보다 작을 수 없습니다.');
+        return prev; // 값이 변경되지 않도록 이전 상태 반환
+      }
+    });
   };
 
   // 총 금액 계산 함수
@@ -279,7 +292,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
             </DeleteDiv>
           </MenuContainer>
         </TopBox>
-        <MenuDiv>
+        <MenuDiv role={role}>
           {activeTab === 0
             ? Object.keys(groupedPendingOrdersWithTotalPrice).map(
                 (nickname) => (
@@ -432,14 +445,14 @@ const OrderSheetBox = ({ reservationUrl }) => {
                 )
               )}
         </MenuDiv>
-        <TotalPriceDiv>
+        <TotalPayPriceDiv>
           <TotalPriceText>
             결제 금액 ₩{' '}
             {calculateTotalPriceForOrdersToSend(
               Object.values(orderCounts).filter((order) => order.count > 0)
             ).toLocaleString('ko-KR')}
           </TotalPriceText>
-        </TotalPriceDiv>
+        </TotalPayPriceDiv>
       </div>
       <WEButton onClick={clickGotoPay}>결제하기</WEButton>
     </OrderContainer>

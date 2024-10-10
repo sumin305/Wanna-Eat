@@ -40,8 +40,10 @@ import {
 } from './OrderMainPage.js';
 import MenuIcon from 'assets/icons/menu/basic-menu.svg';
 import useReservationStore from '../../../../stores/customer/useReservationStore.js';
+import useAlert from '../../../../utils/alert.js';
 
 const OrderMainPage = () => {
+  const showAlert = useAlert();
   const [activeTab, setActiveTab] = useState(0);
   const [reservationParticipantId, setreservationParticipantId] = useState(0);
 
@@ -54,6 +56,8 @@ const OrderMainPage = () => {
 
   const [myTotalPrice, setMyTotalPrice] = useState(0);
   const [allTotalPrice, setAllTotalPrice] = useState(0);
+
+  const [role, setRole] = useState(null);
 
   const tabs = ['전체 메뉴', '나의 메뉴'];
   const nav = useNavigate();
@@ -98,6 +102,11 @@ const OrderMainPage = () => {
     setPageName('주문서');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
+
+    // localStorage에서 role 가져오기
+    const storedRole = localStorage.getItem('role');
+    setRole(storedRole);
+
     const gotoChat = () => {
       nav(`/customer/order/chat/${reservationUrl}`);
     };
@@ -116,7 +125,7 @@ const OrderMainPage = () => {
       console.log(reservationUrl);
       // reservationUrl 유효성 검사 실행 후 유효한 경우
       if (response.status !== 200) {
-        alert('유효한 예약 URL이 아닙니다.');
+        showAlert('유효한 예약 URL이 아닙니다.');
         nav('/customer/order/notexist', {
           state: { message: response.response.data.message },
         });
@@ -543,7 +552,7 @@ const OrderMainPage = () => {
               </TotalMenuP>
             </MenuContainer>
           </TopBox>
-          <MenuDiv>
+          <MenuDiv role={role}>
             {activeTab === 0 ? (
               // 전체 메뉴
               <div>
@@ -677,7 +686,7 @@ const OrderMainPage = () => {
           </MenuDiv>
         </div>
 
-        {isAllPaid ? (
+        {isAllPaid && !allOrdersInfo ? (
           <ButtonWrapper>
             <WEButton
               size="medium"

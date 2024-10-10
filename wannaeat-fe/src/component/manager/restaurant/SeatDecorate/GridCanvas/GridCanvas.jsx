@@ -127,7 +127,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
     setItemsByFloor,
     updateItem,
     updateItemPosition,
-    // clearItemsByFloor,
+    clearItemsByFloor,
   } = useStore();
 
   const {
@@ -163,6 +163,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   }, []);
 
   useEffect(() => {
+    clearItemsByFloor(currentFloor);
     setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
   }, [currentFloor]);
 
@@ -170,18 +171,27 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
     authClientInstance
       .get(`/api/public/restaurants/${restaurantId}/structure`)
       .then((response) => {
+        console.log('response.data.data: ', response.data.data);
         const { tableDetailResponseDtos = [], elementDetailResponseDtos = [] } =
           response.data.data;
 
         tableDetailResponseDtos.forEach((table) => {
-          addItem(currentFloor, {
-            itemId: table.itemId,
-            itemType: table.itemType.toUpperCase(),
-            x: table.x,
-            y: table.y,
-            tableId: table.tableId,
-            assignedSeats: table.assignedSeats,
-          });
+          // const { floor, itemId, itemType, x, y, tableId, assignedSeats } =
+          //   table;
+
+          const existingItems =
+            useStore.getState().itemsByFloor[currentFloor] || [];
+
+          if (!existingItems.some((item) => item.itemId === table.itemId)) {
+            addItem(currentFloor, {
+              itemId: table.itemId,
+              itemType: table.itemType.toUpperCase(),
+              x: table.x,
+              y: table.y,
+              tableId: table.tableId,
+              assignedSeats: table.assignedSeats,
+            });
+          }
         });
 
         elementDetailResponseDtos.forEach((element) => {
@@ -478,6 +488,14 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
         }
       });
     });
+
+    console.log(
+      '저장데이터: ',
+      size,
+      floorCnt,
+      tableRegisterRequestDtos,
+      elementRegisterRequestDtos
+    );
 
     authClientInstance
       .post(

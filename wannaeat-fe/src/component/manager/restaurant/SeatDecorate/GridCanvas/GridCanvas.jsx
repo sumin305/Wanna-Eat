@@ -193,7 +193,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
         console.log('tableDetailResponseDtos: ', tableDetailResponseDtos);
         console.log('elementDetailResponseDtos: ', elementDetailResponseDtos);
 
-        setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
+        // setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
         console.error('성공: ', response);
       })
       .catch((error) => {

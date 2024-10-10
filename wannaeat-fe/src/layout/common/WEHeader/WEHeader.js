@@ -96,8 +96,8 @@ const HeaderTitle = styled.h1`
 `;
 
 const IconImg = styled.img`
-  width: 1.8rem;
-  height: 1.8rem;
+  width: 2.2rem;
+  height: 2.2rem;
 `;
 
 const UnderLineStyled = styled.hr`

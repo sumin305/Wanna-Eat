@@ -526,6 +526,7 @@ const OrderCartPage = () => {
     setAllMenusSortInfo([]);
     setMenuCounts(0);
   };
+
   const handleDeleteMenuButton = (menuId) => {
     const cartDeleteRequestDto = {
       reservationUrl: reservationUrl,

@@ -42,7 +42,10 @@ const MapContainer = () => {
   useEffect(() => {
     const initializeMap = (latitude, longitude) => {
       const container = document.getElementById('map');
-      const options = { center: new kakao.maps.LatLng(latitude, longitude), level: 2 };
+      const options = {
+        center: new kakao.maps.LatLng(latitude, longitude),
+        level: 2,
+      };
       mapRef.current = new kakao.maps.Map(container, options);
 
       kakao.maps.event.addListener(
@@ -111,7 +114,16 @@ const MapContainer = () => {
         console.error('Failed to fetch restaurant markers', error);
       }
     },
-    [categoryId, keyword, reservationDate, startTime, endTime, memberCount, getRestaurantPositions, setMarkerPositions]
+    [
+      categoryId,
+      keyword,
+      reservationDate,
+      startTime,
+      endTime,
+      memberCount,
+      getRestaurantPositions,
+      setMarkerPositions,
+    ]
   );
 
   const handleCenterChange = () => {
@@ -120,7 +132,14 @@ const MapContainer = () => {
     const newLon = latlng.getLng();
 
     // 중심 위치가 500m 이상 변경된 경우에만 요청
-    if (getDistance(lastPositionRef.current.lat, lastPositionRef.current.lon, newLat, newLon) > 0.5) {
+    if (
+      getDistance(
+        lastPositionRef.current.lat,
+        lastPositionRef.current.lon,
+        newLat,
+        newLon
+      ) > 0.5
+    ) {
       setCenterLatLng({ lat: newLat, lon: newLon });
       setIsButtonVisible(true);
       lastPositionRef.current = { lat: newLat, lon: newLon };
@@ -130,7 +149,11 @@ const MapContainer = () => {
   const updateMarkers = (positions) => {
     const imageSize = new kakao.maps.Size(50, 50);
     const imageOption = { offset: new kakao.maps.Point(25, 50) };
-    const markerImage = new kakao.maps.MarkerImage(PinkMarker, imageSize, imageOption);
+    const markerImage = new kakao.maps.MarkerImage(
+      PinkMarker,
+      imageSize,
+      imageOption
+    );
 
     clearMarkers(); // 기존 마커 초기화
 
@@ -161,9 +184,11 @@ const MapContainer = () => {
         yAnchor: 2.7, // 마커 위에 위치하도록 설정
         clickable: true,
       });
-      
+
       markersRef.current.push(customOverlay);
-      kakao.maps.event.addListener(marker, 'click', () => handleMarkerClick(position.id));
+      kakao.maps.event.addListener(marker, 'click', () =>
+        handleMarkerClick(position.id)
+      );
     });
   };
 

@@ -21,7 +21,7 @@ const NicknameEditPage = () => {
   const [verifyNickname, setVerifyNickname] = useState(false);
   const navigate = useNavigate();
   const { nickname, setNickname } = useMyInfoStore();
-  const alert = useAlert();
+  const showAlert = useAlert();
   useEffect(() => {
     setPageName('닉네임 변경');
     setIsShowBackIcon(true);
@@ -38,9 +38,9 @@ const NicknameEditPage = () => {
     console.log(result);
     if (result.status === 200) {
       setVerifyNickname(true);
-      alert('사용 가능한 닉네임입니다');
+      showAlert('사용 가능한 닉네임입니다');
     } else if (result.status === 409) {
-      alert(result.response.data.message);
+      showAlert(result.response.data.message);
       setNewNickname('');
     }
   };
@@ -55,16 +55,16 @@ const NicknameEditPage = () => {
       const result = await editMyInfo(newNickname);
       console.log(result);
       if (result.status === 200) {
-        alert('닉네임 변경에 성공했습니다.');
+        showAlert('닉네임 변경에 성공했습니다.');
         navigate('/customer/myinfo');
       } else {
-        alert('닉네임 변경에 실패했습니다.');
+        showAlert('닉네임 변경에 실패했습니다.');
       }
     } else {
       if (newNickname === '') {
-        alert('변경할 닉네임을 입력해주세요');
+        showAlert('변경할 닉네임을 입력해주세요');
       }
-      alert('닉네임 중복검사 해주세요');
+      showAlert('닉네임 중복검사 해주세요');
     }
   };
 

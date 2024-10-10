@@ -83,9 +83,13 @@ const WEFooter = () => {
   const nav = useNavigate();
   const location = useLocation();
   const [currentTabs, setCurrentTabs] = useState([]);
-  const currentTabId = currentTabs.find(
-    (tab) => tab.path === location.pathname
-  )?.id;
+  const currentTabId = currentTabs.find((tab) => {
+    // '/customer/order'로 시작하는 경로는 모두 예약하기 탭으로 설정
+    if (location.pathname.startsWith('/customer/order') && tab.id === 1) {
+      return true;
+    }
+    return tab.path === location.pathname;
+  })?.id;
 
   useEffect(() => {
     const checkUserRole = async () => {

@@ -129,7 +129,6 @@ const RestaurantManagePage = () => {
     } else if (activeTab === 1) {
       const formData = new FormData();
 
-      // managerFormData와 restaurantFormData를 객체로 묶어서 JSON 문자열로 변환
       const restaurantEditRequestDto = {
         restaurantOwnerName: managerFormData.name,
         restaurantBusinessNumber: managerFormData.number,
@@ -150,7 +149,6 @@ const RestaurantManagePage = () => {
         maxMemberCount: restaurantFormData.maxMemberCount || '',
       };
 
-      // JSON 문자열로 변환 후 FormData에 추가
       formData.append(
         'restaurantEditRequestDto',
         new Blob([JSON.stringify(restaurantEditRequestDto)], {
@@ -158,13 +156,7 @@ const RestaurantManagePage = () => {
         })
       );
 
-      console.log('이미지파일', restaurantFormData.restaurantImages);
-      console.log('입력정보', restaurantEditRequestDto);
-      console.log('요청데이터1', formData);
-
-      // 이미지 파일 추가 (파일이 있을 경우)
       if (restaurantFormData.restaurantImages) {
-        console.log('이미지 파일 추가');
         formData.append(
           'restaurantImages',
           restaurantFormData.restaurantImages
@@ -179,14 +171,59 @@ const RestaurantManagePage = () => {
       }
     }
   };
-  console.log('레스토랑 정보', restaurantFormData);
-  console.log('사장님 정보', managerFormData);
 
-  // 가게 정보 조회
   const fetchRestaurantData = async () => {
     try {
       const response = await getRestaurantData(restaurantId);
       console.log('가게정보조회결과', response);
+
+      if (response.status === 200) {
+        const restaurantData = response.data.data;
+
+        // 조회한 가게 정보를 상태에 세팅
+        setManagerFormData('name', restaurantData.restaurantOwnerName || '');
+        setManagerFormData(
+          'number',
+          restaurantData.restaurantBusinessNumber || ''
+        );
+        setManagerFormData('address', restaurantData.restaurantAddress || '');
+        setManagerFormData('phone', restaurantData.restaurantPhone || '');
+        setManagerFormData(
+          'restaurantName',
+          restaurantData.restaurantName || ''
+        );
+        setManagerFormData(
+          'businessType',
+          restaurantData.restaurantCategoryName || ''
+        );
+        setManagerFormData('lat', restaurantData.latitude || '');
+        setManagerFormData('lng', restaurantData.longitude || '');
+        setManagerFormData(
+          'restaurantOpenTime',
+          restaurantData.restaurantOpenTime || ''
+        );
+        setManagerFormData(
+          'restaurantCloseTime',
+          restaurantData.restaurantCloseTime || ''
+        );
+        console.log('영업 시작시간:', restaurantData.restaurantOpenTime);
+        console.log('영업 끝나는시간:', restaurantData.restaurantCloseTime);
+        setManagerFormData(
+          'depositPerMember',
+          restaurantData.depositPerMember || ''
+        );
+
+        // restaurantFormData에도 필요한 값을 세팅
+        setRestaurantFormData((prevData) => ({
+          ...prevData,
+          breakStartTime: restaurantData.breakStartTime || '',
+          breakEndTime: restaurantData.breakEndTime || '',
+          maxReservationTime: restaurantData.maxReservationTime || '',
+          minMemberCount: restaurantData.minMemberCount || '',
+          maxMemberCount: restaurantData.maxMemberCount || '',
+          restaurantDescription: restaurantData.restaurantDescription || '',
+        }));
+      }
     } catch (error) {
       console.log('가게 정보 조회 중 오류', error);
     }
@@ -198,12 +235,6 @@ const RestaurantManagePage = () => {
     setPageName('매장 정보 입력');
     fetchRestaurantData();
   }, []);
-
-  // useEffect(() => {
-  //   if (restaurantId) {
-  //     setActiveTab(1);
-  //   }
-  // }, []);
 
   useEffect(() => {
     if (activeTab === 0) {

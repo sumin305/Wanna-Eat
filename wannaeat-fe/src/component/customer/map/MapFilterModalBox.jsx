@@ -9,11 +9,13 @@ import {
   CalendarWrapper,
   CalendarStyled,
   StyledSelect,
+  // WETextfieldWrapper,
 } from './MapFilterModalBox';
 import WETextfield from '../../common/textfield/WETextfield/WETextfield.jsx';
 import moment from 'moment';
 import CalendarImg from '../../../assets/icons/common/calendar.svg';
 import useMapFilterStore from 'stores/map/useMapFilterStore';
+import styled from '@emotion/styled';
 
 const MapFilterModalBox = () => {
   const {
@@ -32,9 +34,9 @@ const MapFilterModalBox = () => {
   const categories = JSON.parse(localStorage.getItem('categories')) || [];
 
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
-  const [selectedVisitTime, setSelectedVisitTime] = useState("");
-  const [selectedEndTime, setSelectedEndTime] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedVisitTime, setSelectedVisitTime] = useState('');
+  const [selectedEndTime, setSelectedEndTime] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   const calendarRef = useRef(null);
 
@@ -56,19 +58,36 @@ const MapFilterModalBox = () => {
   const handleMemberCountChange = (e) => {
     const value = parseInt(e.target.value);
     if (value > 0) setMemberCount(value);
-    else alert('0명 이상 입력하세요.');
   };
 
   const handleCategoryChange = (e) => {
-    const selectedCat = categories.find(cat => cat.restaurantCategoryName === e.target.value);
+    const selectedCat = categories.find(
+      (cat) => cat.restaurantCategoryName === e.target.value
+    );
     const categoryId = selectedCat ? selectedCat.restaurantCategoryId : -1;
     setCategoryId(categoryId);
     setSelectedCategory(e.target.value);
     setKeyword(e.target.value); // 키워드를 카테고리 이름으로 설정
   };
 
+  const NumberInputStyled = styled(WETextfield)`
+    /* 기본 스타일 */
+    appearance: textfield;
+
+    /* 화살표 크기 조정 */
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Firefox에서 화살표 숨기기 */
+    -moz-appearance: textfield;
+  `;
+
   useEffect(() => {
-    if (isCalendarVisible) document.addEventListener('mousedown', handleClickOutside);
+    if (isCalendarVisible)
+      document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isCalendarVisible]);
 
@@ -77,7 +96,7 @@ const MapFilterModalBox = () => {
       <InputFieldContainer>
         <InputFieldText>인원 수</InputFieldText>
         <InputFieldContent>
-          <WETextfield
+          <NumberInputStyled
             name="personnel"
             placeholder="인원수를 선택해주세요"
             value={memberCount === -1 ? '' : memberCount}
@@ -91,7 +110,9 @@ const MapFilterModalBox = () => {
       <InputFieldContainer isCalendarVisible={isCalendarVisible}>
         <InputFieldText>방문 날짜</InputFieldText>
         <CalendarContainer>
-          <BoxStyled onClick={toggleCalendar} style={{
+          <BoxStyled
+            onClick={toggleCalendar}
+            style={{
               backgroundImage: `url(${CalendarImg})`,
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'left 10px center',
@@ -105,6 +126,7 @@ const MapFilterModalBox = () => {
                 showNeighboringMonth={false}
                 onChange={handleDateChange}
                 value={moment(new Date(), 'YYYY-MM-DD').toDate()}
+                minDate={new Date()} // 오늘 날짜 이전은 선택 불가
                 formatDay={(locale, date) => moment(date).format('DD')}
               />
             </CalendarWrapper>
@@ -122,9 +144,13 @@ const MapFilterModalBox = () => {
               setStartTime(e.target.value + ':00');
             }}
           >
-            <option value="" disabled>방문 시간을 선택하세요</option>
+            <option value="" disabled>
+              방문 시간을 선택하세요
+            </option>
             {allTimes.map((time, index) => (
-              <option key={index} value={time}>{time}</option>
+              <option key={index} value={time}>
+                {time}
+              </option>
             ))}
           </StyledSelect>
         </InputFieldContent>
@@ -140,9 +166,13 @@ const MapFilterModalBox = () => {
               setEndTime(e.target.value + ':00');
             }}
           >
-            <option value="" disabled>방문 종료 시간을 선택하세요</option>
+            <option value="" disabled>
+              방문 종료 시간을 선택하세요
+            </option>
             {allTimes.map((time, index) => (
-              <option key={index} value={time}>{time}</option>
+              <option key={index} value={time}>
+                {time}
+              </option>
             ))}
           </StyledSelect>
         </InputFieldContent>
@@ -155,7 +185,9 @@ const MapFilterModalBox = () => {
             value={selectedCategory}
             onChange={handleCategoryChange} // 카테고리 변경 함수 적용
           >
-            <option value="" disabled>카테고리를 선택하세요</option>
+            <option value="" disabled>
+              카테고리를 선택하세요
+            </option>
             {categories.map((category, index) => (
               <option key={index} value={category.restaurantCategoryName}>
                 {category.restaurantCategoryName}

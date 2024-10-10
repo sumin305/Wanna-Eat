@@ -505,6 +505,7 @@ const OrderCartPage = () => {
         console.log('stompClient is not initialized or not connected');
         showAlert('웹소켓이 연결되지 않습니다.');
       }
+      showAlert('주문 완료했습니다.');
 
       nav('/customer/order/' + reservationUrl);
       close();
@@ -521,6 +522,7 @@ const OrderCartPage = () => {
       JSON.stringify(orderRegisterRequestDto)
     );
     const sorted = reorderArray(cartElements);
+    showAlert('주문 완료했습니다');
     setCartElements(sorted);
     setAllMenusInfo([]);
     setAllMenusSortInfo([]);

@@ -56,8 +56,6 @@ const OrderMainPage = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [reservationParticipantId, setreservationParticipantId] = useState(0);
 
-  const [orders, setOrders] = useState([]);
-
   const [myOrders, setMyOrders] = useState([]);
 
   const [myTotalCnt, setMyTotalCnt] = useState(0);
@@ -101,6 +99,8 @@ const OrderMainPage = () => {
     setReservationEndTime,
     setRestaurantId,
     setReservationId,
+    orders,
+    setOrders,
   } = useOrderStore();
 
   // 주문 메인페이지에 들어왔을 때 실행

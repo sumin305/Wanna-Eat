@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getMenu, deleteMenu } from '../../../../api/manager/menu/menu.js'; // deleteMenu API 추가
 import deleteImg from '../../../../assets/icons/menu/Delete.svg'; // 이미지 경로 수정
 import editImg from '../../../../assets/icons/menu/Edit.svg'; // 이미지 경로 수정
@@ -8,6 +9,10 @@ import MenuRegistPage from '../MemuRegistPage/MemuRegistPage.jsx'; // MenuRegist
 import MenuEditPage from '../MenuEditPage/MenuEditPage.jsx'; // MenuEditPage 임포트
 import MenuCategoryPage from '../MenuCategoryPage/MenuCategoryPage.jsx'; // MenuCategoryPage 임포트
 import Modal from './Modal.js'; // Modal 컴포넌트 임포트
+
+import useHeaderStore from 'stores/common/useHeaderStore.js';
+
+import DefaultImage from 'assets/icons/menu/basic-menu.svg';
 
 import {
   MenuPageContainer,
@@ -35,6 +40,26 @@ const MenuViewPage = () => {
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false); // 카테고리 모달 상태
   const [menuUpdated, setMenuUpdated] = useState(false); // 메뉴가 업데이트되었는지 여부 상태 추가
   const [editMenuData, setEditMenuData] = useState(null); // 수정할 메뉴 데이터
+
+  const navigate = useNavigate();
+
+  const {
+    setPageName,
+    setIsCarrot,
+    setActiveIcons,
+    setIsUnderLine,
+    setIsShowLogo,
+    setIconAction,
+  } = useHeaderStore();
+
+  useEffect(() => {
+    setPageName('메뉴 목록');
+    setIsCarrot(false);
+    setActiveIcons([0]);
+    setIsUnderLine(true);
+    setIsShowLogo(false);
+    setIconAction([() => navigate('/manager/alarm')]);
+  }, []);
 
   // 메뉴 데이터를 가져오는 함수
   const fetchMenuData = () => {
@@ -125,11 +150,22 @@ const MenuViewPage = () => {
           filteredMenu.map((menu) => (
             <MenuItem key={menu.menuId}>
               <MenuIcons>
-                <MenuIcon src={editImg} alt="Edit" onClick={() => handleEditMenu(menu)} />
-                <MenuIcon src={deleteImg} alt="Delete" onClick={() => handleDeleteMenu(menu.menuId)} />
+                <MenuIcon
+                  src={editImg || DefaultImage}
+                  alt="Edit"
+                  onClick={() => handleEditMenu(menu)}
+                />
+                <MenuIcon
+                  src={deleteImg || DefaultImage}
+                  alt="Delete"
+                  onClick={() => handleDeleteMenu(menu.menuId)}
+                />
               </MenuIcons>
 
-              <MenuImage src={menu.menuImage} alt={menu.menuName} />
+              <MenuImage
+                src={menu.menuImage || DefaultImage}
+                alt={menu.menuName}
+              />
               <MenuInfo>
                 <MenuTitle>{menu.menuName}</MenuTitle>
                 <MenuPrice>{menu.menuPrice}원</MenuPrice>

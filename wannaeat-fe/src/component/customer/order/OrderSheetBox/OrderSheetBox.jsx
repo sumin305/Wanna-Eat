@@ -39,7 +39,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
   const nav = useNavigate();
   const showAlert = useAlert();
 
-  const { allOrdersInfo, setPayOrders, setPayPrice } = useOrderStore();
+  const { allOrdersInfo, setPayOrders, setPayPrice, orders } = useOrderStore();
 
   const [orderCounts, setOrderCounts] = useState({});
   const [allOrders, setAllOrders] = useState([]);
@@ -66,28 +66,56 @@ const OrderSheetBox = ({ reservationUrl }) => {
   const [totalCompletedOrdersCount, setTotalCompletedOrdersCount] = useState(0);
 
   useEffect(() => {
+    console.log('allOrdersInfo', allOrdersInfo);
+
     // localStorage에서 role 가져오기
     const storedRole = localStorage.getItem('role');
     setRole(storedRole);
 
     // 모든 주문 데이터 가져오기 및 그룹화된 결제 전/후 주문 처리
-    const ordersArray = Object.entries(allOrdersInfo).map(([key, value]) => ({
+    const ordersArray = Object.entries(orders).map(([key, value]) => ({
       reservationParticipantNickname: key,
       ...value,
     }));
 
     setAllOrders(ordersArray);
 
+    console.log('ordersArray', ordersArray);
+
     const pendingGroup = groupByNicknameWithTotalPrice(
-      ordersArray.filter((order) =>
-        order.orders ? order.orders.some((o) => o.totalCnt - o.paidCnt > 0) : []
-      )
+      ordersArray
+        .map((order) => {
+          // 미결제 메뉴만 필터링
+          const unpaidOrders = order.orders.filter(
+            (o) => o.totalCnt > o.paidCnt
+          );
+          // 미결제 메뉴가 있으면 해당 주문을 반환
+          if (unpaidOrders.length > 0) {
+            return {
+              ...order,
+              orders: unpaidOrders, // 미결제된 주문만 포함
+            };
+          }
+          return null; // 미결제 메뉴가 없으면 null 반환
+        })
+        .filter((order) => order !== null) // null인 주문은 제거
     );
 
     const completedGroup = groupByNicknameWithTotalPrice(
-      ordersArray.filter((order) =>
-        order.orders ? order.orders.some((o) => o.totalCnt === o.paidCnt) : []
-      )
+      ordersArray
+        .map((order) => {
+          // 미결제 메뉴만 필터링
+          const paidOrders = order.orders.filter((o) => o.paidCnt > 0);
+          // 미결제 메뉴가 있으면 해당 주문을 반환
+          if (paidOrders.length > 0) {
+            return {
+              ...order,
+              orders: paidOrders, // 미결제된 주문만 포함
+            };
+          }
+          return null; // 미결제 메뉴가 없으면 null 반환
+        })
+        .filter((order) => order !== null) // null인 주문은 제거
     );
 
     // 결제 전 주문 그룹화
@@ -118,8 +146,92 @@ const OrderSheetBox = ({ reservationUrl }) => {
         return acc + userCompletedCount;
       }, 0)
     );
-  }, [allOrdersInfo]);
+  }, [orders, activeTab]);
 
+  useEffect(() => {
+    // localStorage에서 role 가져오기
+    const storedRole = localStorage.getItem('role');
+    setRole(storedRole);
+
+    // 모든 주문 데이터 가져오기 및 그룹화된 결제 전/후 주문 처리
+    const ordersArray = Object.entries(orders).map(([key, value]) => ({
+      reservationParticipantNickname: key,
+      ...value,
+    }));
+
+    setAllOrders(ordersArray);
+
+    const pendingGroup = groupByNicknameWithTotalPrice(
+      ordersArray
+        .map((order) => {
+          // 미결제 메뉴만 필터링
+          const unpaidOrders = order.orders.filter(
+            (o) => o.totalCnt > o.paidCnt
+          );
+          // 미결제 메뉴가 있으면 해당 주문을 반환
+          if (unpaidOrders.length > 0) {
+            return {
+              ...order,
+              orders: unpaidOrders, // 미결제된 주문만 포함
+            };
+          }
+          return null; // 미결제 메뉴가 없으면 null 반환
+        })
+        .filter((order) => order !== null) // null인 주문은 제거
+    );
+    const completedGroup = groupByNicknameWithTotalPrice(
+      ordersArray
+        .map((order) => {
+          // 미결제 메뉴만 필터링
+          const paidOrders = order.orders.filter(
+            (o) => o.totalCnt === o.paidCnt
+          );
+          // 미결제 메뉴가 있으면 해당 주문을 반환
+          if (paidOrders.length > 0) {
+            return {
+              ...order,
+              orders: paidOrders, // 미결제된 주문만 포함
+            };
+          }
+          return null; // 미결제 메뉴가 없으면 null 반환
+        })
+        .filter((order) => order !== null) // null인 주문은 제거
+    );
+    // const completedGroup = groupByNicknameWithTotalPrice(
+    //   ordersArray.filter((order) =>
+    //     order.orders ? order.orders.some((o) => o.totalCnt === o.paidCnt) : []
+    //   )
+    // );
+
+    // 결제 전 주문 그룹화
+    setGroupedPendingOrdersWithTotalPrice(pendingGroup);
+
+    // 결제 완료 주문 그룹화
+    setGroupedCompleteOrdersWithTotalPrice(completedGroup);
+
+    setTotalPendingOrdersCount(
+      Object.values(pendingGroup).reduce((acc, user) => {
+        // 각 user의 orders를 순회하면서 totalCnt - paidCnt 값을 누적
+        const userPendingCount = user.orders.reduce((orderAcc, order) => {
+          return orderAcc + (order.totalCnt - order.paidCnt);
+        }, 0);
+
+        // 모든 user의 결제 전 상품 수량을 누적
+        return acc + userPendingCount;
+      }, 0)
+    );
+    setTotalCompletedOrdersCount(
+      Object.values(completedGroup).reduce((acc, user) => {
+        // 각 user의 orders를 순회하면서 totalCnt - paidCnt 값을 누적
+        const userCompletedCount = user.orders.reduce((orderAcc, order) => {
+          return orderAcc + order.paidCnt;
+        }, 0);
+
+        // 모든 user의 결제 전 상품 수량을 누적
+        return acc + userCompletedCount;
+      }, 0)
+    );
+  }, []);
   // 닉네임 별로 주문 그룹화하고 총 금액 계산하는 함수
   const groupByNicknameWithTotalPrice = (orders) => {
     return orders.reduce((acc, order) => {
@@ -410,7 +522,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
                                 </FoodInfoTopDiv>
                                 <FoodInfoBottomDiv>
                                   <FoodInfoCountP>
-                                    {order.totalCnt}
+                                    {order.paidCnt}
                                   </FoodInfoCountP>
                                   <FoodPriceP>
                                     {(

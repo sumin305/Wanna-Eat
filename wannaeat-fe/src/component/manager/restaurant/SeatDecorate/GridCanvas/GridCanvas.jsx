@@ -376,7 +376,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
       const y = Math.floor(adjustedY / gridSize) * gridSize;
 
       if (useStore.getState().isCellOccupied(currentFloor, x, y)) {
-        showAlert('중복 방지!!!!!!!!!!!!!!');
+        showAlert('중복 배치는 불가능합니다.');
         return;
       }
 
@@ -528,14 +528,12 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
       )
       .then((response) => {
         if (response.status === 201) {
-          window.alert(
-            '매장 구조 저장에 성공했습니다. 메인 페이지로 이동합니다.'
-          );
+          showAlert('매장 구조 저장에 성공했습니다. 메인 페이지로 이동합니다.');
           navigate('/manager');
         }
       })
       .catch((error) => {
-        window.alert('꾸미기 저장 실패');
+        showAlert('꾸미기 저장 실패');
         console.log('꾸미기 저장 실패: ', error);
         return;
       });

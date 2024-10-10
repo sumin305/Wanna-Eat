@@ -55,7 +55,7 @@ const getCategories = async () => {
   }
 };
 
-// 알람창 띄워서 새로고침 방지
+// // 알람창 띄워서 새로고침 방지
 const usePreventRefresh = (shouldPrevent) => {
   useEffect(() => {
     if (!shouldPrevent) return;

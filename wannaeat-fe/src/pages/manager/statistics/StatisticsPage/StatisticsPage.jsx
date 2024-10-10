@@ -21,28 +21,26 @@ import WEMenu from 'component/manager/statistics/WEMenu/WEMenu.jsx';
 
 const StatisticsPage = () => {
   const {
-    setIsCarrot,
-    setIsShowBackIcon,
-    setActiveIcons,
     setPageName,
+    setIsCarrot,
+    setActiveIcons,
     setIsUnderLine,
+    setIsShowBackIcon,
+    setIsShowLogo,
+    setIconAction,
   } = useHeaderStore();
 
-  const navigate = useNavigate();
-
   useEffect(() => {
-    setIsCarrot(false);
+    setPageName('매장 통계');
     setIsShowBackIcon(true);
+    setIsCarrot(false);
     setActiveIcons([0]);
     setIsUnderLine(true);
-    setPageName('매장 통계');
-  }, [
-    setIsCarrot,
-    setIsShowBackIcon,
-    setActiveIcons,
-    setPageName,
-    setIsUnderLine,
-  ]);
+    setIsShowLogo(false);
+    setIconAction([() => navigate('/manager/alarm')]);
+  }, []);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     authClientInstance

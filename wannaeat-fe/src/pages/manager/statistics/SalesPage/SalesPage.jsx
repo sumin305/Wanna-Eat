@@ -7,6 +7,8 @@ import {
   TotalRevenueStyled,
 } from './SalesPage.js';
 
+import { useNavigate } from 'react-router-dom';
+
 import Calendar from 'react-calendar';
 
 import moment from 'moment';
@@ -28,6 +30,8 @@ const SalesPage = () => {
     setActiveIcons,
     setPageName,
     setIsUnderLine,
+    setIsShowLogo,
+    setIconAction,
   } = useHeaderStore();
 
   const currentDate = new Date();
@@ -41,6 +45,8 @@ const SalesPage = () => {
     totalRevenue: 0,
   });
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     setIsCarrot(false);
     setIsShowBackIcon(true);
@@ -48,15 +54,9 @@ const SalesPage = () => {
     setIsUnderLine(true);
     setPageName('월 매출 현황');
     fetchStatistics(currentYear, currentMonth);
-  }, [
-    setIsCarrot,
-    setIsShowBackIcon,
-    setActiveIcons,
-    setPageName,
-    setIsUnderLine,
-    currentYear,
-    currentMonth,
-  ]);
+    setIsShowLogo(false);
+    setIconAction([() => navigate('/manager/alarm')]);
+  }, []);
 
   useEffect(() => {
     fetchStatistics(currentYear, currentMonth);

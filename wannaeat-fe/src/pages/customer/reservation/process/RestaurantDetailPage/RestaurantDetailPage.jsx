@@ -74,7 +74,8 @@ const RestaurantDetailPage = () => {
       await setRestaurantId(params.id);
       setRestaurantImage(
         restaurant.restaurantImageListResponseDto &&
-          restaurant.restaurantImageListResponseDto.length > 0
+          restaurant.restaurantImageListResponseDto.restaurantImages &&
+          restaurant.restaurantImageListResponseDto.restaurantImages.length > 0
           ? restaurantResult.restaurantImageListResponseDto.restaurantImages[0]
           : null
       );

@@ -163,7 +163,6 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   }, []);
 
   useEffect(() => {
-    console.log('매꾸 restaurantId: ', restaurantId);
     authClientInstance
       .get(`/api/public/restaurants/${restaurantId}/structure`)
       .then((response) => {
@@ -190,10 +189,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
           });
         });
 
-        console.log('tableDetailResponseDtos: ', tableDetailResponseDtos);
-        console.log('elementDetailResponseDtos: ', elementDetailResponseDtos);
-
-        // setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
+        setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
         console.error('성공: ', response);
       })
       .catch((error) => {
@@ -204,7 +200,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
         }
         return;
       });
-  }, [setItemsByFloor, currentFloor]);
+  }, []);
 
   useEffect(() => {
     if (!selectedItem) {
@@ -222,6 +218,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
           <input
             id="tableId"
             type="number"
+            inputMode="numeric"
             placeholder="테이블 번호 입력"
             value={selectedTableId}
             onChange={(e) => setSelectedTableId(e.target.value)}
@@ -232,6 +229,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
           <input
             id="assignedSeats"
             type="number"
+            inputMode="numeric"
             min="0"
             placeholder="최대 수용 인원 입력"
             value={selectedTableAssignedSeats}
@@ -254,6 +252,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
             <input
               id="tableId"
               type="number"
+              inputMode="numeric"
               placeholder="테이블 번호 입력"
               value={selectedTableId}
               onChange={(e) => setSelectedTableId(e.target.value)}
@@ -264,6 +263,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
             <input
               id="assignedSeats"
               type="number"
+              inputMode="numeric"
               min="0"
               placeholder="최대 수용 인원 입력"
               value={selectedTableAssignedSeats}

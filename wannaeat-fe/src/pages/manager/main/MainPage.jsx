@@ -129,9 +129,6 @@ const MainPage = () => {
       return;
     }
 
-    console.log(
-      'dropdownId:' + dropdownId + ' floor:' + floor + ' 제출되었습니다.'
-    );
     close();
     navigate('/manager/restaurant/seat-decorate', {
       state: { dropdownId, floor },
@@ -256,7 +253,7 @@ const MainPage = () => {
                         type="number"
                         min={1}
                         max={5}
-                        value={floor || ''}
+                        value={floor > 0 ? floor : ''}
                         inputMode="numeric"
                         onChange={(e) => {
                           const value = e.target.value;

@@ -58,7 +58,10 @@ const AppRoutes = () => {
         <Route path="/password-regist" element={<PasswordRegistPage />} />
         <Route path="/manager" element={<ManagerMainPage />} />
         <Route path="/manager/admin" element={<AdminPage />} />
-        <Route path="/manager/admin/detail" element={<AdminDetailPage />} />
+        <Route
+          path="/manager/admin/detail/:date"
+          element={<AdminDetailPage />}
+        />
         <Route
           path="/manager/restaurant/seat-decorate"
           element={<SeatDecoratePage />}

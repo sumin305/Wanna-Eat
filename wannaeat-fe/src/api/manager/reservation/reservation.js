@@ -1,22 +1,22 @@
 import { authClientInstance } from 'utils/http-client';
 
 // 일자별 예약 현황 조회
-export const getReservationInfoByDay = async (date) => {
-  const restaurantId = window.localStorage.getItem('restaurantId');
-
+export const getReservationInfoByDay = async (date, page, size) => {
   return await authClientInstance
-    .get(`/api/restaurants/6/reservation?date=${date}`)
+    .get(`/api/restaurants/reservation?date=${date}&page=${page}&size=${size}`)
     .then((result) => result)
     .catch((error) => error);
 };
 
 // 월 별 예약 건수 조회
-export const getReservationInfoByMonth = async () => {
-  const restaurantId = window.localStorage.getItem('restaurantId');
-
+export const getReservationInfoByMonth = async (year, month) => {
   return await authClientInstance
-    .get('/api/restaurants/' + restaurantId + '/reservation-counts')
-    .then((result) => result.data)
+    .get(
+      '/api/restaurants/statistics' +
+        '/reservation-count?' +
+        `year=${year}&month=${month}`
+    )
+    .then((result) => result)
     .catch((error) => error);
 };
 
@@ -24,7 +24,7 @@ export const getReservationInfoByMonth = async () => {
 export const getReservationDetail = async (reservationId) => {
   return await authClientInstance
     .get(`/api/manager/reservation/${reservationId}`)
-    .then((result) => result.data)
+    .then((result) => result)
     .catch((error) => {});
 };
 

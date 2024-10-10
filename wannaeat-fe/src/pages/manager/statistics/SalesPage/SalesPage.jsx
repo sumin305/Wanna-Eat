@@ -6,6 +6,7 @@ import {
   DateStyled,
   TotalRevenueStyled,
   TotalRevenueValueStyled,
+  RevenueInfoWrapperStyled,
 } from './SalesPage.js';
 
 import { useNavigate } from 'react-router-dom';
@@ -166,7 +167,7 @@ const SalesPage = () => {
         </CalendarWrapper>
 
         {selectedDate && (
-          <div>
+          <RevenueInfoWrapperStyled>
             <div>{selectedDate}</div>
             <div>
               매출:{' '}
@@ -175,8 +176,8 @@ const SalesPage = () => {
                 : 0}{' '}
               원
             </div>
-            <div>예약 횟수: {selectedRevenue.reservationCnt || 0} 회</div>
-          </div>
+            <div>예약 : {selectedRevenue.reservationCnt || 0} 건</div>
+          </RevenueInfoWrapperStyled>
         )}
       </SalesPageWrapperStyled>
     </SalesPageStyled>

@@ -6,12 +6,11 @@ const SalesPageStyled = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 115vh;
-  margin-bottom: 10vh;
+  height: 80vh;
 
   @media (min-width: 480px) {
     height: 150vh;
-    margin-bottom: 10vh;
+    margin-bottom: 5%;
   }
 `;
 
@@ -95,6 +94,28 @@ const TotalRevenueValueStyled = styled.div`
   margin-inline: 2%;
 `;
 
+const RevenueInfoWrapperStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin-top: 15%;
+  padding: 5%;
+  width: 90%;
+  height: 15%;
+  border-radius: 15px;
+  background-color: #fff9db;
+
+  div {
+    font-weight: ${theme.fontWeight.bold};
+  }
+
+  @media (min-width: 480px) {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    padding: 5%;
+  }
+`;
+
 export {
   SalesPageStyled,
   SalesPageWrapperStyled,
@@ -102,4 +123,5 @@ export {
   DateStyled,
   TotalRevenueStyled,
   TotalRevenueValueStyled,
+  RevenueInfoWrapperStyled,
 };

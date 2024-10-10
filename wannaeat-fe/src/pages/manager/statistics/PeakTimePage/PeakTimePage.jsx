@@ -159,7 +159,7 @@ const PeakTimePage = () => {
         </TurnoverContainerStyled>
 
         <TimeWrapperStyled>
-          <PeakTimeLabelStyled>시간</PeakTimeLabelStyled>
+          <PeakTimeLabelStyled>예약 시간</PeakTimeLabelStyled>
           <WELine categories={timeCategories || []} series={timeSeries || []} />
         </TimeWrapperStyled>
       </PeaKTimePageWrapper>

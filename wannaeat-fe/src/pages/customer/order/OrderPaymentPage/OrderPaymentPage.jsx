@@ -44,7 +44,7 @@ const OrderPaymentPage = () => {
       setCards([...cards, { cardName: '카카오페이카드', cardNo: '0' }]);
     };
 
-    if (role !== 'CUSTOMER') {
+    if (localStorage.getItem('role') !== 'CUSTOMER') {
       console.log('손님이 아닙니다.');
       setCards([{ cardName: '카카오페이카드', cardNo: '0' }]);
       return;
@@ -82,6 +82,7 @@ const OrderPaymentPage = () => {
   const handleBeforeButtonClick = () => {
     navigate(-1);
   };
+
   const kakaoPayment = async () => {
     console.log('ordersToSend', payOrders);
     const result = await payMenuByKakaoPay({

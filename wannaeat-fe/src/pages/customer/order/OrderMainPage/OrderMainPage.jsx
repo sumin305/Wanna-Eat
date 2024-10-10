@@ -42,6 +42,14 @@ import {
 import MenuIcon from 'assets/icons/menu/basic-menu.svg';
 import useReservationStore from '../../../../stores/customer/useReservationStore.js';
 import useAlert from '../../../../utils/alert.js';
+import Loading from '../../../../component/common/loading/Loading.js';
+
+// 로딩 컴포넌트
+const LoadingSpinner = () => (
+  <div style={{ textAlign: 'center', marginTop: '50px' }}>
+    <h3>Loading...</h3>
+  </div>
+);
 
 const OrderMainPage = () => {
   const showAlert = useAlert();
@@ -60,6 +68,7 @@ const OrderMainPage = () => {
 
   const [role, setRole] = useState(null);
   const [isAllPaid, setIsAllPaid] = useState(false);
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
   const tabs = ['전체 메뉴', '나의 메뉴'];
   const nav = useNavigate();
   const params = useParams();
@@ -121,9 +130,11 @@ const OrderMainPage = () => {
   // 모든 주문 데이터 불러오기
   useEffect(() => {
     const validateAndConnect = async () => {
+      setLoading(true); // 데이터 로딩 시작
       const response = await validateReservationUrl(reservationUrl);
       console.log('validateAndConnectResponse', response);
       console.log(reservationUrl);
+
       // reservationUrl 유효성 검사 실행 후 유효한 경우
       if (response.status !== 200) {
         showAlert('유효한 예약 URL이 아닙니다.');
@@ -251,6 +262,7 @@ const OrderMainPage = () => {
             )
           ).length !== 0
       );
+      setLoading(false); // 데이터 로딩 완료
     };
 
     const initializeConnection = async () => {
@@ -384,7 +396,7 @@ const OrderMainPage = () => {
     );
 
     setMyOrders(
-      totalData.orderListResponseDto
+      totalData
         ? totalData.orderListResponseDto.orderDetailResponseDtos.filter(
             (order) =>
               Number(order.reservationParticipantId) ===
@@ -394,7 +406,7 @@ const OrderMainPage = () => {
     );
     console.log(
       'validate setMyOrders',
-      totalData.orderListResponseDto
+      totalData
         ? totalData.orderListResponseDto.orderDetailResponseDtos.filter(
             (order) =>
               Number(order.reservationParticipantId) ===
@@ -403,61 +415,41 @@ const OrderMainPage = () => {
         : []
     );
 
-    console.log(
-      'validate setAllOrdersInfo',
-      groupByNicknameWithTotalPrice(
-        totalData.orderListResponseDto.orderDetailResponseDtos
-      )
-    );
-
     setMyTotalCnt(
       calculateTotalCnt(
-        totalData.orderListResponseDto.orderDetailResponseDtos.filter(
-          (order) =>
-            Number(order.reservationParticipantId) ===
-            Number(reservationParticipantId)
-        )
-      )
-    );
-    console.log(
-      'test',
-      totalData.orderListResponseDto.orderDetailResponseDtos.filter(
-        (order) =>
-          Number(order.reservationParticipantId) ===
-          Number(reservationParticipantId)
-      )
-    );
-    console.log(
-      'validate setMyTotalCnt',
-      calculateTotalCnt(
-        totalData.orderListResponseDto.orderDetailResponseDtos.filter(
-          (order) =>
-            Number(order.reservationParticipantId) ===
-            Number(reservationParticipantId)
-        )
+        totalData
+          ? totalData.orderListResponseDto.orderDetailResponseDtos.filter(
+              (order) =>
+                Number(order.reservationParticipantId) ===
+                Number(reservationParticipantId)
+            )
+          : []
       )
     );
 
     setAllTotalCnt(
-      calculateTotalCnt(totalData.orderListResponseDto.orderDetailResponseDtos)
+      calculateTotalCnt(
+        totalData ? totalData.orderListResponseDto.orderDetailResponseDtos : []
+      )
     );
-    console.log(
-      'validate setAllTotalCnt',
-      calculateTotalCnt(totalData.orderListResponseDto.orderDetailResponseDtos)
-    );
+
     setMyTotalPrice(
-      totalData.orderListResponseDto.orderDetailResponseDtos
-        .filter(
-          (order) =>
-            Number(order.reservationParticipantId) ===
-            Number(reservationParticipantId)
-        )
-        .reduce((acc, order) => acc + order.totalCnt * order.menuPrice, 0)
+      totalData
+        ? totalData.orderListResponseDto.orderDetailResponseDtos
+            .filter(
+              (order) =>
+                Number(order.reservationParticipantId) ===
+                Number(reservationParticipantId)
+            )
+            .reduce((acc, order) => acc + order.totalCnt * order.menuPrice, 0)
+        : []
     );
     setAllTotalPrice(
       calculateTotalPriceForAll(
         groupByNicknameWithTotalPrice(
-          totalData.orderListResponseDto.orderDetailResponseDtos
+          totalData
+            ? totalData.orderListResponseDto.orderDetailResponseDtos
+            : []
         )
       )
     );
@@ -505,26 +497,106 @@ const OrderMainPage = () => {
 
   return (
     <>
-      <OrderContainer>
-        <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
-        <div>
-          <TopBox>
-            <MenuContainer>
-              <TotalMenuP>
-                총 메뉴 {activeTab === 0 ? allTotalCnt : myTotalCnt}개
-              </TotalMenuP>
-            </MenuContainer>
-          </TopBox>
-          <MenuDiv role={role}>
-            {activeTab === 0 ? (
-              // 전체 메뉴
-              <div>
-                {Object.entries(orders).map(([nickname, group]) => (
-                  <div key={nickname}>
-                    <PeopleP>{nickname}</PeopleP>
-                    <LineDiv />
-                    {Array.isArray(group.orders) && group.orders.length > 0 ? (
-                      group.orders.map((order, index) => (
+      {loading ? (
+        <Loading />
+      ) : (
+        <OrderContainer>
+          <WETab
+            tabs={tabs}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+          <div>
+            <TopBox>
+              <MenuContainer>
+                <TotalMenuP>
+                  총 메뉴 {activeTab === 0 ? allTotalCnt : myTotalCnt}개
+                </TotalMenuP>
+              </MenuContainer>
+            </TopBox>
+            <MenuDiv role={role}>
+              {activeTab === 0 ? (
+                // 전체 메뉴
+                <div>
+                  {Object.entries(orders).map(([nickname, group]) => (
+                    <div key={nickname}>
+                      <PeopleP>{nickname}</PeopleP>
+                      <LineDiv />
+                      {Array.isArray(group.orders) &&
+                      group.orders.length > 0 ? (
+                        group.orders.map((order, index) => (
+                          <div key={index}>
+                            <FoodDiv>
+                              <MenuImageWrapper>
+                                <MenuImg
+                                  src={
+                                    order.menuImage ? order.menuImage : MenuIcon
+                                  }
+                                />
+                              </MenuImageWrapper>
+                              <FoodInfoDiv>
+                                <FoodInfoTopDiv>
+                                  <MenuNameP>{order.menuName}</MenuNameP>
+                                </FoodInfoTopDiv>
+                                <FoodInfoBottomDiv>
+                                  <FoodInfoCountDiv>
+                                    <FoodCountWrapper>
+                                      <TextP>미결제 수량:</TextP>
+                                      <FoodInfoCountP
+                                        isZero={
+                                          order.totalCnt - order.paidCnt === 0
+                                        }
+                                      >
+                                        {order.totalCnt - order.paidCnt}
+                                      </FoodInfoCountP>
+                                    </FoodCountWrapper>
+                                    <FoodCountWrapper>
+                                      <TextP>총 주문:</TextP>
+                                      <FoodInfoCountP>
+                                        {order.totalCnt}
+                                      </FoodInfoCountP>
+                                    </FoodCountWrapper>
+                                  </FoodInfoCountDiv>
+                                  <FoodPriceP>
+                                    {(
+                                      order.totalCnt * order.menuPrice
+                                    ).toLocaleString('ko-KR')}{' '}
+                                    원
+                                  </FoodPriceP>
+                                </FoodInfoBottomDiv>
+                              </FoodInfoDiv>
+                            </FoodDiv>
+                            <LineDiv />
+                          </div>
+                        ))
+                      ) : (
+                        <div>주문이 없습니다.</div>
+                      )}
+
+                      <TotalPriceDiv>
+                        <TotalPriceP>
+                          총:{' '}
+                          {group.totalPrice
+                            ? group.totalPrice.toLocaleString('ko-KR')
+                            : 0}{' '}
+                          원
+                        </TotalPriceP>
+                      </TotalPriceDiv>
+                      <br />
+                    </div>
+                  ))}
+                  <TotalPriceDiv>
+                    <TotalPriceP>
+                      총: {allTotalPrice.toLocaleString('ko-KR')} 원
+                    </TotalPriceP>
+                  </TotalPriceDiv>
+                </div>
+              ) : (
+                // 나의 메뉴
+                <div>
+                  {myOrders.length > 0 && (
+                    <div>
+                      {myOrders.map((order, index) => (
                         <div key={index}>
                           <FoodDiv>
                             <MenuImageWrapper>
@@ -532,6 +604,7 @@ const OrderMainPage = () => {
                                 src={
                                   order.menuImage ? order.menuImage : MenuIcon
                                 }
+                                alt="메뉴사진"
                               />
                             </MenuImageWrapper>
                             <FoodInfoDiv>
@@ -541,26 +614,23 @@ const OrderMainPage = () => {
                               <FoodInfoBottomDiv>
                                 <FoodInfoCountDiv>
                                   <FoodCountWrapper>
-                                    <TextP>미결제 수량:</TextP>
-                                    <FoodInfoCountP
-                                      isZero={
-                                        order.totalCnt - order.paidCnt === 0
-                                      }
-                                    >
+                                    <TextP>미결제 수량</TextP>
+                                    <FoodInfoCountP>
                                       {order.totalCnt - order.paidCnt}
                                     </FoodInfoCountP>
                                   </FoodCountWrapper>
                                   <FoodCountWrapper>
-                                    <TextP>총 주문:</TextP>
+                                    <TextP>총 주문</TextP>
                                     <FoodInfoCountP>
                                       {order.totalCnt}
                                     </FoodInfoCountP>
                                   </FoodCountWrapper>
                                 </FoodInfoCountDiv>
+
                                 <FoodPriceP>
                                   {(
-                                    order.totalCnt * order.menuPrice
-                                  ).toLocaleString('ko-KR')}{' '}
+                                    order.menuPrice * order.totalCnt
+                                  ).toLocaleString('ko-KR')}
                                   원
                                 </FoodPriceP>
                               </FoodInfoBottomDiv>
@@ -568,128 +638,61 @@ const OrderMainPage = () => {
                           </FoodDiv>
                           <LineDiv />
                         </div>
-                      ))
-                    ) : (
-                      <div>주문이 없습니다.</div>
-                    )}
+                      ))}
+                      <TotalPriceDiv>
+                        <TotalPriceP>
+                          총: {myTotalPrice.toLocaleString('ko-KR')} 원
+                        </TotalPriceP>
+                      </TotalPriceDiv>
+                    </div>
+                  )}
+                </div>
+              )}
+            </MenuDiv>
+          </div>
 
-                    <TotalPriceDiv>
-                      <TotalPriceP>
-                        총:{' '}
-                        {group.totalPrice
-                          ? group.totalPrice.toLocaleString('ko-KR')
-                          : 0}{' '}
-                        원
-                      </TotalPriceP>
-                    </TotalPriceDiv>
-                    <br />
-                  </div>
-                ))}
-                <TotalPriceDiv>
-                  <TotalPriceP>
-                    총: {allTotalPrice.toLocaleString('ko-KR')} 원
-                  </TotalPriceP>
-                </TotalPriceDiv>
-              </div>
-            ) : (
-              // 나의 메뉴
-              <div>
-                {myOrders.length > 0 && (
-                  <div>
-                    {myOrders.map((order, index) => (
-                      <div key={index}>
-                        <FoodDiv>
-                          <MenuImageWrapper>
-                            <MenuImg
-                              src={order.menuImage ? order.menuImage : MenuIcon}
-                              alt="메뉴사진"
-                            />
-                          </MenuImageWrapper>
-                          <FoodInfoDiv>
-                            <FoodInfoTopDiv>
-                              <MenuNameP>{order.menuName}</MenuNameP>
-                            </FoodInfoTopDiv>
-                            <FoodInfoBottomDiv>
-                              <FoodInfoCountDiv>
-                                <FoodCountWrapper>
-                                  <TextP>미결제 수량</TextP>
-                                  <FoodInfoCountP>
-                                    {order.totalCnt - order.paidCnt}
-                                  </FoodInfoCountP>
-                                </FoodCountWrapper>
-                                <FoodCountWrapper>
-                                  <TextP>총 주문</TextP>
-                                  <FoodInfoCountP>
-                                    {order.totalCnt}
-                                  </FoodInfoCountP>
-                                </FoodCountWrapper>
-                              </FoodInfoCountDiv>
-
-                              <FoodPriceP>
-                                {(
-                                  order.menuPrice * order.totalCnt
-                                ).toLocaleString('ko-KR')}
-                                원
-                              </FoodPriceP>
-                            </FoodInfoBottomDiv>
-                          </FoodInfoDiv>
-                        </FoodDiv>
-                        <LineDiv />
-                      </div>
-                    ))}
-                    <TotalPriceDiv>
-                      <TotalPriceP>
-                        총: {myTotalPrice.toLocaleString('ko-KR')} 원
-                      </TotalPriceP>
-                    </TotalPriceDiv>
-                  </div>
-                )}
-              </div>
-            )}
-          </MenuDiv>
-        </div>
-
-        {isAllPaid ? (
-          <ButtonWrapper>
-            <WEButton
-              size="medium"
-              outlined="true"
-              onClick={() =>
-                nav(`/customer/order/menu-select/${reservationUrl}`)
-              }
-            >
-              추가주문 하기
-            </WEButton>
-            <WEButton
-              size="medium"
-              outlined="true"
-              onClick={() => {
-                exitReservation(reservationUrl);
-                nav(`/customer/order/success`);
-              }}
-            >
-              퇴실하기
-            </WEButton>
-          </ButtonWrapper>
-        ) : (
-          <ButtonWrapper>
-            <WEButton
-              size="medium"
-              outlined="true"
-              onClick={handleGotoCartButtonClick}
-            >
-              장바구니 보기
-            </WEButton>
-            <WEButton
-              size="medium"
-              outlined="true"
-              onClick={handleOrderSheetButtonClick}
-            >
-              결제하기
-            </WEButton>
-          </ButtonWrapper>
-        )}
-      </OrderContainer>
+          {isAllPaid ? (
+            <ButtonWrapper>
+              <WEButton
+                size="medium"
+                outlined="true"
+                onClick={() =>
+                  nav(`/customer/order/menu-select/${reservationUrl}`)
+                }
+              >
+                추가주문 하기
+              </WEButton>
+              <WEButton
+                size="medium"
+                outlined="true"
+                onClick={() => {
+                  exitReservation(reservationUrl);
+                  nav(`/customer/order/success`);
+                }}
+              >
+                퇴실하기
+              </WEButton>
+            </ButtonWrapper>
+          ) : (
+            <ButtonWrapper>
+              <WEButton
+                size="medium"
+                outlined="true"
+                onClick={handleGotoCartButtonClick}
+              >
+                장바구니 보기
+              </WEButton>
+              <WEButton
+                size="medium"
+                outlined="true"
+                onClick={handleOrderSheetButtonClick}
+              >
+                결제하기
+              </WEButton>
+            </ButtonWrapper>
+          )}
+        </OrderContainer>
+      )}
     </>
   );
 };

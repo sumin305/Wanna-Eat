@@ -24,8 +24,11 @@ import {
   ReservationInfoButton,
   ReservationDateWrapper,
   ReservationiInfoButtonWrapper,
+  ReservatioinDetailButtonWrapper,
+  ReservationDetailCancelledButton,
 } from './ReservationListPage.js';
 import useCountDownTimer from 'utils/useCountDownTimer';
+import RestaurantImg from 'assets/customer/restaurant.jpg';
 const ListPage = () => {
   const { setPageName, setIsShowBackIcon, setIsShowLogo, setActiveIcons } =
     useHeaderStore();
@@ -37,6 +40,7 @@ const ListPage = () => {
   const { remainingTime } = useCountDownTimer(date);
   const [hasPriorityVisitingRestaurant, setHasPriorityVisitingRestaurant] =
     useState(false);
+  const [reservation, setReservation] = useState(null);
 
   useEffect(() => {
     const fetchMyReservationList = async () => {
@@ -68,6 +72,7 @@ const ListPage = () => {
         setRestaurantName(data.restaurantName);
         setDate(data.reservationDate + ' ' + data.reservationStartTime);
         setMemberCount(data.memberCnt);
+        setReservation(data);
       }
       console.log(data);
     };
@@ -129,45 +134,71 @@ const ListPage = () => {
             </ReservationAlertTime>
           </ReservationDateWrapper>
           <ReservationiInfoButtonWrapper>
-            <ReservationInfoButton>더보기 ></ReservationInfoButton>
-          </ReservationiInfoButtonWrapper>
-        </ReservationAlertWrapper>
-      )}
-
-      {myReservationList.map((reservation) => (
-        <ReservationItem key={reservation.reservationId}>
-          <ReservationItemInfo>
-            <ReservationItemImage src={reservation.restaurantImage} />
-            <ReservationItemText>
-              <ReservationItemTitle>
-                {reservation.restaurantName}
-              </ReservationItemTitle>
-              <ReservationItemSubTitle>
-                {reservation.memberCnt}명 |&nbsp;
-                {moment(reservation.reservationDate).format('YYYY-MM-DD')}&nbsp;
-                {reservation.reservationStartTime.split(':')[0] +
-                  ':' +
-                  reservation.reservationStartTime.split(':')[1]}
-              </ReservationItemSubTitle>
-            </ReservationItemText>
-            <ReservationDetailButton
+            <ReservationInfoButton
               onClick={() =>
                 handleReservationDetailButtonClick(reservation.reservationId)
               }
             >
+              더보기 >
+            </ReservationInfoButton>
+          </ReservationiInfoButtonWrapper>
+        </ReservationAlertWrapper>
+      )}
+
+      {myReservationList ? (
+        myReservationList.map((reservation) => (
+          <ReservationItem key={reservation.reservationId}>
+            <ReservationItemInfo>
+              <ReservationItemImage
+                src={
+                  reservation.restaurantImage
+                    ? reservation.restaurantImage
+                    : RestaurantImg
+                }
+              />
+              <ReservationItemText>
+                <ReservationItemTitle>
+                  {reservation.restaurantName}
+                  {reservation.cancelled && (
+                    <ReservationDetailCancelledButton>
+                      취소됨
+                    </ReservationDetailCancelledButton>
+                  )}
+                </ReservationItemTitle>
+                <ReservationItemSubTitle>
+                  {reservation.memberCnt}명 |&nbsp;
+                  {moment(reservation.reservationDate).format('YYYY-MM-DD')}
+                  &nbsp;
+                  {reservation.reservationStartTime.split(':')[0] +
+                    ':' +
+                    reservation.reservationStartTime.split(':')[1]}
+                </ReservationItemSubTitle>
+              </ReservationItemText>
+              <ReservatioinDetailButtonWrapper>
+                <ReservationDetailButton
+                  onClick={() =>
+                    handleRevisitButtonClick(reservation.restaurantId)
+                  }
+                >
+                  다시 방문하기
+                </ReservationDetailButton>
+              </ReservatioinDetailButtonWrapper>
+            </ReservationItemInfo>
+            <Button
+              onClick={() =>
+                handleReservationDetailButtonClick(reservation.reservationId)
+              }
+              size={'long'}
+              outlined={true}
+              height={'2.5rem'}
+            >
               예약상세
-            </ReservationDetailButton>
-          </ReservationItemInfo>
-          <Button
-            onClick={() => handleRevisitButtonClick(reservation.restaurantId)}
-            size={'long'}
-            outlined={true}
-            height={'2.5rem'}
-          >
-            다시 방문하기
-          </Button>
-        </ReservationItem>
-      ))}
+            </Button>
+          </ReservationItem>
+        ))
+      ) : (
+        <p>예약한 매장이 없습니다.</p>
+      )}
     </ReservationListContainer>
   );
 };

@@ -6,6 +6,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore';
 import useAnimationStore from 'stores/common/useAnimationStore';
+import DefaultImage from 'assets/icons/header/logo.png';
+
 const AdminDetailPage = () => {
   const {
     setPageName,
@@ -13,10 +15,13 @@ const AdminDetailPage = () => {
     setActiveIcons,
     setIsUnderLine,
     setIsShowLogo,
+    setExtraHeaderText,
+    setIsShowExtraHeader,
   } = useHeaderStore();
+
   const { reservationList, setReservationList } = useMyRestaurantStore();
   const params = useParams();
-  const date = params.date;
+  const [date, setDate] = useState('');
   const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
   const { setBeforeUrl } = useAnimationStore();
@@ -24,9 +29,13 @@ const AdminDetailPage = () => {
     setPageName('예약 관리');
     setIsCarrot(false);
     setActiveIcons([0]);
-    setIsUnderLine(true);
+    setIsUnderLine(false);
     setIsShowLogo(false);
+    setIsShowExtraHeader(true);
+    setExtraHeaderText(`${date}`);
     setBeforeUrl('/manager/admin/detail');
+    console.log(date);
+    setDate(params.date);
   }, []);
 
   useEffect(() => {
@@ -80,7 +89,7 @@ const AdminDetailPage = () => {
             }
             key={reservation.reservationId}
           >
-            <ReservationInfoImage />
+            <ReservationInfoImage src={DefaultImage} />
             <ReservationInfoText>
               <ReservationTopInfo>
                 <ReservationText>
@@ -125,8 +134,10 @@ const Topbar = styled.div`
   height: 24px;
   align-items: center;
   justify-content: center;
+  margin-top: 6rem;
+
   > * {
-    margin: 0 0.5rem;
+    margin: 0.5rem;
   }
 `;
 

@@ -47,7 +47,7 @@ const SeatingMapStyled = styled.div`
   align-items: center;
 
   width: 58vh;
-  height: 58vh;
+  height: 40vh;
 `;
 
 const MapStyled = styled.div`

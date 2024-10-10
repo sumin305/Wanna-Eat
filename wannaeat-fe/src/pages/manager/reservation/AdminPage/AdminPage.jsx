@@ -9,6 +9,7 @@ import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
+import DefaultImage from 'assets/icons/header/logo.png';
 import {
   CircleWrapper,
   CarrotCircle,
@@ -38,7 +39,9 @@ const AdminPage = () => {
     setActiveIcons,
     setIsUnderLine,
     setIsShowLogo,
+    setIconAction,
   } = useHeaderStore();
+
   const {
     reservationDetails,
     setReservationDetails,
@@ -57,7 +60,6 @@ const AdminPage = () => {
   useEffect(() => {
     // 컴포넌트가 처음 렌더링될 때 이전 URL을 기록
     prevLocation.current = location.pathname;
-    console.log('prevLocation.current', prevLocation.current);
     setIsCommingFromDetailPage(
       prevLocation.current === '/manager/admin/detail'
     );
@@ -70,9 +72,6 @@ const AdminPage = () => {
     const currentYear = currentDate.year();
     const currentMonth = currentDate.month() + 1; // month()는 0부터 시작하므로 +1
 
-    console.log('현재 년도:', currentYear);
-    console.log('현재 월:', currentMonth);
-
     fetchReservationInfo(currentYear, currentMonth);
 
     const newDate = moment(new Date()).format('YYYY-MM-DD');
@@ -83,13 +82,11 @@ const AdminPage = () => {
 
   const fetchReservationInfo = async (year, month) => {
     const result = await getReservationInfoByMonth(year, month);
-    console.log(result.data.data);
     setReservationCount(result.data.data.reservationCounts);
   };
 
   const fetchReservationInfoByDay = async (date, page, size) => {
     const result = await getReservationInfoByDay(date, page, size);
-    console.log('result', result.data.data.reservations);
     // setReservationList(result.data.data);
     setReservationList(result.data.data.reservations);
   };
@@ -155,6 +152,7 @@ const AdminPage = () => {
     setActiveIcons([0]);
     setIsUnderLine(true);
     setIsShowLogo(false);
+    setIconAction([() => navigate('/manager/alarm')]);
 
     if (beforeUrl === '/manager/admin/detail') {
       setIsCommingFromDetailPage(true);
@@ -183,7 +181,6 @@ const AdminPage = () => {
   // 날짜가 선택될 때마다 실행되는 함수
   const handleDateChange = (date) => {
     const formattedDate = moment(date).format('YYYY-MM-DD');
-    console.log(formattedDate);
     setDate(formattedDate);
     fetchReservationInfoByDay(formattedDate, 0, 10);
     setSelectedDate(formattedDate);
@@ -195,9 +192,7 @@ const AdminPage = () => {
 
   // 스크롤이 발생 시 페이지 이동
   const onScrollFunction = (e) => {
-    console.log(e.deltaY);
     if (e.deltaY > 0) {
-      console.log(date);
       navigate('/manager/admin/detail/' + date);
     }
   };
@@ -244,7 +239,7 @@ const AdminPage = () => {
                 }
                 key={reservation.reservationId}
               >
-                <ReservationInfoImage />
+                <ReservationInfoImage src={DefaultImage} />
                 <ReservationInfoText>
                   <ReservationTopInfo>
                     <ReservationText>
@@ -313,7 +308,7 @@ const AdminPage = () => {
                 }
                 key={reservation.reservationId}
               >
-                <ReservationInfoImage />
+                <ReservationInfoImage src={DefaultImage} />
                 <ReservationInfoText>
                   <ReservationTopInfo>
                     <ReservationText>

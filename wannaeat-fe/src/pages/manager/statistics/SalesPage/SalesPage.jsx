@@ -5,6 +5,7 @@ import {
   SalesPageHeaderStyled,
   DateStyled,
   TotalRevenueStyled,
+  TotalRevenueValueStyled,
 } from './SalesPage.js';
 
 import { useNavigate } from 'react-router-dom';
@@ -149,7 +150,11 @@ const SalesPage = () => {
           <RightArrow className="arrow" onClick={handleNextMonth} />
         </SalesPageHeaderStyled>
         <TotalRevenueStyled>
-          총 매출 {statistics.totalRevenue.toLocaleString()} 원
+          총 매출
+          <TotalRevenueValueStyled>
+            {statistics.totalRevenue.toLocaleString()}
+          </TotalRevenueValueStyled>
+          원
         </TotalRevenueStyled>
         <CalendarWrapper>
           <CalendarStyled
@@ -162,7 +167,7 @@ const SalesPage = () => {
 
         {selectedDate && (
           <div>
-            <div>날짜: {selectedDate}</div>
+            <div>{selectedDate}</div>
             <div>
               매출:{' '}
               {selectedRevenue.revenue

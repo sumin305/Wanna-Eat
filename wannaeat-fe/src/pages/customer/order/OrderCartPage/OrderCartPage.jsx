@@ -137,6 +137,9 @@ const OrderCartPage = () => {
             if (content.socketType === 'CART') {
               const sorted = reorderArray(content.cartElements);
               setCartElements(sorted);
+            } else {
+              const sorted = reorderArray(content.cartElements);
+              setCartElements(sorted);
             }
           }
         );
@@ -156,7 +159,7 @@ const OrderCartPage = () => {
 
   const fetchMenusData = async () => {
     const allOrderData = await getOrderData(reservationUrl, chatPage, chatSize);
-    console.log('메인페이지 불러온 데이터:', allOrderData.data);
+    console.log('메인페이지 불러온 데이터:', allOrderData);
 
     // 전체 메뉴 리스트 저장
     setAllMenusInfo(allOrderData.data);
@@ -416,37 +419,63 @@ const OrderCartPage = () => {
     nav(`/customer/order/${reservationUrl}`);
   };
 
-  // 비우기 버튼 클릭시 실행되는 함수
   const handleMenuDeleteButtonClick = () => {
     const cartClearRequestDto = {
       reservationUrl: reservationUrl,
-      reservationParticipantId: reservationParticipantId,
+      reservationParticipantId: localStorage.getItem(
+        'reservationParticipantId'
+      ),
     };
 
     if (stompClient && isConnected) {
       try {
+        // 장바구니 비우기 API 호출
         stompClient.send(
           `/api/public/sockets/carts/clear`,
           {},
           JSON.stringify(cartClearRequestDto)
         );
+        console.log('장바구니 비우기 요청 보냄:', cartClearRequestDto);
+
+        // 현재 사용자의 메뉴를 제외한 다른 사용자들의 메뉴만 필터링하여 업데이트
+        const updatedCartElements = cartElements.filter(
+          (menu) => menu.reservationParticipantId !== reservationParticipantId
+        );
+
+        // Zustand 상태 업데이트 (cartElements 업데이트)
+        setCartElements(updatedCartElements);
+
+        // 메뉴 카운트도 초기화
+        setMenuCounts([]);
+        setMyCartCnt(0);
+        setTotalCartCnt(
+          updatedCartElements.reduce((total, menu) => {
+            return (
+              total +
+              Object.values(menu.menuInfo).reduce(
+                (count, menuItem) => count + menuItem.menuCnt,
+                0
+              )
+            );
+          }, 0)
+        );
+
+        // 전체 메뉴 정보 업데이트
+        setAllMenusSortInfo({
+          cartDetailResponseDto: {
+            menus: updatedCartElements,
+          },
+        });
+
+        showAlert('장바구니가 비워졌습니다.');
       } catch (error) {
-        showAlert('비우기버튼 실행실패');
+        console.log('장바구니 비우기 실패:', error);
+        showAlert('장바구니 비우기 요청에 실패했습니다.');
       }
     } else {
+      console.log('stompClient is not initialized or not connected');
       showAlert('웹소켓 연결에 실패했습니다.');
     }
-
-    // 다른 사람들의 메뉴만 필터링해서 저장
-    const filteredMenus = cartElements.filter(
-      (menu) => menu.reservationParticipantId !== reservationParticipantId
-    );
-
-    setAllMenusSortInfo({
-      cartDetailResponseDto: {
-        menus: filteredMenus,
-      },
-    });
   };
 
   // 주문하기 버튼 클릭시 실행되는 함수
@@ -607,7 +636,7 @@ const OrderCartPage = () => {
                     }, 0)}개`}
             </TotalMenuP>
             <DeleteDiv>
-              {activeTab === 0 ? (
+              {activeTab === 1 ? (
                 <WEButton
                   width="100%"
                   height="90%"

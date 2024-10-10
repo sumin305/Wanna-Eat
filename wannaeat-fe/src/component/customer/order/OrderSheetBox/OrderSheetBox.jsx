@@ -39,13 +39,14 @@ const OrderSheetBox = ({ reservationUrl }) => {
   const showAlert = useAlert();
 
   const { allOrdersInfo, setPayOrders, setPayPrice } = useOrderStore();
+
+  const [orderCounts, setOrderCounts] = useState({});
   const [allOrders, setAllOrders] = useState([]);
 
   const tabs = ['결제 전', '결제 완료'];
   const [activeTab, setActiveTab] = useState(0);
   const [isChecked, setIsChecked] = useState(false);
   // menuId, orderId, menuCount 정보를 넣을 빈 객체 생성
-  const [orderCounts, setOrderCounts] = useState({});
   // 결제 완료 상태
   const isComplete = activeTab === 1;
   // 결제 전/완료 주문의 닉네임 별 그룹화 + 총 금액
@@ -85,6 +86,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
 
     // 결제 전 주문 그룹화
     setGroupedPendingOrdersWithTotalPrice(pendingGroup);
+
     // 결제 완료 주문 그룹화
     setGroupedCompleteOrdersWithTotalPrice(completedGroup);
 
@@ -136,40 +138,50 @@ const OrderSheetBox = ({ reservationUrl }) => {
 
   // 수량 증가 함수
   const handleIncrease = (menuPrice, orderId, menuId, availableCount) => {
-    const currentCount = orderCounts[orderId]?.count || 0;
-    if (currentCount < availableCount) {
-      setOrderCounts((prev) => ({
-        ...prev,
-        [orderId]: {
-          ...prev[orderId],
-          count: currentCount + 1,
-          menuId: menuId,
-          orderId: orderId,
-          menuPrice: menuPrice,
-        },
-      }));
-    } else {
-      showAlert('더 이상 추가할 수 없습니다.');
-    }
+    setOrderCounts((prev) => {
+      const currentCount = prev[orderId]?.count || 0;
+
+      // 추가 가능 여부 체크
+      if (currentCount < availableCount) {
+        return {
+          ...prev,
+          [orderId]: {
+            ...prev[orderId],
+            count: currentCount + 1,
+            menuId: menuId,
+            orderId: orderId,
+            menuPrice: menuPrice,
+          },
+        };
+      } else {
+        showAlert('더 이상 추가할 수 없습니다.');
+        return prev; // 값이 변경되지 않도록 이전 상태 반환
+      }
+    });
   };
 
   // 수량 감소 함수
   const handleDecrease = (menuPrice, orderId, menuId) => {
-    const currentCount = orderCounts[orderId]?.count || 0;
-    if (currentCount > 0) {
-      setOrderCounts((prev) => ({
-        ...prev,
-        [orderId]: {
-          ...prev[orderId],
-          count: currentCount - 1,
-          menuId: menuId,
-          orderId: orderId,
-          menuPrice: menuPrice,
-        },
-      }));
-    } else {
-      showAlert('수량은 0보다 작을 수 없습니다.');
-    }
+    setOrderCounts((prev) => {
+      const currentCount = prev[orderId]?.count || 0;
+
+      // 수량 감소 가능 여부 체크
+      if (currentCount > 0) {
+        return {
+          ...prev,
+          [orderId]: {
+            ...prev[orderId],
+            count: currentCount - 1,
+            menuId: menuId,
+            orderId: orderId,
+            menuPrice: menuPrice,
+          },
+        };
+      } else {
+        showAlert('수량은 0보다 작을 수 없습니다.');
+        return prev; // 값이 변경되지 않도록 이전 상태 반환
+      }
+    });
   };
 
   // 총 금액 계산 함수

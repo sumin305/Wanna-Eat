@@ -9,6 +9,7 @@ import useOrderStore from 'stores/customer/useOrderStore';
 import useCartStore from 'stores/customer/useCartStore';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
+import { payDepositPaymentSuccessByKakaoPay } from 'api/common/payment';
 
 import {
   TopBox,
@@ -88,6 +89,8 @@ const OrderMainPage = () => {
     setReservationEndTime,
     setRestaurantId,
     setReservationId,
+    isAllPaid,
+    setIsAllPaid,
   } = useOrderStore();
 
   // 주문 메인페이지에 들어왔을 때 실행
@@ -249,6 +252,26 @@ const OrderMainPage = () => {
           )
         )
       );
+
+      // 모든 상품 결제 완료 시 isAllPaid 변경
+      const ordersArray = Object.entries(
+        groupByNicknameWithTotalPrice(
+          totalData.orderListResponseDto.orderDetailResponseDtos
+        )
+      ).map(([key, value]) => ({
+        reservationParticipantNickname: key,
+        ...value,
+      }));
+
+      console.log('ordersArray', ordersArray);
+
+      const allPaid = Object.values(ordersArray).every((user) =>
+        user.orders.every((order) => order.paidCnt === order.totalCnt)
+      );
+
+      console.log('allPaid', allPaid);
+
+      setIsAllPaid(allPaid);
     };
 
     const initializeConnection = async () => {
@@ -300,7 +323,64 @@ const OrderMainPage = () => {
       });
     };
 
+    // 카카오페이 성공 시 재요청
+    const reRequestKakaoPay = async (paymentId, pgToken, type) => {
+      const result = await payDepositPaymentSuccessByKakaoPay(
+        paymentId,
+        pgToken,
+        type
+      );
+
+      if (result.status === 200) {
+        alert('결제를 성공했습니다.');
+        console.log('result', result);
+      } else {
+        alert('결제에 실패했습니다.');
+      }
+    };
+    const url = new URL(window.location.href);
+    const searchParams = url.searchParams;
+
+    // 카카오페이 후 redirect 되었을 경우,
+    if (searchParams.has('status')) {
+      // 결제 성공
+      if (searchParams.get('status') === 'success') {
+        const paymentId = searchParams.get('payment_id');
+        const pgToken = searchParams.get('pg_token');
+        const type = searchParams.get('type');
+
+        reRequestKakaoPay(paymentId, pgToken, type);
+      } else if (searchParams.get('status') === 'fail') {
+        alert('결제에 실패했습니다.');
+        nav('/customer/order/' + params.url);
+      } else if (searchParams.get('status') === 'cancel') {
+        alert('결제가 취소되었습니다.');
+        nav('/customer/order/' + params.url);
+      }
+    }
     validateAndConnect();
+
+    // 모든 상품 결제 완료 시 isAllPaid 변경
+    const ordersArray = Object.entries(allOrdersInfo).map(([key, value]) => ({
+      reservationParticipantNickname: key,
+      ...value,
+    }));
+    const pendingGroup = groupByNicknameWithTotalPrice(
+      ordersArray.filter((order) =>
+        order.orders ? order.orders.some((o) => o.totalCnt - o.paidCnt > 0) : []
+      )
+    );
+
+    console.log('pendingGroup', pendingGroup);
+    const allPaid = Object.values(pendingGroup).every((user) =>
+      user.orders.every((order) => order.totalCnt === order.paidCnt)
+    );
+
+    console.log('allPaid', allPaid);
+
+    setIsAllPaid(allPaid);
+
+    console.log(ordersArray);
   }, []);
   // 새로 온 메세지 추가
   const addMessage = (message) => {
@@ -599,22 +679,43 @@ const OrderMainPage = () => {
           </MenuDiv>
         </div>
 
-        <ButtonWrapper>
-          <WEButton
-            size="medium"
-            outlined="true"
-            onClick={handleGotoCartButtonClick}
-          >
-            장바구니 보기
-          </WEButton>
-          <WEButton
-            size="medium"
-            outlined="true"
-            onClick={handleOrderSheetButtonClick}
-          >
-            결제하기
-          </WEButton>
-        </ButtonWrapper>
+        {isAllPaid && !allOrdersInfo ? (
+          <ButtonWrapper>
+            <WEButton
+              size="medium"
+              outlined="true"
+              onClick={() =>
+                nav(`/customer/order/menu-select/${reservationUrl}`)
+              }
+            >
+              추가주문 하기
+            </WEButton>
+            <WEButton
+              size="medium"
+              outlined="true"
+              onClick={() => nav(`/customer/order/success`)}
+            >
+              퇴실하기
+            </WEButton>
+          </ButtonWrapper>
+        ) : (
+          <ButtonWrapper>
+            <WEButton
+              size="medium"
+              outlined="true"
+              onClick={handleGotoCartButtonClick}
+            >
+              장바구니 보기
+            </WEButton>
+            <WEButton
+              size="medium"
+              outlined="true"
+              onClick={handleOrderSheetButtonClick}
+            >
+              결제하기
+            </WEButton>
+          </ButtonWrapper>
+        )}
       </OrderContainer>
     </>
   );

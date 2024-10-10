@@ -20,12 +20,16 @@ import Carousel from 'react-spring-3d-carousel';
 import { config } from 'react-spring';
 import { useState, useEffect } from 'react';
 import { cardMaps } from 'assets';
-import { payDepositPaymentByKakaoPay } from 'api/common/payment.js';
+import {
+  payDepositPaymentByKakaoPay,
+  payDepositPaymentSuccessByKakaoPay,
+} from 'api/common/payment.js';
 import useAlert from '../../../../../utils/alert.js';
 
 const DepositPaymentPage = () => {
   const navigate = useNavigate();
-  const { depositPerMember, restaurantId } = useRestaurantStore();
+  const { depositPerMember, restaurantId, setRestaurantName } =
+    useRestaurantStore();
   const [depositPrice, setDepositPrice] = useState(0);
   const [cards, setCards] = useState([]);
   const [goToSlide, setGoToSlide] = useState(null);
@@ -39,6 +43,12 @@ const DepositPaymentPage = () => {
     startTime,
     endTime,
     tableList,
+    setReservationDate,
+    setStartTime,
+    setEndTime,
+    setReservationUrl,
+    setTableList,
+    setMemberCount,
   } = useReservationStore();
 
   useEffect(() => {
@@ -63,6 +73,33 @@ const DepositPaymentPage = () => {
         : depositPerMember * memberCount
     );
 
+    // 카카오페이 성공 시 재요청
+    const reRequestKakaoPay = async (paymentId, pgToken, type) => {
+      const result = await payDepositPaymentSuccessByKakaoPay(
+        paymentId,
+        pgToken,
+        type
+      );
+
+      if (result.status === 200) {
+        const reservationInfo = result.data.data.reservationInfo;
+        setReservationDate(reservationInfo.reservationDate);
+        setRestaurantName(reservationInfo.restaurantName);
+        setMemberCount(reservationInfo.memberCnt);
+        setStartTime(reservationInfo.reservationStartTime);
+        setEndTime(reservationInfo.reservationEndTime);
+        setTableList(reservationInfo.tableList);
+        setReservationUrl(
+          process.env.REACT_APP_CLIENT_URL +
+            '/customer/order/' +
+            reservationInfo.reservationUrl
+        );
+        navigate('/customer/reservation/success');
+        alert('결제를 성공했습니다.');
+      } else {
+        alert('결제에 실패했습니다.');
+      }
+    };
     fetchCards();
 
     const url = new URL(window.location.href);
@@ -72,8 +109,11 @@ const DepositPaymentPage = () => {
     if (searchParams.has('status')) {
       // 결제 성공
       if (searchParams.get('status') === 'success') {
-        showAlert('결제에 성공했습니다.');
-        navigate('/customer/reservation/success');
+        const paymentId = searchParams.get('payment_id');
+        const pgToken = searchParams.get('pg_token');
+        const type = searchParams.get('type');
+
+        reRequestKakaoPay(paymentId, pgToken, type);
       } else if (searchParams.get('status') === 'fail') {
         showAlert('결제에 실패했습니다.');
       } else if (searchParams.get('status') === 'cancel') {

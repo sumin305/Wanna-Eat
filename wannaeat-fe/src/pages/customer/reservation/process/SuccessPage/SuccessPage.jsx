@@ -21,6 +21,7 @@ import useMapFilterStore from '../../../../../stores/map/useMapFilterStore.js';
 import { useNavigate } from 'react-router-dom';
 import useAlert from '../../../../../utils/alert.js';
 
+import useRestaurantStore from 'stores/customer/useRestaurantStore';
 const SuccessPage = () => {
   const showAlert = useAlert();
   const {
@@ -34,7 +35,7 @@ const SuccessPage = () => {
   } = useReservationStore();
   const { resetMapFilterStore } = useMapFilterStore();
 
-  const { restaurantName } = useReservationStore();
+  const { restaurantName } = useRestaurantStore();
   const navigate = useNavigate();
   const handleCopyButtonClick = (e) => {
     navigator.clipboard.writeText(reservationUrl);

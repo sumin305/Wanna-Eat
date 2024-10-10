@@ -21,7 +21,7 @@ const SeatSelectPage = (tableData) => {
   const navigate = useNavigate();
 
   const handleBeforeButtonClick = () => {
-    setHandleButtonClick(close());
+    setHandleButtonClick(close);
     setMaxCapacity(0);
     setTableList([]);
     navigate(-1);
@@ -35,7 +35,7 @@ const SeatSelectPage = (tableData) => {
   };
 
   useEffect(() => {
-    setHandleButtonClick(close());
+    setHandleButtonClick(close);
     setMaxCapacity(0);
     setTableList([]);
   }, []);

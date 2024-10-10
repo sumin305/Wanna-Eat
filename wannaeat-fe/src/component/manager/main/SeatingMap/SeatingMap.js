@@ -46,8 +46,8 @@ const SeatingMapStyled = styled.div`
   flex-direction: column;
   align-items: center;
 
-  width: 90vw;
-  height: 90vw;
+  width: 98vw;
+  height: 98vw;
 
   @media (min-width: 480px) {
     width: 60vh;

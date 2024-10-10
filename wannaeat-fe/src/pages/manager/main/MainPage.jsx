@@ -128,7 +128,6 @@ const MainPage = () => {
       showAlert('층을 입력해 주세요');
       return;
     }
-
     close();
     navigate('/manager/restaurant/seat-decorate', {
       state: { dropdownId, floor },

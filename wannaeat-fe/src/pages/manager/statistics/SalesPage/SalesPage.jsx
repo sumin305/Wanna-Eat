@@ -55,9 +55,9 @@ const SalesPage = () => {
     setActiveIcons([0]);
     setIsUnderLine(true);
     setPageName('월 매출 현황');
-    fetchStatistics(currentYear, currentMonth);
     setIsShowLogo(false);
     setIconAction([() => navigate('/manager/alarm')]);
+    fetchStatistics(currentYear, currentMonth);
   }, []);
 
   useEffect(() => {
@@ -70,8 +70,6 @@ const SalesPage = () => {
         `/api/restaurants/statistics/revenue?year=${year}&month=${month}`
       );
       const data = response.data.data;
-
-      console.log(data);
 
       setStatistics({
         revenues: data.revenues,
@@ -134,6 +132,11 @@ const SalesPage = () => {
   };
 
   const handleDateClick = (date) => {
+    const yearMonthDay = moment(date).format('YYYY-MM-DD');
+    if (!Object.keys(statistics.revenues).includes(yearMonthDay)) {
+      setSelectedDate(null);
+      return;
+    }
     const formattedDate = moment(date).format('YYYY-MM-DD'); // 로컬 시간대 기준으로 변환
     const revenueData = statistics.revenues[formattedDate] || {};
     setSelectedDate(formattedDate);
@@ -159,10 +162,15 @@ const SalesPage = () => {
         </TotalRevenueStyled>
         <CalendarWrapper>
           <CalendarStyled
+            key={`${currentYear}-${currentMonth}-${statistics.totalRevenue}`}
             showNeighboringMonth={false}
             tileContent={addContent}
             onClickDay={handleDateClick}
-            value={selectedDate} // 선택된 날짜를 달력에 반영
+            value={
+              selectedDate
+                ? new Date(selectedDate)
+                : new Date(currentYear, currentMonth - 1)
+            }
           />
         </CalendarWrapper>
 

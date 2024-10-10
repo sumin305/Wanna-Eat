@@ -19,6 +19,7 @@ import Button from 'component/common/button/WEButton/WEButton.jsx';
 import { ButtonWrapper } from 'pages/customer/reservation/process/TimeSelectPage/TimeSelectPage.js';
 import { config } from 'react-spring';
 import useAlert from '../../../../utils/alert.js';
+import useCommonStore from '../../../../stores/common/useCommonStore.js';
 
 const OrderPaymentPage = () => {
   const showAlert = useAlert();
@@ -29,6 +30,7 @@ const OrderPaymentPage = () => {
   const { selectedCard, setSelectedCard, payPrice, payOrders, setIsAllPaid } =
     useOrderStore();
   const params = useParams();
+  const { role } = useCommonStore();
   // 화면 렌더링될때 호출되는 함수 // 카드 조회
   useEffect(() => {
     // 회원 카드 정보 조회
@@ -42,8 +44,7 @@ const OrderPaymentPage = () => {
       setCards([...cards, { cardName: '카카오페이카드', cardNo: '0' }]);
     };
 
-    const role = localStorage.getItem('role');
-    if (role !== 'CUSTOMER') {
+    if (localStorage.getItem('role') !== 'CUSTOMER') {
       console.log('손님이 아닙니다.');
       setCards([{ cardName: '카카오페이카드', cardNo: '0' }]);
       return;
@@ -81,6 +82,7 @@ const OrderPaymentPage = () => {
   const handleBeforeButtonClick = () => {
     navigate(-1);
   };
+
   const kakaoPayment = async () => {
     console.log('ordersToSend', payOrders);
     const result = await payMenuByKakaoPay({

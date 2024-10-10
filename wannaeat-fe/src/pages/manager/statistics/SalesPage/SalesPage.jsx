@@ -9,6 +9,8 @@ import {
 
 import Calendar from 'react-calendar';
 
+import moment from 'moment';
+
 import { authClientInstance } from 'utils/http-client.js';
 
 import useHeaderStore from 'stores/common/useHeaderStore.js';
@@ -34,6 +36,10 @@ const SalesPage = () => {
   const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth() + 1);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedRevenue, setSelectedRevenue] = useState({});
+  const [statistics, setStatistics] = useState({
+    revenues: {},
+    totalRevenue: 0,
+  });
 
   useEffect(() => {
     setIsCarrot(false);
@@ -52,6 +58,10 @@ const SalesPage = () => {
     currentMonth,
   ]);
 
+  useEffect(() => {
+    fetchStatistics(currentYear, currentMonth);
+  }, [currentYear, currentMonth]);
+
   const fetchStatistics = async (year, month) => {
     try {
       const response = await authClientInstance.get(
@@ -69,11 +79,6 @@ const SalesPage = () => {
       console.error('월 매출 데이터 요청 실패', error);
     }
   };
-
-  const [statistics, setStatistics] = useState({
-    revenues: {},
-    totalRevenue: 0,
-  });
 
   const handlePreviousMonth = () => {
     setCurrentMonth((prevMonth) => {
@@ -103,12 +108,13 @@ const SalesPage = () => {
   };
 
   // 달력의 각 날짜에 들어갈 content
-  const addContent = ({ date, view }) => {
+  const addContent = (props) => {
+    const { date, view } = props;
     // 캘린더 뷰가 month일 때만 내용 추가
     if (view === 'month') {
       const contents = [];
 
-      const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 변환
+      const formattedDate = moment(date).format('YYYY-MM-DD'); // 로컬 시간대 기준으로 변환
       const revenueData = statistics.revenues[formattedDate]; // 해당 날짜의 매출 데이터 가져오기
 
       if (revenueData) {
@@ -126,7 +132,7 @@ const SalesPage = () => {
   };
 
   const handleDateClick = (date) => {
-    const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 변환
+    const formattedDate = moment(date).format('YYYY-MM-DD'); // 로컬 시간대 기준으로 변환
     const revenueData = statistics.revenues[formattedDate] || {};
     setSelectedDate(formattedDate);
     setSelectedRevenue(revenueData);
@@ -143,14 +149,14 @@ const SalesPage = () => {
           <RightArrow className="arrow" onClick={handleNextMonth} />
         </SalesPageHeaderStyled>
         <TotalRevenueStyled>
-          {' '}
-          총 매출 {statistics.totalRevenue} 원
+          총 매출 {statistics.totalRevenue.toLocaleString()} 원
         </TotalRevenueStyled>
         <CalendarWrapper>
           <CalendarStyled
             showNeighboringMonth={false}
             tileContent={addContent}
             onClickDay={handleDateClick}
+            value={selectedDate} // 선택된 날짜를 달력에 반영
           />
         </CalendarWrapper>
 
@@ -187,7 +193,6 @@ const CountText = styled.p`
     font-size: 10px;
   }
 `;
-// const ReservationManagePageContainer = styled.div``;
 
 const CalendarWrapper = styled.div`
   text-align: -webkit-center;
@@ -209,36 +214,6 @@ const CalendarStyled = styled(Calendar)`
 
   .react-calendar__navigation {
     display: none;
-  }
-
-  .react-calendar__navigation button {
-    color: #ff6528;
-    min-width: 30px;
-    background: none;
-    font-size: 16px;
-    margin-top: 8px;
-    border: none;
-    height: 50px;
-  }
-
-  .react-calendar__navigation__label__labelText {
-    font-weight: bold;
-    color: black;
-    border: none;
-  }
-
-  .react-calendar__navigation button:enabled:hover,
-  .react-calendar__navigation button:enabled:focus {
-    background-color: #f8f8fa;
-    border: none;
-  }
-  .react-calendar__navigation button[disabled] {
-    background-color: #f0f0f0;
-    border: none;
-  }
-  abbr[title] {
-    text-decoration: none;
-    border: none;
   }
 
   .react-calendar__tile {
@@ -272,31 +247,11 @@ const CalendarStyled = styled(Calendar)`
     color: black;
     border: none;
   }
-  .react-calendar__tile--now:enabled:hover,
-  .react-calendar__tile--now:enabled:focus {
-    background: #ff6528;
-    color: white;
-    border-radius: 6px;
-    border: none;
-    font-weight: bold;
-  }
-  .react-calendar__tile--hasActive:enabled:hover,
-  .react-calendar__tile--hasActive:enabled:focus {
-    background: #ff6528;
-    border: none;
-  }
   .react-calendar__tile--active {
     background: #ff6528;
     border-radius: 6px;
     font-weight: bold;
     color: white;
     border: none;
-  }
-  .react-calendar__tile--active:enabled:hover,
-  .react-calendar__tile--active:enabled:focus {
-    background: #ff6528;
-    color: white;
-    border: none;
-    font-weight: bold;
   }
 `;

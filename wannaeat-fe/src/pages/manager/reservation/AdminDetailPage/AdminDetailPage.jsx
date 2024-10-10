@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import useHeaderStore from '../../../../stores/common/useHeaderStore';
 import styled from '@emotion/styled/macro';
 import theme from '../../../../style/common/theme';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore';
 import useAnimationStore from 'stores/common/useAnimationStore';
 const AdminDetailPage = () => {
   const {
@@ -13,9 +14,10 @@ const AdminDetailPage = () => {
     setIsUnderLine,
     setIsShowLogo,
   } = useHeaderStore();
-
+  const { reservationList, setReservationList } = useMyRestaurantStore();
+  const params = useParams();
+  const date = params.date;
   const [activeTab, setActiveTab] = useState(0);
-  const [reservationList, setReservationList] = useState([]);
   const navigate = useNavigate();
   const { setBeforeUrl } = useAnimationStore();
   useEffect(() => {
@@ -26,37 +28,8 @@ const AdminDetailPage = () => {
     setIsShowLogo(false);
     setBeforeUrl('/manager/admin/detail');
   }, []);
+
   useEffect(() => {
-    setReservationList([
-      {
-        reservationId: 0,
-        reservationStartTime: '11:00',
-        reservationEndTime: '11:30',
-        reservationTableList: [2],
-        memberCount: 5,
-      },
-      {
-        reservationId: 1,
-        reservationStartTime: '12:00',
-        reservationEndTime: '13:30',
-        reservationTableList: [2],
-        memberCount: 5,
-      },
-      {
-        reservationId: 2,
-        reservationStartTime: '13:00',
-        reservationEndTime: '14:00',
-        reservationTableList: [3],
-        memberCount: 3,
-      },
-      {
-        reservationId: 3,
-        reservationStartTime: '14:00',
-        reservationEndTime: '15:00',
-        reservationTableList: [3],
-        memberCount: 3,
-      },
-    ]);
     return () => {
       setBeforeUrl('');
     };
@@ -71,7 +44,7 @@ const AdminDetailPage = () => {
 
   // 예약 상세 페이지로 이동
   const handleReservationInfoClick = (id) => {
-    navigate('/manager/reservation/reservation-detail/id');
+    navigate('/manager/reservation/reservation-detail/' + id);
   };
   return (
     <motion.div
@@ -83,7 +56,7 @@ const AdminDetailPage = () => {
     >
       <Topbar>
         <TopbarButton>{`<`}</TopbarButton>
-        <TobbarDateText>9월 9일 (일)</TobbarDateText>
+        <TobbarDateText>{date}</TobbarDateText>
         <TopbarButton>{`>`}</TopbarButton>
       </Topbar>
 
@@ -128,9 +101,10 @@ const AdminDetailPage = () => {
               </ReservationTopInfo>
               <ReservationBottomInfo>
                 <ReservationText>
-                  {reservation.reservationTableList.map((table) => (
-                    <ReservationText>{table} </ReservationText>
-                  ))}{' '}
+                  {reservation.reservationTableList &&
+                    reservation.reservationTableList.map((table) => (
+                      <ReservationText>{table} </ReservationText>
+                    ))}{' '}
                 </ReservationText>{' '}
                 <ReservationText>번 테이블&nbsp;</ReservationText>
                 <ReservationText>{reservation.memberCount}명</ReservationText>

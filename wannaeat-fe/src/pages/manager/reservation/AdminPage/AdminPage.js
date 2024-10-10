@@ -70,8 +70,11 @@ const ReservationInfoImage = styled.img`
 
 const ReservationTopInfo = styled.div`
   display: flex;
+  flex-direction: row;
 `;
 const ReservationText = styled.p`
+  display: flex;
+
   font-size: 11px;
   font-weight: bold;
   @media (min-width: 480px) {

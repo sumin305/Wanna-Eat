@@ -241,7 +241,8 @@ const ManagerReservationDetailPage = () => {
               <strong>예약자:</strong> {reservation.memberName}
             </p>
             <p>
-              <strong>테이블 :</strong> {reservation.tableList.join(', ')}
+              <strong>테이블 :</strong>{' '}
+              {reservation.tableList ? reservation.tableList.join(', ') : []}
             </p>
           </InfoDetails>
         </InfoDetailsContainer>

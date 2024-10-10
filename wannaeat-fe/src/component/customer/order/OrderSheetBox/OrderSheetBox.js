@@ -9,9 +9,8 @@ export const TotalPriceText = styled.p`
 `;
 
 export const MenuDiv = styled.div`
-  /* background-color: rgba(212, 212, 212, 0.3); */
   padding: 0.5rem;
-  height: 53vh;
+  height: ${(props) => (props.role ? '44vh' : '52vh')};
   overflow-y: auto;
   -ms-overflow-style: none; /* 인터넷 익스플로러용 스크롤바 숨김 */
   scrollbar-width: none; /* 파이어폭스용 스크롤바 숨김 */
@@ -203,6 +202,12 @@ export const TotalMenuP = styled.p`
 export const TotalPriceDiv = styled.div`
   display: flex;
   justify-content: right;
+`;
+
+export const TotalPayPriceDiv = styled.div`
+  display: flex;
+  justify-content: right;
+  padding: 5% 0%;
 `;
 
 export const TotalPriceP = styled.p`

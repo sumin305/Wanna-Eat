@@ -5,6 +5,7 @@ import useOrderStore from 'stores/customer/useOrderStore';
 import WETab from 'component/common/tab/WETab/WETab.jsx';
 import {
   TotalPriceText,
+  TotalPayPriceDiv,
   MenuDiv,
   CheckText,
   DeleteDiv,
@@ -42,6 +43,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
 
   const [orderCounts, setOrderCounts] = useState({});
   const [allOrders, setAllOrders] = useState([]);
+  const [role, setRole] = useState(null);
 
   const tabs = ['결제 전', '결제 완료'];
   const [activeTab, setActiveTab] = useState(0);
@@ -64,6 +66,10 @@ const OrderSheetBox = ({ reservationUrl }) => {
   const [totalCompletedOrdersCount, setTotalCompletedOrdersCount] = useState(0);
 
   useEffect(() => {
+    // localStorage에서 role 가져오기
+    const storedRole = localStorage.getItem('role');
+    setRole(storedRole);
+
     // 모든 주문 데이터 가져오기 및 그룹화된 결제 전/후 주문 처리
     const ordersArray = Object.entries(allOrdersInfo).map(([key, value]) => ({
       reservationParticipantNickname: key,
@@ -286,7 +292,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
             </DeleteDiv>
           </MenuContainer>
         </TopBox>
-        <MenuDiv>
+        <MenuDiv role={role}>
           {activeTab === 0
             ? Object.keys(groupedPendingOrdersWithTotalPrice).map(
                 (nickname) => (
@@ -439,14 +445,14 @@ const OrderSheetBox = ({ reservationUrl }) => {
                 )
               )}
         </MenuDiv>
-        <TotalPriceDiv>
+        <TotalPayPriceDiv>
           <TotalPriceText>
             결제 금액 ₩{' '}
             {calculateTotalPriceForOrdersToSend(
               Object.values(orderCounts).filter((order) => order.count > 0)
             ).toLocaleString('ko-KR')}
           </TotalPriceText>
-        </TotalPriceDiv>
+        </TotalPayPriceDiv>
       </div>
       <WEButton onClick={clickGotoPay}>결제하기</WEButton>
     </OrderContainer>

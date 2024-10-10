@@ -5,10 +5,6 @@ const ReservationDetailPageContainer = styled.div`
   overflow-x: hidden;
   overflow-y: scroll;
   scrollbar-width: none;
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
 
   @media (min-width: 480px) {
     overflow-y: scroll;

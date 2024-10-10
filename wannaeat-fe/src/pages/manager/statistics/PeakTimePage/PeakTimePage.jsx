@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   PeakTimePageStyled,
   PeaKTimePageWrapper,
@@ -30,12 +31,15 @@ const PeakTimePage = () => {
     setActiveIcons,
     setPageName,
     setIsUnderLine,
+    setIsShowLogo,
+    setIconAction,
   } = useHeaderStore();
 
   const currentDate = new Date();
 
   const [currentYear, setCurrentYear] = useState(currentDate.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth() + 1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsCarrot(false);
@@ -44,6 +48,8 @@ const PeakTimePage = () => {
     setIsUnderLine(true);
     setPageName('피크타임 상세보기');
     fetchStatistics(currentYear, currentMonth);
+    setIsShowLogo(false);
+    setIconAction([() => navigate('/manager/alarm')]);
   }, [
     setIsCarrot,
     setIsShowBackIcon,

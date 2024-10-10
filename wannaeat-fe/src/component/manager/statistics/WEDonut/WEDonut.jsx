@@ -76,7 +76,7 @@ class WEDonut extends Component {
   }
 
   render() {
-    const donutWidth = this.state.isWeb ? 130 : 90;
+    const donutWidth = this.state.isWeb ? 130 : 120;
 
     const donutFontSize =
       this.props.type === 'time'

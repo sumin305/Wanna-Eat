@@ -209,11 +209,16 @@ ssafyClient.interceptors.response.use(
 
     // 인증 실패 (401에러) 시
     if (response.status === 401) {
+      console.log(localStorage.getItem('isReissueRequested'));
+      console.log(typeof localStorage.getItem('isReissueRequested'));
       // 처음 401 에러가 발생했을 경우 isReissueRequested == false
       if (localStorage.getItem('isReissueRequested') === 'false') {
+        localStorage.setItem('isReissueRequested', true);
+
         // interceptor에서 reissue 재요청
         const reissueResponse =
           await authWithRefreshClientInstance.get('/api/users/reissue');
+        console.log(reissueResponse);
 
         //  AccessToken Reissue 성공
         if (reissueResponse.status === 200) {
@@ -222,7 +227,6 @@ ssafyClient.interceptors.response.use(
           const newAccessToken =
             'Bearer ' + reissueResponse.headers.get('authorization-wannaeat');
           setAccessToken(newAccessToken);
-          localStorage.setItem('isReissueRequested', true);
           config.headers['authorization-wannaeat'] = newAccessToken;
           return await ssafyClient(config);
         }

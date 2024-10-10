@@ -18,6 +18,8 @@ const useMyRestaurantStore = create((set) => ({
   restaurantId: null,
   restaurantSize: '',
   restaurantFloorCnt: -1,
+  reservationList: [],
+  setReservationList: (list) => set({ reservationList: list }),
   setRestaurantSize: (restaurantSize) =>
     set({ restaurantSize: restaurantSize }),
   setRestaurantFloorCnt: (restaurantFloorCnt) =>
@@ -29,6 +31,7 @@ const useMyRestaurantStore = create((set) => ({
         [field]: value,
       },
     })),
+  setReservationDetails: (details) => set({ reservationDetails: details }),
   setIsRegistered: (isRegistered) => set({ isRegistered }),
   setRestaurantId: (id) => set({ restaurantId: id }),
 }));

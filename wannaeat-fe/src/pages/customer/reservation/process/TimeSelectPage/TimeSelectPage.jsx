@@ -21,7 +21,7 @@ import useAlert from 'utils/alert.js';
 
 const TimeSelectPage = () => {
   const showAlert = useAlert();
-  const { restaurant, restaurantId } = useRestaurantStore();
+  const { restaurantId } = useRestaurantStore();
 
   const { open, setModalType, setConfirmText, setTitle, setChildren } =
     useModalStore();

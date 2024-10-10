@@ -136,10 +136,12 @@ const OrderMainPage = () => {
       // 참여자 ID 받아서 localStorage에 저장
       const reservationParticipantId =
         response.data.data.reservationParticipantId;
+
       localStorage.setItem(
         'reservationParticipantId',
         reservationParticipantId
       );
+
       setreservationParticipantId(reservationParticipantId);
 
       console.log('stompClient있나 확인', stompClient);
@@ -148,6 +150,7 @@ const OrderMainPage = () => {
         console.log('stompClient가 없어 소켓 연결을 시도합니다.');
         await initializeConnection(); // WebSocket 연결을 먼저 시도
       }
+
       const allOrdersInfo = await getOrderData(
         reservationUrl,
         chatPage,
@@ -158,18 +161,26 @@ const OrderMainPage = () => {
 
       const totalData = allOrdersInfo.data;
 
-      // 상태 업데이트
+      // 예약 상태 업데이트
       setReservationDate(totalData.reservationDate);
       setReservationStartTime(totalData.reservationDate);
       setReservationEndTime(totalData.reservationEndTime);
       setRestaurantId(totalData.restaurantId);
       setReservationId(totalData.reservationId);
+
+      // 장바구니 업데이트
       setCartElements(
         totalData.cartDetailResponseDto
           ? totalData.cartDetailResponseDto.cartElements
           : []
       );
-      setOrders(totalData.orderListResponseDto.orderDetailResponseDtos || []);
+
+      // 주문서 업데이트
+      setOrders(
+        groupByNicknameWithTotalPrice(
+          totalData.orderListResponseDto.orderDetailResponseDtos
+        ) || []
+      );
 
       setMyOrders(
         totalData.orderListResponseDto
@@ -180,29 +191,8 @@ const OrderMainPage = () => {
             )
           : []
       );
-      console.log(
-        'validate setMyOrders',
-        totalData.orderListResponseDto
-          ? totalData.orderListResponseDto.orderDetailResponseDtos.filter(
-              (order) =>
-                Number(order.reservationParticipantId) ===
-                Number(reservationParticipantId)
-            )
-          : []
-      );
 
-      setAllOrdersInfo(
-        groupByNicknameWithTotalPrice(
-          totalData.orderListResponseDto.orderDetailResponseDtos
-        )
-      );
-      console.log(
-        'validate setAllOrdersInfo',
-        groupByNicknameWithTotalPrice(
-          totalData.orderListResponseDto.orderDetailResponseDtos
-        )
-      );
-
+      // 총 합계 계산
       setMyTotalCnt(
         calculateTotalCnt(
           totalData.orderListResponseDto.orderDetailResponseDtos.filter(
@@ -212,36 +202,13 @@ const OrderMainPage = () => {
           )
         )
       );
-      console.log(
-        'test',
-        totalData.orderListResponseDto.orderDetailResponseDtos.filter(
-          (order) =>
-            Number(order.reservationParticipantId) ===
-            Number(reservationParticipantId)
-        )
-      );
-      console.log(
-        'validate setMyTotalCnt',
-        calculateTotalCnt(
-          totalData.orderListResponseDto.orderDetailResponseDtos.filter(
-            (order) =>
-              Number(order.reservationParticipantId) ===
-              Number(reservationParticipantId)
-          )
-        )
-      );
-
       setAllTotalCnt(
         calculateTotalCnt(
           totalData.orderListResponseDto.orderDetailResponseDtos
         )
       );
-      console.log(
-        'validate setAllTotalCnt',
-        calculateTotalCnt(
-          totalData.orderListResponseDto.orderDetailResponseDtos
-        )
-      );
+
+      // 총 가격 계산
       setMyTotalPrice(
         totalData.orderListResponseDto.orderDetailResponseDtos
           .filter(
@@ -251,6 +218,7 @@ const OrderMainPage = () => {
           )
           .reduce((acc, order) => acc + order.totalCnt * order.menuPrice, 0)
       );
+
       setAllTotalPrice(
         calculateTotalPriceForAll(
           groupByNicknameWithTotalPrice(
@@ -274,8 +242,6 @@ const OrderMainPage = () => {
       const allPaid = Object.values(ordersArray).every((user) =>
         user.orders.every((order) => order.paidCnt === order.totalCnt)
       );
-
-      console.log('allPaid', allPaid);
 
       setIsAllPaid(
         allPaid &&
@@ -349,8 +315,10 @@ const OrderMainPage = () => {
         console.log('result', result);
       } else {
         showAlert('결제에 실패했습니다.');
+        return;
       }
     };
+
     const url = new URL(window.location.href);
     const searchParams = url.searchParams;
 
@@ -389,118 +357,110 @@ const OrderMainPage = () => {
     );
 
     setIsAllPaid(allPaid);
-
-    console.log(ordersArray);
   }, []);
+
   // 새로 온 메세지 추가
   const addMessage = (message) => {
     setChatPlusMessages(message);
   };
-
-  console.log('main page - chatMessages :', chatMessages);
-  useEffect(() => {
-    console.log('main page - chatMessages :', chatMessages);
-  }, [chatMessages]);
 
   useEffect(() => {
     // 각 변수들 세팅
     console.log('각 변수들 세팅');
     const totalData = allOrdersInfo.data;
     console.log('allOrdersInfo', allOrdersInfo);
+    console.log('allOrdersInfo.length', allOrdersInfo.length);
+    console.log('orders', orders);
+    console.log('totalData', totalData);
+    // console.log(
+    //   'new Orders',
+    //   groupByNicknameWithTotalPrice(
+    //     totalData.orderListResponseDto.orderDetailResponseDtos
+    //   )
+    // );
     // 참여자 ID 받아서 localStorage에 저장
     const reservationParticipantId = localStorage.getItem(
       'reservationParticipantId'
     );
 
-    if (allOrdersInfo.length > 0) {
-      setMyOrders(
-        totalData.orderListResponseDto
-          ? totalData.orderListResponseDto.orderDetailResponseDtos.filter(
-              (order) =>
-                Number(order.reservationParticipantId) ===
-                Number(reservationParticipantId)
-            )
-          : []
-      );
-      console.log(
-        'validate setMyOrders',
-        totalData.orderListResponseDto
-          ? totalData.orderListResponseDto.orderDetailResponseDtos.filter(
-              (order) =>
-                Number(order.reservationParticipantId) ===
-                Number(reservationParticipantId)
-            )
-          : []
-      );
-
-      setAllOrdersInfo(
-        groupByNicknameWithTotalPrice(
-          totalData.orderListResponseDto.orderDetailResponseDtos
-        )
-      );
-      console.log(
-        'validate setAllOrdersInfo',
-        groupByNicknameWithTotalPrice(
-          totalData.orderListResponseDto.orderDetailResponseDtos
-        )
-      );
-
-      setMyTotalCnt(
-        calculateTotalCnt(
-          totalData.orderListResponseDto.orderDetailResponseDtos.filter(
+    setMyOrders(
+      totalData.orderListResponseDto
+        ? totalData.orderListResponseDto.orderDetailResponseDtos.filter(
             (order) =>
               Number(order.reservationParticipantId) ===
               Number(reservationParticipantId)
           )
-        )
-      );
-      console.log(
-        'test',
+        : []
+    );
+    console.log(
+      'validate setMyOrders',
+      totalData.orderListResponseDto
+        ? totalData.orderListResponseDto.orderDetailResponseDtos.filter(
+            (order) =>
+              Number(order.reservationParticipantId) ===
+              Number(reservationParticipantId)
+          )
+        : []
+    );
+
+    console.log(
+      'validate setAllOrdersInfo',
+      groupByNicknameWithTotalPrice(
+        totalData.orderListResponseDto.orderDetailResponseDtos
+      )
+    );
+
+    setMyTotalCnt(
+      calculateTotalCnt(
         totalData.orderListResponseDto.orderDetailResponseDtos.filter(
           (order) =>
             Number(order.reservationParticipantId) ===
             Number(reservationParticipantId)
         )
-      );
-      console.log(
-        'validate setMyTotalCnt',
-        calculateTotalCnt(
-          totalData.orderListResponseDto.orderDetailResponseDtos.filter(
-            (order) =>
-              Number(order.reservationParticipantId) ===
-              Number(reservationParticipantId)
-          )
+      )
+    );
+    console.log(
+      'test',
+      totalData.orderListResponseDto.orderDetailResponseDtos.filter(
+        (order) =>
+          Number(order.reservationParticipantId) ===
+          Number(reservationParticipantId)
+      )
+    );
+    console.log(
+      'validate setMyTotalCnt',
+      calculateTotalCnt(
+        totalData.orderListResponseDto.orderDetailResponseDtos.filter(
+          (order) =>
+            Number(order.reservationParticipantId) ===
+            Number(reservationParticipantId)
         )
-      );
+      )
+    );
 
-      setAllTotalCnt(
-        calculateTotalCnt(
+    setAllTotalCnt(
+      calculateTotalCnt(totalData.orderListResponseDto.orderDetailResponseDtos)
+    );
+    console.log(
+      'validate setAllTotalCnt',
+      calculateTotalCnt(totalData.orderListResponseDto.orderDetailResponseDtos)
+    );
+    setMyTotalPrice(
+      totalData.orderListResponseDto.orderDetailResponseDtos
+        .filter(
+          (order) =>
+            Number(order.reservationParticipantId) ===
+            Number(reservationParticipantId)
+        )
+        .reduce((acc, order) => acc + order.totalCnt * order.menuPrice, 0)
+    );
+    setAllTotalPrice(
+      calculateTotalPriceForAll(
+        groupByNicknameWithTotalPrice(
           totalData.orderListResponseDto.orderDetailResponseDtos
         )
-      );
-      console.log(
-        'validate setAllTotalCnt',
-        calculateTotalCnt(
-          totalData.orderListResponseDto.orderDetailResponseDtos
-        )
-      );
-      setMyTotalPrice(
-        totalData.orderListResponseDto.orderDetailResponseDtos
-          .filter(
-            (order) =>
-              Number(order.reservationParticipantId) ===
-              Number(reservationParticipantId)
-          )
-          .reduce((acc, order) => acc + order.totalCnt * order.menuPrice, 0)
-      );
-      setAllTotalPrice(
-        calculateTotalPriceForAll(
-          groupByNicknameWithTotalPrice(
-            totalData.orderListResponseDto.orderDetailResponseDtos
-          )
-        )
-      );
-    }
+      )
+    );
   }, [allOrdersInfo]);
 
   const handleGotoCartButtonClick = () => {
@@ -559,7 +519,7 @@ const OrderMainPage = () => {
             {activeTab === 0 ? (
               // 전체 메뉴
               <div>
-                {Object.entries(allOrdersInfo).map(([nickname, group]) => (
+                {Object.entries(orders).map(([nickname, group]) => (
                   <div key={nickname}>
                     <PeopleP>{nickname}</PeopleP>
                     <LineDiv />

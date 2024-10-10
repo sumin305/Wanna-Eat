@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import theme from 'style/common/theme';
 
-export const NotExistContainer = styled.div`
+const OrderEndContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -10,7 +10,9 @@ export const NotExistContainer = styled.div`
   margin: 0% 15%;
 `;
 
-export const NotExistText = styled.p`
+const OrderEndText = styled.p`
   font-size: ${theme.fontSize.px17};
   font-weight: ${theme.fontWeight.bold};
 `;
+
+export { OrderEndContainer, OrderEndText };

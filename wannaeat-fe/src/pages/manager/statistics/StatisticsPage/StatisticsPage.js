@@ -31,7 +31,7 @@ const StatisticsDonutWrapperStyled = styled.div`
   justify-content: center;
   align-items: center;
 
-  width: 14.08688rem;
+  width: 90vw;
   height: 9.625rem;
   flex-shrink: 0;
 
@@ -53,7 +53,7 @@ const StatisticsColumnWrapperStyled = styled.div`
   justify-content: center;
   align-items: center;
 
-  width: 14.08688rem;
+  width: 90vw;
   height: 14.063rem;
 
   border-radius: 0.625rem;
@@ -139,7 +139,7 @@ const StatisticsMenuWrapperStyled = styled.div`
   justify-content: center;
   align-items: center;
 
-  width: 14.08688rem;
+  width: 90vw;
   height: 16.75rem;
   flex-shrink: 0;
 

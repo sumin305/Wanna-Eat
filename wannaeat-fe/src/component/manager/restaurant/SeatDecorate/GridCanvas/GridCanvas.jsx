@@ -17,6 +17,7 @@ import {
   GridCanvasModalStyled,
 } from './GridCanvas';
 import useModalStore from 'stores/common/useModalStore.js';
+import useAlert from '../../../../../utils/alert';
 
 const restaurantId = window.localStorage.getItem('restaurantId');
 
@@ -109,6 +110,7 @@ const useStore = create((set, get) => ({
 }));
 
 const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
+  const showAlert = useAlert();
   const [gridSize, setGridSize] = useState(50);
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
@@ -161,6 +163,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   }, []);
 
   useEffect(() => {
+    console.log('매꾸 restaurantId: ', restaurantId);
     authClientInstance
       .get(`/api/public/restaurants/${restaurantId}/structure`)
       .then((response) => {
@@ -186,6 +189,9 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
             y: element.y,
           });
         });
+
+        console.log('tableDetailResponseDtos: ', tableDetailResponseDtos);
+        console.log('elementDetailResponseDtos: ', elementDetailResponseDtos);
 
         // setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
         console.error('성공: ', response);
@@ -230,7 +236,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
             placeholder="최대 수용 인원 입력"
             value={selectedTableAssignedSeats}
             onChange={(e) =>
-              setSelectedTableAssignedSeats(parseInt(e.target.value, 10))
+              setSelectedTableAssignedSeats(Number(e.target.value))
             }
           />
         </label>
@@ -238,6 +244,39 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
     );
     open();
   }, [selectedItem]);
+
+  useEffect(() => {
+    if (selectedItem) {
+      setChildren(
+        <GridCanvasModalStyled>
+          <label>
+            테이블 번호:
+            <input
+              id="tableId"
+              type="number"
+              placeholder="테이블 번호 입력"
+              value={selectedTableId}
+              onChange={(e) => setSelectedTableId(e.target.value)}
+            />
+          </label>
+          <label>
+            최대 수용 인원:
+            <input
+              id="assignedSeats"
+              type="number"
+              min="0"
+              placeholder="최대 수용 인원 입력"
+              value={selectedTableAssignedSeats}
+              onChange={(e) =>
+                setSelectedTableAssignedSeats(parseInt(e.target.value, 10))
+              }
+            />
+          </label>
+        </GridCanvasModalStyled>
+      );
+    }
+  }, [selectedTableId, selectedTableAssignedSeats]);
+
   useEffect(() => {
     if (selectedItem) {
       setSelectedTableId(selectedItem.tableId || '');
@@ -313,7 +352,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
       const y = Math.floor(adjustedY / gridSize) * gridSize;
 
       if (useStore.getState().isCellOccupied(currentFloor, x, y)) {
-        window.alert('중복 방지!!!!!!!!!!!!!!');
+        showAlert('중복 방지!!!!!!!!!!!!!!');
         return;
       }
 
@@ -383,7 +422,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
               placeholder="최대 수용 인원 입력"
               value={selectedTableAssignedSeats}
               onChange={(e) =>
-                setSelectedTableAssignedSeats(parseInt(e.target.value, 10))
+                setSelectedTableAssignedSeats(parseInt(Number(e.target.value)))
               }
             />
           </label>

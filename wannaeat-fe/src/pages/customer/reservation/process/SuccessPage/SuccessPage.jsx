@@ -19,8 +19,11 @@ import paper from '../../../.././../assets/icons/common/paper.svg';
 import useReservationStore from '../../../../../stores/customer/useReservationStore.js';
 import useMapFilterStore from '../../../../../stores/map/useMapFilterStore.js';
 import { useNavigate } from 'react-router-dom';
+import useAlert from '../../../../../utils/alert.js';
+
 import useRestaurantStore from 'stores/customer/useRestaurantStore';
 const SuccessPage = () => {
+  const showAlert = useAlert();
   const {
     reservationDate,
     startTime,
@@ -36,7 +39,7 @@ const SuccessPage = () => {
   const navigate = useNavigate();
   const handleCopyButtonClick = (e) => {
     navigator.clipboard.writeText(reservationUrl);
-    alert('복사가 완료되었습니다.');
+    showAlert('복사가 완료되었습니다.');
   };
   const handleSuccessButtonClick = (e) => {
     resetReservation(); // 예약 임시 정보 모두 삭제

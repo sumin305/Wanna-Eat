@@ -28,8 +28,10 @@ import {
   ReservationBottomInfo,
 } from './AdminPage.js';
 import useAnimationStore from 'stores/common/useAnimationStore';
+import useAlert from '../../../../utils/alert.js';
 
 const AdminPage = () => {
+  const showAlert = useAlert();
   const {
     setIsCarrot,
     setPageName,

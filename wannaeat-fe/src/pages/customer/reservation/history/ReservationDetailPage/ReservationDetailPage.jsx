@@ -24,7 +24,10 @@ import {
   LinkInfoButton,
   ButtonWrapper,
 } from './ReservationDetailPage.js';
+import useAlert from 'utils/alert.js';
+
 const ReservationDetailPage = () => {
+  const showAlert = useAlert();
   const { id } = useParams();
   const navigate = useNavigate();
   const { setIsShowLogo, setPageName, setIsShowBackIcon, setActiveIcons } =
@@ -51,7 +54,7 @@ const ReservationDetailPage = () => {
     const fetchReservationDetail = async () => {
       const result = await getReservationDetail(id);
       if (result.status !== 200) {
-        alert('예약 상세 조회 실패');
+        showAlert('예약 상세 조회 실패');
         navigate(-1);
         return;
       }
@@ -78,7 +81,7 @@ const ReservationDetailPage = () => {
   }, []);
 
   const handleCopyButtonClick = () => {
-    alert('복사가 완료되었습니다.');
+    showAlert('복사가 완료되었습니다.');
     navigator.clipboard.writeText(reservationUrl);
   };
   const handleRestaurantInfoButtonClick = () => {
@@ -102,7 +105,7 @@ const ReservationDetailPage = () => {
     const result = await cancelReservation(id);
 
     if (result.status !== 200) {
-      alert(result.response.data.message);
+      showAlert(result.response.data.message);
       return;
     }
     navigate(-1);

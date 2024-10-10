@@ -3,7 +3,11 @@ import styled from '@emotion/styled';
 
 const ReservationListContainer = styled.div`
   background-color: #f2f2f2;
+<<<<<<< HEAD
+  margin-bottom: 20%;
+=======
   margin-bottom: 10vh;
+>>>>>>> 11547e13dd48315abdb48efb65035424ca9d88fb
 `;
 
 const ReservationItem = styled.div`

@@ -29,7 +29,7 @@ import {
   ButtonWrapper,
 } from './SignUpPage.js';
 import useCommonStore, { ROLE } from '../../../stores/common/useCommonStore.js';
-import useAlert from 'utils/alert';
+import useAlert from 'utils/alert.js';
 import { useNavigate } from 'react-router-dom';
 const SignUpPage = () => {
   const { setRole, setNickname, email, socialType, requestSignUp } =
@@ -42,7 +42,7 @@ const SignUpPage = () => {
   const [verifyPhoneNumber, setVerifyPhoneNumber] = useState(false);
   const [code, setCode] = useState(0);
   const navigate = useNavigate();
-  const alert = useAlert();
+  const showAlert = useAlert();
 
   const [userInfo, setUserInfo] = useState({
     nickname: '',
@@ -72,10 +72,10 @@ const SignUpPage = () => {
     const response = await checkNickname(userInfo.nickname);
     console.log(response);
     if (response.status === 200) {
-      alert('사용 가능한 닉네임입니다.');
+      showAlert('사용 가능한 닉네임입니다.');
       setVerifyNickname(true);
     } else {
-      alert('사용 불가능한 닉네임입니다.');
+      showAlert('사용 불가능한 닉네임입니다.');
       setVerifyNickname(false);
     }
   };
@@ -95,10 +95,10 @@ const SignUpPage = () => {
     console.log(response);
     if (response.status === 201) {
       // 휴대번호 인증 문자 요청
-      alert('인증번호가 전송되었습니다.');
+      showAlert('인증번호가 전송되었습니다.');
       setIsVerificationCodeSent(true);
     } else {
-      alert('인증번호 전송에 실패했습니다.');
+      showAlert('인증번호 전송에 실패했습니다.');
     }
   };
 
@@ -111,10 +111,10 @@ const SignUpPage = () => {
     );
 
     if (response.status === 200) {
-      alert('인증이 완료되었습니다.');
+      showAlert('인증이 완료되었습니다.');
       setVerifyPhoneNumber(true);
     } else {
-      alert('인증에 실패했습니다. ');
+      showAlert('인증에 실패했습니다. ');
     }
   };
 
@@ -144,13 +144,13 @@ const SignUpPage = () => {
   const handleJoinButtonClick = async () => {
     // 약관 동의했는지 체크
     if (!isChecked) {
-      alert('약관에 동의해주세요');
+      showAlert('약관에 동의해주세요');
       return;
     }
 
     // 닉네임 검사했는지 체크
     if (!verifyNickname) {
-      alert('닉네임 중복 검사 해주세요');
+      showAlert('닉네임 중복 검사 해주세요');
       return;
     }
 
@@ -184,7 +184,7 @@ const SignUpPage = () => {
         navigate('/manager/restaurant/restaurant-regist');
       }
     } else {
-      alert(response.response.data.message);
+      showAlert(response.response.data.message);
     }
   };
 

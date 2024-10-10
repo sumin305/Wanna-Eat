@@ -14,7 +14,9 @@ import {
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from 'stores/customer/useAuthStore';
 import { registPassword } from 'api/customer/user';
+import useAlert from '../../../utils/alert';
 const PasswordRegistPage = () => {
+  const showAlert = useAlert();
   const { setRole, email } = useCommonStore();
   const [title, setTitle] = useState('결제 비밀번호를 등록해주세요');
   const [isValidPassword, setIsValidPassword] = useState(false);
@@ -64,7 +66,7 @@ const PasswordRegistPage = () => {
     if (window.PublicKeyCredential) {
       setIsSupported(true);
     } else {
-      alert('이 브라우저는 생체 인증을 지원하지 않습니다.');
+      showAlert('이 브라우저는 생체 인증을 지원하지 않습니다.');
     }
   }, []);
 
@@ -87,18 +89,18 @@ const PasswordRegistPage = () => {
         if (inputNumber === password) {
           const registPasswordResult = await registPassword(inputNumber + num);
           if (registPasswordResult.status === 200) {
-            alert('결제 비밀번호 등록 성공');
+            showAlert('결제 비밀번호 등록 성공');
             navigate('/customer');
             setRole(ROLE.CUSTOMER);
             return;
           }
-          alert('결제 비밀번호 등록 실패');
+          showAlert('결제 비밀번호 등록 실패');
           setPassword('');
           setInputNumber('');
           setTitle('결제 비밀번호를 등록해주세요');
           setIsValidPassword(false);
         } else {
-          alert('비밀번호가 일치하지 않습니다.');
+          showAlert('비밀번호가 일치하지 않습니다.');
           setPassword('');
           setInputNumber('');
           setTitle('결제 비밀번호를 등록해주세요');

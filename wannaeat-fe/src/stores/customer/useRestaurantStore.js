@@ -76,10 +76,10 @@ const useRestaurantStore = create((set) => ({
             : '',
         restaurantLike: restaurant.restaurantLike || false,
       });
-      console.log(
-        'restaurant.restaurantImageListResponseDto',
-        restaurant.restaurantImageListResponseDto
-      );
+      // console.log(
+      //   'restaurant.restaurantImageListResponseDto',
+      //   restaurant.restaurantImageListResponseDto
+      // );
       return restaurant;
     } else {
       console.log('매장 상세 정보 조회 실패');

@@ -88,6 +88,11 @@ const ReservationDetailPage = () => {
     showAlert('복사가 완료되었습니다.');
     navigator.clipboard.writeText(reservationUrl);
   };
+
+  const handleMoveButtonClick = () => {
+    showAlert('주문 페이지로 이동합니다.');
+    window.location.href = reservationUrl;
+  };
   const handleRestaurantInfoButtonClick = () => {
     navigate('/customer/reservation/restaurant-detail/' + restaurantId);
   };
@@ -143,7 +148,9 @@ const ReservationDetailPage = () => {
       <LinkInfoWrapper>
         <LinkInfoTitle>링크를 단톡방에 공유해주세요</LinkInfoTitle>
         <LinkInfoTextWrapper>
-          <LinkInfoText>{reservationUrl}</LinkInfoText>
+          <LinkInfoText onClick={() => handleMoveButtonClick()}>
+            {reservationUrl}
+          </LinkInfoText>
           <LinkInfoButton onClick={() => handleCopyButtonClick()}>
             <img src={paper} />
           </LinkInfoButton>
@@ -152,7 +159,7 @@ const ReservationDetailPage = () => {
       <ButtonWrapper>
         <Button
           size={'long'}
-          onClick={() => handleReservationCancelButtonClick}
+          onClick={() => handleReservationCancelButtonClick()}
         >
           예약 취소
         </Button>

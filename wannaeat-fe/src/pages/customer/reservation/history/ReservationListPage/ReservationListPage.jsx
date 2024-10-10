@@ -24,6 +24,8 @@ import {
   ReservationInfoButton,
   ReservationDateWrapper,
   ReservationiInfoButtonWrapper,
+  ReservatioinDetailButtonWrapper,
+  ReservationDetailCancelledButton,
 } from './ReservationListPage.js';
 import useCountDownTimer from 'utils/useCountDownTimer';
 import RestaurantImg from 'assets/customer/restaurant.jpg';
@@ -157,6 +159,11 @@ const ListPage = () => {
               <ReservationItemText>
                 <ReservationItemTitle>
                   {reservation.restaurantName}
+                  {reservation.cancelled && (
+                    <ReservationDetailCancelledButton>
+                      취소됨
+                    </ReservationDetailCancelledButton>
+                  )}
                 </ReservationItemTitle>
                 <ReservationItemSubTitle>
                   {reservation.memberCnt}명 |&nbsp;
@@ -167,13 +174,15 @@ const ListPage = () => {
                     reservation.reservationStartTime.split(':')[1]}
                 </ReservationItemSubTitle>
               </ReservationItemText>
-              <ReservationDetailButton
-                onClick={() =>
-                  handleRevisitButtonClick(reservation.restaurantId)
-                }
-              >
-                다시 방문하기
-              </ReservationDetailButton>
+              <ReservatioinDetailButtonWrapper>
+                <ReservationDetailButton
+                  onClick={() =>
+                    handleRevisitButtonClick(reservation.restaurantId)
+                  }
+                >
+                  다시 방문하기
+                </ReservationDetailButton>
+              </ReservatioinDetailButtonWrapper>
             </ReservationItemInfo>
             <Button
               onClick={() =>

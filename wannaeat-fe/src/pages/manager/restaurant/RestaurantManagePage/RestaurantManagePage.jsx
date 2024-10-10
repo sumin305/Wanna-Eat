@@ -332,7 +332,7 @@ const RestaurantManagePage = () => {
               </InputWithLabelStyled>
             </InputWrapperStyled>
 
-            <InputWrapperStyled>
+            {/* <InputWrapperStyled>
               <InputWithLabelStyled>
                 <label>업종</label>
                 <WEDropdown
@@ -361,7 +361,7 @@ const RestaurantManagePage = () => {
                   }}
                 />
               </DropdownWrapperStyled>
-            </InputWrapperStyled>
+            </InputWrapperStyled> */}
 
             <InputWrapperStyled>
               <InputWithLabelStyled>

@@ -1,4 +1,4 @@
-import { authClientInstance } from '../../utils/http-client';
+import { authClientInstance, clientInstance } from '../../utils/http-client';
 
 // 나의 예약 목록 조회
 export const getMyReservation = async () => {
@@ -51,6 +51,16 @@ export const getReservationTableByDate = async (
 export const getTop5Reservations = async () => {
   return await authClientInstance
     .get('/api/users/reservations/statistics')
+    .then((result) => result)
+    .catch((error) => error);
+};
+
+// 예약 퇴실
+export const exitReservation = async (url) => {
+  return await clientInstance
+    .patch('/api/public/reservations', {
+      reservationUrl: url,
+    })
     .then((result) => result)
     .catch((error) => error);
 };

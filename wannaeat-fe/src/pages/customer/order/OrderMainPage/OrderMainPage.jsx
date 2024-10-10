@@ -156,8 +156,6 @@ const OrderMainPage = () => {
 
       setAllOrdersInfo(allOrdersInfo ? allOrdersInfo : []);
 
-      console.log('메인페이지 불러온 데이터:', allOrdersInfo.data);
-
       const totalData = allOrdersInfo.data;
 
       // 상태 업데이트
@@ -279,7 +277,14 @@ const OrderMainPage = () => {
 
       console.log('allPaid', allPaid);
 
-      setIsAllPaid(allPaid && Object.keys(allOrdersInfo).length !== 0);
+      setIsAllPaid(
+        allPaid &&
+          Object.keys(
+            groupByNicknameWithTotalPrice(
+              totalData.orderListResponseDto.orderDetailResponseDtos
+            )
+          ).length !== 0
+      );
     };
 
     const initializeConnection = async () => {

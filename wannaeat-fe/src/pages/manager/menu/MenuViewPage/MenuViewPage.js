@@ -23,10 +23,9 @@ export const MenuCategoryTabs = styled.div`
     display: none; /* WebKit 기반 브라우저에서 스크롤바 숨기기 */
   }
 
-  -ms-overflow-style: none;  /* IE, Edge에서 스크롤바 숨기기 */
-  scrollbar-width: none;  /* Firefox에서 스크롤바 숨기기 */
+  -ms-overflow-style: none; /* IE, Edge에서 스크롤바 숨기기 */
+  scrollbar-width: none; /* Firefox에서 스크롤바 숨기기 */
 `;
-
 
 // 개별 탭 스타일 (선택된 탭은 강조 표시)
 export const MenuTab = styled.div`
@@ -77,7 +76,6 @@ export const MenuItem = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
   position: relative; /* 아이콘 배치를 위해 추가 */
-
 `;
 
 // 메뉴 이미지 스타일
@@ -147,11 +145,13 @@ export const AddButton = styled.button`
   align-items: center;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
 
-  position: fixed;  /* 화면에 고정 */
-  right: 20px;  /* 오른쪽에서 20px 떨어짐 */
-  bottom: 90px;  /* 하단에서 20px 떨어짐 */
+  position: fixed; /* 화면에 고정 */
+  right: 20px; /* 오른쪽에서 20px 떨어짐 */
+  bottom: 90px; /* 하단에서 20px 떨어짐 */
 
   @media (min-width: 768px) {
     width: 70px;

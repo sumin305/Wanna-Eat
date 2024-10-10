@@ -466,27 +466,31 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
     const elementRegisterRequestDtos = [];
 
     Object.keys(itemsByFloor).forEach((floor) => {
-      itemsByFloor[floor].forEach((item) => {
-        if (item.itemType === 'SQUARE' || item.itemType === 'ROUNDED') {
-          tableRegisterRequestDtos.push({
-            itemId: item.itemId,
-            tableId: item.tableId,
-            assignedSeats: item.assignedSeats,
-            x: item.x,
-            y: item.y,
-            itemType: item.itemType,
-            floor: parseInt(floor, 10),
-          });
-        } else {
-          elementRegisterRequestDtos.push({
-            itemId: item.itemId,
-            itemType: item.itemType,
-            x: item.x,
-            y: item.y,
-            floor: parseInt(floor, 10),
-          });
-        }
-      });
+      const items = itemsByFloor[floor] || [];
+
+      if (items.length > 0) {
+        items.forEach((item) => {
+          if (item.itemType === 'SQUARE' || item.itemType === 'ROUNDED') {
+            tableRegisterRequestDtos.push({
+              itemId: item.itemId,
+              tableId: item.tableId,
+              assignedSeats: item.assignedSeats,
+              x: item.x,
+              y: item.y,
+              itemType: item.itemType,
+              floor: parseInt(floor, 10),
+            });
+          } else {
+            elementRegisterRequestDtos.push({
+              itemId: item.itemId,
+              itemType: item.itemType,
+              x: item.x,
+              y: item.y,
+              floor: parseInt(floor, 10),
+            });
+          }
+        });
+      }
     });
 
     console.log(

@@ -82,39 +82,23 @@ const AdminPage = () => {
 
   const fetchReservationInfo = async (year, month) => {
     const result = await getReservationInfoByMonth(year, month);
+    if (result.status !== 200) {
+      console.log('예약 조회 실패');
+      return;
+    }
     setReservationCount(result.data.data.reservationCounts);
   };
 
   const fetchReservationInfoByDay = async (date, page, size) => {
     const result = await getReservationInfoByDay(date, page, size);
-    // setReservationList(result.data.data);
+    if (result.status !== 200) {
+      console.log('예약 조회 실패');
+      return;
+    }
     setReservationList(result.data.data.reservations);
   };
   const [isCommingFromDetailPage, setIsCommingFromDetailPage] = useState(false);
   const [reservationCount, setReservationCount] = useState({});
-
-  // const reservationCount = {
-  //   '2024-10-10': {
-  //     visited: 3,
-  //     willVisit: 5,
-  //   },
-  //   '2024-10-11': {
-  //     visited: 2,
-  //     willVisit: 7,
-  //   },
-  //   '2024-10-20': {
-  //     visited: 4,
-  //     willVisit: 6,
-  //   },
-  //   '2024-10-21': {
-  //     visited: 5,
-  //     willVisit: 3,
-  //   },
-  //   '2024-10-30': {
-  //     visited: 6,
-  //     willVisit: 4,
-  //   },
-  // };
 
   // 달력의 각 날짜에 들어갈 content
   const addContent = ({ date }) => {

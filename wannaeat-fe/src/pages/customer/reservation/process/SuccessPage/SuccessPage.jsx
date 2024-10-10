@@ -46,6 +46,12 @@ const SuccessPage = () => {
     resetMapFilterStore();
     navigate('/customer/reservationlist');
   };
+
+  const handleMoveButtonClick = () => {
+    showAlert('주문 페이지로 이동합니다.');
+    window.location.href = reservationUrl;
+  };
+
   return (
     <SuccessPageContainer>
       <WEStep index={3} />
@@ -65,7 +71,9 @@ const SuccessPage = () => {
       <LinkInfoWrapper>
         <LinkInfoTitle>링크를 단톡방에 공유해주세요</LinkInfoTitle>
         <LinkInfoTextWrapper>
-          <LinkInfoText>{reservationUrl}</LinkInfoText>
+          <LinkInfoText onClick={handleMoveButtonClick}>
+            {reservationUrl}
+          </LinkInfoText>
           <LinkInfoButton onClick={handleCopyButtonClick}>
             <img src={paper} />
           </LinkInfoButton>

@@ -52,7 +52,7 @@ const SeatingMapStyled = styled.div`
 
 const MapStyled = styled.div`
   position: relative;
-  width: 75%;
+  width: 100%;
   height: 100%;
   max-width: 480px;
   border: 1px solid ${theme.color.primary};
@@ -72,8 +72,8 @@ const ItemWrapperStyled = styled.div`
   justify-content: center;
   align-items: center;
   position: absolute;
-  left: ${({ x }) => (x / 480) * 100}%;
-  top: ${({ y }) => (y / 480) * 100}%;
+  left: ${({ x }) => (x / 381) * 100}%;
+  top: ${({ y }) => (y / 381) * 100}%;
   width: ${({ svgWidth }) => svgWidth}%;
   height: ${({ svgHeight }) => svgHeight}%;
   /* width: 23%;

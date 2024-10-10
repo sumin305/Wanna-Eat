@@ -40,6 +40,13 @@ const OrderPaymentPage = () => {
       setCards([...cards, { cardName: '카카오페이카드', cardNo: '0' }]);
     };
 
+    const role = localStorage.getItem('role');
+    if (role !== 'CUSTOMER') {
+      console.log('손님이 아닙니다.');
+      setCards([{ cardName: '카카오페이카드', cardNo: '0' }]);
+      return;
+    }
+
     fetchCards();
   }, []);
 

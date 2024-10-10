@@ -106,13 +106,6 @@ const CardManagePage = () => {
         >
           카드 추가하기
         </Button>
-        <Button
-          size="long"
-          outlined={'true'}
-          onClick={handleFingerPrintRegistButtonClick}
-        >
-          지문 등록하기
-        </Button>
       </ButtonWrapper>
       <CardSelectBoxStyled>
         <Carousel slides={slides} goToSlide={goToSlide} />

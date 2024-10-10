@@ -225,7 +225,7 @@ export const CompleteButton = styled.button`
   padding: 5px 5px;
   font-size: 13px;
   font-weight: bold;
-  border-radius: 20px; /* 둥글게 만듦 */
+  border-radius: 12px; /* 둥글게 만듦 */
   cursor: pointer;
   margin-left: 3px;
   transition: all 0.3s ease;

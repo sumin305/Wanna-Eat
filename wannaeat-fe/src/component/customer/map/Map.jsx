@@ -85,9 +85,9 @@ const MapContainer = () => {
   }, []);
 
   const resetFilters = () => {
-    setReservationDate(null);
-    setStartTime(null);
-    setEndTime(null);
+    setReservationDate('');
+    setStartTime('00:00');
+    setEndTime('00:00');
     setMemberCount(-1);
     setCategoryId(-1);
     setIsButtonVisible(false);

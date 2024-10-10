@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import theme from 'style/common/theme';
 
 // 페이지 전체 스타일
 export const ReservationPageContainer = styled.div`
@@ -178,6 +179,16 @@ export const FilterButtonGroup = styled.div`
   gap: 5px; /* 필터 버튼과 전체 서빙 완료 버튼 간격 조정 */
 `;
 
+export const ReservationPayInfo = styled.p`
+  font-weight: bold;
+  font-size: ${theme.fontSize.px17};
+  margin: 0.3rem;
+`;
+
+export const ReservationPayInfoWrapper = styled.div`
+  display: flex;
+  margin: 0.3rem;
+`;
 // 필터 버튼 스타일
 export const FilterButton = styled.button`
   background: none;
@@ -186,12 +197,12 @@ export const FilterButton = styled.button`
   margin: 0 5px;
   font-size: 15px;
   font-weight: ${(props) => (props.active ? 'bold' : 'normal')};
-  color: ${(props) => (props.active ? '#e67e22' : '#ccc')};
+  color: ${(props) => (props.active ? theme.color.primary : '#ccc')};
   position: relative;
   cursor: pointer;
 
   &:hover {
-    color: #e67e22;
+    color: ${theme.color.primary};
   }
 
   &::after {
@@ -202,15 +213,15 @@ export const FilterButton = styled.button`
     bottom: 0;
     width: 100%;
     height: 2px;
-    background-color: #e67e22;
+    background-color: ${theme.color.primary};
   }
 `;
 
 // 서빙 완료 및 전체 서빙 완료 버튼 스타일
 export const CompleteButton = styled.button`
-  background-color: #e67e22;
+  background-color: ${theme.color.primary};
   color: white;
-  border: 1px solid #e67e22;
+  border: 1px solid ${theme.color.primary};
   padding: 5px 5px;
   font-size: 13px;
   font-weight: bold;

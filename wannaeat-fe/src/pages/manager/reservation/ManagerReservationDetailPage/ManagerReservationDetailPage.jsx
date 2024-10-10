@@ -27,10 +27,13 @@ import {
   InfoDetailsContainer,
   FilterButtonGroup,
   FilterButton,
+  ReservationPayInfo,
+  ReservationPayInfoWrapper,
 } from './ManagerReservationDetailPage';
 
 const ManagerReservationDetailPage = () => {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params.id;
   const [reservation, setReservation] = useState(null);
   const [serveCounts, setServeCounts] = useState({});
   const [isServing, setIsServing] = useState(false);
@@ -38,21 +41,35 @@ const ManagerReservationDetailPage = () => {
   const showAlert = useAlert();
 
   useEffect(() => {
-    getReservationDetail(id)
-      .then((response) => {
-        setReservation(response.data);
-        const initialServeCounts = response.data.reservationMenuList.reduce(
-          (acc, menu) => {
-            acc[menu.menuName] = 0;
-            return acc;
-          },
-          {}
-        );
-        setServeCounts(initialServeCounts);
-      })
-      .catch((error) => {
-        console.error('Error fetching reservation details:', error);
-      });
+    const fetchReservationInfo = async () => {
+      const result = await getReservationDetail(id);
+      console.log('id', id);
+      console.log('result', result);
+      setReservation(result.data.data);
+      const initialServeCounts = result.data.data.reservationMenuList.reduce(
+        (acc, menu) => {
+          acc[menu.menuName] = 0;
+          return acc;
+        },
+        {}
+      );
+      setServeCounts(initialServeCounts);
+    };
+    fetchReservationInfo();
+    // .then((response) => {
+    //   setReservation(response.data);
+    //   const initialServeCounts = response.data.reservationMenuList.reduce(
+    //     (acc, menu) => {
+    //       acc[menu.menuName] = 0;
+    //       return acc;
+    //     },
+    //     {}
+    //   );
+    //   setServeCounts(initialServeCounts);
+    // })
+    // .catch((error) => {
+    //   console.error('Error fetching reservation details:', error);
+    // });
   }, [id]);
 
   const filteredMenuList = () => {
@@ -232,18 +249,24 @@ const ManagerReservationDetailPage = () => {
         {/* 예약 상세 정보 텍스트 섹션 */}
         <InfoDetailsContainer>
           <InfoDetails>
-            <p>
-              {reservation.allPaymentsCompleted
-                ? '전 메뉴 결제 완료'
-                : '결제 전'}
-            </p>
-            <p>
-              <strong>예약자:</strong> {reservation.memberName}
-            </p>
-            <p>
-              <strong>테이블 :</strong>{' '}
-              {reservation.tableList ? reservation.tableList.join(', ') : []}
-            </p>
+            <ReservationPayInfoWrapper>
+              <ReservationPayInfo>
+                {reservation.allPaymentsCompleted
+                  ? '전 메뉴 결제 완료'
+                  : '결제 전'}
+              </ReservationPayInfo>
+            </ReservationPayInfoWrapper>
+
+            <ReservationPayInfoWrapper>
+              <ReservationPayInfo>예약자:</ReservationPayInfo>{' '}
+              <ReservationPayInfo>{reservation.memberName}</ReservationPayInfo>{' '}
+            </ReservationPayInfoWrapper>
+            <ReservationPayInfoWrapper>
+              <ReservationPayInfo>테이블 :</ReservationPayInfo>{' '}
+              <ReservationPayInfo>
+                {reservation.tableList ? reservation.tableList.join(', ') : []}
+              </ReservationPayInfo>{' '}
+            </ReservationPayInfoWrapper>
           </InfoDetails>
         </InfoDetailsContainer>
       </ReservationInfo>

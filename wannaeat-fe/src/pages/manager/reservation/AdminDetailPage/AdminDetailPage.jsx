@@ -55,9 +55,7 @@ const AdminDetailPage = () => {
       onWheel={(e) => onScrollFunction(e)}
     >
       <Topbar>
-        <TopbarButton>{`<`}</TopbarButton>
         <TobbarDateText>{date}</TobbarDateText>
-        <TopbarButton>{`>`}</TopbarButton>
       </Topbar>
 
       <TabContainer>

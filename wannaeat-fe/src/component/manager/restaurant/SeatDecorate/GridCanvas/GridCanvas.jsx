@@ -176,8 +176,8 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
           response.data.data;
 
         tableDetailResponseDtos.forEach((table) => {
-          const { floor, itemId, itemType, x, y, tableId, assignedSeats } =
-            table;
+          // const { floor, itemId, itemType, x, y, tableId, assignedSeats } =
+          //   table;
 
           const existingItems =
             useStore.getState().itemsByFloor[currentFloor] || [];

@@ -60,7 +60,7 @@ export const LineDiv = styled.div`
 
 export const MenuDiv = styled.div`
   padding: 0.5rem;
-  height: 53vh;
+  height: ${(props) => (props.role ? '52vh' : '60vh')};
   overflow-y: auto;
   -ms-overflow-style: none; /* 인터넷 익스플로러용 스크롤바 숨김 */
   scrollbar-width: none; /* 파이어폭스용 스크롤바 숨김 */
@@ -195,9 +195,7 @@ export const TotalPriceP = styled.p`
   font-weight: ${theme.fontWeight.bold};
 `;
 
-export const OrderContainer = styled.div`
-  margin-bottom: 20%;
-`;
+export const OrderContainer = styled.div``;
 
 export const ButtonContainer = styled.div`
   display: flex;
@@ -208,14 +206,4 @@ export const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   margin: 5px 0px;
-`;
-
-export const CheckBox = styled.div`
-  display: flex;
-  margin-left: 4%;
-`;
-
-export const CheckText = styled.p`
-  font-size: ${theme.fontSize.px13};
-  margin: 5px;
 `;

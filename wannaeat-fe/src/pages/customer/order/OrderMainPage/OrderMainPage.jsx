@@ -677,7 +677,7 @@ const OrderMainPage = () => {
           </MenuDiv>
         </div>
 
-        {isAllPaid ? (
+        {isAllPaid && !allOrdersInfo ? (
           <ButtonWrapper>
             <WEButton
               size="medium"

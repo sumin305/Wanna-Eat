@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import WEButton from 'component/common/button/WEButton/WEButton.jsx';
-import { OrderEndContainer, OrderEndText } from './OrderSuccessPage.jsx';
+import { OrderEndContainer, OrderEndText } from './OrderSuccessPage.js';
 
 const OrderSuccessPage = () => {
   const nav = useNavigate();

@@ -127,7 +127,7 @@ const PasswordAuthPage = () => {
 
     console.log(result);
     if (result.status === 200) {
-      showAlert('결제 성공.');
+      showAlert('결제 성공');
     } else {
       showAlert('결제에 실패했습니다.');
     }

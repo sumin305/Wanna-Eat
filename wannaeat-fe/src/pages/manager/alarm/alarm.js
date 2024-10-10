@@ -3,6 +3,8 @@ import styled from '@emotion/styled';
 
 // 페이지 전체 스타일
 const AlarmPageContainer = styled.div`
+  /* width: 100%; */
+  height: 100%;
   margin-top: 20px;
   margin-bottom: 10%;
   padding: 10px;
@@ -15,7 +17,7 @@ const AlarmHeader = styled.div`
   justify-content: space-between;
   margin-bottom: 10px;
 
-   p {
+  p {
     font-size: 15px; /* 원하는 글자 크기 */
     font-weight: bold; /* 굵게 설정 */
     color: #333; /* 원하는 글자 색상 (옵션) */
@@ -52,32 +54,32 @@ const AlarmList = styled.ul`
   list-style-type: none;
   margin-top: 3px;
   padding: 0;
-  height: 400px; /* 스크롤 가능한 높이 설정 */
+  height: 70vh; /* 스크롤 가능한 높이 설정 */
   overflow-y: auto; /* 스크롤 활성화 */
-  
+
   border: 1px solid #ddd; /* 경계 추가 */
   border-radius: 5px; /* 모서리 둥글게 */
-  
+
   ::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera에서 스크롤바 숨기기 */
   }
-  
+
   -ms-overflow-style: none; /* IE, Edge에서 스크롤바 숨기기 */
   scrollbar-width: none; /* Firefox에서 스크롤바 숨기기 */
 `;
 
-// 알림 항목 스타일 
+// 알림 항목 스타일
 const AlarmItem = styled.li`
   display: flex;
   align-items: center;
   padding: 15px;
   border-bottom: 1px solid #ccc !important;
   background-color: #fff; /* 배경색 추가로 구분선 더 명확히 */
-  
+
   &:last-child {
     border-bottom: none; /* 마지막 항목에서는 실선 제거 */
   }
-  
+
   /* 구분선이 더 명확하게 보이도록 마진 조정 */
   &:not(:last-child) {
     margin-bottom: 5px;
@@ -130,7 +132,7 @@ const AlarmEmptyMessage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;  /* 부모 요소의 높이만큼 중앙 정렬 */
+  height: 100%; /* 부모 요소의 높이만큼 중앙 정렬 */
   font-size: 17px; /* 글자 크기 조정 */
   color: #888; /* 색상 변경 */
 `;
@@ -146,5 +148,5 @@ export {
   AlarmType,
   AlarmDetails,
   AlarmTime,
-  AlarmEmptyMessage
+  AlarmEmptyMessage,
 };

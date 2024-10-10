@@ -46,15 +46,21 @@ const SeatingMapStyled = styled.div`
   flex-direction: column;
   align-items: center;
 
-  width: 60vh;
-  height: 60vh;
+  width: 90vw;
+  height: 90vw;
+
+  @media (min-width: 480px) {
+    width: 60vh;
+    height: 60vh;
+  }
 `;
 
 const MapStyled = styled.div`
   position: relative;
-  width: 100%;
-  height: 100%;
-  max-width: 480px;
+  width: 80%;
+  height: 80%;
+  max-width: 395px;
+  max-height: 395px;
   border: 1px solid ${theme.color.primary};
 
   @media (min-width: 480px) {
@@ -72,8 +78,8 @@ const ItemWrapperStyled = styled.div`
   justify-content: center;
   align-items: center;
   position: absolute;
-  left: ${({ x }) => (x / 381) * 100}%;
-  top: ${({ y }) => (y / 381) * 100}%;
+  left: ${({ x }) => (x / 480) * 100}%;
+  top: ${({ y }) => (y / 480) * 100}%;
   width: ${({ svgWidth }) => svgWidth}%;
   height: ${({ svgHeight }) => svgHeight}%;
   /* width: 23%;
@@ -84,6 +90,18 @@ const ItemWrapperStyled = styled.div`
   svg {
     width: 100%;
     height: 100%;
+  }
+
+  @media (min-width: 480px) {
+    left: ${({ x }) => (x / 480) * 100}%;
+    top: ${({ y }) => (y / 480) * 100}%;
+    width: ${({ svgWidth }) => svgWidth}%;
+    height: ${({ svgHeight }) => svgHeight}%;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
   }
 `;
 

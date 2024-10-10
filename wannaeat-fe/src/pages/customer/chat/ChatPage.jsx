@@ -55,12 +55,18 @@ const ChatPage = () => {
   } = useHeaderStore();
   const messageEndRef = useRef(null);
   const [isTop, setIsTop] = useState(false);
+  const [role, setRole] = useState(null);
+
   // 웹소켓 초기 연결
   useEffect(() => {
     setIsCarrot(true);
     setPageName('채팅');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
+
+    // localStorage에서 role 가져오기
+    const storedRole = localStorage.getItem('role');
+    setRole(storedRole);
 
     const gotoChat = () => {
       nav(`/customer/order/chat/${reservationUrl}`);
@@ -295,7 +301,7 @@ const ChatPage = () => {
 
   return (
     <ChatContainer>
-      <ChatTextContainer id="chat-container">
+      <ChatTextContainer id="chat-container" role={role}>
         {Array.isArray(chatMessages) &&
           chatMessages.length > 0 &&
           chatMessages.map((chat, index) => {
@@ -361,7 +367,7 @@ const ChatPage = () => {
           })}
         <div ref={messageEndRef}></div>
       </ChatTextContainer>
-      <ChatInputWrapper>
+      <ChatInputWrapper role={role}>
         <ChatInput
           value={chatMessageInput}
           onChange={handleChatMessageInputChange}

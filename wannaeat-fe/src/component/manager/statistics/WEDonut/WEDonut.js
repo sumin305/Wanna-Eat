@@ -6,6 +6,7 @@ const DonutWrapperStyled = styled.div`
   justify-content: center;
   width: 65px;
   height: 90px;
+
   @media (min-width: 480px) {
     width: 115px;
   }

@@ -75,7 +75,7 @@ public class MenuServiceImpl implements MenuService {
 		}
 
 		String uploadedMenuImageFileName = null;
-		if(multipartFile != null || !multipartFile.isEmpty()){
+		if (multipartFile != null || !multipartFile.isEmpty()) {
 			// 메뉴 사진 등록
 			uploadedMenuImageFileName = fileUtil.uploadFile(multipartFile);
 		}

@@ -213,8 +213,8 @@ public class ReservationServiceImpl implements ReservationService {
 
 		// 예약된 테이블이 있을 경우 예외 처리
 		if (!reservedTables.isEmpty()) {
-			for(ReservationTable reservationTable : reservedTables){
-				if(reservationRegisterRequestDto.getTableList().contains(reservationTable.getTableId())){
+			for (ReservationTable reservationTable : reservedTables) {
+				if (reservationRegisterRequestDto.getTableList().contains(reservationTable.getTableId())) {
 					throw new DuplicateReservationTableException("이미 예약된 테이블입니다.");
 				}
 			}

@@ -77,6 +77,10 @@ const ReservationDetailPage = () => {
     fetchReservationDetail();
   }, []);
 
+  useEffect(() => {
+    console.log('seatList: ', seatList);
+  }, [seatList]);
+
   const handleCopyButtonClick = () => {
     alert('복사가 완료되었습니다.');
     navigator.clipboard.writeText(reservationUrl);
@@ -128,7 +132,10 @@ const ReservationDetailPage = () => {
           reservationEndTime.split(':')[1]}
       </ReservationInfoTitle>
       <SeatDecorateInfo>
-        <ReservationSeatMap OccupiedList={seatList} />
+        <ReservationSeatMap
+          OccupiedList={seatList}
+          restaurantId={restaurantId}
+        />
       </SeatDecorateInfo>
       <LinkInfoWrapper>
         <LinkInfoTitle>링크를 단톡방에 공유해주세요</LinkInfoTitle>

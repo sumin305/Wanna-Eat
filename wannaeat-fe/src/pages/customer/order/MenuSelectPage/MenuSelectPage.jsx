@@ -39,6 +39,7 @@ const MenuSelectPage = () => {
   const { isConnected, setIsConnected, stompClient, setStompClient } =
     useChatStore();
   const [activeTab, setActiveTab] = useState(0);
+  const [role, setRole] = useState(null);
   const [reservationParticipantId, setReservationParticipantId] = useState(0);
 
   const increment = 1; // 증가 갯수는 1로 설정
@@ -62,6 +63,10 @@ const MenuSelectPage = () => {
     setPageName('메뉴선택');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
+
+    // localStorage에서 role 가져오기
+    const storedRole = localStorage.getItem('role');
+    setRole(storedRole);
 
     const gotoChat = () => {
       nav(`/customer/order/chat/${reservationUrl}`);
@@ -186,7 +191,7 @@ const MenuSelectPage = () => {
   };
 
   return (
-    <MenuPageContainer>
+    <MenuPageContainer role={role}>
       <WETabContainer>
         <WETab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
       </WETabContainer>

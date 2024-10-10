@@ -57,6 +57,8 @@ const OrderMainPage = () => {
   const [myTotalPrice, setMyTotalPrice] = useState(0);
   const [allTotalPrice, setAllTotalPrice] = useState(0);
 
+  const [role, setRole] = useState(null);
+
   const tabs = ['전체 메뉴', '나의 메뉴'];
   const nav = useNavigate();
   const params = useParams();
@@ -100,6 +102,11 @@ const OrderMainPage = () => {
     setPageName('주문서');
     setIsShowLogo(false);
     setIsShowBackIcon(true);
+
+    // localStorage에서 role 가져오기
+    const storedRole = localStorage.getItem('role');
+    setRole(storedRole);
+
     const gotoChat = () => {
       nav(`/customer/order/chat/${reservationUrl}`);
     };
@@ -545,7 +552,7 @@ const OrderMainPage = () => {
               </TotalMenuP>
             </MenuContainer>
           </TopBox>
-          <MenuDiv>
+          <MenuDiv role={role}>
             {activeTab === 0 ? (
               // 전체 메뉴
               <div>

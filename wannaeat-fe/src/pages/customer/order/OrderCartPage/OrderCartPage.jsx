@@ -59,6 +59,7 @@ const OrderCartPage = () => {
   const showAlert = useAlert();
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ['전체 메뉴', '나의 메뉴'];
+  const [role, setRole] = useState(null);
 
   const {
     isConnected,
@@ -97,6 +98,10 @@ const OrderCartPage = () => {
     setIsShowLogo(false);
     setActiveIcons([8, 10]);
     setIsShowBackIcon(true);
+
+    // localStorage에서 role 가져오기
+    const storedRole = localStorage.getItem('role');
+    setRole(storedRole);
 
     const validateAndConnect = async () => {
       const response = await validateReservationUrl(reservationUrl);
@@ -652,7 +657,7 @@ const OrderCartPage = () => {
             </DeleteDiv>
           </MenuContainer>
         </TopBox>
-        <MenuDiv>
+        <MenuDiv role={role}>
           {activeTab === 0 ? (
             <>
               {cartElements &&
@@ -705,10 +710,10 @@ const OrderCartPage = () => {
                         원
                       </TotalPriceP>
                     </TotalPriceDiv>
+                    <LineDiv />
                     <br />
                   </div>
                 ))}
-              <LineDiv />
               <TotalPriceDiv>
                 {menuCounts.length > 0 ? (
                   <TotalPriceP>

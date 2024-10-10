@@ -39,7 +39,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
   const nav = useNavigate();
   const showAlert = useAlert();
 
-  const { allOrdersInfo, setPayOrders, setPayPrice } = useOrderStore();
+  const { allOrdersInfo, setPayOrders, setPayPrice, orders } = useOrderStore();
 
   const [orderCounts, setOrderCounts] = useState({});
   const [allOrders, setAllOrders] = useState([]);
@@ -67,12 +67,13 @@ const OrderSheetBox = ({ reservationUrl }) => {
 
   useEffect(() => {
     console.log('allOrdersInfo', allOrdersInfo);
+
     // localStorage에서 role 가져오기
     const storedRole = localStorage.getItem('role');
     setRole(storedRole);
 
     // 모든 주문 데이터 가져오기 및 그룹화된 결제 전/후 주문 처리
-    const ordersArray = Object.entries(allOrdersInfo).map(([key, value]) => ({
+    const ordersArray = Object.entries(orders).map(([key, value]) => ({
       reservationParticipantNickname: key,
       ...value,
     }));
@@ -145,7 +146,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
         return acc + userCompletedCount;
       }, 0)
     );
-  }, [allOrdersInfo, activeTab]);
+  }, [orders, activeTab]);
 
   useEffect(() => {
     // localStorage에서 role 가져오기
@@ -153,7 +154,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
     setRole(storedRole);
 
     // 모든 주문 데이터 가져오기 및 그룹화된 결제 전/후 주문 처리
-    const ordersArray = Object.entries(allOrdersInfo).map(([key, value]) => ({
+    const ordersArray = Object.entries(orders).map(([key, value]) => ({
       reservationParticipantNickname: key,
       ...value,
     }));

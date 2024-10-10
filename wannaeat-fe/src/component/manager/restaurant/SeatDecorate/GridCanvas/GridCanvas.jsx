@@ -189,7 +189,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
           });
         });
 
-        setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
+        // setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
         console.error('성공: ', response);
       })
       .catch((error) => {

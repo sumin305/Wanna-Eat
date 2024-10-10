@@ -163,6 +163,10 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   }, []);
 
   useEffect(() => {
+    setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
+  }, [currentFloor]);
+
+  useEffect(() => {
     authClientInstance
       .get(`/api/public/restaurants/${restaurantId}/structure`)
       .then((response) => {

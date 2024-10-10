@@ -95,9 +95,9 @@ const DepositPaymentPage = () => {
             reservationInfo.reservationUrl
         );
         navigate('/customer/reservation/success');
-        alert('결제를 성공했습니다.');
+        showAlert('결제를 성공했습니다.');
       } else {
-        alert('결제에 실패했습니다.');
+        showAlert('결제에 실패했습니다.');
       }
     };
     fetchCards();

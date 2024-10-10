@@ -65,7 +65,7 @@ const MyInfoPage = () => {
     console.log(result);
     // 로컬스토리지에 restaurantId가 있을 경우 로그아웃 시 restaurantId 제거
     if (result.status === 200) {
-      ['role', 'restaurantId'].forEach((key) => {
+      ['role', 'restaurantId', 'userKey'].forEach((key) => {
         window.localStorage.getItem(key) && window.localStorage.removeItem(key);
       });
       navigate('/');

@@ -25,8 +25,10 @@ import {
   ReservationBottomInfo,
 } from './AdminPage.js';
 import useAnimationStore from 'stores/common/useAnimationStore';
+import useAlert from '../../../../utils/alert.js';
 
 const AdminPage = () => {
+  const showAlert = useAlert();
   const {
     setIsCarrot,
     setPageName,
@@ -176,7 +178,7 @@ const AdminPage = () => {
       const result = await getReservationInfoByDay(formattedDate);
 
       if (result.status !== 200) {
-        alert('해당 날짜의 상세 예약 정보 불러오기 실패');
+        showAlert('해당 날짜의 상세 예약 정보 불러오기 실패');
       }
       setReservationDetails(result.data);
     };

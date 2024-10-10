@@ -1,5 +1,5 @@
 import axios from 'axios';
-import useAlert from './alert';
+import useAlert from './alert.js';
 import { useNavigate } from 'react-router-dom';
 
 // 로컬 변수로 accessToken 설정
@@ -152,7 +152,7 @@ authClientInstance.interceptors.response.use(
       } else {
         console.log('AccessToken Reissue 실패');
         localStorage.setItem('isReissueRequested', false);
-        alert('로그인 해주세요');
+        useAlert('로그인 해주세요');
         window.location.href = '/';
         return;
       }

@@ -17,6 +17,7 @@ import {
   GridCanvasModalStyled,
 } from './GridCanvas';
 import useModalStore from 'stores/common/useModalStore.js';
+import useAlert from '../../../../../utils/alert';
 
 const restaurantId = window.localStorage.getItem('restaurantId');
 
@@ -109,6 +110,7 @@ const useStore = create((set, get) => ({
 }));
 
 const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
+  const showAlert = useAlert();
   const [gridSize, setGridSize] = useState(50);
   const [scale, setScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
@@ -350,7 +352,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
       const y = Math.floor(adjustedY / gridSize) * gridSize;
 
       if (useStore.getState().isCellOccupied(currentFloor, x, y)) {
-        window.alert('중복 방지!!!!!!!!!!!!!!');
+        showAlert('중복 방지!!!!!!!!!!!!!!');
         return;
       }
 

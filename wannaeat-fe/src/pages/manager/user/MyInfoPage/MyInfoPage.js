@@ -62,7 +62,7 @@ const UserProfileInfo = styled.p`
 
 const UserButtonBox = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   border: 1px solid ${theme.color.gray};
   border-radius: 5px;
   padding: 1rem;

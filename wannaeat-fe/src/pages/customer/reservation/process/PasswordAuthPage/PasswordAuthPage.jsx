@@ -16,7 +16,10 @@ import useAuthStore from 'stores/customer/useAuthStore';
 import useRestaurantStore from 'stores/customer/useRestaurantStore';
 import useOrderStore from 'stores/customer/useOrderStore';
 import useReservationStore from '../../../../../stores/customer/useReservationStore.js';
+import useAlert from '../../../../../utils/alert.js';
+
 const PasswordAuthPage = () => {
+  const showAlert = useAlert();
   const [title, setTitle] = useState('결제 비밀번호를 입력해주세요');
   const [inputNumber, setInputNumber] = useState('');
   const [number, setNumber] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
@@ -124,9 +127,9 @@ const PasswordAuthPage = () => {
 
     console.log(result);
     if (result.status === 200) {
-      alert('결제 성공.');
+      showAlert('결제 성공.');
     } else {
-      alert('결제에 실패했습니다.');
+      showAlert('결제에 실패했습니다.');
     }
 
     navigate('/customer/order/' + url);
@@ -160,7 +163,7 @@ const PasswordAuthPage = () => {
       );
       setIsAuthenticated(false);
     } else {
-      alert(result.response.data.message);
+      showAlert(result.response.data.message);
     }
   };
   // 생체 인증 (지문 등) 확인 함수
@@ -181,7 +184,7 @@ const PasswordAuthPage = () => {
       setIsAuthenticated(true);
       navigate('/customer/reservation/deposit-payment');
     } catch (e) {
-      alert('인증에 실패했습니다. 다시 시도해주세요.');
+      showAlert('인증에 실패했습니다. 다시 시도해주세요.');
     }
   };
   return (

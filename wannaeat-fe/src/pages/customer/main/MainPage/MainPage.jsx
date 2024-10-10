@@ -275,7 +275,10 @@ const MainPage = () => {
                 handleClickCategoryItem(category.restaurantCategoryName)
               }
             >
-              <CategoryImage src={category.restaurantCategoryImage} />
+              <CategoryImage
+                src={categories[category.restaurantCategoryId]}
+                alt={category.restaurantCategoryName}
+              />
               <CategoryName>{category.restaurantCategoryName}</CategoryName>
             </div>
           ))}

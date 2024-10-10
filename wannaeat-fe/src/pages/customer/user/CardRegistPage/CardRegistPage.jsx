@@ -23,20 +23,20 @@ import { useNavigate } from 'react-router-dom';
 const CardRegistPage = () => {
   const { cardList, setCardIssuerList, setCardList } = useCardStore();
   const { setPageName, setIsShowBackIcon, setActiveIcons } = useHeaderStore();
-  const alert = useAlert();
+  const showAlert = useAlert();
   const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       const cardIssuerResult = await getCreditCardIssuerList();
       if (cardIssuerResult.status != 200) {
-        alert('카드사 목록 불러오기 실패');
+        showAlert('카드사 목록 불러오기 실패');
         return;
       }
       setCardIssuerList(cardIssuerResult.data.Header.REC);
 
       const cardListResult = await getCreditCardList();
       if (cardListResult.status != 200) {
-        alert('카드 목록 불러오기 실패');
+        showAlert('카드 목록 불러오기 실패');
         return;
       }
 
@@ -73,10 +73,10 @@ const CardRegistPage = () => {
   const addCard = async (cardUniqueNo) => {
     const result = await createCreditCard(cardUniqueNo);
     if (result.status === 200) {
-      alert('카드 추가에 성공했습니다.');
+      showAlert('카드 추가에 성공했습니다.');
       navigate('/customer/card-manage');
     } else {
-      alert('카드 추가에 실패했습니다.');
+      showAlert('카드 추가에 실패했습니다.');
     }
   };
   return (

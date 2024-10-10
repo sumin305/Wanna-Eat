@@ -17,8 +17,10 @@ import { useEffect } from 'react';
 import { authClientInstance } from 'utils/http-client.js';
 
 import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
+import useAlert from 'utils/alert.js';
 
 const TimeSelectPage = () => {
+  const showAlert = useAlert();
   const { restaurantId } = useRestaurantStore();
 
   const { open, setModalType, setConfirmText, setTitle, setChildren } =
@@ -35,13 +37,14 @@ const TimeSelectPage = () => {
   } = useReservationStore();
 
   const navigate = useNavigate();
+
   useEffect(() => {
     const setDate = async () => {
-      await setReservationDate(
-        reservationDate !== ''
-          ? reservationDate
-          : moment(new Date()).format('YYYY-MM-DD')
-      );
+      if (!reservationDate || reservationDate === '') {
+        await setReservationDate(moment().format('YYYY-MM-DD'));
+      } else {
+        await setReservationDate(reservationDate);
+      }
     };
     setDate();
   }, []);
@@ -67,12 +70,12 @@ const TimeSelectPage = () => {
   };
   const handleNextButtonClick = () => {
     if (startTime === '00:00') {
-      alert('시간을 선택하세요.');
+      showAlert('시간을 선택하세요.');
       return;
     } else if (reservationDate === '') {
-      alert('날짜를 선택하세요');
+      showAlert('날짜를 선택하세요');
     } else if (memberCount === -1) {
-      alert('인원수를 입력하세요.');
+      showAlert('인원수를 입력하세요.');
       return;
     }
 
@@ -92,7 +95,7 @@ const TimeSelectPage = () => {
       }
     } catch (error) {
       if (error.response.status === 404) {
-        window.alert('예약 가능한 좌석이 없습니다!');
+        showAlert('예약 가능한 좌석이 없습니다!');
       }
       console.error('예약 가능 좌석 데이터 요청 실패', error);
     }

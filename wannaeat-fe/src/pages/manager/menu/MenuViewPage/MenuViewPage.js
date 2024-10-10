@@ -93,6 +93,7 @@ export const MenuInfo = styled.div`
   flex-direction: column;
   justify-content: center;
   margin-left: 20px;
+  width: 90vw;
 `;
 
 // 메뉴 제목 스타일

@@ -19,7 +19,7 @@ import { authClientInstance } from 'utils/http-client.js';
 import useRestaurantStore from 'stores/customer/useRestaurantStore.js';
 
 const TimeSelectPage = () => {
-  const { restaurant, restaurantId } = useRestaurantStore();
+  const { restaurantId } = useRestaurantStore();
 
   const { open, setModalType, setConfirmText, setTitle, setChildren } =
     useModalStore();

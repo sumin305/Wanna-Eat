@@ -161,6 +161,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
   }, []);
 
   useEffect(() => {
+    console.log('매꾸 restaurantId: ', restaurantId);
     authClientInstance
       .get(`/api/public/restaurants/${restaurantId}/structure`)
       .then((response) => {
@@ -187,7 +188,10 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
           });
         });
 
-        // setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
+        console.log('tableDetailResponseDtos: ', tableDetailResponseDtos);
+        console.log('elementDetailResponseDtos: ', elementDetailResponseDtos);
+
+        setItemsByFloor(currentFloor, itemsByFloor[currentFloor]);
         console.error('성공: ', response);
       })
       .catch((error) => {
@@ -230,7 +234,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
             placeholder="최대 수용 인원 입력"
             value={selectedTableAssignedSeats}
             onChange={(e) =>
-              setSelectedTableAssignedSeats(parseInt(e.target.value, 10))
+              setSelectedTableAssignedSeats(Number(e.target.value))
             }
           />
         </label>
@@ -238,6 +242,39 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
     );
     open();
   }, [selectedItem]);
+
+  useEffect(() => {
+    if (selectedItem) {
+      setChildren(
+        <GridCanvasModalStyled>
+          <label>
+            테이블 번호:
+            <input
+              id="tableId"
+              type="number"
+              placeholder="테이블 번호 입력"
+              value={selectedTableId}
+              onChange={(e) => setSelectedTableId(e.target.value)}
+            />
+          </label>
+          <label>
+            최대 수용 인원:
+            <input
+              id="assignedSeats"
+              type="number"
+              min="0"
+              placeholder="최대 수용 인원 입력"
+              value={selectedTableAssignedSeats}
+              onChange={(e) =>
+                setSelectedTableAssignedSeats(parseInt(e.target.value, 10))
+              }
+            />
+          </label>
+        </GridCanvasModalStyled>
+      );
+    }
+  }, [selectedTableId, selectedTableAssignedSeats]);
+
   useEffect(() => {
     if (selectedItem) {
       setSelectedTableId(selectedItem.tableId || '');
@@ -383,7 +420,7 @@ const GridCanvas = ({ currentFloor, gridColumns, gridRows, floorCnt }) => {
               placeholder="최대 수용 인원 입력"
               value={selectedTableAssignedSeats}
               onChange={(e) =>
-                setSelectedTableAssignedSeats(parseInt(e.target.value, 10))
+                setSelectedTableAssignedSeats(parseInt(Number(e.target.value)))
               }
             />
           </label>

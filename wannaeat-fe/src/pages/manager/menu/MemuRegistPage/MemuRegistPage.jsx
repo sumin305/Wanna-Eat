@@ -195,7 +195,7 @@ const MenuRegistPage = ({ onClose }) => {
               onClick={handleImageDecorate}
               disabled={isDecorating}
             >
-              {isDecorating ? '맛있어지는 중!!' : '꾸미기'}
+              {isDecorating ? '맛있어지는 중!!' : 'AI 보정'}
             </DecorateButton>
           )}
         </ButtonContainer>

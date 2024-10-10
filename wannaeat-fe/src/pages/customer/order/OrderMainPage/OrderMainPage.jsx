@@ -114,6 +114,8 @@ const OrderMainPage = () => {
     };
     setActiveIcons([8, 10]);
     setIconAction([gotoSelectMenu, gotoChat]);
+
+    console.log('allOrdersInfo', allOrdersInfo);
   }, []);
 
   // 모든 주문 데이터 불러오기

@@ -120,9 +120,14 @@ const DonutWithLabelStyled = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 70px;
+  width: 100px;
 
   font-size: ${theme.fontSize.px13};
+
+  label {
+    margin-top: 0.2rem;
+    font-size: ${theme.fontSize.px15};
+  }
 
   @media (min-width: 480px) {
     width: auto;

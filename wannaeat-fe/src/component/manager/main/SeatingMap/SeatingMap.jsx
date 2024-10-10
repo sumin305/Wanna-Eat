@@ -62,6 +62,8 @@ const SeatingMap = ({ OccupiedList, on404Error }) => {
       );
       setReservationEndTime(formatTime(reservationInfo.reservationEndTime));
 
+      setHandleButtonClick(() => handleGotoReservationDetail(reservationInfo));
+
       if (reservationEndTime && reservationStartTime) {
         setAlertText(
           <ModalContainerStyled>

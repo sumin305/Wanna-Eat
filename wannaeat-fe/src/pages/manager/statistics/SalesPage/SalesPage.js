@@ -66,6 +66,7 @@ const SalesPageHeaderStyled = styled.div`
 
 const DateStyled = styled.div`
   font-size: ${theme.fontSize.px13};
+  font-weight: ${theme.fontWeight.bold};
   margin-inline: 10px;
 
   @media (min-width: 480px) {
@@ -75,14 +76,23 @@ const DateStyled = styled.div`
 `;
 
 const TotalRevenueStyled = styled.div`
+  display: flex;
+  justify-content: center;
   width: 100%;
   text-align: center;
   font-size: ${theme.fontSize.px15};
+  font-weight: ${theme.fontWeight.bold};
 
   @media (min-width: 480px) {
     font-size: ${theme.fontSize.px21};
     margin-block: 20px;
   }
+`;
+
+const TotalRevenueValueStyled = styled.div`
+  font-weight: ${theme.fontWeight.bold};
+  color: ${theme.color.primary};
+  margin-inline: 2%;
 `;
 
 export {
@@ -91,4 +101,5 @@ export {
   SalesPageHeaderStyled,
   DateStyled,
   TotalRevenueStyled,
+  TotalRevenueValueStyled,
 };

@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import theme from 'style/common/theme.js';
 
 export const FormContainer = styled.div`
   display: flex;
@@ -48,7 +49,7 @@ export const Select = styled.select`
 export const UploadButton = styled.button`
   width: 50px;
   height: 50px;
-  color: #ff4500;
+  color: ${theme.color.primary};
   background: none;
   font-size: 24px;
   display: flex;
@@ -66,7 +67,7 @@ export const CloseButtonContainer = styled.div`
 `;
 
 export const CloseButton = styled.button`
-  background-color: #ff4500;
+  background-color: ${theme.color.primary};
   color: white;
   border: none;
   padding: 15px;
@@ -82,7 +83,7 @@ export const CloseButton = styled.button`
 `;
 
 export const SubmitButton = styled.button`
-  background-color: #ff4500;
+  background-color: ${theme.color.primary};
   color: white;
   border: none;
   padding: 15px;
@@ -108,7 +109,10 @@ export const ImageContainer = styled.div`
   border-radius: 8px;
   overflow: hidden;
   margin-top: 10px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    opacity 0.3s ease;
 
   &.highlight {
     animation: highlightAnimation 0.8s ease forwards; // 애니메이션 추가
@@ -132,7 +136,6 @@ export const ImageContainer = styled.div`
     }
   }
 `;
-
 
 export const DecorateButton = styled.button`
   background-color: #ffa500;

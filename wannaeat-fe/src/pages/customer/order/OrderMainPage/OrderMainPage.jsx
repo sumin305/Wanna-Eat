@@ -115,6 +115,8 @@ const OrderMainPage = () => {
     };
     setActiveIcons([8, 10]);
     setIconAction([gotoSelectMenu, gotoChat]);
+
+    console.log('allOrdersInfo', allOrdersInfo);
   }, []);
 
   // 모든 주문 데이터 불러오기
@@ -686,7 +688,7 @@ const OrderMainPage = () => {
           </MenuDiv>
         </div>
 
-        {isAllPaid && !allOrdersInfo ? (
+        {isAllPaid && Object.keys(allOrdersInfo).length !== 0 ? (
           <ButtonWrapper>
             <WEButton
               size="medium"

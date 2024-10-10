@@ -8,6 +8,7 @@ import useAlert from '../../../../utils/alert';
 import calendarIcon from '../../../../assets/icons/reservation/calendar.svg';
 import clockIcon from '../../../../assets/icons/reservation/clock.svg';
 import userIcon from '../../../../assets/icons/reservation/user.svg';
+import { useNavigate } from 'react-router-dom';
 import {
   ReservationPageContainer,
   ReservationInfo,
@@ -31,6 +32,8 @@ import {
   ReservationPayInfoWrapper,
 } from './ManagerReservationDetailPage';
 
+import useHeaderStore from 'stores/common/useHeaderStore.js';
+
 const ManagerReservationDetailPage = () => {
   const params = useParams();
   const id = params.id;
@@ -39,6 +42,26 @@ const ManagerReservationDetailPage = () => {
   const [isServing, setIsServing] = useState(false);
   const [filter, setFilter] = useState('before');
   const showAlert = useAlert();
+
+  const navigate = useNavigate();
+
+  const {
+    setPageName,
+    setIsCarrot,
+    setActiveIcons,
+    setIsUnderLine,
+    setIsShowLogo,
+    setIconAction,
+  } = useHeaderStore();
+
+  useEffect(() => {
+    setPageName('예약 상세');
+    setIsCarrot(false);
+    setActiveIcons([0]);
+    setIsUnderLine(true);
+    setIsShowLogo(false);
+    setIconAction([() => navigate('/manager/alarm')]);
+  }, []);
 
   useEffect(() => {
     const fetchReservationInfo = async () => {

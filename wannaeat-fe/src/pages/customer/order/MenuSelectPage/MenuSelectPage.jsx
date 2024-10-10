@@ -134,22 +134,21 @@ const MenuSelectPage = () => {
 
   const fetchMenuData = async () => {
     const allMenuData = await getMenuData(restaurantId);
-    console.log('식당의 전체 메뉴 불러온 데이터', allMenuData.data);
+
     await setAllMenusData(allMenuData.data);
-    console.log('zustand allMenusData:', allMenusData);
   };
 
   // 모든 메뉴 데이터 불러오기
   useEffect(() => {
-    if (isConnected) {
-      fetchMenuData();
-    }
+    fetchMenuData();
   }, []);
 
   // 카테고리 추출
-  const tabs = allMenusData.menuListByCategoryResponseDtos.map(
-    (category) => category.menuCategoryName
-  );
+  const tabs = allMenusData.menuListByCategoryResponseDtos
+    ? allMenusData.menuListByCategoryResponseDtos.map(
+        (category) => category.menuCategoryName
+      )
+    : [];
 
   // 선택한 카테고리에 따른 메뉴
   const currentMenuDetails =

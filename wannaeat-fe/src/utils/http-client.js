@@ -13,7 +13,7 @@ const setAccessToken = (newAccessToken) => {
 const createSsafyClientInstance = () => {
   const instance = axios.create({
     baseURL: process.env.REACT_APP_SSAFY_PAY_URL,
-    timeout: 5000,
+    timeout: 20000,
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
@@ -28,7 +28,7 @@ const createSsafyClientInstance = () => {
 const createClientInstance = () => {
   const instance = axios.create({
     baseURL: process.env.REACT_APP_REST_API_URL,
-    timeout: 5000,
+    timeout: 20000,
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
@@ -50,7 +50,7 @@ const createSocketClientInstance = () => {
 
   const instance = axios.create({
     baseURL: process.env.REACT_APP_REST_API_URL,
-    timeout: 5000,
+    timeout: 20000,
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': process.env.REACT_APP_CLIENT_URL,
@@ -66,7 +66,7 @@ const createSocketClientInstance = () => {
 const createAuthClientInstance = () => {
   const instance = axios.create({
     baseURL: process.env.REACT_APP_REST_API_URL,
-    timeout: 5000,
+    timeout: 20000,
     headers: {
       'Content-Type': 'application/json',
       'Authorization-wannaeat': accessToken,
@@ -82,7 +82,7 @@ const createAuthClientInstance = () => {
 const createAuthWithRefreshClientInstance = () => {
   const instance = axios.create({
     baseURL: process.env.REACT_APP_REST_API_URL,
-    timeout: 5000,
+    timeout: 20000,
     headers: {
       'Content-Type': 'application/json',
       'Authorization-wannaeat': accessToken,

@@ -28,9 +28,16 @@ const MapRestaurantPage = () => {
     setHandleButtonClick,
   } = useModalStore();
 
-  const { reservationDate, startTime, endTime, memberCount } = useReservationStore();
+  const { reservationDate, startTime, endTime, memberCount } =
+    useReservationStore();
   const { categoryId, keyword, setKeyword } = useMapFilterStore();
-  const { setIsInitialLoad, lat, lon, getRestaurantPositions, setMarkerPositions } = useMapStore();
+  const {
+    setIsInitialLoad,
+    lat,
+    lon,
+    getRestaurantPositions,
+    setMarkerPositions,
+  } = useMapStore();
 
   const handleFilterModalButtonClick = () => {
     setIsInitialLoad(false);
@@ -70,9 +77,9 @@ const MapRestaurantPage = () => {
 
   const getRestaurantCategoryName = (categoryId) => {
     const categories = JSON.parse(localStorage.getItem('categories'));
-    const categoryName = categories.filter(
-      (c) => c.restaurantCategoryId === categoryId
-    )[0]?.restaurantCategoryName || '';
+    const categoryName =
+      categories.filter((c) => c.restaurantCategoryId === categoryId)[0]
+        ?.restaurantCategoryName || '';
     return categoryName;
   };
 
@@ -147,9 +154,7 @@ const MapRestaurantPage = () => {
             src={searchIcon}
           ></SearchIcon>
         </SearchWrapper>
-        <ButtonContainer>
-          {buttons}
-        </ButtonContainer>
+        <ButtonContainer>{buttons}</ButtonContainer>
       </HeaderContainer>
       <MapBox>
         <MapContainer />

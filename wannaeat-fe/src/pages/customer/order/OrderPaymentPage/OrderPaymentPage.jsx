@@ -18,8 +18,10 @@ import theme from 'style/common/theme';
 import Button from 'component/common/button/WEButton/WEButton.jsx';
 import { ButtonWrapper } from 'pages/customer/reservation/process/TimeSelectPage/TimeSelectPage.js';
 import { config } from 'react-spring';
+import useAlert from '../../../../utils/alert.js';
 
 const OrderPaymentPage = () => {
+  const showAlert = useAlert();
   const navigate = useNavigate();
   const [cards, setCards] = useState([]);
   const [goToSlide, setGoToSlide] = useState(null);
@@ -39,6 +41,13 @@ const OrderPaymentPage = () => {
       const cards = result.data.REC;
       setCards([...cards, { cardName: '카카오페이카드', cardNo: '0' }]);
     };
+
+    const role = localStorage.getItem('role');
+    if (role !== 'CUSTOMER') {
+      console.log('손님이 아닙니다.');
+      setCards([{ cardName: '카카오페이카드', cardNo: '0' }]);
+      return;
+    }
 
     fetchCards();
   }, []);
@@ -87,7 +96,7 @@ const OrderPaymentPage = () => {
 
     console.log(result);
     if (result.status !== 200) {
-      alert('결제에 실패했습니다.');
+      showAlert('결제에 실패했습니다.');
       return;
     }
 

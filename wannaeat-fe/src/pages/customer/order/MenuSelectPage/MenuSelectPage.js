@@ -4,7 +4,7 @@ import theme from 'style/common/theme';
 
 // 페이지 전체 스타일
 export const MenuPageContainer = styled.div`
-  margin-bottom: 20%;
+  margin-bottom: ${(props) => (props.role ? '26%' : '5%')};
 `;
 
 // 탭 스타일
@@ -44,7 +44,7 @@ export const MenuContainer = styled.div`
   scroll-behavior: smooth;
   margin-top: 3%;
   margin-bottom: 2%;
-  height: 55vh;
+  height: ${(props) => (props.role ? '55vh' : '62vh')};
 `;
 
 export const MenuBox = styled.div`

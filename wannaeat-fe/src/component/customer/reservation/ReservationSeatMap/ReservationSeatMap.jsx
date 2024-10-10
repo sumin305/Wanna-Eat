@@ -14,7 +14,7 @@ import { ReactComponent as LoadingIcon } from 'assets/icons/common/loading.svg';
 import { ReactComponent as SquareTablePointedIcon } from 'assets/icons/manager/restaurant/table-square.svg';
 import { ReactComponent as RoundTablePointedIcon } from 'assets/icons/manager/restaurant/table-rounded.svg';
 
-const ReservationSeatMap = ({ OccupiedList, on404Error }) => {
+const ReservationSeatMap = ({ OccupiedList, on404Error, restaurantId }) => {
   const [floorData, setFloorData] = useState([]);
   const [originalData, setOriginalData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -24,8 +24,6 @@ const ReservationSeatMap = ({ OccupiedList, on404Error }) => {
 
   const [IconWidth, setIconWidth] = useState(100);
   const [IconHeight, setIconHeight] = useState(100);
-
-  const restaurantId = window.localStorage.getItem('restaurantId');
 
   const reservedTable = OccupiedList;
 

@@ -49,6 +49,7 @@ const StatisticsPage = () => {
       .get(`/api/restaurants/statistics`)
       .then((response) => {
         const data = response.data.data;
+        console.log(data);
 
         const monthLabels = Object.keys(data.monthStatistics).map(
           (month) => `${month}월`

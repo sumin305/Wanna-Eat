@@ -1,4 +1,4 @@
-import { getMyInfo, logout, editMyInfo } from 'api/customer/user';
+import { getMyInfo, logout } from 'api/customer/user';
 import { useEffect } from 'react';
 import {
   UserInfoContainer,
@@ -16,8 +16,6 @@ import {
 import UserInfo from 'assets/icons/common/user-info.png';
 import Manage from 'assets/icons/manager/user/manage.svg';
 import Edit from 'assets/icons/common/Edit.png';
-import Zzim from 'assets/icons/header/zzim-off.svg';
-import Setting from 'assets/icons/common/Setting.png';
 import useMyInfoStore from 'stores/customer/useMyInfoStore.js';
 import useHeaderStore from 'stores/common/useHeaderStore.js';
 import { useNavigate } from 'react-router-dom';
@@ -62,9 +60,6 @@ const MyInfoPage = () => {
     navigate('/manager/nickname-edit');
   };
 
-  // const handleMyZzimButtonClick = () => {
-  //   navigate('/customer/myzzim');
-  // };
   const handleLogoutButtonClick = async () => {
     const result = await logout();
     console.log(result);
@@ -100,11 +95,6 @@ const MyInfoPage = () => {
           <UserButtonItemImg src={Edit} />
           <UserButtonItemText>닉네임 변경</UserButtonItemText>
         </UserButtonItem>
-
-        {/* <UserButtonItem onClick={handleMyZzimButtonClick}>
-          <UserButtonItemImg src={Zzim} />
-          <UserButtonItemText>내가 찜한 식당</UserButtonItemText>
-        </UserButtonItem> */}
       </UserButtonBox>
 
       <UserLogoutButton onClick={handleLogoutButtonClick}>

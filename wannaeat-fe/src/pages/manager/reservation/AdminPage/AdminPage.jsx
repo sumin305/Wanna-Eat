@@ -1,7 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import useHeaderStore from '../../../../stores/common/useHeaderStore';
 import moment from 'moment';
-import { getReservationInfoByDay } from 'api/manager/reservation/reservation.js';
+import {
+  getReservationInfoByDay,
+  getReservationInfoByMonth,
+} from 'api/manager/reservation/reservation.js';
 import useMyRestaurantStore from 'stores/manager/useMyRestaurantStore';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -25,8 +28,10 @@ import {
   ReservationBottomInfo,
 } from './AdminPage.js';
 import useAnimationStore from 'stores/common/useAnimationStore';
+import useAlert from '../../../../utils/alert.js';
 
 const AdminPage = () => {
+  const showAlert = useAlert();
   const {
     setIsCarrot,
     setPageName,
@@ -34,10 +39,15 @@ const AdminPage = () => {
     setIsUnderLine,
     setIsShowLogo,
   } = useHeaderStore();
-  const { reservationDetails, setReservationDetails } = useMyRestaurantStore();
+  const {
+    reservationDetails,
+    setReservationDetails,
+    reservationList,
+    setReservationList,
+  } = useMyRestaurantStore();
   const [selectedDate, setSelectedDate] = useState('');
+  const [date, setDate] = useState('');
   const [activeTab, setActiveTab] = useState(0);
-  const [reservationList, setReservationList] = useState([]);
   const navigate = useNavigate();
 
   const prevLocation = useRef(null); // 이전 URL을 저장할 변수
@@ -54,87 +64,83 @@ const AdminPage = () => {
   }, [location]);
 
   useEffect(() => {
-    setReservationList([
-      {
-        reservationId: 0,
-        reservationStartTime: '11:00',
-        reservationEndTime: '11:30',
-        reservationTableList: [2],
-        memberCount: 5,
-      },
-      {
-        reservationId: 1,
-        reservationStartTime: '12:00',
-        reservationEndTime: '13:30',
-        reservationTableList: [2],
-        memberCount: 5,
-      },
-      {
-        reservationId: 2,
-        reservationStartTime: '13:00',
-        reservationEndTime: '14:00',
-        reservationTableList: [3],
-        memberCount: 3,
-      },
-      {
-        reservationId: 3,
-        reservationStartTime: '14:00',
-        reservationEndTime: '15:00',
-        reservationTableList: [3],
-        memberCount: 3,
-      },
-    ]);
-  }, []);
-  const [isCommingFromDetailPage, setIsCommingFromDetailPage] = useState(false);
-  const dayList = [
-    '2024-10-10',
-    '2024-10-11',
-    '2024-10-20',
-    '2024-10-21',
-    '2024-10-30',
-  ];
+    // 현재 날짜 가져오기
+    const currentDate = moment();
+    // 년도와 월 숫자 파싱
+    const currentYear = currentDate.year();
+    const currentMonth = currentDate.month() + 1; // month()는 0부터 시작하므로 +1
 
-  const reservationCount = {
-    '2024-10-10': {
-      visited: 3,
-      willVisit: 5,
-    },
-    '2024-10-11': {
-      visited: 2,
-      willVisit: 7,
-    },
-    '2024-10-20': {
-      visited: 4,
-      willVisit: 6,
-    },
-    '2024-10-21': {
-      visited: 5,
-      willVisit: 3,
-    },
-    '2024-10-30': {
-      visited: 6,
-      willVisit: 4,
-    },
+    console.log('현재 년도:', currentYear);
+    console.log('현재 월:', currentMonth);
+
+    fetchReservationInfo(currentYear, currentMonth);
+
+    const newDate = moment(new Date()).format('YYYY-MM-DD');
+    setDate(newDate);
+
+    fetchReservationInfoByDay(newDate, 0, 10);
+  }, []);
+
+  const fetchReservationInfo = async (year, month) => {
+    const result = await getReservationInfoByMonth(year, month);
+    console.log(result.data.data);
+    setReservationCount(result.data.data.reservationCounts);
   };
+
+  const fetchReservationInfoByDay = async (date, page, size) => {
+    const result = await getReservationInfoByDay(date, page, size);
+    console.log('result', result.data.data.reservations);
+    // setReservationList(result.data.data);
+    setReservationList(result.data.data.reservations);
+  };
+  const [isCommingFromDetailPage, setIsCommingFromDetailPage] = useState(false);
+  const [reservationCount, setReservationCount] = useState({});
+
+  // const reservationCount = {
+  //   '2024-10-10': {
+  //     visited: 3,
+  //     willVisit: 5,
+  //   },
+  //   '2024-10-11': {
+  //     visited: 2,
+  //     willVisit: 7,
+  //   },
+  //   '2024-10-20': {
+  //     visited: 4,
+  //     willVisit: 6,
+  //   },
+  //   '2024-10-21': {
+  //     visited: 5,
+  //     willVisit: 3,
+  //   },
+  //   '2024-10-30': {
+  //     visited: 6,
+  //     willVisit: 4,
+  //   },
+  // };
 
   // 달력의 각 날짜에 들어갈 content
   const addContent = ({ date }) => {
     const contents = [];
     // date(각 날짜)가  리스트의 날짜와 일치하면 해당 컨텐츠(이모티콘) 추가
-    if (dayList.find((day) => day === moment(date).format('YYYY-MM-DD'))) {
+    if (
+      Object.keys(reservationCount).find(
+        (day) => day === moment(date).format('YYYY-MM-DD')
+      )
+    ) {
       contents.push(
         <div>
           <CircleWrapper>
             <CarrotCircle />
             <CountText>
-              {reservationCount[moment(date).format('YYYY-MM-DD')].willVisit}
+              {reservationCount[moment(date).format('YYYY-MM-DD')].reserved}
             </CountText>
           </CircleWrapper>
 
           <CircleWrapper>
             <GrayCircle />
             <CountText>
-              {reservationCount[moment(date).format('YYYY-MM-DD')].visited}
+              {reservationCount[moment(date).format('YYYY-MM-DD')].cancelled}
             </CountText>
           </CircleWrapper>
         </div>
@@ -166,33 +172,33 @@ const AdminPage = () => {
   //   }
   // }, [activeTab]);
 
+  // 달력이 바뀔 때 호출되는 함수
+  const handleMonthChange = ({ activeStartDate }) => {
+    const newYear = moment(activeStartDate).year();
+    const newMonth = moment(activeStartDate).month() + 1;
+
+    fetchReservationInfo(newYear, newMonth);
+  };
+
   // 날짜가 선택될 때마다 실행되는 함수
   const handleDateChange = (date) => {
     const formattedDate = moment(date).format('YYYY-MM-DD');
     console.log(formattedDate);
-
-    // 해당 날짜의 상세 예약 정보를 가져온다
-    const fetchReservationDateByDate = async (formattedDate) => {
-      const result = await getReservationInfoByDay(formattedDate);
-
-      if (result.status !== 200) {
-        alert('해당 날짜의 상세 예약 정보 불러오기 실패');
-      }
-      setReservationDetails(result.data);
-    };
-
-    fetchReservationDateByDate(formattedDate);
+    setDate(formattedDate);
+    fetchReservationInfoByDay(formattedDate, 0, 10);
+    setSelectedDate(formattedDate);
   };
   // 예약 상세 페이지로 이동
   const handleReservationInfoClick = (id) => {
-    navigate('/manager/reservation/reservation-detail/id');
+    navigate('/manager/reservation/reservation-detail/' + id);
   };
 
-  // 스크롤이 발생 시 페이지ㅣ 이동
+  // 스크롤이 발생 시 페이지 이동
   const onScrollFunction = (e) => {
     console.log(e.deltaY);
     if (e.deltaY > 0) {
-      navigate('/manager/admin/detail');
+      console.log(date);
+      navigate('/manager/admin/detail/' + date);
     }
   };
   return (
@@ -212,6 +218,7 @@ const AdminPage = () => {
               onChange={handleDateChange}
               value={selectedDate}
               tileContent={addContent}
+              onActiveStartDateChange={handleMonthChange} // 달력이 바뀔 때 호출
               formatDay={(locale, date) => moment(date).format('DD')}
             />
           </CalendarWrapper>
@@ -256,9 +263,12 @@ const AdminPage = () => {
                   </ReservationTopInfo>
                   <ReservationBottomInfo>
                     <ReservationText>
-                      {reservation.reservationTableList.map((table) => (
-                        <ReservationText key={table}>{table} </ReservationText>
-                      ))}
+                      {reservation.reservationTableList &&
+                        reservation.reservationTableList.map((table) => (
+                          <ReservationText key={table}>
+                            {table}{' '}
+                          </ReservationText>
+                        ))}
                     </ReservationText>
                     <ReservationText>번 테이블&nbsp;</ReservationText>
                     <ReservationText>
@@ -322,14 +332,15 @@ const AdminPage = () => {
                   </ReservationTopInfo>
                   <ReservationBottomInfo>
                     <ReservationText>
-                      {reservation.reservationTableList.map((table) => (
-                        <ReservationText key={table}>{table} </ReservationText>
-                      ))}
+                      {reservation.tableList &&
+                        reservation.tableList.map((table) => (
+                          <ReservationText key={table}>
+                            {table} &nbsp;
+                          </ReservationText>
+                        ))}
                     </ReservationText>
-                    <ReservationText>번 테이블&nbsp;</ReservationText>
-                    <ReservationText>
-                      {reservation.memberCount}명
-                    </ReservationText>
+                    <ReservationText>번 테이블 &nbsp;</ReservationText>
+                    <ReservationText>{reservation.memberCnt}명</ReservationText>
                   </ReservationBottomInfo>
                 </ReservationInfoText>
               </ReservationInfoItem>

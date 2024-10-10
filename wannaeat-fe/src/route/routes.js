@@ -45,6 +45,7 @@ import CardRegistPage from 'pages/customer/user/CardRegistPage/CardRegistPage.js
 import NicknameEditPage from 'pages/customer/user/NicknameEditPage/NicknameEditPage.jsx';
 import MyZzimPage from 'pages/customer/user/MyZzimPage/MyZzimPage.jsx';
 import PasswordAuthPage from 'pages/customer/reservation/process/PasswordAuthPage/PasswordAuthPage.jsx';
+import OrderSuccessPage from 'pages/customer/order/OrderSuccessPage/OrderSuccessPage.jsx';
 // 비회원 관련 페이지
 // import GuestEntryPage from './pages/customer/main/GuestEntryPage';
 
@@ -57,7 +58,10 @@ const AppRoutes = () => {
         <Route path="/password-regist" element={<PasswordRegistPage />} />
         <Route path="/manager" element={<ManagerMainPage />} />
         <Route path="/manager/admin" element={<AdminPage />} />
-        <Route path="/manager/admin/detail" element={<AdminDetailPage />} />
+        <Route
+          path="/manager/admin/detail/:date"
+          element={<AdminDetailPage />}
+        />
         <Route
           path="/manager/restaurant/seat-decorate"
           element={<SeatDecoratePage />}
@@ -147,6 +151,7 @@ const AppRoutes = () => {
         <Route path="/customer/card-regist" element={<CardRegistPage />} />
         <Route path="/customer/nickname-edit" element={<NicknameEditPage />} />
         <Route path="/customer/myzzim" element={<MyZzimPage />} />
+        <Route path="/customer/order/success" element={<OrderSuccessPage />} />
       </Routes>
     </Layout>
   );

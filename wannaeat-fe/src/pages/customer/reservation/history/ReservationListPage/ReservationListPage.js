@@ -65,11 +65,24 @@ const ReservationDetailButton = styled.button`
   font-size: ${theme.fontSize.px11};
   font-weight: bold;
   color: #c0c0c0;
-  // width: 3rem;
   height: 1.5rem;
   margin: 0.5rem 0;
 `;
 
+const ReservationDetailCancelledButton = styled.button`
+  background: none;
+  border: 2px solid ${theme.color.warning};
+  border-radius: 5px;
+  font-size: ${theme.fontSize.px11};
+  font-weight: bold;
+  color: ${theme.color.warning};
+  height: 1.5rem;
+  margin: 0.5rem 0 0 0.5rem;
+`;
+
+const ReservatioinDetailButtonWrapper = styled.div`
+  display: flex;
+`;
 const ReservationAlertWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -142,4 +155,6 @@ export {
   ReservationInfoButton,
   ReservationDateWrapper,
   ReservationiInfoButtonWrapper,
+  ReservatioinDetailButtonWrapper,
+  ReservationDetailCancelledButton,
 };

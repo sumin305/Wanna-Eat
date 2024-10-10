@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import useHeaderStore from 'stores/common/useHeaderStore';
 import useChatStore from 'stores/customer/useChatStore';
 import { validateReservationUrl, getOrderData } from 'api/customer/socket';
+import { exitReservation } from 'api/customer/reservation';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import useOrderStore from 'stores/customer/useOrderStore';
@@ -58,7 +59,7 @@ const OrderMainPage = () => {
   const [allTotalPrice, setAllTotalPrice] = useState(0);
 
   const [role, setRole] = useState(null);
-
+  const [isAllPaid, setIsAllPaid] = useState(false);
   const tabs = ['전체 메뉴', '나의 메뉴'];
   const nav = useNavigate();
   const params = useParams();
@@ -91,8 +92,6 @@ const OrderMainPage = () => {
     setReservationEndTime,
     setRestaurantId,
     setReservationId,
-    isAllPaid,
-    setIsAllPaid,
   } = useOrderStore();
 
   // 주문 메인페이지에 들어왔을 때 실행
@@ -278,7 +277,7 @@ const OrderMainPage = () => {
 
       console.log('allPaid', allPaid);
 
-      setIsAllPaid(allPaid);
+      setIsAllPaid(allPaid && Object.keys(allOrdersInfo).length !== 0);
     };
 
     const initializeConnection = async () => {
@@ -378,12 +377,9 @@ const OrderMainPage = () => {
       )
     );
 
-    console.log('pendingGroup', pendingGroup);
     const allPaid = Object.values(pendingGroup).every((user) =>
       user.orders.every((order) => order.totalCnt === order.paidCnt)
     );
-
-    console.log('allPaid', allPaid);
 
     setIsAllPaid(allPaid);
 
@@ -686,7 +682,7 @@ const OrderMainPage = () => {
           </MenuDiv>
         </div>
 
-        {isAllPaid && !allOrdersInfo ? (
+        {isAllPaid ? (
           <ButtonWrapper>
             <WEButton
               size="medium"
@@ -700,7 +696,10 @@ const OrderMainPage = () => {
             <WEButton
               size="medium"
               outlined="true"
-              onClick={() => nav(`/customer/order/success`)}
+              onClick={() => {
+                exitReservation(reservationUrl);
+                nav(`/customer/order/success`);
+              }}
             >
               퇴실하기
             </WEButton>

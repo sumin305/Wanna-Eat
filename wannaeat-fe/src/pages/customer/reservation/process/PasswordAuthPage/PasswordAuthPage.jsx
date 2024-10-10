@@ -163,7 +163,7 @@ const PasswordAuthPage = () => {
       );
       setIsAuthenticated(false);
     } else {
-      showAlert(result.response.data.message);
+      alert(result.response.data.message);
     }
   };
   // 생체 인증 (지문 등) 확인 함수

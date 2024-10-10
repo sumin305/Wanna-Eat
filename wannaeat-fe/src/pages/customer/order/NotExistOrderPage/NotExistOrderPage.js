@@ -8,6 +8,11 @@ export const NotExistContainer = styled.div`
   height: 100%;
   background-color: ${theme.color.lightGray};
   margin: 0% 15%;
+
+  button {
+    margin-top: 5%;
+    width: 100%;
+  }
 `;
 
 export const NotExistText = styled.p`

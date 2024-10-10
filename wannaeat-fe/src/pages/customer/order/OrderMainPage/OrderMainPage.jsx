@@ -40,8 +40,10 @@ import {
 } from './OrderMainPage.js';
 import MenuIcon from 'assets/icons/menu/basic-menu.svg';
 import useReservationStore from '../../../../stores/customer/useReservationStore.js';
+import useAlert from '../../../../utils/alert.js';
 
 const OrderMainPage = () => {
+  const showAlert = useAlert();
   const [activeTab, setActiveTab] = useState(0);
   const [reservationParticipantId, setreservationParticipantId] = useState(0);
 
@@ -116,7 +118,7 @@ const OrderMainPage = () => {
       console.log(reservationUrl);
       // reservationUrl 유효성 검사 실행 후 유효한 경우
       if (response.status !== 200) {
-        alert('유효한 예약 URL이 아닙니다.');
+        showAlert('유효한 예약 URL이 아닙니다.');
         nav('/customer/order/notexist', {
           state: { message: response.response.data.message },
         });

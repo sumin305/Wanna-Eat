@@ -14,6 +14,7 @@ import theme from '../../../../style/common/theme';
 import { useEffect, useState } from 'react';
 import Textfield from '../../../common/textfield/WETextfield/WETextfield.jsx';
 import moment from 'moment';
+import useAlert from 'utils/alert';
 
 // 30분 단위로 시간을 계산하는 함수
 const generateTimes = (startTime, endTime, isToday = false) => {
@@ -33,6 +34,7 @@ const generateTimes = (startTime, endTime, isToday = false) => {
 };
 
 const TimeSelectModalBox = () => {
+  const showAlert = useAlert();
   const {
     reservationDate,
     isLunch,
@@ -81,7 +83,7 @@ const TimeSelectModalBox = () => {
       setMemberCount(0);
     }
     if (e.target.value < 0) {
-      alert('0명 미만은 불가능합니다.');
+      showAlert('0명 미만은 불가능합니다.');
       setMemCnt(0);
       return;
     }
@@ -100,7 +102,7 @@ const TimeSelectModalBox = () => {
         );
 
         if (!checkContinuousTime(lunchTimes, newSelectedTimes)) {
-          alert('연속된 시간만 선택 가능합니다.');
+          showAlert('연속된 시간만 선택 가능합니다.');
           setSelectedTimes([]);
           return;
         }
@@ -112,7 +114,7 @@ const TimeSelectModalBox = () => {
       }
 
       if (selectedTimes.length >= 4) {
-        alert('최대 2시간 이용 가능합니다.');
+        showAlert('최대 2시간 이용 가능합니다.');
         return;
       }
 
@@ -120,7 +122,7 @@ const TimeSelectModalBox = () => {
       let newSelectedTimes = [...selectedTimes];
       newSelectedTimes.push(lunchTimes[index]);
       if (!checkContinuousTime(lunchTimes, newSelectedTimes)) {
-        alert('연속된 시간만 선택 가능합니다.');
+        showAlert('연속된 시간만 선택 가능합니다.');
         return;
       }
 
@@ -146,7 +148,7 @@ const TimeSelectModalBox = () => {
           (time) => time != dinnerTimes[index]
         );
         if (!checkContinuousTime(dinnerTimes, newSelectedTimes)) {
-          alert('연속된 시간만 선택 가능합니다.');
+          showAlert('연속된 시간만 선택 가능합니다.');
           setSelectedTimes([]);
           return;
         }
@@ -158,7 +160,7 @@ const TimeSelectModalBox = () => {
       }
 
       if (selectedTimes.length >= 4) {
-        alert('최대 2시간 이용 가능합니다.');
+        showAlert('최대 2시간 이용 가능합니다.');
         return;
       }
 
@@ -166,7 +168,7 @@ const TimeSelectModalBox = () => {
       let newSelectedTimes = [...selectedTimes];
       newSelectedTimes.push(dinnerTimes[index]);
       if (!checkContinuousTime(dinnerTimes, newSelectedTimes)) {
-        alert('연속된 시간만 선택 가능합니다.');
+        showAlert('연속된 시간만 선택 가능합니다.');
         return;
       }
       // 추가 완료

@@ -20,9 +20,11 @@ import {
   getCategoryList,
   registerMenu,
   editImage,
-} from '../../../../api/manager/menu/menu.js';
+} from '../../../../api/manager/menu/menu.js'; // API 임포트
+import useAlert from '../../../../utils/alert.js';
 
 const MenuRegistPage = ({ onClose }) => {
+  const showAlert = useAlert();
   const [menuName, setMenuName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [price, setPrice] = useState('');
@@ -58,7 +60,7 @@ const MenuRegistPage = ({ onClose }) => {
 
   const handleImageDecorate = async () => {
     if (!image) {
-      alert('이미지를 먼저 업로드하세요.');
+      showAlert('이미지를 먼저 업로드하세요.');
       return;
     }
 
@@ -189,7 +191,10 @@ const MenuRegistPage = ({ onClose }) => {
           </UploadButton>
 
           {image && (
-            <DecorateButton onClick={handleImageDecorate} disabled={isDecorating}>
+            <DecorateButton
+              onClick={handleImageDecorate}
+              disabled={isDecorating}
+            >
               {isDecorating ? '맛있어지는 중!!' : '꾸미기'}
             </DecorateButton>
           )}

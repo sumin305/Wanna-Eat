@@ -17,6 +17,7 @@ const useAlert = () => {
     setAlertText(text);
     setHandleButtonClick(close);
     setIsOneButton(true);
+    setConfirmText('확인');
     open();
   };
 

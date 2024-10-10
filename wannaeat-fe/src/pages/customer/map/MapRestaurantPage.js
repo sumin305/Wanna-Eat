@@ -66,9 +66,7 @@ const FilterButton = styled.span`
     props.isEven ? theme.color.white : theme.color.primary};
   color: ${(props) => (props.isEven ? theme.color.primary : theme.color.white)};
   font-size: ${theme.fontSize.px10};
-  width: 4rem;
-  height: 1.375rem;
-  padding: 0 0.5rem;
+  padding: 1.5% 3%;
   margin-top: 1rem;
   border: 1px solid ${theme.color.white};
   border-radius: ${theme.borderRadius.default};

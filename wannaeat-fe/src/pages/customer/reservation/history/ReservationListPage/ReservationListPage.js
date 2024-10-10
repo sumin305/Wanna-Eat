@@ -3,11 +3,7 @@ import styled from '@emotion/styled';
 
 const ReservationListContainer = styled.div`
   background-color: #f2f2f2;
-<<<<<<< HEAD
-  margin-bottom: 20%;
-=======
   margin-bottom: 10vh;
->>>>>>> 11547e13dd48315abdb48efb65035424ca9d88fb
 `;
 
 const ReservationItem = styled.div`
@@ -67,6 +63,7 @@ const ReservationDetailButton = styled.button`
   color: #c0c0c0;
   height: 1.5rem;
   margin: 0.5rem 0;
+  padding: 0% 3%;
 `;
 
 const ReservationDetailCancelledButton = styled.button`
@@ -78,6 +75,7 @@ const ReservationDetailCancelledButton = styled.button`
   color: ${theme.color.warning};
   height: 1.5rem;
   margin: 0.5rem 0 0 0.5rem;
+  padding: 0% 2%;
 `;
 
 const ReservatioinDetailButtonWrapper = styled.div`

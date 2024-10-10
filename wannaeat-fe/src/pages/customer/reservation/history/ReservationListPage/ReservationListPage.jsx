@@ -161,7 +161,7 @@ const ListPage = () => {
                   {reservation.restaurantName}
                   {reservation.cancelled && (
                     <ReservationDetailCancelledButton>
-                      취소됨
+                      예약 취소
                     </ReservationDetailCancelledButton>
                   )}
                 </ReservationItemTitle>

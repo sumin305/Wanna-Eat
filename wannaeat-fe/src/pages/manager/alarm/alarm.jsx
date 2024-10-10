@@ -14,10 +14,28 @@ import {
   AlarmEmptyMessage,
 } from './alarm';
 
+import useHeaderStore from 'stores/common/useHeaderStore.js';
+
 const AlarmPage = () => {
   const [alarms, setAlarms] = useState([]); // 알림 데이터를 상태로 관리
   const [selectedCategory, setSelectedCategory] = useState('전체'); // 선택된 카테고리 상태
   const [filteredAlarms, setFilteredAlarms] = useState([]); // 필터링된 알림 상태
+
+  const {
+    setPageName,
+    setIsCarrot,
+    setActiveIcons,
+    setIsUnderLine,
+    setIsShowLogo,
+  } = useHeaderStore();
+
+  useEffect(() => {
+    setPageName('알림 목록');
+    setIsCarrot(false);
+    setActiveIcons([3]);
+    setIsUnderLine(true);
+    setIsShowLogo(false);
+  }, []);
 
   // API를 통해 알림 데이터를 불러오는 함수
   useEffect(() => {

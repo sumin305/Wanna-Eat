@@ -49,7 +49,7 @@ const ReservationDetailPage = () => {
   const [reservationEndTime, setReservationEndTime] = useState('');
   const [seatList, setSeatList] = useState([]);
   const [reservationUrl, setReservationUrl] = useState('');
-
+  const [canceled, setCanceled] = useState(false);
   useEffect(() => {
     const fetchReservationDetail = async () => {
       const result = await getReservationDetail(id);
@@ -66,6 +66,7 @@ const ReservationDetailPage = () => {
       setReservationEndTime(reservation.reservationEndTime);
       setRestaurantId(reservation.restaurantId);
       setSeatList(reservation.tableList);
+      setCanceled(reservation.cancelled);
       setReservationUrl(
         process.env.REACT_APP_CLIENT_URL +
           '/customer/order/' +
@@ -160,8 +161,9 @@ const ReservationDetailPage = () => {
         <Button
           size={'long'}
           onClick={() => handleReservationCancelButtonClick()}
+          disabled={canceled}
         >
-          예약 취소
+          {canceled ? '취소된 예약' : '예약 취소'}
         </Button>
       </ButtonWrapper>
     </ReservationDetailPageContainer>

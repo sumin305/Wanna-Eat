@@ -114,7 +114,8 @@ public class RestaurantStructureServiceImpl implements RestaurantStructureServic
 	}
 
 	// 기존 구조도 삭제 메소드
-	private void deleteExistingStructure(Long restaurantId) {
+	@Transactional
+	public void deleteExistingStructure(Long restaurantId) {
 		restaurantStructureRepository.findByRestaurantId(restaurantId)
 			.ifPresent(existingStructure -> {
 				restaurantStructureRepository.delete(existingStructure);
@@ -123,7 +124,8 @@ public class RestaurantStructureServiceImpl implements RestaurantStructureServic
 	}
 
 	// 매장 구조 유효성 검사
-	private void validateRestaurantStructure(RestaurantStructureRegisterRequestDto requestDto) {
+	@Transactional
+	public void validateRestaurantStructure(RestaurantStructureRegisterRequestDto requestDto) {
 		int floorCnt = requestDto.getFloorCnt();
 		Set<Integer> tableIdSet = new HashSet<>();  // Table ID 중복 체크
 
@@ -140,7 +142,8 @@ public class RestaurantStructureServiceImpl implements RestaurantStructureServic
 	}
 
 	// 좌표와 층수 유효성 검증 통합
-	private void validateCoordinatesAndFloor(Double x, Double y, Integer floor, int floorCnt) {
+	@Transactional
+	public void validateCoordinatesAndFloor(Double x, Double y, Integer floor, int floorCnt) {
 		if (x < 0 || x > 500 || y < 0 || y > 500) {
 			throw new RestaurantElementOutOfRangeException("x와 y 좌표는 0 이상 500 이하이어야 합니다.");
 		}
@@ -150,7 +153,8 @@ public class RestaurantStructureServiceImpl implements RestaurantStructureServic
 	}
 
 	// 테이블 ID 유효성 검사
-	private void validateTableId(TableRegisterRequestDto table, Set<Integer> tableIdSet) {
+	@Transactional
+	public void validateTableId(TableRegisterRequestDto table, Set<Integer> tableIdSet) {
 		Integer tableId = table.getTableId();
 		if (!tableIdSet.add(tableId)) {
 			throw new TableIdDuplicateException("테이블 ID가 중복되었습니다: " + tableId);

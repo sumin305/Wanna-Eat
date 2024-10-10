@@ -101,9 +101,20 @@ const OrderSheetBox = ({ reservationUrl }) => {
     );
 
     const completedGroup = groupByNicknameWithTotalPrice(
-      ordersArray.filter((order) =>
-        order.orders ? order.orders.every((o) => o.totalCnt === o.paidCnt) : []
-      )
+      ordersArray
+        .map((order) => {
+          // 미결제 메뉴만 필터링
+          const paidOrders = order.orders.filter((o) => o.paidCnt > 0);
+          // 미결제 메뉴가 있으면 해당 주문을 반환
+          if (paidOrders.length > 0) {
+            return {
+              ...order,
+              orders: paidOrders, // 미결제된 주문만 포함
+            };
+          }
+          return null; // 미결제 메뉴가 없으면 null 반환
+        })
+        .filter((order) => order !== null) // null인 주문은 제거
     );
 
     // 결제 전 주문 그룹화
@@ -148,6 +159,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
     }));
 
     setAllOrders(ordersArray);
+
     const pendingGroup = groupByNicknameWithTotalPrice(
       ordersArray
         .map((order) => {
@@ -166,12 +178,29 @@ const OrderSheetBox = ({ reservationUrl }) => {
         })
         .filter((order) => order !== null) // null인 주문은 제거
     );
-
     const completedGroup = groupByNicknameWithTotalPrice(
-      ordersArray.filter((order) =>
-        order.orders ? order.orders.some((o) => o.totalCnt === o.paidCnt) : []
-      )
+      ordersArray
+        .map((order) => {
+          // 미결제 메뉴만 필터링
+          const paidOrders = order.orders.filter(
+            (o) => o.totalCnt === o.paidCnt
+          );
+          // 미결제 메뉴가 있으면 해당 주문을 반환
+          if (paidOrders.length > 0) {
+            return {
+              ...order,
+              orders: paidOrders, // 미결제된 주문만 포함
+            };
+          }
+          return null; // 미결제 메뉴가 없으면 null 반환
+        })
+        .filter((order) => order !== null) // null인 주문은 제거
     );
+    // const completedGroup = groupByNicknameWithTotalPrice(
+    //   ordersArray.filter((order) =>
+    //     order.orders ? order.orders.some((o) => o.totalCnt === o.paidCnt) : []
+    //   )
+    // );
 
     // 결제 전 주문 그룹화
     setGroupedPendingOrdersWithTotalPrice(pendingGroup);
@@ -492,7 +521,7 @@ const OrderSheetBox = ({ reservationUrl }) => {
                                 </FoodInfoTopDiv>
                                 <FoodInfoBottomDiv>
                                   <FoodInfoCountP>
-                                    {order.totalCnt}
+                                    {order.paidCnt}
                                   </FoodInfoCountP>
                                   <FoodPriceP>
                                     {(
